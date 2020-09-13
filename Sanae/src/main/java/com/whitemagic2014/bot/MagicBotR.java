@@ -1,23 +1,24 @@
-package com.meng.bot;
+package com.whitemagic2014.bot;
 
-import java.io.File;
-import java.util.List;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * @Description: 创建bot
  * @author: magic chen
  * @date: 2020/8/20 15:46
  **/
-public class SJFBot {
+public class MagicBotR {
 
     private Bot bot;
 
-    public SJFBot(Long account, String pwd, String deviceInfo, List<ListenerHost> events, String netlog) {
+    public MagicBotR(Long account, String pwd, String deviceInfo, List<ListenerHost> events, String netlog) {
         bot = startBot(account, pwd, deviceInfo, events, netlog);
     }
 
@@ -47,7 +48,7 @@ public class SJFBot {
         // 使用自定义的log
        // config.setBotLoggerSupplier(bot -> new MagicLogger());
         // 将net层输出写入文件
-        config.redirectNetworkLogToDirectory(new File(netlog));
+       // config.redirectNetworkLogToDirectory(new File(netlog));
         final Bot bot = BotFactoryJvm.newBot(account, pwd, config);
         bot.login();
         // 注册事件

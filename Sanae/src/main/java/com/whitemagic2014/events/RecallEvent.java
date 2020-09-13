@@ -1,4 +1,4 @@
-package com.meng.events;
+package com.whitemagic2014.events;
 
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.event.EventHandler;
