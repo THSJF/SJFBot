@@ -8,18 +8,22 @@ import net.mamoe.mirai.utils.BotConfiguration;
 
 import java.io.File;
 import java.util.List;
+import com.whitemagic2014.events.GroupEvents;
+import net.mamoe.mirai.message.MessageEvent;
+import com.whitemagic2014.events.MessageEvents;
+import com.whitemagic2014.events.RecallEvent;
 
 /**
  * @Description: 创建bot
  * @author: magic chen
  * @date: 2020/8/20 15:46
  **/
-public class MagicBotR {
+public class SJF {
 
     private Bot bot;
 
-    public MagicBotR(Long account, String pwd, String deviceInfo, List<ListenerHost> events, String netlog) {
-        bot = startBot(account, pwd, deviceInfo, events, netlog);
+    public SJF() {    
+        bot = startBot(2528419891L, "sword_arr", "deviceInfo.json");
     }
 
     public Bot getBot() {
@@ -42,21 +46,23 @@ public class MagicBotR {
      * @Author: magic chen
      * @Date: 2020/8/20 15:54
      **/
-    private Bot startBot(Long account, String pwd, String deviceInfo, List<ListenerHost> events, String netlog) {
+    private Bot startBot(Long account, String pwd, String deviceInfo) {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo(deviceInfo);
-        // 使用自定义的log
-       // config.setBotLoggerSupplier(bot -> new MagicLogger());
-        // 将net层输出写入文件
-       // config.redirectNetworkLogToDirectory(new File(netlog));
-        final Bot bot = BotFactoryJvm.newBot(account, pwd, config);
-        bot.login();
-        // 注册事件
-        for (ListenerHost event : events) {
-            Events.registerEvents(bot, event);
-        }
-        // 这个和picbotx 还是不太一样 那个不会占用主线程
-        // 这里必须要启新线程去跑bot 不然会占用主线程
+          final Bot bot = BotFactoryJvm.newBot(account, pwd, config);
+       
+          
+       // for (ListenerHost event : events) {
+            Events.registerEvents(bot, new GroupEvents());
+        Events.registerEvents(bot, new MessageEvents());
+        Events.registerEvents(bot, new RecallEvent());
+        
+            
+            // }
+          
+          bot.login();
+    
+        
         new Thread(new Runnable(){
 
                 @Override

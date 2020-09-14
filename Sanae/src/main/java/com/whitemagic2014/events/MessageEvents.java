@@ -12,6 +12,7 @@ import net.mamoe.mirai.message.data.Message;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.mamoe.mirai.contact.Member;
 
 /**
  * @Description: 非指令消息的消息事件
@@ -34,6 +35,10 @@ public class MessageEvents extends SimpleListenerHost {
     @EventHandler(priority = Listener.EventPriority.NORMAL)
     public ListeningStatus catchXikali(@NotNull GroupMessageEvent event) throws Exception {
         Group g = event.getSubject();
+            Member m = event.getSender();
+            if (m.getId() == 2856986197L && event.getMessage().contentToString().equals("SJF")) {
+                g.sendMessage("我在。");
+            }
         // 捕获cd 当捕获一次后,进入cd
     /*    if (!MagicMaps.check("catchXikali")) {
             if (g.getId() == 720828494L) {

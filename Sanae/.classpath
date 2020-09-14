@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/jcqbot/lib/mirai-core-1.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/jcqbot/lib/mirai-core-qqandroid-1.2.3.jar"/>
-	<classpathentry kind="output" path="target/classes"/>
+<?xml version="1.0" encoding="UTF-8"?><classpath>
+<classpathentry kind="src" path="src/main/java"/>
+<classpathentry kind="src" path="src/main/resources"/>
+<classpathentry kind="src" path="src/test/java"/>
+<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
+<classpathentry kind="lib" path="C:/jcqbot/lib/mirai-core-1.2.3.jar"/>
+<classpathentry kind="lib" path="C:/jcqbot/lib/mirai-core-qqandroid-1.2.3.jar"/>
+<classpathentry kind="output" path="target/classes"/>
+<classpathentry kind="lib" path="libs/mirai-core-1.2.3.jar"/>
+<classpathentry kind="lib" path="libs/mirai-core-qqandroid-1.2.3.jar"/>
 </classpath>
