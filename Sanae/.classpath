@@ -9,4 +9,8 @@
 <classpathentry kind="output" path="target/classes"/>
 <classpathentry kind="lib" path="libs/mirai-core-1.2.3.jar"/>
 <classpathentry kind="lib" path="libs/mirai-core-qqandroid-1.2.3.jar"/>
+<classpathentry kind="lib" path="libs/font.jar"/>
+<classpathentry kind="lib" path="libs/gson-2.8.5.jar"/>
+<classpathentry kind="lib" path="libs/jfreechart-1.5.0.jar"/>
+<classpathentry kind="lib" path="libs/jsoup-1.11.3.jar"/>
 </classpath>
