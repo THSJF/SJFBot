@@ -1,22 +1,25 @@
 package com.meng.groupMsgProcess;
 
-import com.google.gson.*;
-import com.google.gson.reflect.*;
-import com.meng.*;
-import com.meng.config.*;
-import java.lang.reflect.*;
-import java.util.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.meng.config.ConfigManager;
+import com.meng.config.SanaeDataPack;
+import java.util.ArrayList;
+import java.util.HashMap;
+import com.meng.BotWrapper;
 
 public class ModuleSeq extends BaseModule {
 
 	private ArrayList<SeqBean> seqs=new ArrayList<>();
 	private HashMap<String, ArrayList<String>> jsonData = new HashMap<>();
 
+    public ModuleSeq(BotWrapper bw) {
+        super(bw);
+    }
+    
 	@Override
 	public BaseModule load() {
-		Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
-		}.getType();
-        jsonData = new Gson().fromJson(ConfigManager.instence.getSeq(), type);
+        jsonData = new Gson().fromJson(ConfigManager.instence.getSeq(), new TypeToken<HashMap<String, ArrayList<String>>>() {}.getType());
    		for (String key : jsonData.keySet()) {
 			ArrayList<String> al=jsonData.get(key);
 			String[] content=al.toArray(new String[al.size()]);
@@ -51,9 +54,9 @@ public class ModuleSeq extends BaseModule {
 						sb.pos = 0;
 					}
 					if (sb.pos == 0) {
-						Autoreply.sendMessage(fromGroup, 0, sb.content[sb.content.length - 1]);
+						wrapper.getAutoreply().sendGroupMessage(fromGroup, sb.content[sb.content.length - 1]);
 					} else {
-						Autoreply.sendMessage(fromGroup, 0, sb.content[sb.pos - 1]);
+						wrapper.getAutoreply().sendGroupMessage(fromGroup, sb.content[sb.pos - 1]);
 					}
 				}
 				break;
@@ -61,7 +64,7 @@ public class ModuleSeq extends BaseModule {
 		}
 		return false;
 	}
-	
+
 	private class SeqBean {
 		public String[] content;
 		public int pos=0;

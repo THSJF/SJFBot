@@ -1,16 +1,20 @@
 package com.meng.groupMsgProcess;
 
-import com.meng.*;
-import com.meng.config.*;
-import java.util.concurrent.*;
+import com.meng.BotWrapper;
+import com.meng.config.ConfigManager;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleMsgRefuse extends BaseModule {
+
+    public ModuleMsgRefuse(BotWrapper wrapper) {
+        super(wrapper);
+    }
 
 	public ConcurrentHashMap<Long,FireWallBean> msgMap=new ConcurrentHashMap<>();
 
 	@Override
 	public BaseModule load() {
-		Autoreply.ins.threadPool.execute(new Runnable(){
+		wrapper.execute(new Runnable(){
 
 				@Override
 				public void run() {
@@ -48,7 +52,7 @@ public class ModuleMsgRefuse extends BaseModule {
 		if (mtmb.timeSubLowTimes > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				Autoreply.sendMessage(fromGroup, 0, "你说话真快");
+				wrapper.getAutoreply().sendGroupMessage(fromGroup, "你说话真快");
 			}
 			return true;
 		}
@@ -62,7 +66,7 @@ public class ModuleMsgRefuse extends BaseModule {
 		if (mtmb.repeatTime > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				Autoreply.sendMessage(fromGroup, 0, "怎么又是这句话");
+				wrapper.getAutoreply().sendGroupMessage(fromGroup, "怎么又是这句话");
 			}
 			mtmb.lastMsg = msg;
 			return true;
@@ -73,7 +77,7 @@ public class ModuleMsgRefuse extends BaseModule {
 		if (mtmb.lastSeconedMsgs > 4) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				Autoreply.sendMessage(fromGroup, 0, "你真稳");
+				wrapper.getAutoreply().sendGroupMessage(fromGroup, "你真稳");
 			}
 			return true;
 		}

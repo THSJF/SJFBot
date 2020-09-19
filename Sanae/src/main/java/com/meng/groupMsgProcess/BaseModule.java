@@ -1,9 +1,18 @@
 package com.meng.groupMsgProcess;
+import com.meng.BotWrapper;
+import com.meng.CoolQ;
 
 public abstract class BaseModule {
 
 	public boolean enable = false;
 	private String moduleName = null;
+    public BotWrapper wrapper;
+    public CoolQ CQ;
+
+    public BaseModule(BotWrapper bwp) {
+        wrapper = bwp;
+        CQ = wrapper.getCQ();
+    }
 
 	public final boolean onMsg(long fromGroup, long fromQQ, String msg, int msgId) {
 		if (!enable) {
