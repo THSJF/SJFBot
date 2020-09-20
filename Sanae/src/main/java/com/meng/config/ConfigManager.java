@@ -1,190 +1,144 @@
 package com.meng.config;
 
-import com.google.gson.reflect.*;
-import com.meng.*;
-import com.meng.remote.*;
-import com.meng.tools.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
-import java.nio.charset.*;
-import java.util.concurrent.*;
+import com.meng.Autoreply;
+import com.meng.BotWrapper;
+import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.config.javabeans.ConfigHolder;
+import com.meng.config.javabeans.GroupConfig;
+import com.meng.config.javabeans.PersonInfo;
+import com.meng.tools.SJFExecutors;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
-public class ConfigManager {
-	public static ConfigManager instence;
-    public RanConfigBean RanConfig = new RanConfigBean();
-	public SanaeConfigJavaBean SanaeConfig=new SanaeConfigJavaBean();
-	private File SanaeConfigFile;
-	public NetConfig netConfig;
+/**
+ * @author 司徒灵羽
+ */
 
-	private ConcurrentHashMap<Integer,TaskResult> resultMap=new ConcurrentHashMap<>();
-	public ConfigManager() {
-		Type type = new TypeToken<SanaeConfigJavaBean>() {
-		}.getType();
-		SanaeConfigFile = new File(Autoreply.appDirectory + "/SanaeConfig.json");
-		if (!SanaeConfigFile.exists()) {
-			saveSanaeConfig();
-		}
-        SanaeConfig = Autoreply.gson.fromJson(Tools.FileTool.readString(SanaeConfigFile), type);
-		Autoreply.ins.threadPool.execute(new Runnable(){
+public class ConfigManager implements IPersistentData {
 
-				@Override
-				public void run() {
-					while (true) {
-						try {
-							Thread.sleep(60000);
-						} catch (InterruptedException e) {}
-						saveSanaeConfig();
-					}
-				}
-			});
+    private ConfigHolder configHolder = new ConfigHolder();
+	private static final GroupConfig emptyConfig = new GroupConfig();
+    private BotWrapper wrapper;
+
+	private ConfigManager(BotWrapper bw) {
+        wrapper = bw;
 	}
 
-	public void load() {
-		try {
-			netConfig = new NetConfig(new URI("ws://123.207.65.93:9760"));
-			netConfig.connect();
-		} catch (URISyntaxException e) {}
-		Autoreply.ins.threadPool.execute(new Runnable(){
-
-				@Override
-				public void run() {
-					while (true) {
-						try {
-							Thread.sleep(10000);
-						} catch (InterruptedException e) {}
-						if (netConfig != null && !netConfig.isClosed()) {
-							netConfig.send("heart beat");
-						}
-					}
-				}
-			});
+	public ConfigHolder getConfigHolder() {
+		return configHolder;
 	}
 
-	public String getOverSpell(long fromQQ) {
-		send(SanaeDataPack.encode(SanaeDataPack.opGameOverSpell).write(fromQQ));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opGameOverSpell).data);
-	}
+    public void init() {
+		DataPersistenter.read(this);
+    }
 
-	public int getOverPersent(long fromQQ) {
-		send(SanaeDataPack.encode(SanaeDataPack.opGameOverPersent).write(fromQQ));
-		return Tools.BitConverter.toInt(getTaskResult(SanaeDataPack.opGameOverPersent).data);
-	}
-
-	public String getGrandma(long fromQQ) {
-		send(SanaeDataPack.encode(SanaeDataPack.opGrandma).write(fromQQ));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opGrandma).data);
-	}
-
-	public String getMusicName(long fromQQ) {
-		send(SanaeDataPack.encode(SanaeDataPack.opMusicName).write(fromQQ));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opMusicName).data);
-	}
-
-	public String getSpells(long fromQQ) {
-		send(SanaeDataPack.encode(SanaeDataPack.opGotSpells).write(fromQQ));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opGotSpells).data);
-	}
-
-	public String getNeta(long fromQQ) {
-		send(SanaeDataPack.encode(SanaeDataPack.opNeta).write(fromQQ));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opNeta).data);
-	}
-
-	public String getSeq() {
-		send(SanaeDataPack.encode(SanaeDataPack.opSeqContent));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opSeqContent).data);
-	}
-
-	public String getLiveList() {
-		send(SanaeDataPack.encode(SanaeDataPack.opLiveList));
-		return Tools.BitConverter.toString(getTaskResult(SanaeDataPack.opLiveList).data);
-	}
-
-	public void setWelcome(long group, String welcome) {
-		SanaeConfig.welcomeMap.put(group, welcome);
-		saveSanaeConfig();
-	}
-
-	public String getWelcome(long group) {
-		if (SanaeConfig.welcomeMap.get(group) == null) {
-			return null;
-		}
-		return SanaeConfig.welcomeMap.get(group);
-	}
-
-	private TaskResult getTaskResult(int opCode) {
-		int time=5000;
-		while (resultMap.get(opCode) == null && time-- > 0) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {}
-		}
-		TaskResult tr=resultMap.get(opCode);
-		resultMap.remove(opCode);
-		return tr;
-	}
-
-	public void setNickName(long qq, String nickname) {
-		if (nickname != null) {
-			RanConfig.nicknameMap.put(qq, nickname);
-			send(SanaeDataPack.encode(SanaeDataPack.opSetNick).write(qq).write(nickname));
+	public void setFunctionEnabled(long fromGroup, int functionID, boolean enable) {
+		if (enable) {
+			getGroupConfig(fromGroup).f1 |= (1 << functionID);
 		} else {
-			RanConfig.nicknameMap.remove(qq);
-			send(SanaeDataPack.encode(SanaeDataPack.opSetNick).write(qq));
+			getGroupConfig(fromGroup).f1 &= ~(1 << functionID);
 		}
+		save();
 	}
 
-	public String getNickName(long qq) {
-		String nick=null;
-		nick = RanConfig.nicknameMap.get(qq);
-		if (nick == null) {
-			PersonInfo pi=getPersonInfoFromQQ(qq);
-			if (pi == null) {
-				nick = Autoreply.CQ.getStrangerInfo(qq).getNick();
-			} else {
-				nick = pi.name;
+	public void addGroupConfig(GroupConfig gc) {
+		configHolder.groupConfigs.add(gc);
+		save();
+	}
+
+	public void removeGroupConfig(long gcn) {
+		for (GroupConfig gc : configHolder.groupConfigs) {
+			if (gc.n == gcn) {
+				configHolder.groupConfigs.remove(gc);
+				break;
 			}
 		}
-		return nick;
+		save();
 	}
 
-	public String getNickName(long group, long qq) {
-		String nick=null;
-		nick = RanConfig.nicknameMap.get(qq);
-		if (nick == null) {
-			PersonInfo pi=getPersonInfoFromQQ(qq);
-			if (pi == null) {
-				nick = Autoreply.CQ.getGroupMemberInfo(group, qq).getNick();
-			} else {
-				nick = pi.name;
-			}
-		}
-		return nick;
+	public void removeGroupConfig(GroupConfig gc) {
+		configHolder.groupConfigs.remove(gc);
+		save();
 	}
 
-    public boolean isMaster(long fromQQ) {
-        return fromQQ == 1594703250L || fromQQ == 2856986197L || fromQQ == 8255053L || fromQQ == 1592608126L || fromQQ == 1620628713L || fromQQ == 2565128043L;
+	public void removeGroupConfig(Collection<GroupConfig> gc) {
+		configHolder.groupConfigs.removeAll(gc);
+		save();
+	}
+
+    public GroupConfig getGroupConfig(long fromGroup) {
+        for (GroupConfig gc : configHolder.groupConfigs) {
+            if (fromGroup == gc.n) {
+                return gc;
+            }
+        }
+        return emptyConfig;
     }
 
-    public boolean isAdmin(long fromQQ) {
-        return RanConfig.adminList.contains(fromQQ) || isMaster(fromQQ);
+	public Set<GroupConfig> getGroupConfigs() {
+		return Collections.unmodifiableSet(configHolder.groupConfigs);
+	}
+
+	public void addBlockQQ(long qq) {
+        configHolder.blockOnlyQQ.add(qq);
+		save();
     }
 
-    public boolean isNotReplyQQ(long qq) {
-        return RanConfig.QQNotReply.contains(qq) || RanConfig.blackListQQ.contains(qq);
+	public void removeBlockQQ(long qq) {
+        configHolder.blockOnlyQQ.remove(qq);
+		save();
     }
+
+	public boolean isBlockQQ(long qq) {
+        return configHolder.blockOnlyQQ.contains(qq) || configHolder.blackQQ.contains(qq);
+    }
+
+	public boolean isBlockOnlyQQ(long qq) {
+        return configHolder.blockOnlyQQ.contains(qq);
+    }
+
+	public void addBlackQQ(long qq) {
+        configHolder.blackQQ.add(qq);
+		save();
+    }
+
+	public void removeBlackQQ(long q) {
+		configHolder.blackQQ.remove(q);
+		save();
+	}
 
     public boolean isBlackQQ(long qq) {
-        return RanConfig.blackListQQ.contains(qq);
+        return configHolder.blackQQ.contains(qq);
     }
+
+	public void addBlackGroup(long group) {
+		configHolder.blackGroup.add(group);
+		save();
+	}
+
+	public void removeBlackGroup(long g) {
+		configHolder.blackGroup.remove(g);
+		save();
+	}
 
     public boolean isBlackGroup(long qq) {
-        return RanConfig.blackListGroup.contains(qq);
+        return configHolder.blackGroup.contains(qq);
     }
 
-    public boolean isNotReplyWord(String word) {
-        for (String nrw : RanConfig.wordNotReply) {
+	public void addBlockWord(String str) {
+		configHolder.blockWord.add(str);
+		save();
+	}
+
+	public void removeBlockWord(String str) {
+		configHolder.blockWord.remove(str);
+		save();
+	}
+
+    public boolean isBlockWord(String word) {
+        for (String nrw : configHolder.blockWord) {
             if (word.contains(nrw)) {
                 return true;
             }
@@ -192,8 +146,22 @@ public class ConfigManager {
         return false;
     }
 
-    public PersonInfo getPersonInfoFromQQ(long qq) {
-        for (PersonInfo pi : RanConfig.personInfo) {
+	public void addPersonInfo(PersonInfo pi) {
+		configHolder.personInfos.add(pi);
+		save();
+	}
+
+	public Set<PersonInfo> getPersonInfo() {
+		return Collections.unmodifiableSet(configHolder.personInfos);
+	}
+
+	public void removePersonInfo(PersonInfo pi) {
+		configHolder.personInfos.remove(pi);
+		save();
+	}
+
+	public PersonInfo getPersonInfoFromQQ(long qq) {
+        for (PersonInfo pi : configHolder.personInfos) {
             if (pi.qq == qq) {
                 return pi;
             }
@@ -202,7 +170,7 @@ public class ConfigManager {
     }
 
     public PersonInfo getPersonInfoFromName(String name) {
-        for (PersonInfo pi : RanConfig.personInfo) {
+        for (PersonInfo pi : configHolder.personInfos) {
             if (pi.name.equals(name)) {
                 return pi;
             }
@@ -211,7 +179,7 @@ public class ConfigManager {
     }
 
     public PersonInfo getPersonInfoFromBid(long bid) {
-        for (PersonInfo pi : RanConfig.personInfo) {
+        for (PersonInfo pi : configHolder.personInfos) {
             if (pi.bid == bid) {
                 return pi;
             }
@@ -220,7 +188,7 @@ public class ConfigManager {
     }
 
 	public PersonInfo getPersonInfoFromLiveId(long lid) {
-        for (PersonInfo pi : RanConfig.personInfo) {
+        for (PersonInfo pi : configHolder.personInfos) {
             if (pi.bliveRoom == lid) {
                 return pi;
 			}
@@ -228,84 +196,138 @@ public class ConfigManager {
         return null;
 	}
 
-	public PersonConfig getPersonCfg(long fromQQ) {
-		PersonConfig pcfg=SanaeConfig.personCfg.get(fromQQ);
-		if (pcfg == null) {
-			pcfg = new PersonConfig();
-			SanaeConfig.personCfg.put(fromQQ, pcfg);
+	public boolean isOwner(long fromQQ) {
+        return configHolder.owner.contains(fromQQ);
+    }
+
+	public void addOwner(long qq) {
+		configHolder.owner.add(qq);
+		save();
+	}
+
+	public void removeOwner(long m) {
+		configHolder.owner.remove(m);
+		save();
+	}
+
+	public Set<Long> getOwners() {
+		return Collections.unmodifiableSet(configHolder.owner);
+	}
+
+	public boolean isMaster(long fromQQ) {
+        return configHolder.masters.contains(fromQQ);
+    }
+
+	public void addMaster(long qq) {
+		configHolder.masters.add(qq);
+		save();
+	}
+
+	public void removeMaster(long m) {
+		configHolder.masters.remove(m);
+		save();
+	}
+
+	public Set<Long> getMasters() {
+		return Collections.unmodifiableSet(configHolder.masters);
+	}
+
+	public boolean isAdminPermission(long fromQQ) {
+        return configHolder.admins.contains(fromQQ) || configHolder.masters.contains(fromQQ);
+    }
+
+	public void addAdmin(long qq) {
+		configHolder.admins.add(qq);
+		save();
+	}
+
+	public void removeAdmin(long a) {
+		configHolder.admins.remove(a);
+		save();
+	}
+
+	public Set<Long> getAdmins() {
+		return Collections.unmodifiableSet(configHolder.admins);
+	}
+
+	public void setNickName(long qq, String nickname) {
+		if (nickname != null) {
+			configHolder.nicknameMap.put(qq, nickname);
+		} else {
+			configHolder.nicknameMap.remove(qq);
 		}
-		return pcfg;
+		save();
+	}
+
+	public String getNickName(long group, long qq) {
+		String nick=null;
+		nick = configHolder.nicknameMap.get(qq);
+		if (nick == null) {
+			PersonInfo pi = getPersonInfoFromQQ(qq);
+			if (pi == null) {
+				nick = wrapper.getCQ().getGroupMemberInfo(group, qq).getNameCard();
+			} else {
+				nick = pi.name;
+			}
+		}
+		return nick;
 	}
 
     public void addBlack(long group, final long qq) {
-        RanConfig.blackListQQ.add(qq);
-        RanConfig.blackListGroup.add(group);
-		send(SanaeDataPack.encode(SanaeDataPack.opAddBlack).write(group).write(qq));
-		if (netConfig == null || netConfig.isClosed()) {
-			Autoreply.sendMessage(Autoreply.mainGroup, 0, "连接出错,未能将用户" + qq + "加入黑名单");
-			Autoreply.sendMessage(Autoreply.mainGroup, 0, "连接出错,未能将群" + group + "加入黑名单");
-
-		} else {
-			Autoreply.sendMessage(Autoreply.mainGroup, 0, "已将用户" + qq + "加入黑名单");
-			Autoreply.sendMessage(Autoreply.mainGroup, 0, "已将群" + group + "加入黑名单");
-		}
-		Autoreply.CQ.setGroupLeave(group, false);
-    }
-
-	public void addReport(long fromGroup, long fromQQ, String content) {
-		SanaeConfig.addReport(fromGroup, fromQQ, content.substring(4));
-		saveSanaeConfig();
-	}
-
-	public void addBugReport(long fromGroup, long fromQQ, String content) {
-		SanaeConfig.addBugReport(fromGroup, fromQQ, content.substring(6));
-		saveSanaeConfig();
-	}
-
-	public SanaeConfigJavaBean.ReportBean getReport() {
-		return SanaeConfig.getReport();
-	}
-
-	public SanaeConfigJavaBean.ReportBean removeReport() {
-		return SanaeConfig.removeReport();
-	}
-
-	public void reportToLast() {
-		SanaeConfig.reportToLast();
-	}
-
-	public SanaeConfigJavaBean.BugReportBean removeBugReport() {
-		return SanaeConfig.removeBugReport();
-	}
-
-	public void bugReportToLast() {
-		SanaeConfig.bugReportToLast();
-	}
-
-	public SanaeConfigJavaBean.BugReportBean getBugReport() {
-		return SanaeConfig.getBugReport();
-	}
-
-	public void send(SanaeDataPack sdp) {
-		if (netConfig == null || netConfig.isClosed()) {
-			return;
-		}
-		netConfig.send(sdp.getData());
-	}
-
-	public void saveSanaeConfig() {
-		BotDataPack toSend = BotDataPack.encode(BotDataPack.getConfig);
-		toSend.write(Autoreply.gson.toJson(ConfigManager.instence.RanConfig));
-		Autoreply.ins.remoteWebSocket.broadcast(toSend.getData());
-        try {
-            FileOutputStream fos = new FileOutputStream(SanaeConfigFile);
-            OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-            writer.write(Autoreply.gson.toJson(SanaeConfig));
-            writer.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        configHolder.blackQQ.add(qq);
+        configHolder.blackGroup.add(group);
+        for (GroupConfig groupConfig : configHolder.groupConfigs) {
+            if (groupConfig.n == group) {
+                configHolder.groupConfigs.remove(groupConfig);
+                break;
+            }
         }
+        save();
+        SJFExecutors.execute(new Runnable() {
+				@Override
+				public void run() {
+					//    HashSet<Group> groups = Tools.CQ.findQQInAllGroup(qq);
+					//   for (Group g : groups) {
+                    // if (Tools.CQ.ban(g.getId(), qq, 300)) {
+                    //    sendMessage(g.getId(), 0, "不要问为什么你会进黑名单，你干了什么自己知道");
+                    //   }
+					//    }
+				}
+			});
+        wrapper.getAutoreply().sendGroupMessage(Autoreply.mainGroup, "已将用户" + qq + "加入黑名单");
+        wrapper.getAutoreply().sendGroupMessage(Autoreply.mainGroup, "已将群" + group + "加入黑名单");
     }
 
+	public long getOgg() {
+		return -1;
+    }
+
+	@Override
+	public String getPersistentName() {
+		return "ncfg.json";
+	}
+
+	@Override
+	public Type getDataType() {
+		return ConfigHolder.class;
+	}
+
+	@Override
+	public ConfigHolder getDataBean() {
+		return configHolder;
+	}
+
+    @Override
+    public BotWrapper getWrapper() {
+        return wrapper;
+    }
+
+	@Override
+	public void setDataBean(Object o) {
+		configHolder = (ConfigHolder) o;
+	}
+
+    public void save() {
+		DataPersistenter.save(this);
+    }
 }

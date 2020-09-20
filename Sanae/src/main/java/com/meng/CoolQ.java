@@ -14,10 +14,13 @@ import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.Message;
 
 public class CoolQ extends SimpleListenerHost {
+    
     private Bot bot;
+    
     public CoolQ(Bot b) {
         bot = b; 
     }
+    
     protected String appDirectory;
 
     {
@@ -111,6 +114,11 @@ public class CoolQ extends SimpleListenerHost {
 
     public int deleteMsg(MessageSource ms) {
         bot.recall(ms);
+        return 0;
+    }
+    
+    public int deleteMsg(int id) {
+        bot.recall(MessagePool.get(id));
         return 0;
     }
 

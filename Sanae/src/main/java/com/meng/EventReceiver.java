@@ -53,14 +53,14 @@ public class EventReceiver extends SimpleListenerHost {
         if (m.getId() == 2856986197L && event.getMessage().contentToString().equals("SJF")) {
             g.sendMessage("我在。");
         }
-        wrapper.getAutoreply().groupMsg(0, 0, g.getId(), m.getId(), "", event.getMessage().contentToString(), 0);
+        wrapper.getAutoreply().groupMsg(0, event.getSource().getId(), g.getId(), m.getId(), "", event.getMessage().contentToString(), 0);
         return ListeningStatus.LISTENING;
     }
 
     @NotNull
     @EventHandler
     public ListeningStatus onMessage(@NotNull FriendMessageEvent event) {
-        wrapper.getAutoreply().privateMsg(0, 0, event.getSender().getId(), event.getMessage().contentToString(), 0);
+        wrapper.getAutoreply().privateMsg(0, event.getSource().getId(), event.getSender().getId(), event.getMessage().contentToString(), 0);
         return ListeningStatus.LISTENING;
     }
 

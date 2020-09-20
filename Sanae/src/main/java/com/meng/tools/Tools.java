@@ -1,103 +1,47 @@
 package com.meng.tools;
 
 import com.meng.*;
-import com.meng.game.TouHou.*;
+import com.meng.config.*;
 import com.sobte.cqp.jcq.entity.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
-import java.security.*;
 import java.text.*;
 import java.util.*;
 import org.jsoup.*;
 
 public class Tools {
 
+	public static Map<String, String> liveHead = new HashMap<>();
+    public static Map<String, String> mainHead = new HashMap<>();
+
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
-	public static class FileTool {
-		public static String readString(String fileName) {
-			return readString(new File(fileName));
-		}
-		public static String readString(File f) {
-			String s = "{}";
-			try {      
-				if (!f.exists()) {
-					f.createNewFile();
-				}
-				long filelength = f.length();
-				byte[] filecontent = new byte[(int) filelength];
-				FileInputStream in = new FileInputStream(f);
-				in.read(filecontent);
-				in.close();
-				s = new String(filecontent, StandardCharsets.UTF_8);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return s;
-		}
+	static{
+		liveHead.put("Host", "api.live.bilibili.com");
+        liveHead.put("Accept", "application/json, text/javascript, */*; q=0.01");
+        liveHead.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        liveHead.put("Connection", "keep-alive");
+        liveHead.put("Origin", "https://live.bilibili.com");
+
+        mainHead.put("Host", "api.bilibili.com");
+        mainHead.put("Accept", "application/json, text/javascript, */*; q=0.01");
+        mainHead.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        mainHead.put("Connection", "keep-alive");
+        mainHead.put("Origin", "https://www.bilibili.com");
 	}
 
-	public static class Hash {
-		public static String MD5(String str) {
-			try {
-				return MD5(str.getBytes());
-			} catch (Exception e) {
-				return null;
+	public static class CMD {
+		public static String executeCmd(String command) throws IOException {
+			Runtime runtime = Runtime.getRuntime();
+			Process process = runtime.exec("cmd /c " + command);
+			BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+			String line = null;
+			StringBuilder build = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				build.append(line);
 			}
-		}
-
-		public static String MD5(byte[] bs) {
-			try {
-				MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-				mdTemp.update(bs);
-				return toHexString(mdTemp.digest());
-			} catch (Exception e) {
-				return null;
-			}
-		}
-
-		public static String toMD5(File file) {
-			InputStream inputStream = null;
-			try {
-				inputStream = new FileInputStream(file);
-				return toMD5(inputStream);
-			} catch (Exception e) {
-				return null;
-			} finally {
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		public static String toMD5(InputStream inputStream) {
-			try {
-				MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-				byte[] buffer = new byte[1024];
-				int numRead = 0;
-				while ((numRead = inputStream.read(buffer)) > 0) {
-					mdTemp.update(buffer, 0, numRead);
-				}
-				return toHexString(mdTemp.digest());
-			} catch (Exception e) {
-				return null;
-			}
-		}
-		private static String toHexString(byte[] md) {
-			char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-				'a', 'b', 'c', 'd', 'e', 'f' };
-			int j = md.length;
-			char str[] = new char[j * 2];
-			for (int i = 0; i < j; i++) {
-				byte byte0 = md[i];
-				str[2 * i] = hexDigits[byte0 >>> 4 & 0xf];
-				str[i * 2 + 1] = hexDigits[byte0 & 0xf];
-			}
-			return new String(str);
+			return build.toString();
 		}
 	}
 
@@ -133,7 +77,6 @@ public class Tools {
 			Connection connection;
 			try {
 				connection = Jsoup.connect(url).ignoreContentType(true).method(Connection.Method.GET);
-				connection.userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0");
 				if (cookie != null) {
 					connection.cookies(cookieToMap(cookie));
 				}
@@ -150,15 +93,28 @@ public class Tools {
 	}
 
 	public static class CQ {
-		public static void findQQInAllGroup(long fromGroup, long fromQQ, String msg) {
+		public static String getTime() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		}
+		public static String getTime(long timeStamp) {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(timeStamp));
+		}
+		public static String getDate() {
+			return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		}
+		public static String getDate(long timeStamp) {
+			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(timeStamp));
+		}
+
+		public static void findQQInAllGroup(BotWrapper bw, long fromGroup, long fromQQ, String msg) {
 			long findqq;
 			try {
 				findqq = Long.parseLong(msg.substring(10));
 			} catch (Exception e) {
-				findqq = Autoreply.CC.getAt(msg);
+				findqq = bw.getCC().getAt(msg);
 			}
 			if (findqq <= 0) {
-				Autoreply.sendMessage(fromGroup, fromQQ, "QQ账号错误");
+				bw.getAutoreply().sendGroupMessage(fromGroup, "QQ账号错误");
 				return;
 			}
 			Autoreply.sendMessage(fromGroup, fromQQ, "running");
@@ -188,7 +144,7 @@ public class Tools {
 			return hashSet;
 		}
 		public static boolean isAtme(String msg) {
-			List<Long> list = Autoreply.CC.getAts(msg);
+			List<Long> list = Autoreply.instance.CC.getAts(msg);
 			long me = Autoreply.CQ.getLoginQQ();
 			for (long l : list) {
 				if (l == me) {
@@ -197,63 +153,9 @@ public class Tools {
 			}
 			return false;
 		}
-
-		public static String getTime() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-		}
-
-		public static String getTime(long timeStamp) {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(timeStamp));
-		}
-
-		public static String getDate() {
-			return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		}
-
-		public static String getDate(long timeStamp) {
-			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(timeStamp));
-		}
-		/*  public static String getG_tk(String skey) {
-		 int hash = 5381;
-		 int flag = skey.length();
-		 for (int i = 0; i < flag; i++) {
-		 hash = hash + hash * 32 + skey.charAt(i);
-		 }
-		 return String.valueOf(hash & 0x7fffffff);
-		 }*/
 	}
 
 	public static class ArrayTool {
-
-		public static TouhouCharacter[] mergeArray(TouhouCharacter[]... charas) {
-			int allLen=0;
-			for (TouhouCharacter[] bs:charas) {
-				allLen += bs.length;
-			}
-			TouhouCharacter[] finalArray=new TouhouCharacter[allLen];
-			int flag=0;
-			for (TouhouCharacter[] byteArray:charas) {
-				for (int i=0;i < byteArray.length;++flag,++i) {
-					finalArray[flag] = byteArray[i];
-				}
-			}
-			return finalArray;
-		}
-
-		public static SpellCard[] mergeArray(SpellCard[]... spells) {
-			int allLen=0;
-			for (SpellCard[] bs:spells) {
-				allLen += bs.length;
-			}
-			SpellCard[] finalArray=new SpellCard[allLen];
-			int flag=0;
-			for (SpellCard[] byteArray:spells) {
-				for (int i=0;i < byteArray.length;++flag,++i) {
-					finalArray[flag] = byteArray[i];
-				}
-			}
-			return finalArray;
-		}
 		public static byte[] mergeArray(byte[]... arrays) {
 			int allLen=0;
 			for (byte[] bs:arrays) {
@@ -283,130 +185,10 @@ public class Tools {
 			}
 			return finalArray;
 		}
-		public static Object rfa(Object[] array) {
-			return array[Autoreply.ins.random.nextInt(array.length)];
+		public static <T> T rfa(T[] array) {
+			return array[new Random().nextInt(array.length)];
 		}
 	}
-
-	public static class BitConverter {
-		public static byte[] getBytes(short s) {
-			byte[] bs=new byte[2];
-			bs[0] = (byte) ((s >> 0) & 0xff);
-			bs[1] = (byte) ((s >> 8) & 0xff) ;
-			return bs;	
-		}
-
-		public static byte[] getBytes(int i) {
-			byte[] bs=new byte[4];
-			bs[0] = (byte) ((i >> 0) & 0xff);
-			bs[1] = (byte) ((i >> 8) & 0xff);
-			bs[2] = (byte) ((i >> 16) & 0xff);
-			bs[3] = (byte) ((i >> 24) & 0xff);
-			return bs;	
-		}
-
-		public static byte[] getBytes(long l) {
-			byte[] bs=new byte[8];
-			bs[0] = (byte) ((l >> 0) & 0xff);
-			bs[1] = (byte) ((l >> 8) & 0xff);
-			bs[2] = (byte) ((l >> 16) & 0xff);
-			bs[3] = (byte) ((l >> 24) & 0xff);
-			bs[4] = (byte) ((l >> 32) & 0xff);
-			bs[5] = (byte) ((l >> 40) & 0xff);
-			bs[6] = (byte) ((l >> 48) & 0xff);
-			bs[7] = (byte) ((l >> 56) & 0xff);
-			return bs;
-		}
-
-		public static byte[] getBytes(float f) {
-			int i = Float.floatToIntBits(f);
-			byte[] bs=new byte[4];
-			bs[0] = (byte) ((i >> 24) & 0xff);
-			bs[1] = (byte) ((i >> 16) & 0xff);
-			bs[2] = (byte) ((i >> 8) & 0xff);
-			bs[3] = (byte) ((i >> 0) & 0xff);
-			return bs;	
-		}
-
-		public static byte[] getBytes(double d) {
-			long l = Double.doubleToLongBits(d);
-			byte[] bs = new byte[8];
-			bs[0] = (byte) ((l >> 56) & 0xff);
-			bs[1] = (byte) ((l >> 48) & 0xff);
-			bs[2] = (byte) ((l >> 40) & 0xff);
-			bs[3] = (byte) ((l >> 32) & 0xff);
-			bs[4] = (byte) ((l >> 24) & 0xff);
-			bs[5] = (byte) ((l >> 16) & 0xff);
-			bs[6] = (byte) ((l >> 8) & 0xff);
-			bs[7] = (byte) ((l >> 0) & 0xff);
-			return bs;
-		}
-
-		public static byte[] getBytes(String s) {
-			try {
-				return s.getBytes(DEFAULT_ENCODING);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-
-		public static short toShort(byte[] data, int pos) {
-			return (short) ((data[pos] & 0xff) << 0 | (data[pos + 1] & 0xff) << 8);
-		}
-
-		public static short toShort(byte[] data) {
-			return toShort(data , 0);
-		}
-
-		public static int toInt(byte[] data, int pos) {
-			return (data[pos] & 0xff) << 0 | (data[pos + 1] & 0xff) << 8 | (data[pos + 2] & 0xff) << 16 | (data[pos + 3] & 0xff) << 24;
-		}
-
-		public static int toInt(byte[] data) {
-			return toInt(data, 0);
-		}
-
-		public static long toLong(byte[] data, int pos) {
-			return ((data[pos] & 0xffL) << 0) | (data[pos + 1] & 0xffL) << 8 | (data[pos + 2] & 0xffL) << 16 | (data[pos + 3] & 0xffL) << 24 | (data[pos + 4] & 0xffL) << 32 | (data[pos + 5] & 0xffL) << 40 | (data[pos + 6] & 0xffL) << 48 | (data[pos + 7] & 0xffL) << 56;
-		}
-
-		public static long toLong(byte[] data) {
-			return toLong(data , 0);
-		}
-		
-public static float toFloat(byte[] data, int pos) {
-			int i= (data[pos] & 0xff) << 24 | (data[pos + 1] & 0xff) << 16 | (data[pos + 2] & 0xff) << 8 | (data[pos + 3] & 0xff) << 0;
-			return Float.intBitsToFloat(i);
-		}
-
-		public static float toFloat(byte[] data) {
-			return toFloat(data , 0);
-		}
-
-		public static double toDouble(byte[] data, int pos) {
-			long l = ((data[pos] & 0xffL) << 56) | (data[pos + 1] & 0xffL) << 48 | (data[pos + 2] & 0xffL) << 40 | (data[pos + 3] & 0xffL) << 32 | (data[pos + 4] & 0xffL) << 24 | (data[pos + 5] & 0xffL) << 16 | (data[pos + 6] & 0xffL) << 8 | (data[pos + 7] & 0xffL) << 0;
-			return Double.longBitsToDouble(l);
-		}
-
-		public static double toDouble(byte[] data) {
-			return toDouble(data, 0);
-		}
-
-		public static String toString(byte[] data, int pos, int byteCount) {
-			try {
-				return new String(data, pos, byteCount, DEFAULT_ENCODING);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-
-		public static String toString(byte[] data) {
-			return toString(data, 0, data.length);
-		}
-	}
-
 
 	public static class Base64 {
 		public static final byte[] encode(String str) {
@@ -508,6 +290,27 @@ public static float toFloat(byte[] data, int pos) {
 				}
 			}
 			return byteDest;
+		}
+	}
+	
+	public class BanBean {
+		public int code;
+		public String msg;
+		public String  message;
+		public ArrayList<Data> data;
+
+		public class Data {
+			public long id;
+			public long roomid;
+			public long uid;
+			public int type;
+			public long adminid;
+			public String block_end_time;
+			public String ctime;
+			public String msg;
+			public String msg_time;
+			public String uname;
+			public String admin_name;
 		}
 	}
 }

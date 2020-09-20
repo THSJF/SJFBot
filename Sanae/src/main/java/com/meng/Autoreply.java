@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.meng.config.ConfigManager;
-import com.meng.groupMsgProcess.ModuleGroupCounter;
-import com.meng.groupMsgProcess.ModuleManager;
-import com.meng.remote.RemoteWebSocket;
-import com.meng.tip.BirthdayTip;
+import com.meng.modules.ModuleManager;
 import com.meng.tools.CleanRunnable;
 import com.meng.tools.Tools;
 import java.util.ArrayList;
@@ -16,22 +13,20 @@ import java.util.concurrent.Executors;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
+import com.meng.tools.SJFExecutors;
 
 public class Autoreply {
 
-    public ExecutorService threadPool = Executors.newCachedThreadPool();
-
     public boolean sleeping = true;
-    public MyRandom random = new MyRandom();
-
-    public BirthdayTip birthdayTip;
-    public RemoteWebSocket remoteWebSocket;
-	public static final String userAgent="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
+   	public static final String userAgent="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
 	public static final long mainGroup=807242547L;
-
+    public ModuleManager moduleManager;
+    
     public static Gson gson;
     public CoolQ CQ;
+    public CQCode CC;
     public Bot bot;
+    public BotWrapper wrapper;
 
     static{
         GsonBuilder gb = new GsonBuilder();
@@ -42,6 +37,10 @@ public class Autoreply {
     public Autoreply(Bot b) {
         bot = b;
         CQ = new CoolQ(b);
+        CC = new CQCode(bot);
+        wrapper = new BotWrapper(bot, this,CQ ,CC);
+        moduleManager = new ModuleManager(wrapper);
+        startup();
     }
 
     public int startup() {
@@ -51,13 +50,13 @@ public class Autoreply {
         System.out.println("开始加载");
 
 		System.out.println("load success");
-		threadPool.execute(new CleanRunnable());
+		new CleanRunnable();
 		sleeping = false;
 		return 0;
     }
 
     public int exit() {
-		threadPool.shutdownNow();
+		SJFExecutors.shutdownNow(this);
 		System.exit(0);
         return 0;
     }
@@ -74,6 +73,7 @@ public class Autoreply {
 		//	if (fromGroup != 807242547L){
 		//		return 0;
 		//}
+        moduleManager.onGroupMessage(fromGroup,fromQQ,msg,msgId);
         return 0;
     }
 

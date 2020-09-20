@@ -6,11 +6,13 @@ public class BotWrapper {
     private Bot bot;
     private Autoreply autoreply;
     private CoolQ CQ;
+    private CQCode CC;
 
-    public BotWrapper(Bot b, Autoreply a, CoolQ c) {
+    public BotWrapper(Bot b, Autoreply a, CoolQ c, CQCode cc) {
         bot = b;
         autoreply = a;
         CQ = c;
+        CC = cc;
     }
 
     public CoolQ getCQ() {
@@ -23,6 +25,10 @@ public class BotWrapper {
 
     public Bot getBot() {
         return bot;
+    }
+    
+    public CQCode getCC(){
+        return CC;
     }
     
     public void execute(Runnable r){
