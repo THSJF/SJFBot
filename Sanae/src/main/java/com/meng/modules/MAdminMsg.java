@@ -100,7 +100,7 @@ public class MAdminMsg extends BaseGroupModule {
         String msg = gme.getMessage().contentToString();
 		if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 1) {
 			return false;
-		}
+		} 
 		if (msg.equals(".on")) {
             GroupConfig groupConfig =entity.configManager.getGroupConfig(fromGroup);
             if (groupConfig == null) {
