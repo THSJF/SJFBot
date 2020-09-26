@@ -1,10 +1,9 @@
 package com.meng.modules;
 
 import com.google.gson.reflect.TypeToken;
-import com.meng.BotWrapper;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.SJFInterfaces.IPersistentData;
-import com.meng.config.ConfigManager;
+import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.Tools;
@@ -32,7 +31,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 
 	public HashMap<Long,GroupSpeak> groupsMap = new HashMap<>(32);
 
-    public MGroupCounterChart(BotWrapper bw) {
+    public MGroupCounterChart(BotWrapperEntity bw) {
         super(bw);
     }
 
@@ -54,7 +53,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 
 	@Override
 	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isGroupCountChartEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountChartEnable()) {
 			return false;
 		}
 		GroupSpeak gs = groupsMap.get(fromGroup);
@@ -80,7 +79,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			}
 
 			if (everyHourHashMap == null || everyHourHashMap.size() == 0) {
-				wrapper.getAutoreply().sendGroupMessage(fromGroup, "无数据");
+				entity.sendGroupMessage(fromGroup, "无数据");
 				return true;
 			}
 			StringBuilder sb=new StringBuilder(String.format("群内共有%d条消息,今日消息情况:\n", groupsMap.get(fromGroup).all));
@@ -90,7 +89,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 				}
 				sb.append(String.format("%d:00-%d:00  共%d条消息\n", i, i + 1, everyHourHashMap.get(i)));
 			}
-			wrapper.getAutoreply().sendGroupMessage(fromGroup, sb.toString());
+			entity.sendGroupMessage(fromGroup, sb.toString());
 			TimeSeries dtimeseries = new TimeSeries("你群发言");
 			Calendar dc = Calendar.getInstance();
 			dc.add(Calendar.HOUR_OF_DAY, -24);
@@ -116,10 +115,10 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			djfreechart.getTitle().setFont(new Font("宋体", Font.BOLD, 20));  
 			File pic=null;
 			try {
-				pic = new File(wrapper.getCQ().getAppDirectory() + "downloadImages/" + System.currentTimeMillis() + ".jpg");
+				pic = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, dframe1.getChart(), 800, 480);
 			} catch (IOException e) {}
-			wrapper.getAutoreply().sendGroupMessage(fromGroup, wrapper.getCC().image(pic, fromGroup));
+			entity.sendGroupMessage(fromGroup, entity.image(pic, fromGroup));
 			TimeSeries timeseries = new TimeSeries("你群发言");
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, -30);
@@ -149,10 +148,10 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			jfreechart.getTitle().setFont(new Font("宋体", Font.BOLD, 20));
 			File pic2=null;
 			try {
-				pic2 = new File(wrapper.getCQ().getAppDirectory() + "downloadImages/" + System.currentTimeMillis() + ".jpg");
+				pic2 = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, frame1.getChart(), 800, 480);
 			} catch (IOException e) {}
-			wrapper.getAutoreply().sendGroupMessage(fromGroup, wrapper.getCC().image(pic2, fromGroup));
+			entity.sendGroupMessage(fromGroup, entity.image(pic2, fromGroup));
 			return true;
 		}	
 		return false;
@@ -190,8 +189,8 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 	}
 
     @Override
-    public BotWrapper getWrapper() {
-        return wrapper;
+    public BotWrapperEntity getWrapper() {
+        return entity;
     }
 
 	@Override

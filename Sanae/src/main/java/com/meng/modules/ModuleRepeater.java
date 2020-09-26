@@ -1,9 +1,8 @@
 package com.meng.modules;
 
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.config.*;
-import java.util.*;
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.adapter.BotWrapperEntity;
+import java.util.HashMap;
 
 /**
  * @author 司徒灵羽
@@ -13,7 +12,7 @@ public class ModuleRepeater extends BaseGroupModule {
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();
 
-    public ModuleRepeater(BotWrapper bw){
+    public ModuleRepeater(BotWrapperEntity bw){
         super(bw);
     }
     
@@ -73,7 +72,7 @@ public class ModuleRepeater extends BaseGroupModule {
 		}
 
 		private boolean repeatStart(long group,  long qq,  String msg) {
-			wrapper.getAutoreply().sendGroupMessage(group, msg);
+			entity.sendGroupMessage(group, msg);
 			return true;
 		}
 	}

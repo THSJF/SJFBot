@@ -1,14 +1,10 @@
 package com.meng.modules;
 
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.config.*;
-import com.meng.tools.*;
-import java.util.concurrent.*;
-
-import static com.meng.Autoreply.sendMessage;
-import static com.meng.Autoreply.CC;
-import static com.sobte.cqp.jcq.event.JcqApp.CQ;
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.tools.SJFExecutors;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 司徒灵羽
@@ -16,9 +12,9 @@ import static com.sobte.cqp.jcq.event.JcqApp.CQ;
 
 public class MessageRefuse extends BaseGroupModule {
 
-	public ConcurrentHashMap<Long,FireWallBean> msgMap=new ConcurrentHashMap<>();
+	public ConcurrentHashMap<Long,FireWallBean> msgMap = new ConcurrentHashMap<>();
 
-    public MessageRefuse(BotWrapper bw){
+    public MessageRefuse(BotWrapperEntity bw){
         super(bw);
     }
     
@@ -38,12 +34,10 @@ public class MessageRefuse extends BaseGroupModule {
 
 	@Override
 	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (ConfigManager.isBlackQQ(fromQQ)) {
-			if (Tools.CQ.ban(fromGroup, fromQQ, 300)) {
-                wrapper.getAutoreply().sendGroupMessage(fromGroup, "嘘 别说话");
-            }
+		if (entity.configManager.isBlackQQ(fromQQ)) {
+			
         }
-        if (ConfigManager.isBlockQQ(fromQQ) || ConfigManager.isBlockWord(msg)) {
+        if (entity.configManager.isBlockQQ(fromQQ) || entity.configManager.isBlockWord(msg)) {
             return true;
         }
 		FireWallBean mtmb=msgMap.get(fromQQ);
@@ -60,7 +54,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.timeSubLowTimes > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				wrapper.getAutoreply().sendGroupMessage(fromGroup,  "你说话真快");
+				entity.sendGroupMessage(fromGroup,  "你说话真快");
 			}
 			return true;
 		}
@@ -74,7 +68,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.repeatTime > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				wrapper.getAutoreply().sendGroupMessage(fromGroup,  "怎么又是这句话");
+				entity.sendGroupMessage(fromGroup,  "怎么又是这句话");
 			}
 			mtmb.lastMsg = msg;
 			return true;
@@ -85,7 +79,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.lastSeconedMsgs > 4) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				wrapper.getAutoreply().sendGroupMessage(fromGroup,  "你真稳");
+				entity.sendGroupMessage(fromGroup,  "你真稳");
 			}
 			return true;
 		}

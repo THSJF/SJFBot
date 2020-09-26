@@ -1,23 +1,25 @@
 package com.meng.modules;
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.sjfmd.libs.*;
-import java.lang.reflect.*;
-import java.util.*;
-import javax.tools.*;
-import com.meng.dynamicCompile.*;
-import java.io.*;
+
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.sjfmd.libs.GSON;
+import java.lang.reflect.Method;
 
 /**
  * @author 司徒灵羽
  */
 
-public class ReflectCommand implements IGroupMessage {
+public class ReflectCommand extends BaseGroupModule {
 
-    private BotWrapper wrapper;
-    
-    public ReflectCommand(BotWrapper bw){
-       wrapper = bw;
+    private BotWrapperEntity wrapper;
+
+    public ReflectCommand(BotWrapperEntity bw) {
+        super(bw);
+    }
+
+    @Override
+    public ReflectCommand load() {
+        return null;
     }
     
 	@Override
@@ -26,10 +28,10 @@ public class ReflectCommand implements IGroupMessage {
 			String[] args = msg.split(" ");
 			try {
 				Class target = Class.forName(args[1]);
-				Object module = ModuleManager.getModule(target);
+				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();
-					wrapper.getAutoreply().sendGroupMessage(fromGroup, "新模块:" + target.getName());
+					wrapper.sendGroupMessage(fromGroup, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
 				Class[] paramTypes = new Class[parseInt];
@@ -38,11 +40,11 @@ public class ReflectCommand implements IGroupMessage {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
 				}
 				Method m = target.getMethod(args[2], paramTypes);
-				wrapper.getAutoreply().sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
+				wrapper.sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				wrapper.getAutoreply().sendGroupMessage(fromGroup, e.toString());
+				wrapper.sendGroupMessage(fromGroup, e.toString());
 				return true;
 			}
 		}

@@ -19,14 +19,14 @@ public class DataPersistenter {
 
 	public static boolean save(IPersistentData pb) {
 		try {
-            File file = new File(pb.getWrapper().getCQ().getAppDirectory() + "/persistent/" + pb.getPersistentName());
+            File file = new File(pb.getWrapper().appDirectory + "/persistent/" + pb.getPersistentName());
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
             writer.write(GSON.toJson(pb.getDataBean()));
             writer.flush();
             fos.close();
 			return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
 			return false;
         }
@@ -34,8 +34,12 @@ public class DataPersistenter {
 
 	public static boolean read(IPersistentData pb) {    
         try {
-			String readString = FileTool.readString(pb.getWrapper().getCQ().getAppDirectory() + pb.getPersistentName());
-			pb.setDataBean(GSON.fromJson(readString == null ?"{}": readString, pb.getDataType()));
+            File f = new File(pb.getWrapper().appDirectory + "/persistent/" + pb.getPersistentName());
+			if (!f.exists()) {
+                save(pb);
+            }
+            String readString = FileTool.readString(f);
+			pb.setDataBean(GSON.fromJson(readString, pb.getDataType()));
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

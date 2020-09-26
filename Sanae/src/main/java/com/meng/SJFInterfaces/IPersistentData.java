@@ -1,10 +1,10 @@
 package com.meng.SJFInterfaces;
 
-import java.lang.reflect.*;
-import com.meng.BotWrapper;
+import com.meng.adapter.BotWrapperEntity;
+import java.lang.reflect.Type;
 
 public interface IPersistentData {
-    public BotWrapper getWrapper();
+    public BotWrapperEntity getWrapper();
 	public String getPersistentName();
 	public Type getDataType();
 	public Object getDataBean();

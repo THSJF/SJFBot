@@ -1,8 +1,7 @@
 package com.meng.tip;
 
-import com.meng.BotWrapper;
 import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.config.ConfigManager;
+import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.javabeans.GroupConfig;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.Tools;
@@ -22,7 +21,7 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
     private boolean tipedYYS = true;
     private boolean tipedAlice = true;
 
-    public MTimeTip(BotWrapper bw) {
+    public MTimeTip(BotWrapperEntity bw) {
         super(bw);
     }
 
@@ -41,9 +40,9 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
                     SJFExecutors.execute(new Runnable() {
 							@Override
 							public void run() {
-								for (GroupConfig groupConfig : ConfigManager.getGroupConfigs()) {
+								for (GroupConfig groupConfig : entity.configManager.getGroupConfigs()) {
 									if (groupConfig.isMainSwitchEnable()) {
-										if (wrapper.getAutoreply().sendGroupMessage(groupConfig.n, "少女休息中...") < 0) {
+										if (entity.sendGroupMessage(groupConfig.n, "少女休息中...") < 0) {
 											continue;
 										}
 										try {
@@ -53,12 +52,12 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
 										}
 									}
 								}
-								wrapper.getAutoreply().sleeping = true;
+								entity.sleeping = true;
 							}
 						});
                 }
                 if (c.get(Calendar.HOUR_OF_DAY) == 6) {
-                    wrapper.getAutoreply().sleeping = false;
+                    entity.sleeping = false;
                 }
                 if (c.get(Calendar.HOUR_OF_DAY) % 3 == 0) {
                     tipedYYS = false;
@@ -66,12 +65,12 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
 
                 if (getTipHour(c)) {
                     if (c.getActualMaximum(Calendar.DAY_OF_MONTH) == c.get(Calendar.DATE)) {
-                        wrapper.getAutoreply().sendGroupMessage(groupDNFmoDao, "最后一天莉，，，看看冒险团商店");
-                        wrapper.getAutoreply().sendGroupMessage(groupXueXi, "最后一天莉，，，看看冒险团商店");
+                        entity.sendGroupMessage(groupDNFmoDao, "最后一天莉，，，看看冒险团商店");
+                        entity.sendGroupMessage(groupXueXi, "最后一天莉，，，看看冒险团商店");
                     }
                     if (c.get(Calendar.DAY_OF_WEEK) == 4) {
-						wrapper.getAutoreply().sendGroupMessage(groupDNFmoDao, "星期三莉，，，看看成长胶囊");
-						wrapper.getAutoreply().sendGroupMessage(groupXueXi, "星期三莉，，，看看成长胶囊");
+						entity.sendGroupMessage(groupDNFmoDao, "星期三莉，，，看看成长胶囊");
+						entity.sendGroupMessage(groupXueXi, "星期三莉，，，看看成长胶囊");
                     }
                 }
             }
@@ -91,13 +90,13 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
 	@Override
 	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
 		if (!tipedYYS && fromGroup == groupYuTang && fromQQ == YYS) {
-            String[] strings = new String[]{"想吃YYS", "想食YYS", "想上YYS",wrapper.getCC().at(1418780411L) + "老婆"};
-            wrapper.getAutoreply().sendGroupMessage(groupYuTang, Tools.ArrayTool.rfa(strings));
+            String[] strings = new String[]{"想吃YYS", "想食YYS", "想上YYS",entity.at(1418780411L) + "老婆"};
+            entity.sendGroupMessage(groupYuTang, Tools.ArrayTool.rfa(strings));
             tipedYYS = true;
             return true;
         }
         if (!tipedAlice && fromQQ == alice) {
-            wrapper.getAutoreply().sendGroupMessage(fromGroup, wrapper.getCC().image(new File(wrapper.getCQ().getAppDirectory() + "pic\\alice.jpg"), fromGroup));
+            entity.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "pic\\alice.jpg"), fromGroup));
             tipedAlice = true;
             return true;
         }

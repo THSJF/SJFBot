@@ -1,17 +1,16 @@
 package com.meng.modules;
 
-import com.google.gson.*;
-import com.google.gson.reflect.*;
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.config.*;
-import com.meng.sjfmd.libs.*;
-import com.meng.tools.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.Map.*;
-import java.util.concurrent.*;
+import com.google.gson.reflect.TypeToken;
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.ConfigManager;
+import com.meng.config.DataPersistenter;
+import com.meng.tools.SJFExecutors;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 司徒灵羽
@@ -21,7 +20,7 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 
     private HashMap<String, GroupInfo> countMap = new HashMap<>();
 
-    public MGroupCounter(BotWrapper bw){
+    public MGroupCounter(BotWrapperEntity bw){
         super(bw);
     }
     
@@ -52,7 +51,7 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 
 	@Override
 	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isGroupCountEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountEnable()) {
 			return false;
 		}
 		GroupInfo groupInfo = getBean(fromGroup);
@@ -61,11 +60,11 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 			incGrass(fromGroup);
         }
 		if (msg.equals("查看群统计")) {
-			wrapper.getAutoreply().sendGroupMessage(fromGroup, getMyCount(fromGroup));
+			entity.sendGroupMessage(fromGroup, getMyCount(fromGroup));
             return true;
 		}
         if (msg.equals("查看群排行")) {
-			wrapper.getAutoreply().sendGroupMessage(fromGroup, getTheFirst());
+			entity.sendGroupMessage(fromGroup, getTheFirst());
             return true;
 		}
 		return false;
@@ -273,7 +272,7 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 
 	@Override
 	public String getPersistentName() {
-		return "properties\\GroupCount.json";
+		return "GroupCount.json";
 	}
 
 	@Override
@@ -287,8 +286,8 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 	}
 
     @Override
-    public BotWrapper getWrapper() {
-        return wrapper;
+    public BotWrapperEntity getWrapper() {
+        return entity;
     }
 
 	@Override

@@ -1,9 +1,9 @@
 package com.meng.modules;
 
 import com.google.gson.reflect.TypeToken;
-import com.meng.BotWrapper;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -16,13 +16,13 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 
 	private ArrayList<GetUpBean> getUp = new ArrayList<>();
 
-    public ModuleMorning(BotWrapper bw) {
+    public ModuleMorning(BotWrapperEntity bw) {
         super(bw);
     }
 
     @Override
-    public BotWrapper getWrapper() {
-        return wrapper;
+    public BotWrapperEntity getWrapper() {
+        return entity;
     }
     
 	@Override
@@ -58,7 +58,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
             qi.isBoy = false;
             qi.getUptimeStamp = System.currentTimeMillis();
 			getUp.add(qi);
-            wrapper.getAutoreply().sendGroupMessage(fromGroup, String.format("你是今天第%d位起床的少女哦", getUp.size()));
+            entity.sendGroupMessage(fromGroup, String.format("你是今天第%d位起床的少女哦", getUp.size()));
 			save();
 		} else if (msg.equals("晚安")) {
 			for (GetUpBean qif:getUp) {
@@ -66,7 +66,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 					if (qif.getUptimeStamp == 0 || qif.isSleep) {
 						return false;
 					} else {
-						wrapper.getAutoreply().sendGroupMessage(fromGroup, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
+						entity.sendGroupMessage(fromGroup, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
 						qif.isSleep = true;
 						save();
 					}

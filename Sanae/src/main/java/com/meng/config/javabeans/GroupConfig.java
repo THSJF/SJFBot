@@ -4,7 +4,7 @@ import java.util.*;
 
 public class GroupConfig extends Object {
     public long n=0;
-	public int f1=0;
+	public int f1=-1;
 
 	public boolean isMainSwitchEnable() {
 		return (f1 & (1 << 0)) != 0;
@@ -292,6 +292,18 @@ public class GroupConfig extends Object {
 		} else {
 			f1 &= ~(1 << 23);
 		}
+	}
+    
+    public boolean isBotOn() {
+        return (f1 & (1 << 24)) != 0;
+    }
+
+    public void setBotOn(boolean enable) {
+        if (enable) {
+            f1 |= (1 << 24);
+        } else {
+            f1 &= ~(1 << 24);
+        }
 	}
 
 	@Override

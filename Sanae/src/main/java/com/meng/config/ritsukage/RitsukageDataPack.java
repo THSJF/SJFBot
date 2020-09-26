@@ -151,7 +151,7 @@ public class RitsukageDataPack {
 		write(cvt.getBytes(headLength));
 		write(cvt.getBytes((short)1));
 		write(cvt.getBytes(timeStamp));
-		write(cvt.getBytes(ConfigManager.getOgg()));
+		write(cvt.getBytes(0L));
 		write(cvt.getBytes(opCode));
 	}   
 

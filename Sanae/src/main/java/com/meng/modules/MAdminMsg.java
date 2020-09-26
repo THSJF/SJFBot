@@ -1,30 +1,33 @@
 package com.meng.modules;
 
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.config.*;
-import com.meng.config.javabeans.*;
-import com.meng.sjfmd.libs.*;
-import com.meng.tools.*;
-import com.meng.tools.override.*;
-import com.sobte.cqp.jcq.entity.*;
-import java.io.*;
-import java.util.*;
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.javabeans.GroupConfig;
+import com.meng.config.javabeans.PersonInfo;
+import com.meng.sjfmd.libs.GSON;
+import com.meng.tools.SJFExecutors;
+import com.meng.tools.Tools;
+import com.meng.tools.override.MyLinkedHashMap;
+import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import net.mamoe.mirai.contact.ContactList;
+import net.mamoe.mirai.contact.Group;
 
 /**
  * @author 司徒灵羽
  */
 
 public class MAdminMsg extends BaseGroupModule {
-    
+
 	private MyLinkedHashMap<String,String> masterPermission=new MyLinkedHashMap<>();
 	private MyLinkedHashMap<String,String> adminPermission=new MyLinkedHashMap<>();
 	public MyLinkedHashMap<String,String> userPermission=new MyLinkedHashMap<>();
 
-    public MAdminMsg(BotWrapper bw){
+    public MAdminMsg(BotWrapperEntity bw) {
         super(bw);
     }
-    
+
 	@Override
     public MAdminMsg load() {
 		masterPermission.put("小律影专用指令:setconnect", "");
@@ -90,47 +93,46 @@ public class MAdminMsg extends BaseGroupModule {
 
 	@Override
 	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!ConfigManager.isAdminPermission(fromQQ) && Autoreply.CQ.getGroupMemberInfo(fromGroup, fromQQ).getAuthority() < 2) {
+		if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel()<1) {
 			return false;
 		}
 		if (msg.equals(".on")) {
-            GroupConfig groupConfig =ConfigManager.getGroupConfig(fromGroup);
+            GroupConfig groupConfig =entity.configManager.getGroupConfig(fromGroup);
             if (groupConfig == null) {
-                Autoreply.sendMessage(fromGroup, fromQQ, "本群没有默认配置");
+                entity.sendGroupMessage(fromGroup, "本群没有默认配置");
                 return true;
             }
-            ConfigManager.getGroupConfig(fromGroup).setMainSwitchEnable(true);
-            Autoreply.sendMessage(fromGroup, fromQQ, "已启用");
-            ConfigManager.save();
+            entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(true);
+            entity.sendGroupMessage(fromGroup, "已启用");
+            entity.configManager.save();
 			return true;
 		}
         if (msg.equals(".off")) {
-			ConfigManager.getGroupConfig(fromGroup).setMainSwitchEnable(false);
-			wrapper.getAutoreply().sendGroupMessage(fromGroup,  "已停用");
+			entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(false);
+			entity.sendGroupMessage(fromGroup,  "已停用");
             return true;
         }
 		if (msg.startsWith("findInAll:")) {
-			Tools.CQ.findQQInAllGroup(fromGroup, fromQQ, msg);
+			Tools.CQ.findQQInAllGroup(entity,fromGroup, fromQQ, msg);
 			return true;
 		}
-        if (!ConfigManager.isMaster(fromQQ) && Autoreply.CQ.getGroupMemberInfo(fromGroup, fromQQ).getAuthority() < 3) {
+        if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 2) {
 			return false;
 		}
-
 		if (msg.startsWith("群广播:")) {
 			if (msg.contains("~") || msg.contains("～")) {
-				wrapper.getAutoreply().sendGroupMessage(fromGroup,  "包含屏蔽的字符");
+				entity.sendGroupMessage(fromGroup,  "包含屏蔽的字符");
 				return true;
 			}
 			String broadcast=msg.substring(4);
 			HashSet<Group> hs=new HashSet<>();
-			List<Group> glist=Autoreply.CQ.getGroupList();
+			ContactList<Group> glist=entity.getGroupList();
 			for (Group g:glist) {
-				GroupConfig gc=ConfigManager.getGroupConfig(g.getId());
-				if (!ConfigManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+				GroupConfig gc=entity.configManager.getGroupConfig(g.getId());
+				if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
 					continue;
 				}
-				Autoreply.sendMessage(gc.n, 0, broadcast);
+				entity.sendGroupMessage(gc.n, broadcast);
 				hs.add(g);
 				try {
 					Thread.sleep(200);
@@ -143,49 +145,49 @@ public class MAdminMsg extends BaseGroupModule {
 				result += ":";
 				result += g.getName();
 			}
-			wrapper.getAutoreply().sendGroupMessage(fromGroup,  result);
+			entity.sendGroupMessage(fromGroup,  result);
 			return true;
 		}
 		if (msg.equals(".stop")) {
-			wrapper.getAutoreply().sendGroupMessage(fromGroup,  "disabled");
-			Autoreply.sleeping = true;
+			entity.sendGroupMessage(fromGroup,  "disabled");
+			entity.sleeping = true;
 			return true;
 		}
 		if (msg.equals(".start")) {
-			Autoreply.sleeping = false;
-			wrapper.getAutoreply().sendGroupMessage(fromGroup,  "enabled");
+			entity.sleeping = false;
+			entity.sendGroupMessage(fromGroup,  "enabled");
 			return true;
 		}
 		if (msg.startsWith("block[CQ:at")) {
 			StringBuilder sb = new StringBuilder();
-			List<Long> qqs = Autoreply.instance.CC.getAts(msg);
+			List<Long> qqs = entity.getAts(msg);
 			sb.append("屏蔽列表添加:");
 			for (int i = 0, qqsSize = qqs.size(); i < qqsSize; i++) {
 				long qq = qqs.get(i);
-				ConfigManager.addBlockQQ(qq);
+				entity.configManager.addBlockQQ(qq);
 				sb.append(qq).append(" ");
 			}
-			ConfigManager.save();
-			Autoreply.sendMessage(fromGroup, fromQQ, sb.toString());
+			entity.configManager.save();
+			entity.sendGroupMessage(fromGroup, sb.toString());
 			return true;
 		}
 		if (msg.startsWith("black[CQ:at")) {
 			StringBuilder sb = new StringBuilder();
-			List<Long> qqs = Autoreply.instance.CC.getAts(msg);
+			List<Long> qqs = entity.getAts(msg);
 			sb.append("黑名单添加:");
 			for (int i = 0, qqsSize = qqs.size(); i < qqsSize; i++) {
 				long qq = qqs.get(i);
-				ConfigManager.addBlackQQ(qq);
+				entity.configManager.addBlackQQ(qq);
 				sb.append(qq).append(" ");
 			}
-			ConfigManager.save();
-			Autoreply.sendMessage(fromGroup, fromQQ, sb.toString());
+			entity.configManager.save();
+			entity.sendGroupMessage(fromGroup, sb.toString());
 			return true;
 		}
 		if (msg.startsWith("find:")) {
 			String name = msg.substring(5);
 			HashSet<PersonInfo> hashSet = new HashSet<>();
-			for (PersonInfo personInfo : ConfigManager.getPersonInfo()) {
+			for (PersonInfo personInfo : entity.configManager.getPersonInfo()) {
 				if (personInfo.name.contains(name)) {
 					hashSet.add(personInfo);
 				}
@@ -199,7 +201,7 @@ public class MAdminMsg extends BaseGroupModule {
 					hashSet.add(personInfo);
 				}
 			}
-			Autoreply.sendMessage(fromGroup, fromQQ, GSON.toJson(hashSet));
+			entity.sendGroupMessage(fromGroup, GSON.toJson(hashSet));
 			return true;
 		}
 		if (msg.equals("线程数")) {
@@ -208,44 +210,35 @@ public class MAdminMsg extends BaseGroupModule {
 				"largestPoolSize：" + SJFExecutors.getLargestPoolSize() + "\n" +
 				"poolSize：" + SJFExecutors.getPoolSize() + "\n" +
 				"activeCount：" + SJFExecutors.getActiveCount();
-			Autoreply.sendMessage(fromGroup, fromQQ, s);
+			entity.sendGroupMessage(fromGroup, s);
 			return true;
 		}
 		if (msg.equalsIgnoreCase("System.gc();")) {
 			System.gc();
-			Autoreply.sendMessage(fromGroup, fromQQ, "gc start");
-			return true;
-		}
-		if (msg.equals("zan-now")) {
-			Autoreply.sendMessage(fromGroup, fromQQ, "start");
-			Autoreply.instance.zanManager.sendZan();
-			Autoreply.sendMessage(fromGroup, fromQQ, "finish");
-			return true;
-		}
-		if (Autoreply.instance.zanManager.checkAdd(fromGroup, fromQQ, msg)) {
+			entity.sendGroupMessage(fromGroup, "gc start");
 			return true;
 		}
 		if (msg.equals("精神支柱")) {
-			wrapper.getAutoreply().sendGroupMessage(fromGroup,  Autoreply.instance.CC.image(new File(Autoreply.appDirectory + "pic\\alice.png")));
+			entity.sendGroupMessage(fromGroup,  entity.image(new File(entity.appDirectory + "pic\\alice.png"), fromGroup));
 			return true;
 		}
 		if (msg.equals("生成位置")) {
-			wrapper.getAutoreply().sendGroupMessage(fromGroup,  Autoreply.instance.CC.location(35.594993, 118.869838, 15, "守矢神社", "此生无悔入东方 来世愿生幻想乡"));
+			entity.sendGroupMessage(fromGroup,  entity.location(35.594993, 118.869838, 15, "守矢神社", "此生无悔入东方 来世愿生幻想乡"));
 		}
 		if (msg.startsWith("生成位置")) {
 			String[] args = msg.split(",");
 			if (args.length == 6) {
 				try {
-					wrapper.getAutoreply().sendGroupMessage(fromGroup, 
-										  Autoreply.instance.CC.location(
-											  Double.parseDouble(args[2]),
-											  Double.parseDouble(args[1]),
-											  Integer.parseInt(args[3]),
-											  args[4],
-											  args[5]));
+					entity.sendGroupMessage(fromGroup, 
+                                                            entity.location(
+                                                                Double.parseDouble(args[2]),
+                                                                Double.parseDouble(args[1]),
+                                                                Integer.parseInt(args[3]),
+                                                                args[4],
+                                                                args[5]));
 					return true;
 				} catch (Exception e) {
-					Autoreply.sendMessage(fromGroup, fromQQ, "参数错误,生成位置.经度double.纬度double.倍数int.名称string.描述string");
+					entity.sendGroupMessage(fromGroup, "参数错误,生成位置.经度double.纬度double.倍数int.名称string.描述string");
 					return true;
 				}
 			}
@@ -254,30 +247,20 @@ public class MAdminMsg extends BaseGroupModule {
 		String[] strings = msg.split("\\.", 3);
 		if (strings[0].equals("send")) {
 			if (msg.contains("~") || msg.contains("～")) {
-				wrapper.getAutoreply().sendGroupMessage(fromGroup,  "包含屏蔽的字符");
+				entity.sendGroupMessage(fromGroup,  "包含屏蔽的字符");
 				return true;
 			}
-			switch (strings[2]) {
-				case "喵":
-					MessageDeleter.autoDelete(Autoreply.sendMessage(Long.parseLong(strings[1]), 0, Autoreply.instance.CC.record("miao.mp3")));
-					break;
-				case "娇喘":
-					MessageDeleter.autoDelete(Autoreply.sendMessage(Long.parseLong(strings[1]), 0, Autoreply.instance.CC.record("mmm.mp3")));
-					break;
-				default:
-					Autoreply.sendMessage(Long.parseLong(strings[1]), 0, strings[2]);
-					break;
-			}
+            entity.sendGroupMessage(Long.parseLong(strings[1]), strings[2]);
 			return true;
 		}
 		if (msg.startsWith("设置群头衔[CQ:at")) {
 			String title = msg.substring(msg.indexOf("]") + 1);
-			System.out.println(Autoreply.CQ.setGroupSpecialTitle(fromGroup, Autoreply.instance.CC.getAt(msg), title, -1));
+			System.out.println(entity.setGroupSpecialTitle(fromGroup, entity.getAt(msg), title));
 			return true;
 		}
 		if (msg.startsWith("设置群名片[CQ:at")) {
 			String title = msg.substring(msg.indexOf("]") + 1);
-			System.out.println(Autoreply.CQ.setGroupCard(fromGroup, Autoreply.instance.CC.getAt(msg), title));
+			System.out.println(entity.setGroupCard(fromGroup, entity.getAt(msg), title));
 			return true;
 		}
         return false;

@@ -1,20 +1,23 @@
 package com.meng.config.ritsukage;
 
-import com.meng.config.*;
-import java.net.*;
-import java.nio.*;
-import org.java_websocket.*;
-import org.java_websocket.handshake.*;
-import org.java_websocket.server.*;
+import com.meng.adapter.BotWrapperEntity;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 
 /**
  * @author 司徒灵羽
  */
- 
+
 public class RitsukageServer extends WebSocketServer {
 
-	public RitsukageServer() {
+    private BotWrapperEntity entity;
+
+	public RitsukageServer(BotWrapperEntity bw) {
 		super(new InetSocketAddress(9961));
+        entity = bw;
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class RitsukageServer extends WebSocketServer {
 	@Override
 	public void onMessage(WebSocket conn, ByteBuffer message) {
 		RitsukageDataPack dp=RitsukageDataPack.decode(message.array());
-		if (dp.getTarget() == ConfigManager.getOgg()) {
+		if (dp.getTarget() == entity.configManager.getOgg()) {
 			oggProcess(conn, dp);
 		}
 	}

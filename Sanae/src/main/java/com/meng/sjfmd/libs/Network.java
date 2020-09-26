@@ -7,6 +7,7 @@ import java.nio.charset.*;
 import java.util.*;
 import java.util.regex.*;
 import org.jsoup.*;
+import com.meng.adapter.BotWrapperEntity;
 
 /**
  * @author 司徒灵羽
@@ -57,7 +58,7 @@ public class Network {
 			if (refer != null) {
 				connection.referrer(refer);
 			}
-			connection.userAgent(Autoreply.userAgent);
+			connection.userAgent(BotWrapperEntity.userAgent);
 			connection.ignoreContentType(true).method(Connection.Method.GET);
 			response = connection.execute();
 			if (response.statusCode() != 200) {

@@ -1,12 +1,12 @@
 package com.meng.modules;
 
-import com.google.gson.reflect.*;
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.config.*;
-import com.meng.tools.override.*;
-import java.lang.reflect.*;
-import java.util.*;
+import com.google.gson.reflect.TypeToken;
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.DataPersistenter;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 
 /**
  * @author 司徒灵羽
@@ -16,7 +16,7 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 
 	private HashMap<Long, Integer> faithMap = new HashMap<>();
 	
-    public ModuleFaith(BotWrapper bw){
+    public ModuleFaith(BotWrapperEntity bw){
         super(bw);
     }
     
@@ -90,8 +90,8 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 	}
 
     @Override
-    public BotWrapper getWrapper() {
-        return wrapper;
+    public BotWrapperEntity getWrapper() {
+        return entity;
     }
 
 	@Override

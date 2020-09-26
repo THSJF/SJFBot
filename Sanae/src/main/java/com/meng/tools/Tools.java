@@ -1,14 +1,27 @@
 package com.meng.tools;
 
-import com.meng.*;
-import com.meng.config.*;
-import com.sobte.cqp.jcq.entity.*;
-import java.io.*;
-import java.net.*;
-import java.nio.charset.*;
-import java.text.*;
-import java.util.*;
-import org.jsoup.*;
+import com.meng.adapter.BotWrapperEntity;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.ContactList;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.Member;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 public class Tools {
 
@@ -106,36 +119,36 @@ public class Tools {
 			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(timeStamp));
 		}
 
-		public static void findQQInAllGroup(BotWrapper bw, long fromGroup, long fromQQ, String msg) {
+		public static void findQQInAllGroup(BotWrapperEntity bw, long fromGroup, long fromQQ, String msg) {
 			long findqq;
 			try {
 				findqq = Long.parseLong(msg.substring(10));
 			} catch (Exception e) {
-				findqq = bw.getCC().getAt(msg);
+				findqq = bw.getAt(msg);
 			}
 			if (findqq <= 0) {
-				bw.getAutoreply().sendGroupMessage(fromGroup, "QQ账号错误");
+				bw.sendGroupMessage(fromGroup, "QQ账号错误");
 				return;
 			}
-			Autoreply.sendMessage(fromGroup, fromQQ, "running");
-			HashSet<Group> hashSet = findQQInAllGroup(findqq);
+			bw.sendGroupMessage(fromGroup, "running");
+			HashSet<Group> hashSet = findQQInAllGroup(bw, findqq);
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append(findqq).append("在这些群中出现");
 			for (Group l : hashSet) {
 				stringBuilder.append("\n").append(l.getId()).append(l.getName());
 			}
-			Autoreply.sendMessage(fromGroup, fromQQ, stringBuilder.toString());
+			bw.sendGroupMessage(fromGroup, stringBuilder.toString());
 		}
-		public static HashSet<Group> findQQInAllGroup(long findQQ) {
-			List<Group> groups = Autoreply.CQ.getGroupList();
+		public static HashSet<Group> findQQInAllGroup(BotWrapperEntity bw, long findQQ) {
+			ContactList<Group> groups = bw.getGroupList();
 			HashSet<Group> hashSet = new HashSet<>();
 			for (Group group : groups) {
 				if (group.getId() == 959615179L || group.getId() == 666247478L) {
 					continue;
 				}
-				ArrayList<Member> members = (ArrayList<Member>) Autoreply.CQ.getGroupMemberList(group.getId());
+				ContactList<Member> members =  bw.getGroupMemberList(group.getId());
 				for (Member member : members) {
-					if (member.getQqId() == findQQ) {
+					if (member.getId() == findQQ) {
 						hashSet.add(group);
 						break;
 					}
@@ -143,16 +156,7 @@ public class Tools {
 			}
 			return hashSet;
 		}
-		public static boolean isAtme(String msg) {
-			List<Long> list = Autoreply.instance.CC.getAts(msg);
-			long me = Autoreply.CQ.getLoginQQ();
-			for (long l : list) {
-				if (l == me) {
-					return true;
-				}
-			}
-			return false;
-		}
+		
 	}
 
 	public static class ArrayTool {
@@ -292,7 +296,7 @@ public class Tools {
 			return byteDest;
 		}
 	}
-	
+
 	public class BanBean {
 		public int code;
 		public String msg;

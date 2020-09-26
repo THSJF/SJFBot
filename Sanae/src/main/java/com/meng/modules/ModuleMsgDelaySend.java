@@ -6,15 +6,21 @@ import com.meng.SJFInterfaces.*;
 import com.meng.config.*;
 import java.lang.reflect.*;
 import java.util.*;
+import com.meng.adapter.BotWrapperEntity;
 
 public class ModuleMsgDelaySend extends BaseGroupModule implements IPersistentData {
 
 	private ArrayList<MessageWait> delayMsg = new ArrayList<>();
 
-    public ModuleMsgDelaySend(BotWrapper bw){
+    public ModuleMsgDelaySend(BotWrapperEntity bw){
         super(bw);
     }
-    
+
+    @Override
+    public BotWrapperEntity getWrapper() {
+        return entity;
+    }
+
 	@Override
 	public String getPersistentName() {
 		return "delayMessage.json";
@@ -51,10 +57,10 @@ public class ModuleMsgDelaySend extends BaseGroupModule implements IPersistentDa
 			MessageWait mw=iter.next();
 			if (mw.qq == fromQQ) {
 				if (mw.group == -1) {
-					wrapper.getAutoreply().sendGroupMessage(fromGroup,  mw.content);
+					entity.sendGroupMessage(fromGroup,  mw.content);
 					iter.remove();
 				} else if (mw.group == fromGroup) {
-					wrapper.getAutoreply().sendGroupMessage(fromGroup,  mw.content);
+					entity.sendGroupMessage(fromGroup,  mw.content);
 					iter.remove();
 				}
 			}

@@ -1,12 +1,11 @@
 package com.meng.SJFInterfaces;
-import com.meng.BotWrapper;
+
+import com.meng.adapter.BotWrapperEntity;
 
 public abstract class BaseGroupModule extends BaseModule implements IGroupMessage {
 
-    public BotWrapper wrapper;
-    
-    public BaseGroupModule(BotWrapper bw){
-        wrapper = bw;
+    public BaseGroupModule(BotWrapperEntity bw){
+        super(bw);
     }
     
 	@Override

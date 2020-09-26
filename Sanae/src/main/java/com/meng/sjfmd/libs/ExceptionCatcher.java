@@ -1,7 +1,6 @@
 package com.meng.sjfmd.libs;
 
-import com.meng.Autoreply;
-import com.meng.BotWrapper;
+import com.meng.adapter.BotWrapperEntity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -20,13 +19,13 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
     private String TAG=this.getClass().getSimpleName();
     private static ExceptionCatcher mInstance;
 	private String fileName;
-    private BotWrapper wrapper;
+    private BotWrapperEntity wrapper;
 
-    private ExceptionCatcher(BotWrapper bw) {
+    private ExceptionCatcher(BotWrapperEntity bw) {
         wrapper = bw;
 	}
 
-    public static synchronized ExceptionCatcher getInstance(BotWrapper bw) {
+    public static synchronized ExceptionCatcher getInstance(BotWrapperEntity bw) {
         if (null == mInstance) {
             mInstance = new ExceptionCatcher(bw);
 		}
@@ -93,7 +92,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
             long timestamp=System.currentTimeMillis();
             String time=format.format(new Date());
 			fileName = "crash-" + time + "-" + timestamp + ".log";
-			String path = wrapper.getCQ().getAppDirectory() + "/crash/";
+			String path = wrapper.appDirectory + "/crash/";
 			File dir=new File(path);
 			if (!dir.exists()) {
 				dir.mkdirs();

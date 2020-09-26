@@ -1,8 +1,7 @@
 package com.meng.config;
 
-import com.meng.Autoreply;
-import com.meng.BotWrapper;
 import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.javabeans.ConfigHolder;
 import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonInfo;
@@ -20,11 +19,15 @@ public class ConfigManager implements IPersistentData {
 
     private ConfigHolder configHolder = new ConfigHolder();
 	private static final GroupConfig emptyConfig = new GroupConfig();
-    private BotWrapper wrapper;
+    public BotWrapperEntity entity;
 
-	private ConfigManager(BotWrapper bw) {
-        wrapper = bw;
-	}
+    public boolean isBotOff(long fromGroup) {
+        return configHolder.botOff.contains(fromGroup);
+    }
+
+    public void setBotWrapperEntity(BotWrapperEntity bwe){
+        entity = bwe;
+    }
 
 	public ConfigHolder getConfigHolder() {
 		return configHolder;
@@ -265,7 +268,7 @@ public class ConfigManager implements IPersistentData {
 		if (nick == null) {
 			PersonInfo pi = getPersonInfoFromQQ(qq);
 			if (pi == null) {
-				nick = wrapper.getCQ().getGroupMemberInfo(group, qq).getNameCard();
+				nick = entity.getGroupMemberInfo(group, qq).getNameCard();
 			} else {
 				nick = pi.name;
 			}
@@ -294,8 +297,8 @@ public class ConfigManager implements IPersistentData {
 					//    }
 				}
 			});
-        wrapper.getAutoreply().sendGroupMessage(Autoreply.mainGroup, "已将用户" + qq + "加入黑名单");
-        wrapper.getAutoreply().sendGroupMessage(Autoreply.mainGroup, "已将群" + group + "加入黑名单");
+        entity.sendGroupMessage(BotWrapperEntity.mainGroup, "已将用户" + qq + "加入黑名单");
+        entity.sendGroupMessage(BotWrapperEntity.mainGroup, "已将群" + group + "加入黑名单");
     }
 
 	public long getOgg() {
@@ -318,8 +321,8 @@ public class ConfigManager implements IPersistentData {
 	}
 
     @Override
-    public BotWrapper getWrapper() {
-        return wrapper;
+    public BotWrapperEntity getWrapper() {
+        return entity;
     }
 
 	@Override

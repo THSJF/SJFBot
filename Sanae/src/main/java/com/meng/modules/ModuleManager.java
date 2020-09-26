@@ -1,7 +1,5 @@
 package com.meng.modules;
 
-import com.meng.Autoreply;
-import com.meng.BotWrapper;
 import com.meng.SJFInterfaces.BaseModule;
 import com.meng.SJFInterfaces.IDiscussMessage;
 import com.meng.SJFInterfaces.IFriendEvent;
@@ -9,19 +7,25 @@ import com.meng.SJFInterfaces.IGroupEvent;
 import com.meng.SJFInterfaces.IGroupMessage;
 import com.meng.SJFInterfaces.IHelpMessage;
 import com.meng.SJFInterfaces.IPrivateMessage;
-import com.meng.config.ConfigManager;
+import com.meng.adapter.BotWrapperEntity;
 import com.meng.tip.MTimeTip;
 import com.meng.tools.SJFExecutors;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.lang.reflect.Constructor;
 
 /**
  * @author 司徒灵羽
  */
 
-public class ModuleManager extends BaseModule implements IGroupMessage, IPrivateMessage, IDiscussMessage, IGroupEvent, IFriendEvent, IRequest, IMsg {
+public class ModuleManager extends BaseModule implements IGroupMessage, IPrivateMessage, IDiscussMessage, IGroupEvent, IFriendEvent {
 
-	public BotWrapper wrapper;
+    public BotWrapperEntity entity;
+
+    public ModuleManager() {
+        super(null);
+    }
+
 	private ArrayList<IGroupMessage> groupModules = new ArrayList<>();
 	private ArrayList<IPrivateMessage> privateModules = new ArrayList<>();
 	private ArrayList<IDiscussMessage> discussModules = new ArrayList<>();
@@ -30,13 +34,13 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	private ArrayList<IFriendEvent> friendEventModules = new ArrayList<>();
 	private ArrayList<Object> all = new ArrayList<>();
 
-    public ModuleManager(BotWrapper bw) {
-        wrapper = bw;
+    public void setBotWrapperEntity(BotWrapperEntity bwe) {
+        entity = bwe;
     }
 
 	@Override
 	public ModuleManager load() {
-		load(ReflectCommand.class, false);
+		load(ReflectCommand.class);
 		load(MAdminMsg.class);
 		load(MGroupCounter.class);
 		load(MessageRefuse.class);
@@ -60,7 +64,8 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	public void load(Class<?> cls, boolean needLoad) {
 		Object o = null;
 		try {
-			o = cls.newInstance();
+            Constructor cos = cls.getConstructor(BotWrapperEntity.class);
+			o = cos.newInstance(entity);
 			if (needLoad) {
 				Method m = o.getClass().getMethod("load");
 				m.invoke(o);
@@ -69,7 +74,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 			e.printStackTrace();
 		}
 		if (o == null) {
-			wrapper.getAutoreply().sendGroupMessage(Autoreply.yysGroup, 0, "加载失败:" + cls.getName());
+			entity.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + cls.getName());
 		}
 		loadModules(o);
 	}
@@ -78,7 +83,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		try {
 			load(Class.forName(className), needLoad);
 		} catch (ClassNotFoundException e) {
-			wrapper.getAutoreply().sendGroupMessage(Autoreply.yysGroup, 0, "加载失败:" + className);
+			entity.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + className);
 		}
 	}
 
@@ -106,7 +111,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
 			return true;
 		}
 		for (IGroupMessage m : groupModules) {
@@ -140,7 +145,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupFileUpload(int sendTime, long fromGroup, long fromQQ, String file) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -153,7 +158,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupAdminChange(int subtype, int sendTime, long fromGroup, long beingOperateQQ) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -166,7 +171,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupMemberDecrease(int subtype, int sendTime, long fromGroup, long fromQQ, long beingOperateQQ) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -179,10 +184,10 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupMemberIncrease(int subtype, int sendTime, long fromGroup, long fromQQ, long beingOperateQQ) {
-		if (!ConfigManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return true;
         }
-		if (beingOperateQQ == CQ.getLoginQQ()) {
+		if (beingOperateQQ == entity.getLoginQQ()) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -195,23 +200,23 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onRequestAddGroup(int subtype, int sendTime, long fromGroup, long fromQQ, String msg, String responseFlag) {
-		if (ConfigManager.isBlockQQ(fromQQ)) {
-			CQ.setFriendAddRequest(responseFlag, Autoreply.REQUEST_REFUSE, "");
-			sendMessage(0, 2856986197L, "拒绝了" + fromQQ + "加为好友");
-            return true;
-        }
-		for (IGroupEvent e : groupEventModules) {
-			if (e.onRequestAddGroup(subtype, sendTime, fromGroup, fromQQ, msg, responseFlag)) {
-				return true;
-			}
-		}
-        /*
+		/*if (entity.configManager.isBlockQQ(fromQQ)) {
+         wrapper.getCQ().setFriendAddRequest(responseFlag, Autoreply.REQUEST_REFUSE, "");
+         entity.sendPrivateMessage(2856986197L, "拒绝了" + fromQQ + "加为好友");
+         return true;
+         }
+         for (IGroupEvent e : groupEventModules) {
+         if (e.onRequestAddGroup(subtype, sendTime, fromGroup, fromQQ, msg, responseFlag)) {
+         return true;
+         }
+         }
+         /*
          * REQUEST_ADOPT 通过 REQUEST_REFUSE 拒绝
          */
         //    QQInfo qInfo = CQ.getStrangerInfo(fromQQ);
         //    CQ.setFriendAddRequest(responseFlag, REQUEST_ADOPT, qInfo.getNick()); //
         // sendMessage(0, fromQQ, "本体2856986197");
-        sendMessage(0, 2856986197L, fromQQ + "把我加为好友");
+        /*sendMessage(0, 2856986197L, fromQQ + "把我加为好友");*/
         // 同意好友添加请求
 		return true;
 	}
