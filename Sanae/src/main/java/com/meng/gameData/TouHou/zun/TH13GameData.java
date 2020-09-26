@@ -1,8 +1,9 @@
 package com.meng.gameData.TouHou.zun;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: th13游戏信息
+ * @author: 司徒灵羽
+ **/
 
 public class TH13GameData {
 	public static final String gameName="东方神灵庙 ~ Ten Desires.";

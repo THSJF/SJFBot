@@ -10,13 +10,15 @@ import com.meng.SJFInterfaces.IPrivateMessage;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.tip.MTimeTip;
 import com.meng.tools.SJFExecutors;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.lang.reflect.Constructor;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 模块管理器
+ * @author: 司徒灵羽
+ **/
 
 public class ModuleManager extends BaseModule implements IGroupMessage, IPrivateMessage, IDiscussMessage, IGroupEvent, IFriendEvent {
 
@@ -74,7 +76,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 			e.printStackTrace();
 		}
 		if (o == null) {
-			entity.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + cls.getName());
+			entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + cls.getName());
 		}
 		loadModules(o);
 	}
@@ -83,7 +85,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		try {
 			load(Class.forName(className), needLoad);
 		} catch (ClassNotFoundException e) {
-			entity.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + className);
+			entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + className);
 		}
 	}
 
@@ -110,13 +112,13 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+		if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isMainSwitchEnable()) {
 			return true;
 		}
 		for (IGroupMessage m : groupModules) {
 			System.out.println(m.getClass().getName());
-			if (m.onGroupMessage(fromGroup, fromQQ, msg, msgId)) {
+			if (m.onGroupMessage(null)) {
 				return true;
 			}
 		}

@@ -8,8 +8,9 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 和小律影通信的websocket
+ * @author: 司徒灵羽
+ **/
 
 public class RitsukageServer extends WebSocketServer {
 

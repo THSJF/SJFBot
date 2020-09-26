@@ -12,8 +12,9 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 配置文件管理器
+ * @author: 司徒灵羽
+ **/
 
 public class ConfigManager implements IPersistentData {
 
@@ -310,8 +311,8 @@ public class ConfigManager implements IPersistentData {
 					//    }
 				}
 			});
-        entity.sendGroupMessage(BotWrapperEntity.mainGroup, "已将用户" + qq + "加入黑名单");
-        entity.sendGroupMessage(BotWrapperEntity.mainGroup, "已将群" + group + "加入黑名单");
+        entity.sjfTx.sendGroupMessage(BotWrapperEntity.mainGroup, "已将用户" + qq + "加入黑名单");
+        entity.sjfTx.sendGroupMessage(BotWrapperEntity.mainGroup, "已将群" + group + "加入黑名单");
     }
 
 	public long getOgg() {

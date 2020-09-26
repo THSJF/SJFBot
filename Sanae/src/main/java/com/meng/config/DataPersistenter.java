@@ -1,15 +1,17 @@
 package com.meng.config;
 
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.sjfmd.libs.*;
-import com.meng.tools.*;
-import java.io.*;
-import java.nio.charset.*;
+import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.sjfmd.libs.FileTool;
+import com.meng.sjfmd.libs.GSON;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 将数据保存到磁盘
+ * @author: 司徒灵羽
+ **/
 
 public class DataPersistenter {
 

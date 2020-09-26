@@ -1,10 +1,13 @@
 package com.meng.config.javabeans;
 
-import java.util.*;
+/**
+ * @Description: 单群设置bean
+ * @author: 司徒灵羽
+ **/
 
 public class GroupConfig extends Object {
-    public long n=0;
-	public int f1=-1;
+    public long n = 0;
+	public int f1 = -1;
 
 	public boolean isMainSwitchEnable() {
 		return (f1 & (1 << 0)) != 0;
@@ -293,7 +296,7 @@ public class GroupConfig extends Object {
 			f1 &= ~(1 << 23);
 		}
 	}
-    
+
     public boolean isBotOn() {
         return (f1 & (1 << 24)) != 0;
     }

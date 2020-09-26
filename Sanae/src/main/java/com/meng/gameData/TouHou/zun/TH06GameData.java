@@ -1,8 +1,9 @@
 package com.meng.gameData.TouHou.zun;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: th06游戏信息
+ * @author: 司徒灵羽
+ **/
 
 public class TH06GameData {
 	public static final String gameName="东方红魔乡 ~ the Embodiment of Scarlet Devil.";

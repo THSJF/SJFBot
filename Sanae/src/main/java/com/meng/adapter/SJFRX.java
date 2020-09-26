@@ -1,5 +1,6 @@
 package com.meng.adapter;
 
+import com.meng.MessagePool;
 import com.meng.modules.ModuleManager;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
@@ -46,13 +47,16 @@ import net.mamoe.mirai.event.events.MessageSendEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.TempMessagePostSendEvent;
 import net.mamoe.mirai.event.events.TempMessagePreSendEvent;
-import net.mamoe.mirai.message.GroupMessageEvent;
-import org.jetbrains.annotations.NotNull;
 import net.mamoe.mirai.message.FriendMessageEvent;
+import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.TempMessageEvent;
-import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import com.meng.MessagePool;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * @Description: bot接收事件
+ * @author: 司徒灵羽
+ **/
 
 public class SJFRX extends SimpleListenerHost {
 
@@ -68,7 +72,7 @@ public class SJFRX extends SimpleListenerHost {
     @EventHandler()
     public ListeningStatus onReceive(@NotNull GroupMessageEvent event) {
         MessagePool.put(event);
-        moduleManager.onGroupMessage(event.getGroup().getId(), event.getSender().getId(), event.getMessage().contentToString(), event.getSource().getId());
+        moduleManager.onGroupMessage(event);
         return ListeningStatus.LISTENING;
     }
     //好友消息
@@ -200,7 +204,7 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MessageRecallEvent.GroupRecall event) {
-        event.getGroup().sendMessage(new PlainText(event.getOperator().getId()+"撤回了").plus(MessagePool.get(event.getMessageId()).getMessage()));
+        event.getGroup().sendMessage(new PlainText(event.getOperator().getId() + "撤回了").plus(MessagePool.get(event.getMessageId()).getMessage()));
         return ListeningStatus.LISTENING;
     }
     //群撤回: TempRecall

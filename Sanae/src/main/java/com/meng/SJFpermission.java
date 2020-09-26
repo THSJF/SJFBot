@@ -1,5 +1,9 @@
 package com.meng;
 
+/**
+ * @author: 司徒灵羽
+ **/
+
 public enum SJFpermission {
 	Owner(6),
 	SJFMaster(5),
@@ -11,6 +15,6 @@ public enum SJFpermission {
 	private SJFpermission(int v){
 		value = v;
 	}
-	
+
 	private int value=0;
 }

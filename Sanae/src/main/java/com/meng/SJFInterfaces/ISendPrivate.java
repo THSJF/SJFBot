@@ -1,6 +1,6 @@
 package com.meng.SJFInterfaces;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author 司徒灵羽

@@ -16,10 +16,12 @@ import com.meng.gameData.TouHou.zun.TH17GameData;
 import com.meng.sjfmd.libs.Hash;
 import com.meng.tools.Tools;
 import java.util.Random;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 模拟骰子
+ * @author: 司徒灵羽
+ **/
 
 public class ModuleDiceCmd extends BaseGroupModule {
 
@@ -38,7 +40,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
     private static String[] pl05 = new String[]{"博丽灵梦", "雾雨魔理沙", "魅魔", "幽香"};
     private static String[] pl09 = new String[]{"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
     private static String[] plDiff = new String[]{"easy", "normal", "hard", "lunatic"};
-    
+
 
     public ModuleDiceCmd(BotWrapperEntity bw) {
         super(bw);
@@ -152,7 +154,10 @@ public class ModuleDiceCmd extends BaseGroupModule {
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
 		if (msg.charAt(0) != '.' && msg.charAt(0) != '。') {
 			return false;
 		}
@@ -167,34 +172,34 @@ public class ModuleDiceCmd extends BaseGroupModule {
 				switch (next()) {
 					case ".r":
 						String rs = next();
-						entity.sendGroupMessage(fromGroup, String.format("%s投掷%s:D100 = %d", entity.configManager.getNickName(fromGroup, fromQQ), rs == null ?"": rs, random.nextInt(100)));
+						entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s投掷%s:D100 = %d", entity.configManager.getNickName(fromGroup, fromQQ), rs == null ?"": rs, random.nextInt(100)));
 						return true;
 					case ".ra":
 						String ras = next();
-						entity.sendGroupMessage(fromGroup, String.format("%s进行检定:D100 = %d/%s", entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(Integer.parseInt(ras)), ras));
+						entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s进行检定:D100 = %d/%s", entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(Integer.parseInt(ras)), ras));
 						return true;
 					case ".li":
-						entity.sendGroupMessage(fromGroup, String.format("%s的疯狂发作-总结症状:\n1D10=%d\n症状: 狂躁：调查员患上一个新的狂躁症，在1D10=%d小时后恢复理智。在这次疯狂发作中，调查员将完全沉浸于其新的狂躁症状。这是否会被其他人理解（apparent to other people）则取决于守秘人和此调查员。\n1D100=%d\n具体狂躁症: 臆想症（Nosomania）：妄想自己正在被某种臆想出的疾病折磨。(KP也可以自行从狂躁症状表中选择其他症状)", entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(11), random.nextInt(11), random.nextInt(101)));
+						entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s的疯狂发作-总结症状:\n1D10=%d\n症状: 狂躁：调查员患上一个新的狂躁症，在1D10=%d小时后恢复理智。在这次疯狂发作中，调查员将完全沉浸于其新的狂躁症状。这是否会被其他人理解（apparent to other people）则取决于守秘人和此调查员。\n1D100=%d\n具体狂躁症: 臆想症（Nosomania）：妄想自己正在被某种臆想出的疾病折磨。(KP也可以自行从狂躁症状表中选择其他症状)", entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(11), random.nextInt(11), random.nextInt(101)));
 						return true;
 					case ".ti":
-						entity.sendGroupMessage(fromGroup, String.format("%s的疯狂发作-临时症状:\n1D10=%d\n症状: 逃避行为：调查员会用任何的手段试图逃离现在所处的位置，状态持续1D10=%d轮。", entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(11), random.nextInt(11)));
+						entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s的疯狂发作-临时症状:\n1D10=%d\n症状: 逃避行为：调查员会用任何的手段试图逃离现在所处的位置，状态持续1D10=%d轮。", entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(11), random.nextInt(11)));
 						return true;
 					case ".rd":
-						entity.sendGroupMessage(fromGroup, String.format("由于%s %s骰出了: D100=%d", next(), entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(101)));
+						entity.sjfTx.sendGroupMessage(fromGroup, String.format("由于%s %s骰出了: D100=%d", next(), entity.configManager.getNickName(fromGroup, fromQQ), random.nextInt(101)));
 						return true;
 					case ".nn":
 						String name = next();
 						if (name == null) {
 							entity.configManager.setNickName(fromQQ, null);
-							entity.sendGroupMessage(fromGroup, "我以后会用你的QQ昵称称呼你");
+							entity.sjfTx.sendGroupMessage(fromGroup, "我以后会用你的QQ昵称称呼你");
 							return true;
 						}
 						if (name.length() > 30) {
-							entity.sendGroupMessage(fromGroup, "太长了,记不住");
+							entity.sjfTx.sendGroupMessage(fromGroup, "太长了,记不住");
 							return true;
 						}
 						entity.configManager.setNickName(fromQQ, name);
-						entity.sendGroupMessage(fromGroup, "我以后会称呼你为" + name);
+						entity.sjfTx.sendGroupMessage(fromGroup, "我以后会称呼你为" + name);
 						return true;
 					case ".help":
 
@@ -209,42 +214,42 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             } else {
                                 fpro = ((float)(md5Random(fromQQ) % 10001)) / 100;
                             }
-                            entity.sendGroupMessage(fromGroup, String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
+                            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
                         }
                         return true;    
                     case "。jrrp":
-                        entity.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
+                        entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
                         return true;
                     case ".draw":
                         String drawcmd=msg.substring(6);
                         switch (drawcmd) {
                             case "help":
-                                entity.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
+                                entity.sjfTx.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
                                 return true;
                             case "spell":
-                                entity.sendGroupMessage(fromGroup, spells[new Random().nextInt(spells.length)]);
+                                entity.sjfTx.sendGroupMessage(fromGroup, spells[new Random().nextInt(spells.length)]);
                                 return true;
                             case "neta":
-                                entity.sendGroupMessage(fromGroup, String.format("%s今天宜打%s", pname, md5RanStr(fromQQ, neta)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜打%s", pname, md5RanStr(fromQQ, neta)));
                                 return true;
                             case "music":
-                                entity.sendGroupMessage(fromGroup, String.format("%s今天宜听%s", pname, md5RanStr(fromQQ, music)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜听%s", pname, md5RanStr(fromQQ, music)));
                                 return true;
                             case "grandma":
                                 if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
-                                    entity.sendGroupMessage(fromGroup, String.format("%s今天宜认八云紫当奶奶", pname));
+                                    entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜认八云紫当奶奶", pname));
                                     return true;
                                 }
-                                entity.sendGroupMessage(fromGroup, String.format("%s今天宜认%s当奶奶", pname, md5RanStr(fromQQ, this.name)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜认%s当奶奶", pname, md5RanStr(fromQQ, this.name)));
                                 return true;
                             case "game":
                                 String s=randomGame(pname, fromQQ, true);
                                 s += ",";
                                 s += randomGame(pname, fromQQ + 1, false);
-                                entity.sendGroupMessage(fromGroup, s);
+                                entity.sjfTx.sendGroupMessage(fromGroup, s);
                                 return true;
                             case "jrrp":
-                                entity.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
                                 return true;
                             case "all":
                                 {
@@ -271,15 +276,15 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                         fpro = ((float)(md5Random(fromQQ) % 10001)) / 100;
                                     }
                                     sss += String.format("%s今天会在%.2f%%处疮痍", pname, fpro);
-                                    entity.sendGroupMessage(fromGroup, sss);
+                                    entity.sjfTx.sendGroupMessage(fromGroup, sss);
                                 }
                                 return true;            
                             default:
-                                entity.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
+                                entity.sjfTx.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
                         }
 				}
 			} catch (NumberFormatException ne) {
-				entity.sendGroupMessage(fromGroup, "参数错误");
+				entity.sjfTx.sendGroupMessage(fromGroup, "参数错误");
 			}
 		}
 		return false;

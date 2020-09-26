@@ -1,6 +1,9 @@
 package com.meng.config.javabeans;
 
-import java.util.*;
+/**
+ * @Description: 人员信息bean
+ * @author: 司徒灵羽
+ **/
 
 public class PersonInfo extends Object {
     public String name = "";

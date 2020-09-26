@@ -11,6 +11,10 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
 
+/**
+ * @author: 司徒灵羽
+ **/
+
 public class SJFMain {
 
     public static void main(String... args) {

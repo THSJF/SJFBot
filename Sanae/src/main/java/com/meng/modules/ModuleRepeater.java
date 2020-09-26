@@ -3,27 +3,32 @@ package com.meng.modules;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import java.util.HashMap;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 复读机
+ * @author: 司徒灵羽
+ **/
 
 public class ModuleRepeater extends BaseGroupModule {
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();
 
-    public ModuleRepeater(BotWrapperEntity bw){
+    public ModuleRepeater(BotWrapperEntity bw) {
         super(bw);
     }
-    
+
 	@Override
 	public ModuleRepeater load() {
 		return this;
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		Repeater rp=repeaters.get(fromGroup);
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
+		Repeater rp = repeaters.get(fromGroup);
 		if (rp == null) {
 			rp = new Repeater(fromGroup);
 			repeaters.put(fromGroup, rp);
@@ -72,7 +77,7 @@ public class ModuleRepeater extends BaseGroupModule {
 		}
 
 		private boolean repeatStart(long group,  long qq,  String msg) {
-			entity.sendGroupMessage(group, msg);
+			entity.sjfTx.sendGroupMessage(group, msg);
 			return true;
 		}
 	}

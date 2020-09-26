@@ -1,8 +1,9 @@
 package com.meng.gameData.TouHou.zun;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: th10游戏信息
+ * @author: 司徒灵羽
+ **/
 
 public class TH10GameData {
 	public static final String gameName="东方风神录 ~ Mountain of Faith.";

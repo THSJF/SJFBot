@@ -13,10 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 管理员命令
+ * @author: 司徒灵羽
+ **/
 
 public class MAdminMsg extends BaseGroupModule {
 
@@ -92,28 +94,31 @@ public class MAdminMsg extends BaseGroupModule {
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel()<1) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
+		if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 1) {
 			return false;
 		}
 		if (msg.equals(".on")) {
             GroupConfig groupConfig =entity.configManager.getGroupConfig(fromGroup);
             if (groupConfig == null) {
-                entity.sendGroupMessage(fromGroup, "本群没有默认配置");
+                entity.sjfTx.sendGroupMessage(fromGroup, "本群没有默认配置");
                 return true;
             }
             entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(true);
-            entity.sendGroupMessage(fromGroup, "已启用");
+            entity.sjfTx.sendGroupMessage(fromGroup, "已启用");
             entity.configManager.save();
 			return true;
 		}
         if (msg.equals(".off")) {
 			entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(false);
-			entity.sendGroupMessage(fromGroup,  "已停用");
+			entity.sjfTx.sendGroupMessage(fromGroup,  "已停用");
             return true;
         }
 		if (msg.startsWith("findInAll:")) {
-			Tools.CQ.findQQInAllGroup(entity,fromGroup, fromQQ, msg);
+			Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, msg);
 			return true;
 		}
         if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 2) {
@@ -121,7 +126,7 @@ public class MAdminMsg extends BaseGroupModule {
 		}
 		if (msg.startsWith("群广播:")) {
 			if (msg.contains("~") || msg.contains("～")) {
-				entity.sendGroupMessage(fromGroup,  "包含屏蔽的字符");
+				entity.sjfTx.sendGroupMessage(fromGroup,  "包含屏蔽的字符");
 				return true;
 			}
 			String broadcast=msg.substring(4);
@@ -132,7 +137,7 @@ public class MAdminMsg extends BaseGroupModule {
 				if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
 					continue;
 				}
-				entity.sendGroupMessage(gc.n, broadcast);
+				entity.sjfTx.sendGroupMessage(gc.n, broadcast);
 				hs.add(g);
 				try {
 					Thread.sleep(200);
@@ -145,17 +150,17 @@ public class MAdminMsg extends BaseGroupModule {
 				result += ":";
 				result += g.getName();
 			}
-			entity.sendGroupMessage(fromGroup,  result);
+			entity.sjfTx.sendGroupMessage(fromGroup,  result);
 			return true;
 		}
 		if (msg.equals(".stop")) {
-			entity.sendGroupMessage(fromGroup,  "disabled");
+			entity.sjfTx.sendGroupMessage(fromGroup,  "disabled");
 			entity.sleeping = true;
 			return true;
 		}
 		if (msg.equals(".start")) {
 			entity.sleeping = false;
-			entity.sendGroupMessage(fromGroup,  "enabled");
+			entity.sjfTx.sendGroupMessage(fromGroup,  "enabled");
 			return true;
 		}
 		if (msg.startsWith("block[CQ:at")) {
@@ -168,7 +173,7 @@ public class MAdminMsg extends BaseGroupModule {
 				sb.append(qq).append(" ");
 			}
 			entity.configManager.save();
-			entity.sendGroupMessage(fromGroup, sb.toString());
+			entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
 			return true;
 		}
 		if (msg.startsWith("black[CQ:at")) {
@@ -181,7 +186,7 @@ public class MAdminMsg extends BaseGroupModule {
 				sb.append(qq).append(" ");
 			}
 			entity.configManager.save();
-			entity.sendGroupMessage(fromGroup, sb.toString());
+			entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
 			return true;
 		}
 		if (msg.startsWith("find:")) {
@@ -201,7 +206,7 @@ public class MAdminMsg extends BaseGroupModule {
 					hashSet.add(personInfo);
 				}
 			}
-			entity.sendGroupMessage(fromGroup, GSON.toJson(hashSet));
+			entity.sjfTx.sendGroupMessage(fromGroup, GSON.toJson(hashSet));
 			return true;
 		}
 		if (msg.equals("线程数")) {
@@ -210,35 +215,35 @@ public class MAdminMsg extends BaseGroupModule {
 				"largestPoolSize：" + SJFExecutors.getLargestPoolSize() + "\n" +
 				"poolSize：" + SJFExecutors.getPoolSize() + "\n" +
 				"activeCount：" + SJFExecutors.getActiveCount();
-			entity.sendGroupMessage(fromGroup, s);
+			entity.sjfTx.sendGroupMessage(fromGroup, s);
 			return true;
 		}
 		if (msg.equalsIgnoreCase("System.gc();")) {
 			System.gc();
-			entity.sendGroupMessage(fromGroup, "gc start");
+			entity.sjfTx.sendGroupMessage(fromGroup, "gc start");
 			return true;
 		}
 		if (msg.equals("精神支柱")) {
-			entity.sendGroupMessage(fromGroup,  entity.image(new File(entity.appDirectory + "pic\\alice.png"), fromGroup));
+			entity.sjfTx.sendGroupMessage(fromGroup,  entity.image(new File(entity.appDirectory + "pic\\alice.png"), fromGroup));
 			return true;
 		}
 		if (msg.equals("生成位置")) {
-			entity.sendGroupMessage(fromGroup,  entity.location(35.594993, 118.869838, 15, "守矢神社", "此生无悔入东方 来世愿生幻想乡"));
+			entity.sjfTx.sendGroupMessage(fromGroup,  entity.location(35.594993, 118.869838, 15, "守矢神社", "此生无悔入东方 来世愿生幻想乡"));
 		}
 		if (msg.startsWith("生成位置")) {
 			String[] args = msg.split(",");
 			if (args.length == 6) {
 				try {
-					entity.sendGroupMessage(fromGroup, 
-                                                            entity.location(
-                                                                Double.parseDouble(args[2]),
-                                                                Double.parseDouble(args[1]),
-                                                                Integer.parseInt(args[3]),
-                                                                args[4],
-                                                                args[5]));
+					entity.sjfTx.sendGroupMessage(fromGroup, 
+                                                  entity.location(
+                                                      Double.parseDouble(args[2]),
+                                                      Double.parseDouble(args[1]),
+                                                      Integer.parseInt(args[3]),
+                                                      args[4],
+                                                      args[5]));
 					return true;
 				} catch (Exception e) {
-					entity.sendGroupMessage(fromGroup, "参数错误,生成位置.经度double.纬度double.倍数int.名称string.描述string");
+					entity.sjfTx.sendGroupMessage(fromGroup, "参数错误,生成位置.经度double.纬度double.倍数int.名称string.描述string");
 					return true;
 				}
 			}
@@ -247,10 +252,10 @@ public class MAdminMsg extends BaseGroupModule {
 		String[] strings = msg.split("\\.", 3);
 		if (strings[0].equals("send")) {
 			if (msg.contains("~") || msg.contains("～")) {
-				entity.sendGroupMessage(fromGroup,  "包含屏蔽的字符");
+				entity.sjfTx.sendGroupMessage(fromGroup,  "包含屏蔽的字符");
 				return true;
 			}
-            entity.sendGroupMessage(Long.parseLong(strings[1]), strings[2]);
+            entity.sjfTx.sendGroupMessage(Long.parseLong(strings[1]), strings[2]);
 			return true;
 		}
 		if (msg.startsWith("设置群头衔[CQ:at")) {

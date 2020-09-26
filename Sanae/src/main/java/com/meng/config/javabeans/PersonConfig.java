@@ -1,8 +1,13 @@
 package com.meng.config.javabeans;
 
+/**
+ * @Description: 单人设置bean
+ * @author: 司徒灵羽
+ **/
+
 public class PersonConfig extends Object {
-	public static final int qa=1 << 0;
-    private int flag=0;
+	public static final int qa = 1 << 0;
+    private int flag = 0;
 
     public boolean isQaAllowOther() {
         return (flag & (1 << 0)) != 0;

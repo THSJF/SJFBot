@@ -1,5 +1,9 @@
 package com.meng.SJFInterfaces;
 
+/**
+ * @author: 司徒灵羽
+ **/
+
 public interface IGroupEvent {
 	public boolean onGroupFileUpload(int sendTime, long fromGroup, long fromQQ, String file);
 	public boolean onGroupAdminChange(int subtype, int sendTime, long fromGroup, long beingOperateQQ);

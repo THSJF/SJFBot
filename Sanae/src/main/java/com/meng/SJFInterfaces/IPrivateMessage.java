@@ -1,6 +1,8 @@
 package com.meng.SJFInterfaces;
 
-import java.io.*;
+/**
+ * @author: 司徒灵羽
+ **/
 
 public interface IPrivateMessage {
 	public boolean onPrivateMsg(long fromQQ, String msg, int msgId);

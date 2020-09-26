@@ -1,18 +1,19 @@
 package com.meng.config.ritsukage;
 
-import com.google.gson.reflect.*;
-import com.meng.config.*;
-import com.meng.config.javabeans.*;
-import com.meng.sjfmd.libs.*;
-import com.meng.tools.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
+import com.google.gson.reflect.TypeToken;
+import com.meng.config.javabeans.PersonInfo;
+import com.meng.sjfmd.libs.BitConverter;
+import com.meng.sjfmd.libs.GSON;
+import com.meng.tools.Tools;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.util.HashSet;
 
 /**
- * @author 司徒灵羽
- */
- 
+ * @Description: 和小律影通信的数据包
+ * @author: 司徒灵羽
+ **/
+
 public class RitsukageDataPack {
 
 	private byte[] data;

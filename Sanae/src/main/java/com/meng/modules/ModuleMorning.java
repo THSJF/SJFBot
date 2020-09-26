@@ -7,10 +7,12 @@ import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 早安
+ * @author: 司徒灵羽
+ **/
 
 public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 
@@ -24,7 +26,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
     public BotWrapperEntity getWrapper() {
         return entity;
     }
-    
+
 	@Override
 	public String getPersistentName() {
 		return "getUp.json";
@@ -46,7 +48,10 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
 		if (msg.equals("早上好")) {
 			for (GetUpBean qif:getUp) {
 				if (qif.qq == fromQQ) {
@@ -58,7 +63,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
             qi.isBoy = false;
             qi.getUptimeStamp = System.currentTimeMillis();
 			getUp.add(qi);
-            entity.sendGroupMessage(fromGroup, String.format("你是今天第%d位起床的少女哦", getUp.size()));
+            entity.sjfTx.sendGroupMessage(fromGroup, String.format("你是今天第%d位起床的少女哦", getUp.size()));
 			save();
 		} else if (msg.equals("晚安")) {
 			for (GetUpBean qif:getUp) {
@@ -66,7 +71,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 					if (qif.getUptimeStamp == 0 || qif.isSleep) {
 						return false;
 					} else {
-						entity.sendGroupMessage(fromGroup, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
+						entity.sjfTx.sendGroupMessage(fromGroup, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
 						qif.isSleep = true;
 						save();
 					}

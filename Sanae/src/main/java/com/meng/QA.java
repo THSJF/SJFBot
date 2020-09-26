@@ -1,6 +1,12 @@
 package com.meng;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+
+/**
+ * @author: 司徒灵羽
+ **/
 
 public class QA {
 	private int flag=0;
@@ -14,8 +20,8 @@ public class QA {
 
 	public void exangeAnswer() {
 		Random r=new Random();
-		int index1=r.nextInt(a.size()-1);
-		int index2=r.nextInt(a.size()-1);
+		int index1=r.nextInt(a.size() - 1);
+		int index2=r.nextInt(a.size() - 1);
 		boolean is1F=bitIs1(index1);
 		setBit(index1, bitIs1(index2));
 		setBit(index2, is1F);
@@ -23,10 +29,10 @@ public class QA {
 		a.set(index1, a.get(index2));
 		a.set(index2, ele1);
 	}
-	
+
 	public void exangeAnswer(int index1) {
 		Random r=new Random();
-		int index2=r.nextInt(a.size()-1);
+		int index2=r.nextInt(a.size() - 1);
 		boolean is1F=bitIs1(index1);
 		setBit(index1, bitIs1(index2));
 		setBit(index2, is1F);

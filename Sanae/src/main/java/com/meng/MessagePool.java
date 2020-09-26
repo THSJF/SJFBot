@@ -6,6 +6,10 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.message.MessageEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
+
 public class MessagePool {
 
     private static LinkedList<MessageEvent> msgList = new LinkedList<>();

@@ -7,19 +7,21 @@ import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 信仰
+ * @author: 司徒灵羽
+ **/
 
 public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 
 	private HashMap<Long, Integer> faithMap = new HashMap<>();
-	
-    public ModuleFaith(BotWrapperEntity bw){
+
+    public ModuleFaith(BotWrapperEntity bw) {
         super(bw);
     }
-    
+
 	@Override
 	public ModuleFaith load() {
 		DataPersistenter.read(this);
@@ -27,8 +29,8 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+
 		return false;
 	}
 
@@ -73,7 +75,7 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 	private void saveData() {
 		DataPersistenter.save(this);
 	}
-	
+
 	@Override
 	public String getPersistentName() {
 		return "faith.json";

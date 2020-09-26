@@ -1,18 +1,25 @@
 package com.meng.modules;
 
-import com.google.gson.reflect.*;
-import com.meng.*;
-import com.meng.SJFInterfaces.*;
-import com.meng.config.*;
-import java.lang.reflect.*;
-import java.util.*;
+import com.google.gson.reflect.TypeToken;
+import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.DataPersistenter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Iterator;
+import net.mamoe.mirai.message.GroupMessageEvent;
+
+/**
+ * @Description: 消息延迟发送
+ * @author: 司徒灵羽
+ **/
 
 public class ModuleMsgDelaySend extends BaseGroupModule implements IPersistentData {
 
 	private ArrayList<MessageWait> delayMsg = new ArrayList<>();
 
-    public ModuleMsgDelaySend(BotWrapperEntity bw){
+    public ModuleMsgDelaySend(BotWrapperEntity bw) {
         super(bw);
     }
 
@@ -48,7 +55,9 @@ public class ModuleMsgDelaySend extends BaseGroupModule implements IPersistentDa
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
 		if (delayMsg.size() == 0) {
 			return false;
 		}
@@ -57,10 +66,10 @@ public class ModuleMsgDelaySend extends BaseGroupModule implements IPersistentDa
 			MessageWait mw=iter.next();
 			if (mw.qq == fromQQ) {
 				if (mw.group == -1) {
-					entity.sendGroupMessage(fromGroup,  mw.content);
+					entity.sjfTx.sendGroupMessage(fromGroup,  mw.content);
 					iter.remove();
 				} else if (mw.group == fromGroup) {
-					entity.sendGroupMessage(fromGroup,  mw.content);
+					entity.sjfTx.sendGroupMessage(fromGroup,  mw.content);
 					iter.remove();
 				}
 			}

@@ -5,19 +5,21 @@ import com.meng.adapter.BotWrapperEntity;
 import com.meng.tools.SJFExecutors;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 阻止刷屏消息进入
+ * @author: 司徒灵羽
+ **/
 
 public class MessageRefuse extends BaseGroupModule {
 
 	public ConcurrentHashMap<Long,FireWallBean> msgMap = new ConcurrentHashMap<>();
 
-    public MessageRefuse(BotWrapperEntity bw){
+    public MessageRefuse(BotWrapperEntity bw) {
         super(bw);
     }
-    
+
 	@Override
 	public MessageRefuse load() {
 		SJFExecutors.executeAtFixedRate(new Runnable(){
@@ -33,9 +35,12 @@ public class MessageRefuse extends BaseGroupModule {
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (entity.configManager.isBlackQQ(fromQQ)) {
-			
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+		long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
+        if (entity.configManager.isBlackQQ(fromQQ)) {
+
         }
         if (entity.configManager.isBlockQQ(fromQQ) || entity.configManager.isBlockWord(msg)) {
             return true;
@@ -54,7 +59,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.timeSubLowTimes > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sendGroupMessage(fromGroup,  "你说话真快");
+				entity.sjfTx.sendGroupMessage(fromGroup,  "你说话真快");
 			}
 			return true;
 		}
@@ -68,7 +73,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.repeatTime > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sendGroupMessage(fromGroup,  "怎么又是这句话");
+				entity.sjfTx.sendGroupMessage(fromGroup,  "怎么又是这句话");
 			}
 			mtmb.lastMsg = msg;
 			return true;
@@ -79,7 +84,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.lastSeconedMsgs > 4) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sendGroupMessage(fromGroup,  "你真稳");
+				entity.sjfTx.sendGroupMessage(fromGroup,  "你真稳");
 			}
 			return true;
 		}

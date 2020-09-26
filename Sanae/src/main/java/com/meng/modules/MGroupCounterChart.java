@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.message.GroupMessageEvent;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
@@ -26,6 +27,11 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+
+/**
+ * @Description: 群消息统计图
+ * @author: 司徒灵羽
+ **/
 
 public class MGroupCounterChart extends BaseGroupModule implements IPersistentData {
 
@@ -52,8 +58,10 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 	}
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
-		if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountChartEnable()) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+		long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
+        if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountChartEnable()) {
 			return false;
 		}
 		GroupSpeak gs = groupsMap.get(fromGroup);
@@ -79,7 +87,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			}
 
 			if (everyHourHashMap == null || everyHourHashMap.size() == 0) {
-				entity.sendGroupMessage(fromGroup, "无数据");
+				entity.sjfTx.sendGroupMessage(fromGroup, "无数据");
 				return true;
 			}
 			StringBuilder sb=new StringBuilder(String.format("群内共有%d条消息,今日消息情况:\n", groupsMap.get(fromGroup).all));
@@ -89,7 +97,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 				}
 				sb.append(String.format("%d:00-%d:00  共%d条消息\n", i, i + 1, everyHourHashMap.get(i)));
 			}
-			entity.sendGroupMessage(fromGroup, sb.toString());
+			entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
 			TimeSeries dtimeseries = new TimeSeries("你群发言");
 			Calendar dc = Calendar.getInstance();
 			dc.add(Calendar.HOUR_OF_DAY, -24);
@@ -118,7 +126,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 				pic = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, dframe1.getChart(), 800, 480);
 			} catch (IOException e) {}
-			entity.sendGroupMessage(fromGroup, entity.image(pic, fromGroup));
+			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic, fromGroup));
 			TimeSeries timeseries = new TimeSeries("你群发言");
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, -30);
@@ -151,7 +159,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 				pic2 = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, frame1.getChart(), 800, 480);
 			} catch (IOException e) {}
-			entity.sendGroupMessage(fromGroup, entity.image(pic2, fromGroup));
+			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic2, fromGroup));
 			return true;
 		}	
 		return false;

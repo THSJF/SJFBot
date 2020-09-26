@@ -127,17 +127,17 @@ public class Tools {
 				findqq = bw.getAt(msg);
 			}
 			if (findqq <= 0) {
-				bw.sendGroupMessage(fromGroup, "QQ账号错误");
+				bw.sjfTx.sendGroupMessage(fromGroup, "QQ账号错误");
 				return;
 			}
-			bw.sendGroupMessage(fromGroup, "running");
+			bw.sjfTx.sendGroupMessage(fromGroup, "running");
 			HashSet<Group> hashSet = findQQInAllGroup(bw, findqq);
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append(findqq).append("在这些群中出现");
 			for (Group l : hashSet) {
 				stringBuilder.append("\n").append(l.getId()).append(l.getName());
 			}
-			bw.sendGroupMessage(fromGroup, stringBuilder.toString());
+			bw.sjfTx.sendGroupMessage(fromGroup, stringBuilder.toString());
 		}
 		public static HashSet<Group> findQQInAllGroup(BotWrapperEntity bw, long findQQ) {
 			ContactList<Group> groups = bw.getGroupList();

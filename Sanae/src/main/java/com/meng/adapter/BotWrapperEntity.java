@@ -5,13 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.meng.MessagePool;
 import com.meng.config.ConfigManager;
-import com.meng.modules.MGroupCounter;
 import com.meng.modules.ModuleManager;
-import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
@@ -19,7 +16,11 @@ import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
-import net.mamoe.mirai.message.data.PlainText;
+
+/**
+ * @Description: bot实体包装器
+ * @author: 司徒灵羽
+ **/
 
 public class BotWrapperEntity {
 
@@ -233,31 +234,6 @@ public class BotWrapperEntity {
 
     public String location(double p0, double p1, int p2, String p3, String p4) {
         throw new UnsupportedOperationException();
-    }
-    
-    public int sendGroupMessage(long fromGroup, Message msg) {
-        if (sleeping || configManager.isBotOff(fromGroup)) {
-            return -1;
-        }
-        moduleManager.getModule(MGroupCounter.class).onGroupMessage(fromGroup, 0, "", 0);
-        return bot.getGroup(fromGroup).sendMessage(msg).getSource().getId();
-    }
-
-    public int sendGroupMessage(long fromGroup, String msg) {
-        return sendGroupMessage(fromGroup, new PlainText(msg));
-    }
-
-    public  int sendGroupMessage(long fromGroup, String[] msg) {
-        return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
-    }
-
-    public int sendGroupMessage(long fromGroup, ArrayList<String> msg) {
-        return sendGroupMessage(fromGroup, msg.get(new Random().nextInt(msg.size())));
-    }
-
-    public int sendPrivateMessage(long qqId, String msg) {
-        bot.getFriend(qqId).sendMessage(msg);
-        return 0;
     }
 
 }

@@ -1,7 +1,12 @@
 package com.meng.SJFInterfaces;
 
 import com.meng.adapter.BotWrapperEntity;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
+ 
 public abstract class BaseGroupModule extends BaseModule implements IGroupMessage {
 
     public BaseGroupModule(BotWrapperEntity bw){
@@ -9,5 +14,5 @@ public abstract class BaseGroupModule extends BaseModule implements IGroupMessag
     }
     
 	@Override
-	public abstract boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId);
+	public abstract boolean onGroupMessage(GroupMessageEvent gme);
 }

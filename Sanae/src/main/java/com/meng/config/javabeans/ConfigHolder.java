@@ -2,6 +2,11 @@ package com.meng.config.javabeans;
 
 import java.util.*;
 
+/**
+ * @Description: 配置存储bean
+ * @author: 司徒灵羽
+ **/
+ 
 public class ConfigHolder {
     public HashSet<GroupConfig> groupConfigs = new HashSet<>();
     public HashSet<Long> blockOnlyQQ = new HashSet<>();

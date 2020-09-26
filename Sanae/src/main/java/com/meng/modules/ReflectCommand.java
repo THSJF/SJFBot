@@ -4,10 +4,12 @@ import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.sjfmd.libs.GSON;
 import java.lang.reflect.Method;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description: 通过反射执行方法
+ * @author: 司徒灵羽
+ **/
 
 public class ReflectCommand extends BaseGroupModule {
 
@@ -19,9 +21,12 @@ public class ReflectCommand extends BaseGroupModule {
     public ReflectCommand load() {
         return null;
     }
-    
+
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromQQ = gme.getSender().getId();
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
 		if (fromQQ == 2856986197L && msg.startsWith("-invoke")) {
 			String[] args = msg.split(" ");
 			try {
@@ -29,7 +34,7 @@ public class ReflectCommand extends BaseGroupModule {
 				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();
-					entity.sendGroupMessage(fromGroup, "新模块:" + target.getName());
+					entity.sjfTx.sendGroupMessage(fromGroup, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
 				Class[] paramTypes = new Class[parseInt];
@@ -38,11 +43,11 @@ public class ReflectCommand extends BaseGroupModule {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
 				}
 				Method m = target.getMethod(args[2], paramTypes);
-				entity.sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
+				entity.sjfTx.sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				entity.sendGroupMessage(fromGroup, e.toString());
+				entity.sjfTx.sendGroupMessage(fromGroup, e.toString());
 				return true;
 			}
 		}

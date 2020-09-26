@@ -4,26 +4,27 @@ import com.google.gson.reflect.TypeToken;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
-import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.tools.SJFExecutors;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
- * @author 司徒灵羽
- */
+ * @Description:群发言统计 
+ * @author: 司徒灵羽
+ **/
 
 public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 
     private HashMap<String, GroupInfo> countMap = new HashMap<>();
 
-    public MGroupCounter(BotWrapperEntity bw){
+    public MGroupCounter(BotWrapperEntity bw) {
         super(bw);
     }
-    
+
     public class GroupInfo {
         public int speak = 0;
         public int pic = 0;
@@ -50,7 +51,9 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
     }
 
 	@Override
-	public boolean onGroupMessage(long fromGroup, long fromQQ, String msg, int msgId) {
+	public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromGroup = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
 		if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountEnable()) {
 			return false;
 		}
@@ -60,11 +63,11 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 			incGrass(fromGroup);
         }
 		if (msg.equals("查看群统计")) {
-			entity.sendGroupMessage(fromGroup, getMyCount(fromGroup));
+			entity.sjfTx.sendGroupMessage(fromGroup, getMyCount(fromGroup));
             return true;
 		}
         if (msg.equals("查看群排行")) {
-			entity.sendGroupMessage(fromGroup, getTheFirst());
+			entity.sjfTx.sendGroupMessage(fromGroup, getTheFirst());
             return true;
 		}
 		return false;
