@@ -22,10 +22,10 @@ public class ConfigManager implements IPersistentData {
     public BotWrapperEntity entity;
 
     public boolean isBotOff(long fromGroup) {
-        return configHolder.botOff.contains(fromGroup);
+        return !getGroupConfig(fromGroup).isBotOn();
     }
 
-    public void setBotWrapperEntity(BotWrapperEntity bwe){
+    public void setBotWrapperEntity(BotWrapperEntity bwe) {
         entity = bwe;
     }
 
@@ -198,6 +198,19 @@ public class ConfigManager implements IPersistentData {
 		}
         return null;
 	}
+
+    public void setWelcome(long fromGroup, String content) {
+        if (content == null) {
+            configHolder.welcomeMap.remove(fromGroup);
+        } else {
+            configHolder.welcomeMap.put(fromGroup, content);
+        }
+        save();
+    }
+
+    public String getWelcome(long fromGroup) {
+        return configHolder.welcomeMap.get(fromGroup);
+    }
 
 	public boolean isOwner(long fromQQ) {
         return configHolder.owner.contains(fromQQ);

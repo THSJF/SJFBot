@@ -11,8 +11,6 @@ import java.lang.reflect.Method;
 
 public class ReflectCommand extends BaseGroupModule {
 
-    private BotWrapperEntity wrapper;
-
     public ReflectCommand(BotWrapperEntity bw) {
         super(bw);
     }
@@ -31,7 +29,7 @@ public class ReflectCommand extends BaseGroupModule {
 				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();
-					wrapper.sendGroupMessage(fromGroup, "新模块:" + target.getName());
+					entity.sendGroupMessage(fromGroup, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
 				Class[] paramTypes = new Class[parseInt];
@@ -40,11 +38,11 @@ public class ReflectCommand extends BaseGroupModule {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
 				}
 				Method m = target.getMethod(args[2], paramTypes);
-				wrapper.sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
+				entity.sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				wrapper.sendGroupMessage(fromGroup, e.toString());
+				entity.sendGroupMessage(fromGroup, e.toString());
 				return true;
 			}
 		}

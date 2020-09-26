@@ -16,7 +16,6 @@ public class ConfigHolder {
 	
 	public HashMap<Long,String> welcomeMap = new HashMap<>();
 	public HashMap<Long,PersonConfig> personCfg=new HashMap<>();
-	public HashSet<Long> botOff = new HashSet<>();
 	public HashSet<Long> zanSet = new HashSet<>();
 	
 }

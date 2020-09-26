@@ -67,6 +67,7 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(@NotNull GroupMessageEvent event) {
+        MessagePool.put(event);
         moduleManager.onGroupMessage(event.getGroup().getId(), event.getSender().getId(), event.getMessage().contentToString(), event.getSource().getId());
         return ListeningStatus.LISTENING;
     }

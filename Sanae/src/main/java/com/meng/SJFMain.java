@@ -27,6 +27,7 @@ public class SJFMain {
         BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
         moduleManager.setBotWrapperEntity(entity);
         configManager.setBotWrapperEntity(entity);
+        configManager.init();
         moduleManager.loadModules(configManager);
         moduleManager.load();
         tx.entity = rx.entity = moduleManager.entity = entity;
