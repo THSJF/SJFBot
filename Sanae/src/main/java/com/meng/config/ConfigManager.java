@@ -78,7 +78,10 @@ public class ConfigManager implements IPersistentData {
                 return gc;
             }
         }
-        return emptyConfig;
+        GroupConfig gc = new GroupConfig();
+        configHolder.groupConfigs.add(gc);
+        save();
+        return gc;
     }
 
 	public Set<GroupConfig> getGroupConfigs() {

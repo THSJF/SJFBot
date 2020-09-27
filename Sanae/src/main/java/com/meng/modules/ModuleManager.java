@@ -45,6 +45,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		load(ReflectCommand.class);
 		load(MAdminMsg.class);
 		load(MGroupCounter.class);
+        load(MGroupCounterChart.class);
 		load(MessageRefuse.class);
 		load(ModuleRepeater.class);
 		load(ModuleReport.class);
@@ -53,9 +54,10 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		load(ModuleDiceCmd.class);
 		load(ModuleFaith.class);
 
-
+        load(ModuleMsgDelaySend.class);
 		load(MTimeTip.class);
 		SJFExecutors.execute(getGroupModule(MTimeTip.class));
+        all.add(this);
 		return this;
 	}
 
@@ -117,8 +119,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 			return true;
 		}
 		for (IGroupMessage m : groupModules) {
-			System.out.println(m.getClass().getName());
-			if (m.onGroupMessage(null)) {
+			if (m.onGroupMessage(gme)) {
 				return true;
 			}
 		}

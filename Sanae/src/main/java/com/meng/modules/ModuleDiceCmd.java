@@ -44,8 +44,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
 
     public ModuleDiceCmd(BotWrapperEntity bw) {
         super(bw);
-        spells = Tools.ArrayTool.mergeArray(spells, 
-                                            TH06GameData.spells,
+        spells = Tools.ArrayTool.mergeArray(TH06GameData.spells,
                                             TH07GameData.spells,
                                             TH08GameData.spells,
                                             TH10GameData.spells,
