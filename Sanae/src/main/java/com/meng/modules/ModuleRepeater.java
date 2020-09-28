@@ -4,6 +4,7 @@ import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import java.util.HashMap;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.message.data.MessageChain;
 
 /**
  * @Description: 复读机
@@ -27,56 +28,49 @@ public class ModuleRepeater extends BaseGroupModule {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long fromQQ = gme.getSender().getId();
         long fromGroup = gme.getGroup().getId();
-        String msg = gme.getMessage().contentToString();
-		Repeater rp = repeaters.get(fromGroup);
+        Repeater rp = repeaters.get(fromGroup);
 		if (rp == null) {
-			rp = new Repeater(fromGroup);
-			repeaters.put(fromGroup, rp);
+			repeaters.put(fromGroup, rp = new Repeater());
 		}
-        return rp.check(fromGroup, fromQQ, msg);
+        return rp.check(fromGroup, fromQQ, gme.getMessage());
     }
 
 	private class Repeater {
 		private String lastMessageRecieved = "";
 		private boolean lastStatus = false;
-		private long groupNumber = 0;
 
-		public Repeater(long groupNumber) {
-			this.groupNumber = groupNumber;
-		}
-
-		public boolean check(long fromGroup, long fromQQ, String msg) {
+		public boolean check(long fromGroup, long fromQQ, MessageChain msg) {
 			boolean b = false; 
 			b = checkRepeatStatu(fromGroup, fromQQ, msg);
-			lastMessageRecieved = msg;
+			lastMessageRecieved = msg.contentToString();
 			return b;
 		}
 
 		// 复读状态
-		private boolean checkRepeatStatu(long group, long qq, String msg) {
+		private boolean checkRepeatStatu(long group, long qq, MessageChain msg) {
 			boolean b = false;
-			if (!lastStatus && lastMessageRecieved.equals(msg)) {
+			if (!lastStatus && lastMessageRecieved.equals(msg.contentToString())) {
 				b = repeatStart(group, qq, msg);
 			}
-			if (lastStatus && lastMessageRecieved.equals(msg)) {
+			if (lastStatus && lastMessageRecieved.equals(msg.contentToString())) {
 				b = repeatRunning(group, qq, msg);
 			}
-			if (lastStatus && !lastMessageRecieved.equals(msg)) {
+			if (lastStatus && !lastMessageRecieved.equals(msg.contentToString())) {
 				b = repeatEnd(group, qq, msg);
 			}
-			lastStatus = lastMessageRecieved.equals(msg);
+			lastStatus = lastMessageRecieved.equals(msg.contentToString());
 			return b;
 		}
 
-		private boolean repeatEnd(long group, long qq, String msg) {
+		private boolean repeatEnd(long group, long qq, MessageChain msg) {
 			return false;
 		}
 
-		private boolean repeatRunning(long group, long qq, String msg) {
+		private boolean repeatRunning(long group, long qq, MessageChain msg) {
 			return false;
 		}
 
-		private boolean repeatStart(long group,  long qq,  String msg) {
+		private boolean repeatStart(long group,  long qq,  MessageChain msg) {
 			entity.sjfTx.sendGroupMessage(group, msg);
 			return true;
 		}
