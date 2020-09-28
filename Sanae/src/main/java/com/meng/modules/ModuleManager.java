@@ -43,6 +43,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	@Override
 	public ModuleManager load() {
 		load(ReflectCommand.class);
+        load(MtestMsg.class);
 		load(MAdminMsg.class);
 		load(MGroupCounter.class);
         load(MGroupCounterChart.class);

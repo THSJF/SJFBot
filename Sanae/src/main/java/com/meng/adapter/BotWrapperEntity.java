@@ -16,6 +16,9 @@ import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
+import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 /**
  * @Description: bot实体包装器
@@ -77,7 +80,7 @@ public class BotWrapperEntity {
     }
 
     public String at(long groupId, long qqId) {
-        return String.format("[mirai:at:%d,%d]", qqId, bot.getGroup(groupId).get(qqId).getNameCard());
+        return new At(bot.getGroup(groupId).get(qqId)).toMiraiCode();
     }
 
     public String at(long qqId, String name) {
@@ -88,16 +91,14 @@ public class BotWrapperEntity {
         return bot.getGroup(groupId).uploadImage(f).toString();
     }
 
+    public long getAt(MessageChain msg) {
+        return msg.firstOrNull(At.Key).getTarget();
+    }
+
     public long getAt(String msg) {
-        int index = msg.indexOf("[mirai:at:");
-        if (index == -1) return -1000;
-        int index2 = msg.indexOf(",", index);
-        if (index == -2) return -1000;
-        try {
-            return Long.parseLong(msg.substring(index + 10, index2));
-        } catch (NumberFormatException e) {
-            return -1000;
-        }
+        MessageChainBuilder mcb = new MessageChainBuilder();
+        mcb.add(new PlainText(msg));
+        return getAt(mcb.asMessageChain());
     }
 
     public List<Long> getAts(String msg) {
