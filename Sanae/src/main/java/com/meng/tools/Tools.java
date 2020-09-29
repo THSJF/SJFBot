@@ -146,17 +146,12 @@ public class Tools {
 				if (group.getId() == 959615179L || group.getId() == 666247478L) {
 					continue;
 				}
-				ContactList<Member> members =  bw.getGroupMemberList(group.getId());
-				for (Member member : members) {
-					if (member.getId() == findQQ) {
-						hashSet.add(group);
-						break;
-					}
-				}
+                if (group.get(findQQ) != null) {
+                    hashSet.add(group);
+                }
 			}
 			return hashSet;
 		}
-		
 	}
 
 	public static class ArrayTool {

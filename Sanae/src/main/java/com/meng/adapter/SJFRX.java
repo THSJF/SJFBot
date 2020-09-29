@@ -352,6 +352,7 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull BotInvitedJoinGroupRequestEvent event) {
+        event.accept();
         return ListeningStatus.LISTENING;
     }
     //成员群名片改动: MemberCardChangeEvent

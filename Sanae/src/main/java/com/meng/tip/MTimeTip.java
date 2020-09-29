@@ -93,7 +93,7 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
         long fromQQ = gme.getSender().getId();
         long fromGroup = gme.getGroup().getId();
         if (!tipedYYS && fromGroup == groupYuTang && fromQQ == YYS) {
-            String[] strings = new String[]{"想吃YYS", "想食YYS", "想上YYS",entity.at(1418780411L) + "老婆"};
+            String[] strings = new String[]{"想吃YYS", "想食YYS", "想上YYS",entity.at(groupYuTang,1418780411L) + "老婆"};
             entity.sjfTx.sendGroupMessage(groupYuTang, Tools.ArrayTool.rfa(strings));
             tipedYYS = true;
             return true;

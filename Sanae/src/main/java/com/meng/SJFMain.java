@@ -10,6 +10,7 @@ import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
+import com.meng.sjfmd.libs.ExceptionCatcher;
 
 /**
  * @author: 司徒灵羽
@@ -29,6 +30,7 @@ public class SJFMain {
         Events.registerEvents(bot, rx);
         ConfigManager configManager = new ConfigManager();
         BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
+        ExceptionCatcher.getInstance(entity).init();
         moduleManager.setBotWrapperEntity(entity);
         configManager.setBotWrapperEntity(entity);
         configManager.init();
@@ -44,6 +46,7 @@ public class SJFMain {
                     bot.join();
                 }
             });
+        moduleManager.loadModules(bot);
     }
 }
 

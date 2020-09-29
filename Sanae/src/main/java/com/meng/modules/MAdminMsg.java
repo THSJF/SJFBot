@@ -101,8 +101,8 @@ public class MAdminMsg extends BaseGroupModule {
 		if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 1) {
 			return false;
 		} 
-		if (msg.equals(".on")) {
-            GroupConfig groupConfig =entity.configManager.getGroupConfig(fromGroup);
+		if (msg.equals(".bot on")) {
+            GroupConfig groupConfig = entity.configManager.getGroupConfig(fromGroup);
             if (groupConfig == null) {
                 entity.sjfTx.sendGroupMessage(fromGroup, "本群没有默认配置");
                 return true;
@@ -112,7 +112,7 @@ public class MAdminMsg extends BaseGroupModule {
             entity.configManager.save();
 			return true;
 		}
-        if (msg.equals(".off")) {
+        if (msg.equals(".bot off")) {
 			entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(false);
 			entity.sjfTx.sendGroupMessage(fromGroup,  "已停用");
             return true;

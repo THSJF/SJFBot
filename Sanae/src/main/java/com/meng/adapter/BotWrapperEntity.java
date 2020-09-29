@@ -19,6 +19,7 @@ import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import net.mamoe.mirai.message.code.MiraiCode;
 
 /**
  * @Description: bot实体包装器
@@ -75,16 +76,12 @@ public class BotWrapperEntity {
         return false;
     }
 
-    public String at(long qqId) {
-        return String.format("[mirai:at:%d,%d]", qqId, qqId);
-    }
-
     public String at(long groupId, long qqId) {
-        return new At(bot.getGroup(groupId).get(qqId)).toMiraiCode();
+        return at(bot.getGroup(groupId).get(qqId));
     }
 
-    public String at(long qqId, String name) {
-        return String.format("[mirai:at:%d,%d]", qqId, name);
+    public String at(Member m) {
+        return new At(m).toMiraiCode();
     }
 
     public String image(File f, long groupId) {
@@ -119,33 +116,6 @@ public class BotWrapperEntity {
         return al;
     }
 
-    public int sendPrivateMsg(long qqId, String msg) {
-        try {
-            return bot.getFriend(qqId).sendMessage(msg).getSource().getId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public int sendGroupMsg(long groupId, Message msg) {
-        try {
-            return bot.getGroup(groupId).sendMessage(msg).getSource().getId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public int sendGroupMsg(long groupId, String msg) {
-        try {
-            return bot.getGroup(groupId).sendMessage(msg).getSource().getId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
     public int deleteMsg(MessageChain mc) {
         bot.recall(mc);
         return 0;
@@ -165,6 +135,19 @@ public class BotWrapperEntity {
         throw new UnsupportedOperationException();
     }
 
+    public boolean messageEquals(MessageChain mc1, MessageChain mc2) {
+        if (mc1.size() != mc2.size()) {
+            return false;
+        }
+        int len = mc1.size();
+        for (int i=1;i < len;++i) {
+            if (!mc1.get(i).equals(mc2.get(i))) {
+                return false; 
+            }
+        }
+        return true;
+    }
+    
     public void setGroupKick(long groupId, long qqId, boolean notBack) {
         try {
             bot.getGroup(groupId).get(qqId).kick();

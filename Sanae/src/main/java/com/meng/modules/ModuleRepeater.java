@@ -4,6 +4,7 @@ import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import java.util.HashMap;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
 
 /**
@@ -14,7 +15,7 @@ import net.mamoe.mirai.message.data.MessageChain;
 public class ModuleRepeater extends BaseGroupModule {
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();
-
+    private MessageChain emptyMessageChain = new EmptyMessageChain();
     public ModuleRepeater(BotWrapperEntity bw) {
         super(bw);
     }
@@ -36,29 +37,30 @@ public class ModuleRepeater extends BaseGroupModule {
     }
 
 	private class Repeater {
-		private String lastMessageRecieved = "";
+		private MessageChain lastMsgRecieved = emptyMessageChain;
 		private boolean lastStatus = false;
 
 		public boolean check(long fromGroup, long fromQQ, MessageChain msg) {
 			boolean b = false; 
 			b = checkRepeatStatu(fromGroup, fromQQ, msg);
-			lastMessageRecieved = msg.contentToString();
+			lastMsgRecieved = msg;
+            //msg.first(Image.Key).toString()
 			return b;
 		}
 
 		// 复读状态
 		private boolean checkRepeatStatu(long group, long qq, MessageChain msg) {
 			boolean b = false;
-			if (!lastStatus && lastMessageRecieved.equals(msg.contentToString())) {
+			if (!lastStatus && entity.messageEquals(lastMsgRecieved, msg)) {
 				b = repeatStart(group, qq, msg);
 			}
-			if (lastStatus && lastMessageRecieved.equals(msg.contentToString())) {
+			if (lastStatus && entity.messageEquals(lastMsgRecieved, msg)) {
 				b = repeatRunning(group, qq, msg);
 			}
-			if (lastStatus && !lastMessageRecieved.equals(msg.contentToString())) {
+			if (lastStatus && !entity.messageEquals(lastMsgRecieved, msg)) {
 				b = repeatEnd(group, qq, msg);
 			}
-			lastStatus = lastMessageRecieved.equals(msg.contentToString());
+			lastStatus = entity.messageEquals(lastMsgRecieved, msg);
 			return b;
 		}
 

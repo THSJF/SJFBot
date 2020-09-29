@@ -10,6 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import net.mamoe.mirai.contact.BotIsBeingMutedException;
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.message.data.PlainText;
 
 public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
@@ -39,6 +42,13 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        if (ex instanceof BotIsBeingMutedException) {
+            BotIsBeingMutedException bibme = (BotIsBeingMutedException) ex;
+            Bot bot = Bot.getBotInstances().get(0);
+            bot.getGroup(bibme.getTarget().getId()).quit();
+            bot.getGroup(BotWrapperEntity.yysGroup).sendMessage(new PlainText("已退出群" + bibme.getTarget().getId() + ",因为被禁言"));
+            return;
+        }
         if (!handleException(ex) && mDefaultHandler != null) {
             mDefaultHandler.uncaughtException(thread, ex);
 		} else {
