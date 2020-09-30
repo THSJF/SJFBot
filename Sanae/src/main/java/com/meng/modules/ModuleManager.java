@@ -14,6 +14,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MemberJoinEvent;
+import net.mamoe.mirai.event.events.MemberLeaveEvent;
 
 /**
  * @Description: 模块管理器
@@ -57,6 +59,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
         load(ModuleMsgDelaySend.class);
 		load(MTimeTip.class);
+        load(MWelcome.class);
 		SJFExecutors.execute(getGroupModule(MTimeTip.class));
         all.add(this);
 		return this;
@@ -174,12 +177,13 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	}
 
 	@Override
-	public boolean onGroupMemberDecrease(int subtype, int sendTime, long fromGroup, long fromQQ, long beingOperateQQ) {
+	public boolean onGroupMemberDecrease(MemberLeaveEvent event) {
+        long fromGroup = event.getGroup().getId();
 		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
-			if (e.onGroupMemberDecrease(subtype, sendTime, fromGroup, fromQQ, beingOperateQQ)) {
+			if (e.onGroupMemberDecrease(event)) {
 				return true;
 			}
 		}
@@ -187,7 +191,9 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	}
 
 	@Override
-	public boolean onGroupMemberIncrease(int subtype, int sendTime, long fromGroup, long fromQQ, long beingOperateQQ) {
+	public boolean onGroupMemberIncrease(MemberJoinEvent event) {
+        long fromGroup = event.getGroup().getId();
+        long beingOperateQQ = event.getMember().getId();
 		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return true;
         }
@@ -195,7 +201,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
-			if (e.onGroupMemberIncrease(subtype, sendTime, fromGroup, fromQQ, beingOperateQQ)) {
+			if (e.onGroupMemberIncrease(event)) {
 				return true;
 			}
 		}

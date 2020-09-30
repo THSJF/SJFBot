@@ -219,8 +219,11 @@ public class ModuleDiceCmd extends BaseGroupModule {
                     case "。jrrp":
                         entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
                         return true;
+                    case ".welcome":
+                        entity.configManager.setWelcome(fromGroup, next());
+                        break;
                     case ".draw":
-                        String drawcmd=msg.substring(6);
+                        String drawcmd = msg.substring(6);
                         switch (drawcmd) {
                             case "help":
                                 entity.sjfTx.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
@@ -282,7 +285,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                 entity.sjfTx.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
                         }
 				}
-			} catch (NumberFormatException ne) {
+			} catch (Exception ne) {
 				entity.sjfTx.sendGroupMessage(fromGroup, "参数错误");
 			}
 		}

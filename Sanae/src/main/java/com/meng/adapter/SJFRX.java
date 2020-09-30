@@ -321,12 +321,14 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MemberJoinEvent.Invite event) {
+        entity.moduleManager.onGroupMemberIncrease(event);
         return ListeningStatus.LISTENING;
     }
     //成员主动加入群: Active
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MemberJoinEvent.Active event) {
+        entity.moduleManager.onGroupMemberIncrease(event);
         return ListeningStatus.LISTENING;
     }
     //成员已经离开群: MemberLeaveEvent
