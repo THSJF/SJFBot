@@ -20,6 +20,7 @@ import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.code.MiraiCode;
+import net.mamoe.mirai.message.data.Image;
 
 /**
  * @Description: bot实体包装器
@@ -84,8 +85,8 @@ public class BotWrapperEntity {
         return new At(m).toMiraiCode();
     }
 
-    public String image(File f, long groupId) {
-        return bot.getGroup(groupId).uploadImage(f).toString();
+    public Image image(File f, long groupId) {
+        return bot.getGroup(groupId).uploadImage(f);
     }
 
     public long getAt(MessageChain msg) {

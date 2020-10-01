@@ -17,6 +17,7 @@ import com.meng.sjfmd.libs.Hash;
 import com.meng.tools.Tools;
 import java.util.Random;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.config.javabeans.PersonConfig;
 
 /**
  * @Description: 模拟骰子
@@ -169,6 +170,20 @@ public class ModuleDiceCmd extends BaseGroupModule {
                 String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
                 char c = md5.charAt(0);
 				switch (next()) {
+                    case ".bot":
+                        String ne = next();
+                        if (ne.equals("on")) {
+                            PersonConfig pc = entity.configManager.getPersonConfig(fromQQ);
+                            pc.setBotOn(true);
+                            entity.sjfTx.sendGroupMessage(fromGroup, "已启用");
+                        } else if (ne.equals("off")) {
+                            PersonConfig pc = entity.configManager.getPersonConfig(fromQQ);
+                            pc.setBotOn(false);
+                            entity.sjfTx.sendGroupMessage(fromGroup,  "已停用");
+                        }
+                        entity.configManager.save(); 
+                        return true;
+
 					case ".r":
 						String rs = next();
 						entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s投掷%s:D100 = %d", entity.configManager.getNickName(fromGroup, fromQQ), rs == null ?"": rs, random.nextInt(100)));

@@ -119,7 +119,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-		if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isMainSwitchEnable()) {
+		if (!entity.configManager.getPersonConfig(gme.getSender().getId()).isBotOn() || !entity.configManager.getGroupConfig(gme.getGroup().getId()).isMainSwitchEnable()) {
 			return true;
 		}
 		for (IGroupMessage m : groupModules) {

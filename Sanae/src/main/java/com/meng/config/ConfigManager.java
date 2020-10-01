@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import com.meng.config.javabeans.PersonConfig;
 
 /**
  * @Description: 配置文件管理器
@@ -87,6 +88,11 @@ public class ConfigManager implements IPersistentData {
 	public Set<GroupConfig> getGroupConfigs() {
 		return Collections.unmodifiableSet(configHolder.groupConfigs);
 	}
+
+    public PersonConfig getPersonConfig(long qq) {
+        PersonConfig get = configHolder.personCfg.get(qq);
+        return get == null ?new PersonConfig(): get;
+    }
 
 	public void addBlockQQ(long qq) {
         configHolder.blockOnlyQQ.add(qq);
