@@ -8,14 +8,17 @@ import com.meng.SJFInterfaces.IGroupMessage;
 import com.meng.SJFInterfaces.IHelpMessage;
 import com.meng.SJFInterfaces.IPrivateMessage;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.javabeans.GroupConfig;
+import com.meng.config.javabeans.PersonConfig;
 import com.meng.tip.MTimeTip;
 import com.meng.tools.SJFExecutors;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
+import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.message.data.QuoteReply;
 
 /**
  * @Description: 模块管理器
@@ -119,7 +122,44 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-		if (!entity.configManager.getPersonConfig(gme.getSender().getId()).isBotOn() || !entity.configManager.getGroupConfig(gme.getGroup().getId()).isMainSwitchEnable()) {
+        long id = gme.getSender().getId();
+        long group = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
+        if (msg.startsWith(".bot")) {
+            if (entity.configManager.isAdminPermission(id) || entity.getGroupMemberInfo(group, id).getPermission().getLevel() < 1) {
+                GroupConfig groupConfig = entity.configManager.getGroupConfig(group);
+                if (msg.equals(".bot on")) {
+                    groupConfig.setMainSwitchEnable(true);
+                    entity.sjfTx.sendGroupMessage(group, "已启用本群响应", gme.getSource());
+                    entity.configManager.save();
+                    return true;
+                } else if (msg.equals(".bot off")) {
+                    groupConfig.setMainSwitchEnable(false);
+                    entity.sjfTx.sendGroupMessage(group,  "已停用本群响应", gme.getSource());
+                    entity.configManager.save();
+                    return true;
+                } 
+            } else {
+                if (msg.equals(".bot on")) {
+                    PersonConfig pc = entity.configManager.getPersonConfig(id);
+                    pc.setBotOn(true);
+                    QuoteReply qr = new QuoteReply(gme.getSource());
+                    qr.plus("已启用对你的响应");
+                    entity.sjfTx.sendGroupMessage(group, qr);
+                    return true;
+                } else if (msg.equals(".bot off")) {
+                    PersonConfig pc = entity.configManager.getPersonConfig(id);
+                    pc.setBotOn(false);
+                    QuoteReply qr = new QuoteReply(gme.getSource());
+                    qr.plus("已停用对你的响应");
+                    entity.sjfTx.sendGroupMessage(group, qr);
+                    return true;
+                }
+                entity.configManager.save(); 
+                return true;
+            }  
+        }
+		if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isMainSwitchEnable()) {
 			return true;
 		}
 		for (IGroupMessage m : groupModules) {

@@ -10,16 +10,9 @@ public class MtestMsg extends BaseGroupModule {
     }
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (gme.getMessage().contentToString().equals(".atme1")) {
-            gme.getGroup().sendMessage(entity.at(gme.getSender().getId()));
-        }
         if (gme.getMessage().contentToString().equals(".atme2")) {
             gme.getGroup().sendMessage(entity.at(gme.getGroup().getId(), gme.getSender().getId()));
         }
-        if (gme.getMessage().contentToString().equals(".atme3")) {
-            gme.getGroup().sendMessage(entity.at(gme.getSender().getId(), "-SJF-"));
-        }
-
         return false;
     }
 

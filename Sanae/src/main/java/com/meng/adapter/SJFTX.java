@@ -6,6 +6,8 @@ import java.util.Random;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.MessageSource;
+import net.mamoe.mirai.message.data.QuoteReply;
 
 /**
  * @Description: bot发送数据
@@ -31,6 +33,12 @@ public class SJFTX {
         return sendGroupMessage(fromGroup, new PlainText(msg));
     }
 
+    public int sendGroupMessage(long fromGroup, String msg, MessageSource ms) {
+        QuoteReply qr = new QuoteReply(ms);
+        qr.plus(msg);
+        return sendGroupMessage(fromGroup, qr);
+    }
+    
     public int sendGroupMessage(long fromGroup, String[] msg) {
         return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
     }

@@ -80,6 +80,7 @@ public class ConfigManager implements IPersistentData {
             }
         }
         GroupConfig gc = new GroupConfig();
+        gc.n = fromGroup;
         configHolder.groupConfigs.add(gc);
         save();
         return gc;
@@ -91,7 +92,12 @@ public class ConfigManager implements IPersistentData {
 
     public PersonConfig getPersonConfig(long qq) {
         PersonConfig get = configHolder.personCfg.get(qq);
-        return get == null ?new PersonConfig(): get;
+        if (get == null) {
+            get = new PersonConfig();
+            configHolder.personCfg.put(qq, get);
+        }
+        save();
+        return get;
     }
 
 	public void addBlockQQ(long qq) {

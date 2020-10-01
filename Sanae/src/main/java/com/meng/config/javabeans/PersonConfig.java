@@ -9,7 +9,7 @@ public class PersonConfig {
 
 	public static final int qa = 1 << 0;
     public static final int botOn = 1 << 1;
-    private int flag = 0;
+    private int flag = -1;
 
     public boolean isQaAllowOther() {
         return (flag & (1 << 0)) != 0;

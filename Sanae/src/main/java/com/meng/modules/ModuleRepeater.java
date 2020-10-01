@@ -15,7 +15,7 @@ import net.mamoe.mirai.message.data.MessageChain;
 public class ModuleRepeater extends BaseGroupModule {
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();
-    private MessageChain emptyMessageChain = new EmptyMessageChain();
+    private MessageChain emptyMessageChain = EmptyMessageChain.INSTANCE;
     public ModuleRepeater(BotWrapperEntity bw) {
         super(bw);
     }

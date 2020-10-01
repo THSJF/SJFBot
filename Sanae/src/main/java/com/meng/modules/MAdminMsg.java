@@ -50,25 +50,6 @@ public class MAdminMsg extends BaseGroupModule {
             try {
                 String first = next();
                 switch (first) {
-                    case ".bot":
-                        String ne = next();
-                        if (ne.equals("on")) {
-                            GroupConfig groupConfig = entity.configManager.getGroupConfig(fromGroup);
-                            if (groupConfig == null) {
-                                entity.sjfTx.sendGroupMessage(fromGroup, "本群没有默认配置");
-                                return true;
-                            }
-                            entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(true);
-                            entity.sjfTx.sendGroupMessage(fromGroup, "已启用");
-                            entity.configManager.save();
-                        } else if (ne.equals("off")) {
-                            entity.configManager.getGroupConfig(fromGroup).setMainSwitchEnable(false);
-                            entity.sjfTx.sendGroupMessage(fromGroup,  "已停用");
-                            entity.configManager.save();
-                        } else {
-
-                        }
-                        return true;
                     case ".findGroup":
                         Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, msg);
                         return true;

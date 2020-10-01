@@ -148,7 +148,7 @@ public class BotWrapperEntity {
         }
         return true;
     }
-    
+
     public void setGroupKick(long groupId, long qqId, boolean notBack) {
         try {
             bot.getGroup(groupId).get(qqId).kick();
