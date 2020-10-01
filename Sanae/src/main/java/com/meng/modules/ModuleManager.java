@@ -143,16 +143,12 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
                 if (msg.equals(".bot on")) {
                     PersonConfig pc = entity.configManager.getPersonConfig(id);
                     pc.setBotOn(true);
-                    QuoteReply qr = new QuoteReply(gme.getSource());
-                    qr.plus("已启用对你的响应");
-                    entity.sjfTx.sendGroupMessage(group, qr);
+                    entity.sjfTx.sendGroupMessage(group, "已启用对你的响应", gme.getSource());
                     return true;
                 } else if (msg.equals(".bot off")) {
                     PersonConfig pc = entity.configManager.getPersonConfig(id);
                     pc.setBotOn(false);
-                    QuoteReply qr = new QuoteReply(gme.getSource());
-                    qr.plus("已停用对你的响应");
-                    entity.sjfTx.sendGroupMessage(group, qr);
+                    entity.sjfTx.sendGroupMessage(group, "已停用对你的响应" , gme.getSource());
                     return true;
                 }
                 entity.configManager.save(); 

@@ -34,11 +34,9 @@ public class SJFTX {
     }
 
     public int sendGroupMessage(long fromGroup, String msg, MessageSource ms) {
-        QuoteReply qr = new QuoteReply(ms);
-        qr.plus(msg);
-        return sendGroupMessage(fromGroup, qr);
+        return sendGroupMessage(fromGroup, new QuoteReply(ms).plus(msg));
     }
-    
+
     public int sendGroupMessage(long fromGroup, String[] msg) {
         return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
     }
