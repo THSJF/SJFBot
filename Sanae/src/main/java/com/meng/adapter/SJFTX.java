@@ -37,6 +37,10 @@ public class SJFTX {
         return sendGroupMessage(fromGroup, new QuoteReply(ms).plus(msg));
     }
 
+    public int sendGroupMessage(long fromGroup, Message msg, MessageSource ms) {
+        return sendGroupMessage(fromGroup, new QuoteReply(ms).plus(msg));
+    }
+    
     public int sendGroupMessage(long fromGroup, String[] msg) {
         return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
     }

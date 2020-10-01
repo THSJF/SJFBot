@@ -220,8 +220,6 @@ public class ModuleDiceCmd extends BaseGroupModule {
                     case "。jrrp":
                         entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
                         return true;
-                    case ".welcome":
-                        entity.configManager.setWelcome(fromGroup, next());
                         break;
                     case ".draw":
                         String drawcmd = msg.substring(6);

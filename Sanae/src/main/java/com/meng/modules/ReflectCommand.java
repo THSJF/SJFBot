@@ -95,7 +95,7 @@ public class ReflectCommand extends BaseGroupModule {
 					e.printStackTrace();
 					return;
 				}
-				values[arrayIndex] = GSON.fromJson(valueStr, types[arrayIndex]);
+				values[arrayIndex] = valueStr;
 				if (values[arrayIndex] == null) {
 					values[arrayIndex] = valueStr;
 				}

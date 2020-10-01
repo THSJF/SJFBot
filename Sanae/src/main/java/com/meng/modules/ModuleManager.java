@@ -62,7 +62,8 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
         load(ModuleMsgDelaySend.class);
 		load(MTimeTip.class);
-        load(MWelcome.class);
+        load(MWelcome.class, false);
+        load(ModuleQA.class);
 		SJFExecutors.execute(getGroupModule(MTimeTip.class));
         all.add(this);
 		return this;
@@ -126,7 +127,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
         long group = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
         if (msg.startsWith(".bot")) {
-            if (entity.configManager.isAdminPermission(id) || entity.getGroupMemberInfo(group, id).getPermission().getLevel() < 1) {
+            if (entity.configManager.isAdminPermission(id) || entity.getGroupMemberInfo(group, id).getPermission().getLevel() > 0) {
                 GroupConfig groupConfig = entity.configManager.getGroupConfig(group);
                 if (msg.equals(".bot on")) {
                     groupConfig.setMainSwitchEnable(true);

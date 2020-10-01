@@ -7,9 +7,7 @@ import com.meng.config.javabeans.PersonInfo;
 import com.meng.sjfmd.libs.GSON;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.Tools;
-import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.GroupMessageEvent;
@@ -51,7 +49,11 @@ public class MAdminMsg extends BaseGroupModule {
                 String first = next();
                 switch (first) {
                     case ".findGroup":
-                        Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, msg);
+                        Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, next());
+                        return true;
+                    case ".welcome":
+                        entity.configManager.setWelcome(fromGroup, next());
+                        entity.configManager.save();
                         return true;
                 }
                 if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 2) {
@@ -80,12 +82,12 @@ public class MAdminMsg extends BaseGroupModule {
                         entity.sjfTx.sendGroupMessage(fromGroup, result.toString());
                         return true;
                     case ".stop":
-                        entity.sjfTx.sendGroupMessage(fromGroup,  "disabled");
+                        entity.sjfTx.sendGroupMessage(fromGroup,  "disabled",gme.getSource());
                         entity.sleeping = true;
                         return true;
                     case ".start":
                         entity.sleeping = false;
-                        entity.sjfTx.sendGroupMessage(fromGroup,  "enabled");
+                        entity.sjfTx.sendGroupMessage(fromGroup,  "enabled",gme.getSource());
                         return true;
                     case ".findConfig":
                         String name = next();
