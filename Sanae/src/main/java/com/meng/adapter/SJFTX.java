@@ -8,6 +8,9 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 /**
  * @Description: bot发送数据
@@ -33,14 +36,34 @@ public class SJFTX {
         return sendGroupMessage(fromGroup, new PlainText(msg));
     }
 
-    public int sendGroupMessage(long fromGroup, String msg, MessageSource ms) {
+    public int sendGroupMessage(long fromGroup, MessageSource ms, String msg) {
         return sendGroupMessage(fromGroup, new QuoteReply(ms).plus(msg));
     }
 
-    public int sendGroupMessage(long fromGroup, Message msg, MessageSource ms) {
+    public int sendGroupMessage(long fromGroup, GroupMessageEvent gme, String... msgs) {
+        QuoteReply qr = new QuoteReply(gme.getSource());
+        MessageChainBuilder mcb = new MessageChainBuilder();
+        mcb.add(qr);
+        for (String msg:msgs) {
+            mcb.add(msg);
+        }
+        return sendGroupMessage(fromGroup, mcb.asMessageChain());
+    }
+
+    public int sendGroupMessage(long fromGroup, MessageSource ms, Message msg) {
         return sendGroupMessage(fromGroup, new QuoteReply(ms).plus(msg));
     }
-    
+
+    public int sendGroupMessage(long fromGroup, GroupMessageEvent gme, Message... msgs) {
+        QuoteReply qr = new QuoteReply(gme.getSource());
+        MessageChainBuilder mcb = new MessageChainBuilder();
+        mcb.add(qr);
+        for (Message msg:msgs) {
+            mcb.add(msg);
+        }
+        return sendGroupMessage(fromGroup, mcb.asMessageChain());
+    }
+
     public int sendGroupMessage(long fromGroup, String[] msg) {
         return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
     }

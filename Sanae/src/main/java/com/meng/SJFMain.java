@@ -35,6 +35,7 @@ public class SJFMain {
         configManager.setBotWrapperEntity(entity);
         configManager.init();
         moduleManager.loadModules(configManager);
+        moduleManager.loadModules(entity);
         moduleManager.load();
         tx.entity = rx.entity = moduleManager.entity = entity;
         MessagePool.start();

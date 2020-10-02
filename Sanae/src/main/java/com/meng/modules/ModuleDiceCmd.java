@@ -2,22 +2,10 @@ package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
-import com.meng.gameData.TouHou.zun.TH06GameData;
-import com.meng.gameData.TouHou.zun.TH07GameData;
-import com.meng.gameData.TouHou.zun.TH08GameData;
-import com.meng.gameData.TouHou.zun.TH10GameData;
-import com.meng.gameData.TouHou.zun.TH11GameData;
-import com.meng.gameData.TouHou.zun.TH12GameData;
-import com.meng.gameData.TouHou.zun.TH13GameData;
-import com.meng.gameData.TouHou.zun.TH14GameData;
-import com.meng.gameData.TouHou.zun.TH15GameData;
-import com.meng.gameData.TouHou.zun.TH16GameData;
-import com.meng.gameData.TouHou.zun.TH17GameData;
+import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.sjfmd.libs.Hash;
-import com.meng.tools.Tools;
 import java.util.Random;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.config.javabeans.PersonConfig;
 
 /**
  * @Description: 模拟骰子
@@ -27,125 +15,12 @@ import com.meng.config.javabeans.PersonConfig;
 public class ModuleDiceCmd extends BaseGroupModule {
 
 	private String[] cmdMsg;
-	private int pos=0;
+	private int pos = 0;
 
-    public static String[] spells;
-    public static String[] neta;
-    public static String[] music;
-    public static String[] name;
-
-    private static String[] pl01 = new String[]{"别打砖块了，来飞机"};
-    private static String[] pl02 = new String[]{"范围重视型", "高灵击伤害 平衡型", "威力重视型"};
-    private static String[] pl03 = new String[]{"博丽灵梦", "魅魔", "雾雨魔理沙", "爱莲", "小兔姬", "卡娜·安娜贝拉尔", "朝仓理香子", "北白河千百合", "冈崎梦美"};
-    private static String[] pl04 = new String[]{"博丽灵梦 诱导", "博丽灵梦 大范围", "雾雨魔理沙 激光", "雾雨魔理沙 高速射击"};
-    private static String[] pl05 = new String[]{"博丽灵梦", "雾雨魔理沙", "魅魔", "幽香"};
-    private static String[] pl09 = new String[]{"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
-    private static String[] plDiff = new String[]{"easy", "normal", "hard", "lunatic"};
-
+    public THDataHolder thData = new THDataHolder();
 
     public ModuleDiceCmd(BotWrapperEntity bw) {
         super(bw);
-        spells = Tools.ArrayTool.mergeArray(TH06GameData.spells,
-                                            TH07GameData.spells,
-                                            TH08GameData.spells,
-                                            TH10GameData.spells,
-                                            TH11GameData.spells,
-                                            TH12GameData.spells,
-                                            TH13GameData.spells,
-                                            TH14GameData.spells,
-                                            TH15GameData.spells,
-                                            TH16GameData.spells,
-                                            TH17GameData.spells);
-        neta = new String[]{
-            "红lnb",
-            "红lnm",
-            "妖lnm",
-            "妖lnn",
-            "永lnm",
-            "风lnm",
-            "风lnn",
-            "殿lnm",
-            "船lnm",
-            "船lnn",
-            "庙lnm",
-            "城lnm",
-            "绀lnm",
-            "璋lnn"};
-        music = new String[]{
-            //th4
-            "bad apple",
-        };
-        music = Tools.ArrayTool.mergeArray(music,
-                                           TH06GameData.musicName,
-                                           TH07GameData.musicName,
-                                           TH08GameData.musicName,
-                                           TH10GameData.musicName,
-                                           TH11GameData.musicName,
-                                           TH12GameData.musicName,
-                                           TH13GameData.musicName,
-                                           TH14GameData.musicName,
-                                           TH15GameData.musicName,
-                                           TH16GameData.musicName,
-                                           TH17GameData.musicName);
-        name = new String[]{
-            //th2
-            "里香",
-            "明罗",
-            "魅魔",
-            //th3
-            "爱莲", 
-            "小兔姬", 
-            "卡娜·安娜贝拉尔",
-            "朝仓理香子", 
-            "北白河千百合", 
-            "冈崎梦美",
-            //th4
-            "奥莲姬",
-            "胡桃",
-            "艾丽",
-            "梦月",
-            "幻月",
-            //th5
-            "萨拉",
-            "露易兹",
-            "雪",
-            "舞",
-            "梦子",
-            "神绮"};
-        name = Tools.ArrayTool.mergeArray(name,
-                                          TH06GameData.charaName,
-                                          TH07GameData.charaName,
-                                          TH08GameData.charaName,
-                                          new String[]{
-                                              //th9
-                                              "梅蒂欣·梅兰可莉",
-                                              "风见幽香",
-                                              "小野冢小町",
-                                              "四季映姬"},
-                                          TH10GameData.charaName,
-                                          TH11GameData.charaName,
-                                          TH12GameData.charaName,
-                                          new String[]{
-                                              //th12.8
-                                              "桑尼·米尔克",
-                                              "露娜·切露德",
-                                              "斯塔·萨菲雅"},
-                                          TH13GameData.charaName,
-                                          new String[]{
-                                              //th13.5
-                                              "秦心"},
-                                          TH14GameData.charaName,
-                                          new String[]{
-                                              //th14.5
-                                              "宇佐见堇子"},
-                                          TH15GameData.charaName,
-                                          new String[]{
-                                              //th15.5
-                                              "依神紫苑",
-                                              "依神女苑"},
-                                          TH16GameData.charaName,
-                                          TH17GameData.charaName);
-
     }
 
 	@Override
@@ -169,6 +44,21 @@ public class ModuleDiceCmd extends BaseGroupModule {
                 String pname = entity.configManager.getNickName(fromGroup, fromQQ);
                 String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
                 char c = md5.charAt(0);
+
+                /*       if (msg.startsWith("-符卡查询 ")) {
+                 SpellCard sc = ModuleManager.instence.getModule(ModuleTHData.class).getSpellCard(msg.substring(6));
+                 if (sc == null) {
+                 Autoreply.sendMessage(fromGroup, 0, "没有找到这张符卡");
+                 return true;
+                 }
+                 Autoreply.sendMessage(fromGroup, 0, ModuleManager.instence.getModule(ModuleTHData.class).getSpellCardPs(sc));
+                 return true;
+                 }
+                 if (msg.startsWith("-角色查询 ")) {
+                 Autoreply.sendMessage(fromGroup, 0, ModuleManager.instence.getModule(ModuleTHData.class).getCharaNick(msg.substring(6)));
+                 return true;
+                 }
+                 */   
 				switch (next()) {
                     case ".r":
 						String rs = next();
@@ -205,22 +95,21 @@ public class ModuleDiceCmd extends BaseGroupModule {
 
 						return true;
                     case ".jrrp":
-                        {
-                            float fpro=0f;
-                            if (c == '0') {
-                                fpro = 99.61f;
-                            } else if (c == '1') {
-                                fpro = 97.60f;
-                            } else {
-                                fpro = ((float)(md5Random(fromQQ) % 10001)) / 100;
-                            }
-                            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
+                        float fpro = 0f;
+                        if (c == '0') {
+                            fpro = 99.61f;
+                        } else if (c == '1') {
+                            fpro = 97.60f;
+                        } else if (c == '2') {
+                            fpro = 100.00f;
+                        } else {
+                            fpro = ((float)(thData.md5Random(fromQQ) % 10001)) / 100;
                         }
+                        entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
                         return true;    
                     case "。jrrp":
-                        entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
+                        entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, thData.md5RanSpell(fromQQ).n));
                         return true;
-                        break;
                     case ".draw":
                         String drawcmd = msg.substring(6);
                         switch (drawcmd) {
@@ -228,57 +117,57 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                 entity.sjfTx.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
                                 return true;
                             case "spell":
-                                entity.sjfTx.sendGroupMessage(fromGroup, spells[new Random().nextInt(spells.length)]);
+                                entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().n);
                                 return true;
                             case "neta":
-                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜打%s", pname, md5RanStr(fromQQ, neta)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta)));
                                 return true;
                             case "music":
-                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜听%s", pname, md5RanStr(fromQQ, music)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜听%s", pname, thData.md5RanStr(fromQQ, thData.music)));
                                 return true;
                             case "grandma":
                                 if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
                                     entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜认八云紫当奶奶", pname));
                                     return true;
                                 }
-                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜认%s当奶奶", pname, md5RanStr(fromQQ, this.name)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜认%s当奶奶", pname, thData.md5RanChara(fromQQ).charaName));
                                 return true;
                             case "game":
-                                String s=randomGame(pname, fromQQ, true);
+                                String s = thData.randomGame(pname, fromQQ, true);
                                 s += ",";
-                                s += randomGame(pname, fromQQ + 1, false);
+                                s += thData.randomGame(pname, fromQQ + 1, false);
                                 entity.sjfTx.sendGroupMessage(fromGroup, s);
                                 return true;
                             case "jrrp":
-                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, md5RanStr(fromQQ, spells)));
+                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, thData.md5RanSpell(fromQQ).n));
                                 return true;
                             case "all":
-                                {
-                                    String sss=String.format("%s今天宜打%s", pname, md5RanStr(fromQQ, neta));
-                                    sss += "\n";
-                                    sss += String.format("%s今天宜听%s", pname, md5RanStr(fromQQ, music));
-                                    sss += "\n";
-                                    if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
-                                        sss += String.format("%s今天宜认八云紫当奶奶", pname);
-                                    } else {
-                                        sss += String.format("%s今天宜认%s当奶奶", pname, md5RanStr(fromQQ, this.name));
-                                    }
-                                    sss += "\n";
-                                    sss += randomGame(pname, fromQQ, true);
-                                    sss += ",";
-                                    sss += randomGame(pname, fromQQ + 1, false);
-                                    sss += "\n";
-                                    float fpro=0f;
-                                    if (c == '0') {
-                                        fpro = 99.61f;
-                                    } else if (c == '1') {
-                                        fpro = 97.60f;
-                                    } else {
-                                        fpro = ((float)(md5Random(fromQQ) % 10001)) / 100;
-                                    }
-                                    sss += String.format("%s今天会在%.2f%%处疮痍", pname, fpro);
-                                    entity.sjfTx.sendGroupMessage(fromGroup, sss);
+                                String allStr = String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta));
+                                allStr += "\n";
+                                allStr += String.format("%s今天宜听%s", pname, thData.md5RanStr(fromQQ, thData.music));
+                                allStr += "\n";
+                                if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
+                                    allStr += String.format("%s今天宜认八云紫当奶奶", pname);
+                                } else {
+                                    allStr += String.format("%s今天宜认%s当奶奶", pname, thData.md5RanChara(fromQQ).charaName);
                                 }
+                                allStr += "\n";
+                                allStr += thData.randomGame(pname, fromQQ, true);
+                                allStr += ",";
+                                allStr += thData.randomGame(pname, fromQQ + 1, false);
+                                allStr += "\n";
+                                float allPro=0f;
+                                if (c == '0') {
+                                    allPro = 99.61f;
+                                } else if (c == '1') {
+                                    allPro = 97.60f;
+                                } else if (c == '2') {
+                                    allPro = 100.00f;
+                                } else {
+                                    allPro = ((float)(thData.md5Random(fromQQ) % 10001)) / 100;
+                                }
+                                allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
+                                entity.sjfTx.sendGroupMessage(fromGroup, allStr);
                                 return true;            
                             default:
                                 entity.sjfTx.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
@@ -299,103 +188,4 @@ public class ModuleDiceCmd extends BaseGroupModule {
 		}
 	}
 
-    private int md5Random(long fromQQ) {
-        String md5=Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
-        return Integer.parseInt(md5.substring(26), 16);
-    }
-
-    public String md5RanStr(long fromQQ, String[] arr) {
-        return arr[md5Random(fromQQ) % arr.length];
-    }
-
-    private String randomGame(String pname, long fromQQ, boolean goodAt) {
-        int gameNo=md5Random(fromQQ) % 16 + 2;
-        String gameName = null;
-        String charaName = null;
-        switch (gameNo) {
-            case 2:
-                gameName = "封魔录";
-                charaName = md5RanStr(fromQQ + 2, pl02);
-                break;
-            case 3:
-                gameName = "梦时空";
-                charaName = md5RanStr(fromQQ + 2, pl03);
-                break;
-            case 4:
-                gameName = "幻想乡";
-                charaName = md5RanStr(fromQQ + 2, pl04);
-                break;
-            case 5:
-                gameName = "怪绮谈";
-                charaName = md5RanStr(fromQQ + 2, pl05);
-                break;
-            case 6:
-                gameName = "红魔乡";
-                charaName = md5RanStr(fromQQ + 2, TH06GameData.players);
-                break;
-            case 7:
-                gameName = "妖妖梦";
-                charaName = md5RanStr(fromQQ + 2, TH07GameData.players);
-                break;
-            case 8:
-                gameName = "永夜抄";
-                charaName = md5RanStr(fromQQ + 2, TH08GameData.players);
-                break;
-            case 9:
-                gameName = "花映冢";
-                charaName = md5RanStr(fromQQ + 2, pl09);
-                break;
-            case 10:
-                gameName = "风神录";
-                charaName = md5RanStr(fromQQ + 2, TH10GameData.players);
-                break;
-            case 11:
-                gameName = "地灵殿";
-                charaName = md5RanStr(fromQQ + 2, TH11GameData.players);
-                break;
-            case 12:
-                gameName = "星莲船";
-                charaName = md5RanStr(fromQQ + 2, TH12GameData.players);
-                break;
-            case 13:
-                gameName = "神灵庙";
-                charaName = md5RanStr(fromQQ + 2, TH13GameData.players);
-                break;
-            case 14:
-                gameName = "辉针城";
-                charaName = md5RanStr(fromQQ + 2, TH14GameData.players);
-                if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, md5RanStr(fromQQ + 1, TH14GameData.playerSub), gameName);
-                } else {
-                    return String.format("忌用%s-%s打%s", charaName, md5RanStr(fromQQ + 1, TH14GameData.playerSub), gameName);
-                }
-            case 15:
-                gameName = "绀珠传";
-                charaName = md5RanStr(fromQQ + 2, TH15GameData.players);
-                break;
-            case 16:
-                gameName = "天空璋";
-                charaName = md5RanStr(fromQQ + 2, TH16GameData.players);
-                if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, md5RanStr(fromQQ + 1, TH16GameData.playerSub), gameName);
-                } else {
-                    return String.format("忌用%s-%s打%s", charaName, md5RanStr(fromQQ + 1, TH16GameData.playerSub), gameName);
-                }
-            case 17:
-                gameName = "鬼形兽";
-                charaName = md5RanStr(fromQQ + 2, TH17GameData.players);
-                if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, md5RanStr(fromQQ + 1, TH17GameData.playerSub), gameName);
-                } else {
-                    return String.format("忌用%s-%s打%s", charaName, md5RanStr(fromQQ + 1, TH17GameData.playerSub), gameName);
-                }
-            default:
-                return "";
-        }
-        if (goodAt) {
-            return String.format("%s今天宜用%s打%s", pname, charaName, gameName);
-        } else {
-            return String.format("忌用%s打%s", charaName, gameName);
-		}
-    }
 }

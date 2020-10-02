@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.data.QuoteReply;
 
 /**
  * @Description: 模块管理器
@@ -64,6 +63,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		load(MTimeTip.class);
         load(MWelcome.class, false);
         load(ModuleQA.class);
+        load(ModuleQAR.class);
 		SJFExecutors.execute(getGroupModule(MTimeTip.class));
         all.add(this);
 		return this;
@@ -131,12 +131,12 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
                 GroupConfig groupConfig = entity.configManager.getGroupConfig(group);
                 if (msg.equals(".bot on")) {
                     groupConfig.setMainSwitchEnable(true);
-                    entity.sjfTx.sendGroupMessage(group, "已启用本群响应", gme.getSource());
+                    entity.sjfTx.sendGroupMessage(group, gme, "已启用本群响应");
                     entity.configManager.save();
                     return true;
                 } else if (msg.equals(".bot off")) {
                     groupConfig.setMainSwitchEnable(false);
-                    entity.sjfTx.sendGroupMessage(group,  "已停用本群响应", gme.getSource());
+                    entity.sjfTx.sendGroupMessage(group, gme, "已停用本群响应");
                     entity.configManager.save();
                     return true;
                 } 
@@ -144,12 +144,12 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
                 if (msg.equals(".bot on")) {
                     PersonConfig pc = entity.configManager.getPersonConfig(id);
                     pc.setBotOn(true);
-                    entity.sjfTx.sendGroupMessage(group, "已启用对你的响应", gme.getSource());
+                    entity.sjfTx.sendGroupMessage(group, gme, "已启用对你的响应");
                     return true;
                 } else if (msg.equals(".bot off")) {
                     PersonConfig pc = entity.configManager.getPersonConfig(id);
                     pc.setBotOn(false);
-                    entity.sjfTx.sendGroupMessage(group, "已停用对你的响应" , gme.getSource());
+                    entity.sjfTx.sendGroupMessage(group, gme, "已停用对你的响应");
                     return true;
                 }
                 entity.configManager.save(); 

@@ -75,19 +75,19 @@ public class MAdminMsg extends BaseGroupModule {
                                 Thread.sleep(200);
                             } catch (InterruptedException e) {}
                         }
-                        StringBuilder result =new StringBuilder("在以下群发送了广播:");
+                        StringBuilder result = new StringBuilder("在以下群发送了广播:");
                         for (Group g:hs) {
                             result.append("\n").append(g.getId()).append(":").append(g.getName());
                         }
                         entity.sjfTx.sendGroupMessage(fromGroup, result.toString());
                         return true;
                     case ".stop":
-                        entity.sjfTx.sendGroupMessage(fromGroup,  "disabled",gme.getSource());
+                        entity.sjfTx.sendGroupMessage(fromGroup, gme, "disabled");
                         entity.sleeping = true;
                         return true;
                     case ".start":
                         entity.sleeping = false;
-                        entity.sjfTx.sendGroupMessage(fromGroup,  "enabled",gme.getSource());
+                        entity.sjfTx.sendGroupMessage(fromGroup, gme, "enabled");
                         return true;
                     case ".findConfig":
                         String name = next();

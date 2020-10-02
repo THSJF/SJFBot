@@ -1,6 +1,8 @@
 package com.meng.tools;
 
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.gameData.TouHou.SpellCard;
+import com.meng.gameData.TouHou.TouhouCharacter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,13 +15,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
@@ -155,6 +154,37 @@ public class Tools {
 	}
 
 	public static class ArrayTool {
+        
+        public static TouhouCharacter[] mergeArray(TouhouCharacter[]... charas) {
+            int allLen=0;
+            for (TouhouCharacter[] bs:charas) {
+                allLen += bs.length;
+            }
+            TouhouCharacter[] finalArray=new TouhouCharacter[allLen];
+            int flag=0;
+            for (TouhouCharacter[] byteArray:charas) {
+                for (int i=0;i < byteArray.length;++flag,++i) {
+                    finalArray[flag] = byteArray[i];
+                }
+            }
+            return finalArray;
+        }
+
+        public static SpellCard[] mergeArray(SpellCard[]... spells) {
+            int allLen=0;
+            for (SpellCard[] bs:spells) {
+                allLen += bs.length;
+            }
+            SpellCard[] finalArray=new SpellCard[allLen];
+            int flag=0;
+            for (SpellCard[] byteArray:spells) {
+                for (int i=0;i < byteArray.length;++flag,++i) {
+                    finalArray[flag] = byteArray[i];
+                }
+            }
+            return finalArray;
+        }
+        
 		public static byte[] mergeArray(byte[]... arrays) {
 			int allLen=0;
 			for (byte[] bs:arrays) {

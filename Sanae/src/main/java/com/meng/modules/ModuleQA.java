@@ -3,11 +3,9 @@ package com.meng.modules;
 import com.google.gson.reflect.TypeToken;
 import com.meng.QA;
 import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.SJFInterfaces.BaseModule;
 import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
-import com.meng.sjfmd.libs.FileTool;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -19,11 +17,9 @@ import net.mamoe.mirai.message.code.MiraiCode;
 
 public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
-    public HashMap<Long,QA> qaMap=new HashMap<>();
+    public HashMap<Long,QA> qaMap = new HashMap<>();
+    public ArrayList<QA> qaList = new ArrayList<>();
     public String imagePath;
-    public ArrayList<QA> qaList=new ArrayList<>();
-    private File qafile;
-
     public static final int easy=0;
     public static final int normal=1;
     public static final int hard=2;
@@ -39,20 +35,12 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
     public ModuleQA(BotWrapperEntity bwe) {
         super(bwe);
+        imagePath = bwe.appDirectory + "/qaImages";
     }
 
     @Override
-    public BaseModule load() {
-        qafile = new File(entity.appDirectory + "/qa.json");
-        if (!qafile.exists()) {
-            saveData();
-        }
-        qaList = entity.gson.fromJson(FileTool.readString(qafile), .getType());
-        imagePath = entity.appDirectory + "/qaImages/";
-        File imageFolder=new File(imagePath);
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
+    public ModuleQA load() {
+        DataPersistenter.read(this);
         return this;
     }
 
@@ -64,7 +52,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
         QA qa = qaMap.get(fromQQ);
         if (qa != null && msg.equalsIgnoreCase("-qa")) {
-            entity.sjfTx.sendGroupMessage(fromGroup, "你还没有回答", gme.getSource());
+            entity.sjfTx.sendGroupMessage(fromGroup, gme, "你还没有回答");
             return true;
         }
         if (qa != null) {
@@ -76,9 +64,9 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                 } catch (NumberFormatException e) {}
             }
             if (qa.getTrueAns().containsAll(userAnss) && qa.getTrueAns().size() == userAnss.size()) {
-                entity.sjfTx.sendGroupMessage(fromGroup, "回答正确", gme.getSource());
+                entity.sjfTx.sendGroupMessage(fromGroup, gme, "回答正确");
             } else {
-                entity.sjfTx.sendGroupMessage(fromGroup, "回答错误", gme.getSource());
+                entity.sjfTx.sendGroupMessage(fromGroup, gme, "回答错误");
             }
             qaMap.remove(fromQQ);
             return true;
@@ -157,7 +145,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
             if (qa2.getTrueAns().size() > 1) {
                 sb.append(",本题有多个选项");
             }
-            entity.sjfTx.sendGroupMessage(fromGroup, MiraiCode.parseMiraiCode(sb.toString()), gme.getSource());
+            entity.sjfTx.sendGroupMessage(fromGroup, gme, MiraiCode.parseMiraiCode(sb.toString()));
             return true;
         }
         return false;
@@ -202,7 +190,5 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
     public void setDataBean(Object o) {
         qaList = (ArrayList) o;
     }
-
-
 }
 

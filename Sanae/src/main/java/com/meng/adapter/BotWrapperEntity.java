@@ -137,10 +137,10 @@ public class BotWrapperEntity {
     }
 
     public boolean messageEquals(MessageChain mc1, MessageChain mc2) {
-        if (mc1.size() != mc2.size()) {
+        int len = mc1.size();
+        if (len != mc2.size()) {
             return false;
         }
-        int len = mc1.size();
         for (int i=1;i < len;++i) {
             if (!mc1.get(i).equals(mc2.get(i))) {
                 return false; 

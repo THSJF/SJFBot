@@ -1,9 +1,6 @@
 package com.meng.gameData.TouHou.zun;
 
-/**
- * @Description: th14游戏信息
- * @author: 司徒灵羽
- **/
+import com.meng.gameData.TouHou.*;
 
 public class TH14GameData {
 	public static final String gameName="东方辉针城 ~ Double Dealing Character.";
@@ -11,15 +8,16 @@ public class TH14GameData {
 	public static final String gameNameAbbr="DDC";
 	public static String[] players = new String[]{"博丽灵梦", "雾雨魔理沙", "十六夜咲夜"};
     public static String[] playerSub = new String[]{"使用妖器", "不使用妖器"};
-	public static String[] charaName=new String[]{
-		"若鹭姬",
-		"赤蛮奇",
-		"今泉影狼",
-		"九十九八桥",
-		"九十九弁弁",
-		"鬼人正邪",
-		"少名针妙丸",
-		"堀川雷鼓"
+	public static TouhouCharacter[] charaName=new TouhouCharacter[]{
+		new TouhouCharacter("琪露诺", gameNameCN, "湖的冰精"),
+		new TouhouCharacter("若鹭姬", gameNameCN, "栖息于淡水的人鱼"),
+		new TouhouCharacter("赤蛮奇", gameNameCN, "辘轳首的怪奇"),
+		new TouhouCharacter("今泉影狼", gameNameCN, "竹林的Loup-Garou"),
+		new TouhouCharacter("九十九八桥", gameNameCN, "古旧的琴的付丧神"),
+		new TouhouCharacter("九十九弁弁", gameNameCN, "古旧琵琶的付丧神"),
+		new TouhouCharacter("鬼人正邪", gameNameCN, "逆袭的天邪鬼"),
+		new TouhouCharacter("少名针妙丸", gameNameCN, "小人的后裔"),
+		new TouhouCharacter("堀川雷鼓", gameNameCN, "梦幻的打击乐手")
 	};
 	public static String[] musicName=new String[]{
 		"不可思议的驱魔棒",
@@ -41,76 +39,67 @@ public class TH14GameData {
 		"非常非常神奇的道具们",
 		"Player's Score"	
 	};
-	public static String[] spells=new String[]{
-		"冰符「Ultimate Blizzard」",
-
-		"水符「尾鳍拍击」",
-		"鳞符「鳞之波」",
-		"鳞符「逆鳞的惊涛」",
-		"鳞符「逆鳞的大惊涛」",
-
-		"飞符「飞行之头」",
-		"首符「闭目射击」",
-		"首符「辘轳首飞来」",
-		"飞头「倍增之头」",
-		"飞头「第七个头」",
-		"飞头「第九个头」",
-		"飞头「杜拉罕之夜」",
-
-		"牙符「月下的犬齿」",
-		"变身「三角齿」",
-		"变身「星形齿」",
-		"咆哮「陌生的咆哮」",
-		"咆哮「满月的远吠」",
-		"狼符「星环猛扑」",
-		"天狼「高速猛扑」",
-
-		"琴符「诸行无常的琴声」",
-		"响符「平安的残响」",
-		"响符「回音之庭」",
-		"筝曲「下克上送筝曲」",
-		"筝曲「下克上安魂曲」",
-
-		"平曲「祗园精舍的钟声」",
-		"怨灵「无耳芳一」",
-		"怨灵「平家的大怨灵」",
-		"乐符「邪恶的五线谱」",
-		"乐符「凶恶的五线谱」",
-		"乐符「Double Score」",
-
-		"欺符「逆针击」",
-		"逆符「镜之国的弹幕」",
-		"逆符「镜中的邪恶」",
-		"逆符「天地有用」",
-		"逆符「天下翻覆」",
-		"逆弓「天壤梦弓」",
-		"逆弓「天壤梦弓的诏敕」",
-		"逆转「阶级反转」",
-		"逆转「变革空勇士」",
-
-		"小弹「小人的道路」",
-		"小弹「小人的荆棘路」",
-		"小槌「变大吧」",
-		"小槌「变得更大吧」",
-		"妖剑「辉针剑」",
-		"小槌「你给我变大吧」",
-		"「进击的小人」",
-		"「一寸之壁」",
-		"「七个小拇指」",
-		"「七个一寸法师」",	
-
-		"弦乐「风暴的合奏」",
-		"弦乐「净琉璃世界」",
-
-		"一鼓「暴乱宫太鼓」",
-		"二鼓「怨灵绫鼓」",
-		"三鼓「午夜零时的三振」",
-		"死鼓「轻敲大地」",
-		"五鼓「雷电拨浪鼓」",
-		"六鼓「交替打击法」",
-		"七鼓「高速和太鼓火箭」",
-		"八鼓「雷神之怒」",
-		"「蓝色佳人的演出」",
-		"「Pristine beat」"
+	public static SpellCard[] spellcards=new SpellCard[]{
+		new SpellCard("冰符「Ultimate Blizzard」", "琪露诺", SpellCard.H | SpellCard.L),
+		new SpellCard("水符「尾鳍拍击」", "若鹭姬", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("鳞符「鳞之波」", "若鹭姬", SpellCard.E | SpellCard.N),
+		new SpellCard("鳞符「逆鳞的惊涛」", "若鹭姬", SpellCard.H),
+		new SpellCard("鳞符「逆鳞的大惊涛」", "若鹭姬", SpellCard.L),
+		new SpellCard("飞符「飞行之头」", "赤蛮奇", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("首符「闭目射击」", "赤蛮奇", SpellCard.E | SpellCard.N),
+		new SpellCard("首符「辘轳首飞来」", "赤蛮奇", SpellCard.H | SpellCard.L),
+		new SpellCard("飞头「倍增之头」", "赤蛮奇", SpellCard.E | SpellCard.N),
+		new SpellCard("飞头「第七个头」", "赤蛮奇", SpellCard.H),
+		new SpellCard("飞头「第九个头」", "赤蛮奇", SpellCard.L),
+		new SpellCard("飞头「杜拉罕之夜」", "赤蛮奇", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("牙符「月下的犬齿」", "今泉影狼", SpellCard.H | SpellCard.L),
+		new SpellCard("变身「三角齿」", "今泉影狼", SpellCard.E | SpellCard.N),
+		new SpellCard("变身「星形齿」", "今泉影狼", SpellCard.H | SpellCard.L),
+		new SpellCard("咆哮「陌生的咆哮」", "今泉影狼", SpellCard.E | SpellCard.N),
+		new SpellCard("咆哮「满月的远吠」", "今泉影狼", SpellCard.H | SpellCard.L),
+		new SpellCard("狼符「星环猛扑」", "今泉影狼", SpellCard.E | SpellCard.N),
+		new SpellCard("天狼「高速猛扑」", "今泉影狼", SpellCard.H | SpellCard.L),
+		new SpellCard("琴符「诸行无常的琴声」", "九十九八桥", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("响符「平安的残响」", "九十九八桥", SpellCard.E | SpellCard.N),
+		new SpellCard("响符「回音之庭」", "九十九八桥", SpellCard.H | SpellCard.L),
+		new SpellCard("筝曲「下克上送筝曲」", "九十九八桥", SpellCard.E | SpellCard.N),
+		new SpellCard("筝曲「下克上安魂曲」", "九十九八桥", SpellCard.H | SpellCard.L),
+		new SpellCard("平曲「祗园精舍的钟声」", "九十九弁弁", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("怨灵「无耳芳一」", "九十九弁弁", SpellCard.E | SpellCard.N),
+		new SpellCard("怨灵「平家的大怨灵」", "九十九弁弁", SpellCard.H | SpellCard.L),
+		new SpellCard("乐符「邪恶的五线谱」", "九十九弁弁", SpellCard.E | SpellCard.N),
+		new SpellCard("乐符「凶恶的五线谱」", "九十九弁弁", SpellCard.H),
+		new SpellCard("乐符「Double Score」", "九十九弁弁", SpellCard.L),
+		new SpellCard("欺符「逆针击」", "鬼人正邪", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("逆符「镜之国的弹幕」", "鬼人正邪", SpellCard.E | SpellCard.N),
+		new SpellCard("逆符「镜中的邪恶」", "鬼人正邪", SpellCard.H | SpellCard.L),
+		new SpellCard("逆符「天地有用」", "鬼人正邪", SpellCard.E | SpellCard.N),
+		new SpellCard("逆符「天下翻覆」", "鬼人正邪", SpellCard.H | SpellCard.L),
+		new SpellCard("逆弓「天壤梦弓」", "鬼人正邪", SpellCard.E | SpellCard.N),
+		new SpellCard("逆弓「天壤梦弓的诏敕」", "鬼人正邪", SpellCard.H | SpellCard.L),
+		new SpellCard("逆转「阶级反转」", "鬼人正邪", SpellCard.E | SpellCard.N),
+		new SpellCard("逆转「变革空勇士」", "鬼人正邪", SpellCard.H | SpellCard.L),
+		new SpellCard("小弹「小人的道路」", "少名针妙丸", SpellCard.E | SpellCard.N),
+		new SpellCard("小弹「小人的荆棘路」", "少名针妙丸", SpellCard.H | SpellCard.L),
+		new SpellCard("小槌「变大吧」", "少名针妙丸", SpellCard.E | SpellCard.N),
+		new SpellCard("小槌「变得更大吧」", "少名针妙丸", SpellCard.H | SpellCard.L),
+		new SpellCard("妖剑「辉针剑」", "少名针妙丸", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("小槌「你给我变大吧」", "少名针妙丸", SpellCard.E | SpellCard.N | SpellCard.H | SpellCard.L),
+		new SpellCard("「进击的小人」", "少名针妙丸", SpellCard.E | SpellCard.N),
+		new SpellCard("「一寸之壁」", "少名针妙丸", SpellCard.H | SpellCard.L),
+		new SpellCard("「七个小拇指」", "少名针妙丸", SpellCard.E | SpellCard.N),
+		new SpellCard("「七个一寸法师」", "少名针妙丸", SpellCard.H | SpellCard.L),
+		new SpellCard("弦乐「风暴的合奏」", "九十九八桥&九十九弁弁", SpellCard.Ex),
+		new SpellCard("弦乐「净琉璃世界」", "九十九八桥&九十九弁弁", SpellCard.Ex),
+		new SpellCard("一鼓「暴乱宫太鼓」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("二鼓「怨灵绫鼓」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("三鼓「午夜零时的三振」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("死鼓「轻敲大地」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("五鼓「雷电拨浪鼓」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("六鼓「交替打击法」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("七鼓「高速和太鼓火箭」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("八鼓「雷神之怒」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("「蓝色佳人的演出」", "堀川雷鼓", SpellCard.Ex),
+		new SpellCard("「Pristine Beat」", "堀川雷鼓", SpellCard.Ex)
 	};
 }
