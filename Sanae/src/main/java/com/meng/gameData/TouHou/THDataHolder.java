@@ -293,6 +293,10 @@ public class THDataHolder {
         return arr[md5Random(fromQQ) % arr.length];
     }
 
+    public int md5Random(long fromQQ, String spellName) {
+        String md5 = Hash.getMd5Instance().calculate(spellName + fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000));
+        return Integer.parseInt(md5.substring(26), 16);
+    }
 
     {
         spells = Tools.ArrayTool.mergeArray(TH06GameData.spellcards, TH07GameData.spellcards, TH08GameData.spellcards, TH10GameData.spellcards, TH11GameData.spellcards, TH12GameData.spellcards, TH13GameData.spellcards, TH14GameData.spellcards, TH15GameData.spellcards, TH16GameData.spellcards, TH17GameData.spellcards);

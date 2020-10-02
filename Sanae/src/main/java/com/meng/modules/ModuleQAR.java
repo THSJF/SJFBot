@@ -46,7 +46,7 @@ public class ModuleQAR extends BaseGroupModule {
         }
         if (msg.equalsIgnoreCase("-qar")) {
             QA qa2 = createQA();
-            qa2.exangeAnswer();
+            qa2.shuffleAnswer();
             StringBuilder sb=new StringBuilder("\n");
             sb.append(qa2.q);
             int i=0;
@@ -74,7 +74,7 @@ public class ModuleQAR extends BaseGroupModule {
             qa.a.add(spc.n);
         }
         qa.setTrueAns(0);
-        qa.exangeAnswer();
+        qa.shuffleAnswer();
         StringBuilder sb=new StringBuilder();
         sb.append("以下符卡在");
         switch (diff) {

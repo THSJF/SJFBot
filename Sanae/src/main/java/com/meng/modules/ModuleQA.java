@@ -131,7 +131,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                 sb.append(qa2.q);
             }
             sb.append("\n");
-            qa2.exangeAnswer();
+            qa2.shuffleAnswer();
             saveData();
             qaMap.put(fromQQ, qa2);
             int i=0;

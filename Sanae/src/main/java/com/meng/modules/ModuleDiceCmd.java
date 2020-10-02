@@ -104,7 +104,18 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                 entity.sjfTx.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
                                 return true;
                             case "spell":
-                                entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().n);
+                                if (cmdMsg.length == 2) {
+                                    entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().n);
+                                } else if (cmdMsg.length == 3) {
+                                    String spellName=next();
+                                    SpellCard sc=thData.getSpellCard(spellName);
+                                    if (sc == null) {
+                                        entity.sjfTx.sendGroupMessage(fromQQ, "没有找到这张符卡");
+                                        return true;
+                                    }
+                                    float allPro = ((float)(thData.md5Random(fromQQ, sc.n) % 10001)) / 100;
+                                    entity.sjfTx.sendGroupMessage(fromGroup, "你今天" + sc.n + "的收率是" + allPro);
+                                }
                                 return true;
                             case "neta":
                                 entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta)));
@@ -126,69 +137,66 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                 entity.sjfTx.sendGroupMessage(fromGroup, s);
                                 return true;
                             case "ufo":
-                                Random ufoRandom = new Random();
-                                switch (ufoRandom.nextInt(3)) {
-                                    case 0:
-                                        String[] fileName = { "blue.gif", "green.gif", "red.gif" };
-                                        entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/" + fileName[ufoRandom.nextInt(3)]), fromGroup), entity.image(new File(entity.appDirectory + "ufo/" + fileName[ufoRandom.nextInt(3)]), fromGroup), entity.image(new File(entity.appDirectory + "ufo/" + fileName[ufoRandom.nextInt(3)]), fromGroup));        
-                                        return true;
-                                    case 1:
-                                        entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/yellow.gif"), fromGroup));
-                                        return true;
-                                    case 2:
-                                        entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/colorful.gif"), fromGroup));
-                                        return true;
-                                }
-                                return true;
-                            case "all":
-                                String allStr = String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta));
-                                allStr += "\n";
-                                allStr += String.format("%s今天宜听%s", pname, thData.md5RanStr(fromQQ, thData.music));
-                                allStr += "\n";
-                                if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
-                                    allStr += String.format("%s今天宜认八云紫当奶奶", pname);
+                                int ufor = new Random().nextInt(10);
+                                if (ufor < 8) {
+                                    String[] fileName = { "blue.gif", "green.gif", "red.gif" };
+                                    entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/" + fileName[new Random().nextInt(3)]), fromGroup), entity.image(new File(entity.appDirectory + "ufo/" + fileName[new Random().nextInt(3)]), fromGroup), entity.image(new File(entity.appDirectory + "ufo/" + fileName[new Random().nextInt(3)]), fromGroup));        
+                                } else if (ufor == 8) {
+                                    entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/yellow.gif"), fromGroup));
                                 } else {
-                                    allStr += String.format("%s今天宜认%s当奶奶", pname, thData.md5RanChara(fromQQ).charaName);
+                                    entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/colorful.gif"), fromGroup));
                                 }
-                                allStr += "\n";
-                                allStr += thData.randomGame(pname, fromQQ, true);
-                                allStr += ",";
-                                allStr += thData.randomGame(pname, fromQQ + 1, false);
-                                allStr += "\n";
-                                float allPro=0f;
-                                if (c == '0') {
-                                    allPro = 99.61f;
-                                } else if (c == '1') {
-                                    allPro = 97.60f;
-                                } else if (c == '2') {
-                                    allPro = 100.00f;
-                                } else {
-                                    allPro = ((float)(thData.md5Random(fromQQ) % 10001)) / 100;
-                                }
-                                allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
-                                entity.sjfTx.sendGroupMessage(fromGroup, allStr);
-                                return true;            
-                            default:
-                                entity.sjfTx.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
                         }
                         return true;
-                    case ".spellInfo":
-                        SpellCard sc = thData.getSpellCard(next());
-                        if (sc == null) {
-                            entity.sjfTx.sendGroupMessage(fromGroup, gme, "没有找到这张符卡");
-                            return true;
+                    case "all":
+                        String allStr = String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta));
+                        allStr += "\n";
+                        allStr += String.format("%s今天宜听%s", pname, thData.md5RanStr(fromQQ, thData.music));
+                        allStr += "\n";
+                        if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
+                            allStr += String.format("%s今天宜认八云紫当奶奶", pname);
+                        } else {
+                            allStr += String.format("%s今天宜认%s当奶奶", pname, thData.md5RanChara(fromQQ).charaName);
                         }
-                        entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getSpellCardPs(sc));
-                        return true;
-                    case ".charaInfo":
-                        entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getCharaNick(next()));
-                        return true;
-				}
-			} catch (Exception ne) {
-				entity.sjfTx.sendGroupMessage(fromGroup, "参数错误");
-			}
-		}
-		return false;
+                        allStr += "\n";
+                        allStr += thData.randomGame(pname, fromQQ, true);
+                        allStr += ",";
+                        allStr += thData.randomGame(pname, fromQQ + 1, false);
+                        allStr += "\n";
+                        float allPro=0f;
+                        if (c == '0') {
+                            allPro = 99.61f;
+                        } else if (c == '1') {
+                            allPro = 97.60f;
+                        } else if (c == '2') {
+                            allPro = 100.00f;
+                        } else {
+                            allPro = ((float)(thData.md5Random(fromQQ) % 10001)) / 100;
+                        }
+                        allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
+                        entity.sjfTx.sendGroupMessage(fromGroup, allStr);
+                        return true;            
+                    default:
+                        entity.sjfTx.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
+                }
+                return true;
+            case ".spellInfo":
+                SpellCard sc = thData.getSpellCard(next());
+                if (sc == null) {
+                    entity.sjfTx.sendGroupMessage(fromGroup, gme, "没有找到这张符卡");
+                    return true;
+                }
+                entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getSpellCardPs(sc));
+                return true;
+            case ".charaInfo":
+                entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getCharaNick(next()));
+                return true;
+            }
+        } catch (Exceptionne) {
+            entity.sjfTx.sendGroupMessage(fromGroup, "参数错误");
+        }
+    }
+    return false;
 	}
 
 	private String next() {

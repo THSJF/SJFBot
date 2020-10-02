@@ -18,7 +18,7 @@ public class QA {
 	private int t;//trueAns
 	public String r;
 
-	public void exangeAnswer() {
+	public void shuffleAnswer() {
 		Random r=new Random();
 		int index1=r.nextInt(a.size() - 1);
 		int index2=r.nextInt(a.size() - 1);
