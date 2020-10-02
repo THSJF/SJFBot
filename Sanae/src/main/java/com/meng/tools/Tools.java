@@ -121,9 +121,9 @@ public class Tools {
 		public static void findQQInAllGroup(BotWrapperEntity bw, long fromGroup, long fromQQ, String msg) {
 			long findqq;
 			try {
-				findqq = Long.parseLong(msg.substring(10));
+				findqq = Long.parseLong(msg);
 			} catch (Exception e) {
-				findqq = bw.getAt(msg);
+                return;
 			}
 			if (findqq <= 0) {
 				bw.sjfTx.sendGroupMessage(fromGroup, "QQ账号错误");
@@ -138,6 +138,7 @@ public class Tools {
 			}
 			bw.sjfTx.sendGroupMessage(fromGroup, stringBuilder.toString());
 		}
+        
 		public static HashSet<Group> findQQInAllGroup(BotWrapperEntity bw, long findQQ) {
 			ContactList<Group> groups = bw.getGroupList();
 			HashSet<Group> hashSet = new HashSet<>();
@@ -154,7 +155,7 @@ public class Tools {
 	}
 
 	public static class ArrayTool {
-        
+
         public static TouhouCharacter[] mergeArray(TouhouCharacter[]... charas) {
             int allLen=0;
             for (TouhouCharacter[] bs:charas) {
@@ -184,7 +185,7 @@ public class Tools {
             }
             return finalArray;
         }
-        
+
 		public static byte[] mergeArray(byte[]... arrays) {
 			int allLen=0;
 			for (byte[] bs:arrays) {

@@ -2,6 +2,7 @@ package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.sjfmd.libs.Hash;
 import java.util.Random;
@@ -43,22 +44,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
 			try {
                 String pname = entity.configManager.getNickName(fromGroup, fromQQ);
                 String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
-                char c = md5.charAt(0);
-
-                /*       if (msg.startsWith("-符卡查询 ")) {
-                 SpellCard sc = ModuleManager.instence.getModule(ModuleTHData.class).getSpellCard(msg.substring(6));
-                 if (sc == null) {
-                 Autoreply.sendMessage(fromGroup, 0, "没有找到这张符卡");
-                 return true;
-                 }
-                 Autoreply.sendMessage(fromGroup, 0, ModuleManager.instence.getModule(ModuleTHData.class).getSpellCardPs(sc));
-                 return true;
-                 }
-                 if (msg.startsWith("-角色查询 ")) {
-                 Autoreply.sendMessage(fromGroup, 0, ModuleManager.instence.getModule(ModuleTHData.class).getCharaNick(msg.substring(6)));
-                 return true;
-                 }
-                 */   
+                char c = md5.charAt(0);   
 				switch (next()) {
                     case ".r":
 						String rs = next();
@@ -172,6 +158,18 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             default:
                                 entity.sjfTx.sendGroupMessage(fromGroup, "可用.draw help查看帮助");
                         }
+                        return true;
+                    case ".spellInfo":
+                        SpellCard sc = thData.getSpellCard(next());
+                        if (sc == null) {
+                            entity.sjfTx.sendGroupMessage(fromGroup, gme, "没有找到这张符卡");
+                            return true;
+                        }
+                        entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getSpellCardPs(sc));
+                        return true;
+                    case ".charaInfo":
+                        entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getCharaNick(next()));
+                        return true;
 				}
 			} catch (Exception ne) {
 				entity.sjfTx.sendGroupMessage(fromGroup, "参数错误");

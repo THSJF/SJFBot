@@ -161,7 +161,7 @@ public class MAdminMsg extends BaseGroupModule {
                         return true;
                 }
             } catch (Exception e) {
-                entity.sjfTx.sendGroupMessage(fromGroup, "参数错误");
+                entity.sjfTx.sendGroupMessage(fromGroup, "参数错误:" + e.toString());
             }
         }
         return false;
