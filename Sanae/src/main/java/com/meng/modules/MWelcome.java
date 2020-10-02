@@ -4,6 +4,7 @@ import com.meng.SJFInterfaces.IGroupEvent;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import com.meng.adapter.BotWrapperEntity;
+import net.mamoe.mirai.event.events.EventCancelledException;
 
 public class MWelcome implements IGroupEvent {
 
@@ -30,13 +31,15 @@ public class MWelcome implements IGroupEvent {
 
     @Override
     public boolean onGroupMemberIncrease(MemberJoinEvent event) {
-        if (event instanceof MemberJoinEvent.Invite) {
-            MemberJoinEvent.Invite mji = (MemberJoinEvent.Invite)event;
-            event.getGroup().sendMessage(String.format("invite,member:%d,arg:%d", mji.getMember(), mji.component1())); 
-        } else if (event instanceof MemberJoinEvent.Active) {
-            MemberJoinEvent.Active mji = (MemberJoinEvent.Active)event;
-            event.getGroup().sendMessage(String.format("active,member:%d,arg:%d", mji.getMember(), mji.component1()));
-        }
+        try {
+            if (event instanceof MemberJoinEvent.Invite) {
+                MemberJoinEvent.Invite mji = (MemberJoinEvent.Invite)event;
+                event.getGroup().sendMessage(String.format("invite,member:%s,arg:%s", mji.getMember(), mji.component1())); 
+            } else if (event instanceof MemberJoinEvent.Active) {
+                MemberJoinEvent.Active mji = (MemberJoinEvent.Active)event;
+                event.getGroup().sendMessage(String.format("active,member:%s,arg:%s", mji.getMember(), mji.component1()));
+            }
+        } catch (EventCancelledException e) {} catch (IllegalStateException e) {}
         String welc = entity.configManager.getWelcome(event.getGroup().getId());
         event.getGroup().sendMessage(welc == null ?"欢迎新人": welc);
         return false;

@@ -146,7 +146,7 @@ public class Tools {
 				if (group.getId() == 959615179L || group.getId() == 666247478L) {
 					continue;
 				}
-                if (group.get(findQQ) != null) {
+                if (group.contains(findQQ)) {
                     hashSet.add(group);
                 }
 			}

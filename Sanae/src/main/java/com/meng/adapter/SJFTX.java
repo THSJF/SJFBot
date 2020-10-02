@@ -36,6 +36,14 @@ public class SJFTX {
         return sendGroupMessage(fromGroup, new PlainText(msg));
     }
 
+    public int sendGroupMessage(long fromGroup, Message... msgs) {
+        MessageChainBuilder mcb = new MessageChainBuilder();
+        for (Message msg:msgs) {
+            mcb.add(msg);
+        }
+        return sendGroupMessage(fromGroup, mcb.asMessageChain());
+    }
+
     public int sendGroupMessage(long fromGroup, MessageSource ms, String msg) {
         return sendGroupMessage(fromGroup, new QuoteReply(ms).plus(msg));
     }

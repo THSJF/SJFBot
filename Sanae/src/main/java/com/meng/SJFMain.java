@@ -11,6 +11,7 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
 import com.meng.sjfmd.libs.ExceptionCatcher;
+import net.mamoe.mirai.contact.Group;
 
 /**
  * @author: 司徒灵羽
@@ -29,7 +30,7 @@ public class SJFMain {
         SJFRX rx = new SJFRX(moduleManager);
         Events.registerEvents(bot, rx);
         ConfigManager configManager = new ConfigManager();
-        BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
+        final BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
         ExceptionCatcher.getInstance(entity).init();
         moduleManager.setBotWrapperEntity(entity);
         configManager.setBotWrapperEntity(entity);
@@ -45,6 +46,15 @@ public class SJFMain {
                 @Override
                 public void run() {
                     bot.join();
+                    for (Group group:bot.getGroups()) {
+                        if (group.getBotMuteRemaining() > 0) {
+                            if (group.getId() == entity.yysGroup) {
+                                continue;
+                            }
+                            group.quit();
+                            bot.getGroup(entity.yysGroup).sendMessage("退出群" + group.getId());
+                        }
+                    }
                 }
             });
         moduleManager.loadModules(bot);

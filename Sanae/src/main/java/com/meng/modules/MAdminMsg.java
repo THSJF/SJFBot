@@ -52,8 +52,10 @@ public class MAdminMsg extends BaseGroupModule {
                         Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, next());
                         return true;
                     case ".welcome":
-                        entity.configManager.setWelcome(fromGroup, next());
+                        String wel = next();
+                        entity.configManager.setWelcome(fromGroup, wel);
                         entity.configManager.save();
+                        entity.sjfTx.sendGroupMessage(fromGroup, "已设置为:" + wel);
                         return true;
                 }
                 if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 2) {

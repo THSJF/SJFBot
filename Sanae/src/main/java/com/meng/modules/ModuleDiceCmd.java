@@ -5,6 +5,7 @@ import com.meng.adapter.BotWrapperEntity;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.sjfmd.libs.Hash;
+import java.io.File;
 import java.util.Random;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
@@ -124,8 +125,20 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                 s += thData.randomGame(pname, fromQQ + 1, false);
                                 entity.sjfTx.sendGroupMessage(fromGroup, s);
                                 return true;
-                            case "jrrp":
-                                entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, thData.md5RanSpell(fromQQ).n));
+                            case "ufo":
+                                Random ufoRandom = new Random();
+                                switch (ufoRandom.nextInt(3)) {
+                                    case 0:
+                                        String[] fileName = { "blue.gif", "green.gif", "red.gif" };
+                                        entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/" + fileName[ufoRandom.nextInt(3)]), fromGroup), entity.image(new File(entity.appDirectory + "ufo/" + fileName[ufoRandom.nextInt(3)]), fromGroup), entity.image(new File(entity.appDirectory + "ufo/" + fileName[ufoRandom.nextInt(3)]), fromGroup));        
+                                        return true;
+                                    case 1:
+                                        entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/yellow.gif"), fromGroup));
+                                        return true;
+                                    case 2:
+                                        entity.sjfTx.sendGroupMessage(fromGroup, entity.image(new File(entity.appDirectory + "ufo/colorful.gif"), fromGroup));
+                                        return true;
+                                }
                                 return true;
                             case "all":
                                 String allStr = String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta));

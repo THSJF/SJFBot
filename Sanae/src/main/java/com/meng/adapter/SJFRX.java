@@ -260,6 +260,11 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull BotMuteEvent event) {
+        long id = event.getGroup().getId();
+        long id2 = event.getOperator().getId();
+        entity.configManager.addBlack(id, id2);
+        event.getGroup().quit();
+        entity.sjfTx.sendGroupMessage(entity.yysGroup, String.format("在群%d中被%d禁言", id, id2));
         return ListeningStatus.LISTENING;
     }
     //机器人被取消禁言: BotUnmuteEvent
@@ -320,17 +325,17 @@ public class SJFRX extends SimpleListenerHost {
     //成员被邀请加入群: Invite
     @NotNull
     @EventHandler
-    public ListeningStatus onReceive(@NotNull MemberJoinEvent.Invite event) {
+    public ListeningStatus onReceive(@NotNull MemberJoinEvent event) {
         entity.moduleManager.onGroupMemberIncrease(event);
         return ListeningStatus.LISTENING;
     }
     //成员主动加入群: Active
-    @NotNull
-    @EventHandler
-    public ListeningStatus onReceive(@NotNull MemberJoinEvent.Active event) {
-        entity.moduleManager.onGroupMemberIncrease(event);
-        return ListeningStatus.LISTENING;
-    }
+  //  @NotNull
+   // @EventHandler
+  //  public ListeningStatus onReceive(@NotNull MemberJoinEvent.Active event) {
+  //      entity.moduleManager.onGroupMemberIncrease(event);
+  //      return ListeningStatus.LISTENING;
+ //   }
     //成员已经离开群: MemberLeaveEvent
     //成员被踢出群: Kick
     @NotNull
