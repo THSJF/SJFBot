@@ -5,13 +5,13 @@ import com.meng.adapter.SJFRX;
 import com.meng.adapter.SJFTX;
 import com.meng.config.ConfigManager;
 import com.meng.modules.ModuleManager;
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.SJFExecutors;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
-import com.meng.sjfmd.libs.ExceptionCatcher;
-import net.mamoe.mirai.contact.Group;
 
 /**
  * @author: 司徒灵羽

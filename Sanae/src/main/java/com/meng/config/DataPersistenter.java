@@ -1,8 +1,8 @@
 package com.meng.config;
 
 import com.meng.SJFInterfaces.IPersistentData;
-import com.meng.sjfmd.libs.FileTool;
-import com.meng.sjfmd.libs.GSON;
+import com.meng.tools.FileTool;
+import com.meng.tools.GSON;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;

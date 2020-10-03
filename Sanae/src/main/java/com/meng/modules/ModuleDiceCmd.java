@@ -4,7 +4,7 @@ import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
-import com.meng.sjfmd.libs.Hash;
+import com.meng.tools.Hash;
 import com.meng.tools.TextLexer;
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
         long fromGroup = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", pname, thData.md5RanSpell(fromQQ).n));
+            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(fromGroup, fromQQ), thData.md5RanSpell(fromQQ).n));
             return true;
         }
 		if (msg.charAt(0) != '.') {
@@ -104,9 +104,9 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             entity.sjfTx.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
                             return true;
                         case "spell":
-                            if (list.size() == 2) {
+                            if (list.size() == 3) {
                                 entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().n);
-                            } else if (list.size() == 3) {
+                            } else if (list.size() == 4) {
                                 String spellName = iter.next();
                                 SpellCard sc = thData.getSpellCard(spellName);
                                 if (sc == null) {

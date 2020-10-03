@@ -1,6 +1,9 @@
 package com.meng.tools;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class SJFExecutors {
 
@@ -14,7 +17,7 @@ public class SJFExecutors {
 	public static void executeAfterTime(Runnable runnable, long delay, TimeUnit timeUnit) {
 		scheduledExecutorService.schedule(runnable, delay, timeUnit);
 	}
-	
+
 	public static void executeWithFixedDelay(Runnable runnable, long wait, long delay, TimeUnit time) {
 		scheduledExecutorService.scheduleWithFixedDelay(runnable, wait, delay, time);
 	}

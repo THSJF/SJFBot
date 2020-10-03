@@ -2,7 +2,6 @@ package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
-import com.meng.sjfmd.libs.GSON;
 import java.lang.reflect.Method;
 import net.mamoe.mirai.message.GroupMessageEvent;
 

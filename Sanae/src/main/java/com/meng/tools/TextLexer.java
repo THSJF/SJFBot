@@ -11,6 +11,13 @@ public class TextLexer {
     public static ArrayList<String> analyze(String s) {
         ArrayList<String> arrayList = lexer.scannerAll(s);
         lexer.init();
+        int size = arrayList.size();
+        for (int i = 0;i < size;++i) {
+            String ele = arrayList.get(i);
+            if (ele.startsWith("\"") && ele.endsWith("\"")) {
+                arrayList.set(i, ele.substring(1).substring(ele.length() - 2));
+            }
+        }
         return arrayList;
     }
 

@@ -1,7 +1,10 @@
 package com.meng.tools;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileTypeUtil {
     private static Map<String, String> fileTypeMap = new HashMap<String, String>();
@@ -15,9 +18,9 @@ public class FileTypeUtil {
         fileTypeMap.put("424d8240090000000000", "bmp"); //24位位图(bmp)
         fileTypeMap.put("424d8e1b030000000000", "bmp"); //256色位图(bmp)
 	}
-	
+
     private FileTypeUtil() {
-		
+
 	}
 
     private static String bytesToHexString(byte[] src) {

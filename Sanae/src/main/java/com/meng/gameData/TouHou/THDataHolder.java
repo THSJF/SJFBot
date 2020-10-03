@@ -12,7 +12,7 @@ import com.meng.gameData.TouHou.zun.TH14GameData;
 import com.meng.gameData.TouHou.zun.TH15GameData;
 import com.meng.gameData.TouHou.zun.TH16GameData;
 import com.meng.gameData.TouHou.zun.TH17GameData;
-import com.meng.sjfmd.libs.Hash;
+import com.meng.tools.Hash;
 import com.meng.tools.Tools;
 import java.util.HashMap;
 import java.util.HashSet;

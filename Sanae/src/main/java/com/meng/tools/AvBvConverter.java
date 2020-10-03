@@ -1,39 +1,35 @@
 package com.meng.tools;
 
-import java.math.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AvBvConverter {
-	/**
-	 * 异或用的数，可变
-	 */
-	public static final int xor = 177451812;
+	private static AvBvConverter instance = null;
 
-	/**
-	 * 加减用的数，可变
-	 */
-	public static final long add = 100618342136696320L;
+	public static AvBvConverter getInstance() {
+		if (instance == null) {
+			instance = new AvBvConverter();
+		}
+		return instance;
+	}
 
-	/**
-	 * 核心变换数组，BV号的重排顺序，注意到该数组中没有元素0 元素1，意味着BV号的第一、第二位（前缀）不会参与到整个加密、解密的过程中。
-	 */
-	public static final int[] changeArray = {11,10,3,8,4,6,2,9,5,7};
+	private AvBvConverter() {
 
-	/**
-	 * 核心变换字典，BV号是58进制，所以字典58位，代表从0-57。
-	 */
-	public static final String dictionary = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";
+	}
 
-	/**
-	 * 加密过程中用到的前缀符，长度要求与changeArray最小元素值一致。
-	 */
-	public static final String preFix = "BV";
+	private final int xor = 177451812;//异或用的数，可变
+	private final long add = 100618342136696320L;//加减用的数，可变
+	private final int[] changeArray = {11,10,3,8,4,6,2,9,5,7};//核心变换数组，BV号的重排顺序，注意到该数组中没有元素0 元素1，意味着BV号的第一、第二位（前缀）不会参与到整个加密、解密的过程中。
+	private final String dictionary = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";//核心变换字典，BV号是58进制，所以字典58位，代表从0-57。
+	private final String preFix = "BV";//加密过程中用到的前缀符，长度要求与changeArray最小元素值一致。
 
 	/**
 	 * 建立字典中字符与字典值之间的对应关系。
 	 * @return
 	 */
-	private static Map<Character, Integer> getWorkingMap() {
+	private Map<Character, Integer> getWorkingMap() {
 		char[] cArray = dictionary.toCharArray();
 		Map<Character, Integer> map = new HashMap<>(dictionary.length());
 		for (int i = 0 ; i < dictionary.length() ; ++i) {
@@ -48,20 +44,20 @@ public class AvBvConverter {
 	 * @param max true获取最大值， false获取最小值
 	 * @return 最大、最小值
 	 */
-	private static int getExtremum(int[] array , boolean max) {
-		int k = (max ? Integer.MIN_VALUE : Integer.MAX_VALUE);
+
+	private int getMin(int[] array) {
+		int k = Integer.MAX_VALUE;
 		for (int l : array) {
-			k = (max ? max(k, l) : min(k, l));
+			k = Math.min(k, l);
 		}
 		return k;
 	}
-
-	private static int max(int k, int l) {
-		return k > l ?k: l;
-	}
-
-	private static int min(int k, int l) {
-		return k < l ?k: l;
+	private int getMax(int[] array) {
+		int k =Integer.MIN_VALUE;
+		for (int l : array) {
+			k = Math.max(k, l);
+		}
+		return k;
 	}
 
 	/**
@@ -69,9 +65,9 @@ public class AvBvConverter {
 	 * @param BV号
 	 * @return av号
 	 */
-	public static long decode(String bv) {
+	public long decode(String bv) {
 		//参数校验，前缀一致，且长度符合changeArray最大元素+1
-		if (bv.startsWith(preFix) && bv.length() == (getExtremum(changeArray, true) + 1)) {
+		if (bv.startsWith(preFix) && bv.length() == (getMax(changeArray) + 1)) {
 			BigDecimal b = new BigDecimal(0);
 			char[] intputArray = bv.toCharArray();
 			for (int i = 0 ; i < changeArray.length ; i ++) {
@@ -87,7 +83,7 @@ public class AvBvConverter {
 		}
 	}
 
-	public static String encode(long av) {
+	public String encode(long av) {
 		BigDecimal b = new BigDecimal(av ^ xor).add(new BigDecimal(add));
 		char[] resultArray = new char[changeArray.length];
 		char[] dictionaryArray = dictionary.toCharArray();
@@ -96,12 +92,11 @@ public class AvBvConverter {
 			 * 在生成的过程中，不需要考虑前缀，所以把重排数组中，前缀占用空间减去。要求：
 			 * assert getExtremum(changeArray, false) == preFix.length();
 			 */
-			resultArray[changeArray[i] - getExtremum(changeArray, false)] = 
+			resultArray[changeArray[i] - getMin(changeArray)] = 
 				dictionaryArray[
 				//(b / (进制的i次幂))对进制取模
-				b.divide(new BigDecimal(Math.pow(dictionary.length(), i)) , RoundingMode.DOWN)
-				.remainder(new BigDecimal(dictionary.length()))
-				.intValue()];
+				b.divide(new BigDecimal(Math.pow(dictionary.length(), i)) , RoundingMode.DOWN).remainder(new BigDecimal(dictionary.length())).intValue()
+				];
 		}
 		//将前缀加回。
 		StringBuilder sb = new StringBuilder(preFix);
@@ -110,10 +105,5 @@ public class AvBvConverter {
 			sb.append(i);
 		}
 		return sb.toString();
-	}
-
-	public static void main(String[] args) {
-		System.out.println(decode("BV1FE411A7Xd"));
-		System.out.println(encode(97809031l));
 	}
 }

@@ -6,7 +6,7 @@ import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
 import com.meng.tools.SJFExecutors;
-import com.meng.tools.Tools;
+import com.meng.tools.TimeFormater;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -71,10 +71,10 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 		}
 		++gs.all;
 		if (msg.equals("-发言统计")) {
-			HashMap<Integer,Integer> everyHourHashMap = gs.hour.get(Tools.CQ.getDate());
+			HashMap<Integer,Integer> everyHourHashMap = gs.hour.get(TimeFormater.getDate());
 			if (everyHourHashMap == null) {
 				everyHourHashMap = new HashMap<>();
-				gs.hour.put(Tools.CQ.getDate(), everyHourHashMap);
+				gs.hour.put(TimeFormater.getDate(), everyHourHashMap);
 			}
 			Date da=new Date();
 			int nowHour=da.getHours();
@@ -101,12 +101,12 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			TimeSeries dtimeseries = new TimeSeries("你群发言");
 			Calendar dc = Calendar.getInstance();
 			dc.add(Calendar.HOUR_OF_DAY, -24);
-			HashMap<Integer,Integer> deveryHour=gs.hour.get(Tools.CQ.getDate(dc.getTimeInMillis()));
+			HashMap<Integer,Integer> deveryHour=gs.hour.get(TimeFormater.getDate(dc.getTimeInMillis()));
 			for (int i=dc.get(Calendar.HOUR_OF_DAY);i < 24;++i) {
 				dtimeseries.add(new Hour(i, dc.get(Calendar.DATE), dc.get(Calendar.MONTH) + 1, dc.get(Calendar.YEAR)), deveryHour.get(i) == null ?0: deveryHour.get(i));
 			}
 			dc = Calendar.getInstance();
-			deveryHour = gs.hour.get(Tools.CQ.getDate(dc.getTimeInMillis()));
+			deveryHour = gs.hour.get(TimeFormater.getDate(dc.getTimeInMillis()));
 			for (int i=0;i <= dc.get(Calendar.HOUR_OF_DAY);++i) {
 				dtimeseries.add(new Hour(i, dc.get(Calendar.DATE), dc.get(Calendar.MONTH) + 1, dc.get(Calendar.YEAR)), deveryHour.get(i) == null ?0: deveryHour.get(i));
 			}
@@ -132,7 +132,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			cal.add(Calendar.DAY_OF_MONTH, -30);
 			for (int i=0;i <= 30;++i) {
 				cal.add(Calendar.DAY_OF_MONTH, 1);
-				HashMap<Integer,Integer> everyHour=gs.hour.get(Tools.CQ.getDate(cal.getTimeInMillis()));
+				HashMap<Integer,Integer> everyHour=gs.hour.get(TimeFormater.getDate(cal.getTimeInMillis()));
 				int oneDay=0;
 				if (everyHour == null) {
 					oneDay = 0;

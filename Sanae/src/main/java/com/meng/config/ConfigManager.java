@@ -292,7 +292,7 @@ public class ConfigManager implements IPersistentData {
 	}
 
 	public String getNickName(long group, long qq) {
-		String nick=null;
+		String nick = null;
 		nick = configHolder.nicknameMap.get(qq);
 		if (nick == null) {
 			PersonInfo pi = getPersonInfoFromQQ(qq);

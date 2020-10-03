@@ -2,8 +2,8 @@ package com.meng.config.ritsukage;
 
 import com.google.gson.reflect.TypeToken;
 import com.meng.config.javabeans.PersonInfo;
-import com.meng.sjfmd.libs.BitConverter;
-import com.meng.sjfmd.libs.GSON;
+import com.meng.tools.BitConverter;
+import com.meng.tools.GSON;
 import com.meng.tools.Tools;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;

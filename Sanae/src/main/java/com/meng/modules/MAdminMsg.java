@@ -4,16 +4,16 @@ import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonInfo;
-import com.meng.sjfmd.libs.GSON;
+import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
+import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.tools.TextLexer;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 /**
  * @Description: 管理员命令
@@ -48,11 +48,14 @@ public class MAdminMsg extends BaseGroupModule {
         try {
             String first = iter.next();
             switch (first) {
-                case ".findGroup":
+                case "findGroup":
                     Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, iter.next());
                     return true;
-                case ".welcome":
-                    String wel = iter.next();
+                case "welcome":
+                    String wel = null;
+                    if (iter.hasNext()) {
+                        wel = iter.next();
+                    }
                     entity.configManager.setWelcome(fromGroup, wel);
                     entity.configManager.save();
                     entity.sjfTx.sendGroupMessage(fromGroup, "已设置为:" + wel);
@@ -62,8 +65,8 @@ public class MAdminMsg extends BaseGroupModule {
                 return false;
             }
             switch (first) {
-                case ".broadcast":
-                    String broadcast = msg.substring(11);
+                case "broadcast":
+                    String broadcast = iter.next();
                     HashSet<Group> hs = new HashSet<>();
                     ContactList<Group> glist = entity.getGroupList();
                     for (Group g:glist) {
@@ -83,15 +86,15 @@ public class MAdminMsg extends BaseGroupModule {
                     }
                     entity.sjfTx.sendGroupMessage(fromGroup, result.toString());
                     return true;
-                case ".stop":
+                case "stop":
                     entity.sjfTx.sendGroupMessage(fromGroup, gme, "disabled");
                     entity.sleeping = true;
                     return true;
-                case ".start":
+                case "start":
                     entity.sleeping = false;
                     entity.sjfTx.sendGroupMessage(fromGroup, gme, "enabled");
                     return true;
-                case ".findConfig":
+                case "findConfig":
                     String name = iter.next();
                     HashSet<PersonInfo> hashSet = new HashSet<>();
                     for (PersonInfo personInfo : entity.configManager.getPersonInfo()) {
@@ -110,7 +113,7 @@ public class MAdminMsg extends BaseGroupModule {
                     }
                     entity.sjfTx.sendGroupMessage(fromGroup, GSON.toJson(hashSet)); 
                     return true;
-                case ".thread":
+                case "thread":
                     String s = "taskCount：" + SJFExecutors.getTaskCount() + "\n" +
                         "completedTaskCount：" + SJFExecutors.getCompletedTaskCount() + "\n" +
                         "largestPoolSize：" + SJFExecutors.getLargestPoolSize() + "\n" +
@@ -118,24 +121,24 @@ public class MAdminMsg extends BaseGroupModule {
                         "activeCount：" + SJFExecutors.getActiveCount();
                     entity.sjfTx.sendGroupMessage(fromGroup, s);
                     return true;
-                case ".gc":
+                case "gc":
                     System.gc();
                     entity.sjfTx.sendGroupMessage(fromGroup, "gc start");
                     return true;
-                case ".send":
-                    if (list.size() == 2) {
+                case "send":
+                    if (list.size() == 3) {
                         entity.sjfTx.sendGroupMessage(fromGroup, iter.next());
-                    } else if (list.size() == 3) {
+                    } else if (list.size() == 4) {
                         entity.sjfTx.sendGroupMessage(Long.parseLong(iter.next()), iter.next());
                     }
                     return true;
-                case ".groupTitle":
+                case "groupTitle":
                     entity.setGroupSpecialTitle(fromGroup, Long.parseLong(iter.next()), iter.next());
                     return true;
-                case ".groupCard":
+                case "groupCard":
                     entity.setGroupCard(fromGroup, Long.parseLong(iter.next()), iter.next());
                     return true;
-                case ".block":
+                case "block":
                     {
                         StringBuilder sb = new StringBuilder();
                         sb.append("屏蔽列表添加:");
@@ -148,7 +151,7 @@ public class MAdminMsg extends BaseGroupModule {
                         entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
                     }
                     return true;
-                case ".black":
+                case "black":
                     { 
                         StringBuilder sb = new StringBuilder();
                         sb.append("屏蔽列表添加:");
