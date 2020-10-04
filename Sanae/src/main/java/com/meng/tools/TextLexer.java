@@ -15,7 +15,7 @@ public class TextLexer {
         for (int i = 0;i < size;++i) {
             String ele = arrayList.get(i);
             if (ele.startsWith("\"") && ele.endsWith("\"")) {
-                arrayList.set(i, ele.substring(1).substring(ele.length() - 2));
+                arrayList.set(i, ele.substring(1).substring(0, ele.length() - 3));
             }
         }
         return arrayList;

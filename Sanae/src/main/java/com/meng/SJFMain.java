@@ -12,6 +12,11 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
+import java.util.concurrent.TimeUnit;
+import com.meng.config.AccountInfo;
+import com.meng.tools.GSON;
+import com.meng.tools.FileTool;
+import java.io.File;
 
 /**
  * @author: 司徒灵羽
@@ -23,8 +28,8 @@ public class SJFMain {
 
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("deviceInfo.json");
-        final Bot bot = BotFactoryJvm.newBot(2856986197L, "sword_a", config);
-
+        AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
+        final Bot bot = BotFactoryJvm.newBot(info.account, info.password, config);
         SJFTX tx = new SJFTX(bot);
         ModuleManager moduleManager = new ModuleManager();
         SJFRX rx = new SJFRX(moduleManager);
@@ -46,6 +51,12 @@ public class SJFMain {
                 @Override
                 public void run() {
                     bot.join();
+                }
+            });
+        SJFExecutors.executeAfterTime(new Runnable(){
+
+                @Override
+                public void run() {
                     for (Group group:bot.getGroups()) {
                         if (group.getBotMuteRemaining() > 0) {
                             if (group.getId() == entity.yysGroup) {
@@ -56,7 +67,7 @@ public class SJFMain {
                         }
                     }
                 }
-            });
+            }, 1, TimeUnit.MINUTES); 
         moduleManager.loadModules(bot);
     }
 }
