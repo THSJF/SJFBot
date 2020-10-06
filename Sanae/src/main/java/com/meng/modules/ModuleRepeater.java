@@ -51,9 +51,8 @@ public class ModuleRepeater extends BaseGroupModule {
                 return false;
             }
             boolean b = false; 
-			b = checkRepeatStatu(fromGroup, fromQQ, msg);
-			lastMsgRecieved = msg;
-            //msg.first(Image.Key).toString()
+            b = checkRepeatStatu(fromGroup, fromQQ, msg);
+            lastMsgRecieved = msg;
 			return b;
 		}
 

@@ -135,8 +135,8 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
                     entity.configManager.save();
                     return true;
                 } else if (msg.equals(".bot off")) {
-                    groupConfig.setMainSwitchEnable(false);
                     entity.sjfTx.sendGroupMessage(group, gme, "已停用本群响应");
+                    groupConfig.setMainSwitchEnable(false);
                     entity.configManager.save();
                     return true;
                 } 

@@ -175,21 +175,23 @@ public class MAdminMsg extends BaseGroupModule {
                     switch (iter.next()) {
                         case "recall":
                             cfg.setRecallEnable(re = !cfg.isRecallEnable());
-                            return true;
+                            break;
                         case "dice":
                             cfg.setDiceEnable(re = !cfg.isDiceEnable());
-                            return true;
+                            break;
                         case "qa":
                             cfg.setQAEnable(re = !cfg.isQAEnable());
-                            return true;
+                            break;
                         case "qar":
                             cfg.setQAREnable(re = !cfg.isQAREnable());
-                            return true;
+                            break;
                         case "welcome":
                             cfg.setMemberIncEnable(re = !cfg.isMemberIncEnable());
-                            return true;
+                            break;
                         case "repeater":
                             cfg.setRepeaterEnable(re = !cfg.isRepeaterEnable());
+                            break;
+                        default:
                             return true;
                     }
                     entity.configManager.save();

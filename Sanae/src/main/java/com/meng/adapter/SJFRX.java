@@ -420,6 +420,7 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull NewFriendRequestEvent event) {
+        event.accept();
         return ListeningStatus.LISTENING;
     }
     //好友头像改变: FriendAvatarChangedEvent
