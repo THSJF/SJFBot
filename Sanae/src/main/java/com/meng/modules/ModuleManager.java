@@ -229,14 +229,6 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
 	@Override
 	public boolean onGroupMemberIncrease(MemberJoinEvent event) {
-        long fromGroup = event.getGroup().getId();
-        long beingOperateQQ = event.getMember().getId();
-		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
-            return true;
-        }
-		if (beingOperateQQ == entity.getLoginQQ()) {
-            return true;
-        }
 		for (IGroupEvent e : groupEventModules) {
 			if (e.onGroupMemberIncrease(event)) {
 				return true;

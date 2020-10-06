@@ -65,6 +65,14 @@ public class MAdminMsg extends BaseGroupModule {
                 return false;
             }
             switch (first) {
+                case "groupCard":
+                    entity.setGroupCard(fromGroup, Long.parseLong(iter.next()), iter.next());
+                    return true;
+            }
+            if (!entity.configManager.isMaster(fromQQ)) {
+                return false;
+            }
+            switch (first) {
                 case "broadcast":
                     String broadcast = iter.next();
                     HashSet<Group> hs = new HashSet<>();
@@ -135,9 +143,6 @@ public class MAdminMsg extends BaseGroupModule {
                 case "groupTitle":
                     entity.setGroupSpecialTitle(fromGroup, Long.parseLong(iter.next()), iter.next());
                     return true;
-                case "groupCard":
-                    entity.setGroupCard(fromGroup, Long.parseLong(iter.next()), iter.next());
-                    return true;
                 case "block":
                     {
                         StringBuilder sb = new StringBuilder();
@@ -163,6 +168,32 @@ public class MAdminMsg extends BaseGroupModule {
                         entity.configManager.save();
                         entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
                     }
+                    return true;
+                case "switch":
+                    GroupConfig cfg = entity.configManager.getGroupConfig(gme.getGroup().getId());
+                    boolean re = false;
+                    switch (iter.next()) {
+                        case "recall":
+                            cfg.setRecallEnable(re = !cfg.isRecallEnable());
+                            return true;
+                        case "dice":
+                            cfg.setDiceEnable(re = !cfg.isDiceEnable());
+                            return true;
+                        case "qa":
+                            cfg.setQAEnable(re = !cfg.isQAEnable());
+                            return true;
+                        case "qar":
+                            cfg.setQAREnable(re = !cfg.isQAREnable());
+                            return true;
+                        case "welcome":
+                            cfg.setMemberIncEnable(re = !cfg.isMemberIncEnable());
+                            return true;
+                        case "repeater":
+                            cfg.setRepeaterEnable(re = !cfg.isRepeaterEnable());
+                            return true;
+                    }
+                    entity.configManager.save();
+                    entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), "已设置为" + (re ?"启用": "禁用"));
                     return true;
             }
         } catch (Exception e) {

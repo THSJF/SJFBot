@@ -34,6 +34,9 @@ public class ModuleDiceCmd extends BaseGroupModule {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long fromQQ = gme.getSender().getId();
         long fromGroup = gme.getGroup().getId();
+        if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isDiceEnable()) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
             entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(fromGroup, fromQQ), thData.md5RanSpell(fromQQ).n));

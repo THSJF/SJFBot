@@ -2,6 +2,7 @@ package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.javabeans.GroupConfig;
 import java.util.HashMap;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
@@ -31,7 +32,7 @@ public class ModuleRepeater extends BaseGroupModule {
         long fromGroup = gme.getGroup().getId();
         Repeater rp = repeaters.get(fromGroup);
 		if (rp == null) {
-			repeaters.put(fromGroup, rp = new Repeater());
+			repeaters.put(fromGroup, rp = new Repeater(fromGroup));
 		}
         return rp.check(fromGroup, fromQQ, gme.getMessage());
     }
@@ -39,9 +40,17 @@ public class ModuleRepeater extends BaseGroupModule {
 	private class Repeater {
 		private MessageChain lastMsgRecieved = emptyMessageChain;
 		private boolean lastStatus = false;
+        private GroupConfig cfg;
 
-		public boolean check(long fromGroup, long fromQQ, MessageChain msg) {
-			boolean b = false; 
+        private Repeater(long g) {
+            cfg = entity.configManager.getGroupConfig(g);
+        }
+
+		private boolean check(long fromGroup, long fromQQ, MessageChain msg) {
+			if (!cfg.isRepeaterEnable()) {
+                return false;
+            }
+            boolean b = false; 
 			b = checkRepeatStatu(fromGroup, fromQQ, msg);
 			lastMsgRecieved = msg;
             //msg.first(Image.Key).toString()

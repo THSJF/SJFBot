@@ -20,12 +20,7 @@ import com.meng.config.javabeans.PersonConfig;
 public class ConfigManager implements IPersistentData {
 
     private ConfigHolder configHolder = new ConfigHolder();
-	private static final GroupConfig emptyConfig = new GroupConfig();
     public BotWrapperEntity entity;
-
-    public boolean isBotOff(long fromGroup) {
-        return !getGroupConfig(fromGroup).isBotOn();
-    }
 
     public void setBotWrapperEntity(BotWrapperEntity bwe) {
         entity = bwe;
@@ -326,8 +321,8 @@ public class ConfigManager implements IPersistentData {
 					//    }
 				}
 			});
-        entity.sjfTx.sendGroupMessage(BotWrapperEntity.mainGroup, "已将用户" + qq + "加入黑名单");
-        entity.sjfTx.sendGroupMessage(BotWrapperEntity.mainGroup, "已将群" + group + "加入黑名单");
+        entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "已将用户" + qq + "加入黑名单");
+        entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "已将群" + group + "加入黑名单");
     }
 
 	public long getOgg() {

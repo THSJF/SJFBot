@@ -33,11 +33,11 @@ public class GroupConfig extends Object {
 		}
 	}
 
-	public boolean isMoShenFuSongEnable() {
+	public boolean isQAEnable() {
 		return (f1 & (1 << 2)) != 0;
 	}
 
-	public void setMoShenFuSongEnable(boolean enable) {
+	public void setQAEnable(boolean enable) {
 		if (enable) {
 			f1 |= (1 << 2);
 		} else {
@@ -45,11 +45,11 @@ public class GroupConfig extends Object {
 		}
 	}
 
-	public boolean isBilibiliEnable() {
+	public boolean isQAREnable() {
 		return (f1 & (1 << 3)) != 0;
 	}
 
-	public void setBilibiliEnable(boolean enable) {
+	public void setQAREnable(boolean enable) {
 		if (enable) {
 			f1 |= (1 << 3);
 		} else {
@@ -69,11 +69,11 @@ public class GroupConfig extends Object {
 		}
 	}
 
-	public boolean isSpellCollectEnable() {
+	public boolean isRecallEnable() {
 		return (f1 & (1 << 5)) != 0;
 	}
 
-	public void setSpellCollectEnable(boolean enable) {
+	public void setRecallEnable(boolean enable) {
 		if (enable) {
 			f1 |= (1 << 5);
 		} else {
@@ -81,18 +81,44 @@ public class GroupConfig extends Object {
 		}
 	}
 
-	public boolean isOCREnable() {
+	public boolean isMemberIncEnable() {
 		return (f1 & (1 << 6)) != 0;
 	}
 
-	public void setOCREnable(boolean enable) {
+	public void setMemberIncEnable(boolean enable) {
 		if (enable) {
 			f1 |= (1 << 6);
 		} else {
 			f1 &= ~(1 << 6);
 		}
 	}
+    
+    public boolean isGroupCountEnable() {
+        return (f1 & (1 << 7)) != 0;
+    }
 
+    public void setGroupCounterEnable(boolean enable) {
+        if (enable) {
+            f1 |= (1 << 7);
+        } else {
+            f1 &= ~(1 << 7);
+        }
+    }
+
+    public boolean isGroupCountChartEnable() {
+        return (f1 & (1 << 8)) != 0;
+    }
+
+    public void setGroupCountChartEnable(boolean enable) {
+        if (enable) {
+            f1 |= (1 << 8);
+        } else {
+            f1 &= ~(1 << 8);
+        }
+    }
+    
+    
+/*
 	public boolean isBarcodeEnable() {
 		return (f1 & (1 << 7)) != 0;
 	}
@@ -273,29 +299,6 @@ public class GroupConfig extends Object {
 		}
 	}
 
-	public boolean isGroupCountEnable() {
-		return (f1 & (1 << 22)) != 0;
-	}
-
-	public void setGroupCounterEnable(boolean enable) {
-		if (enable) {
-			f1 |= (1 << 22);
-		} else {
-			f1 &= ~(1 << 22);
-		}
-	}
-
-	public boolean isGroupCountChartEnable() {
-		return (f1 & (1 << 23)) != 0;
-	}
-
-	public void setGroupCountChartEnable(boolean enable) {
-		if (enable) {
-			f1 |= (1 << 23);
-		} else {
-			f1 &= ~(1 << 23);
-		}
-	}
 
     public boolean isBotOn() {
         return (f1 & (1 << 24)) != 0;
@@ -308,7 +311,7 @@ public class GroupConfig extends Object {
             f1 &= ~(1 << 24);
         }
 	}
-
+*/
 	@Override
 	public int hashCode() {
 		return (int)n;

@@ -26,7 +26,7 @@ public class SJFTX {
     }
 
     public int sendGroupMessage(long fromGroup, Message msg) {
-        if (entity.sleeping || entity.configManager.isBotOff(fromGroup)) {
+        if (entity.sleeping || !entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
             return -1;
         }
         return bot.getGroup(fromGroup).sendMessage(msg).getSource().getId();

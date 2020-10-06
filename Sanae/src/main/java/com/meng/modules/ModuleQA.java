@@ -46,10 +46,12 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromGroup = gme.getGroup().getId();
+        if (!entity.configManager.getGroupConfig(fromGroup).isQAEnable()) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
         long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
-
         QA qa = qaMap.get(fromQQ);
         if (qa != null && msg.equalsIgnoreCase("-qa")) {
             entity.sjfTx.sendGroupMessage(fromGroup, gme, "你还没有回答");

@@ -204,6 +204,9 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MessageRecallEvent.GroupRecall event) {
+        if (!entity.configManager.getGroupConfig(event.getGroup().getId()).isRecallEnable()) {
+            return ListeningStatus.LISTENING;
+        }
         event.getGroup().sendMessage(new PlainText(event.getOperator().getId() + "撤回了").plus(MessagePool.get(event.getMessageId()).getMessage()));
         return ListeningStatus.LISTENING;
     }
@@ -326,16 +329,19 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MemberJoinEvent event) {
+        if (!entity.configManager.getGroupConfig(event.getGroup().getId()).isMemberIncEnable()) {
+            return ListeningStatus.LISTENING;
+        } 
         entity.moduleManager.onGroupMemberIncrease(event);
         return ListeningStatus.LISTENING;
     }
     //成员主动加入群: Active
-  //  @NotNull
-   // @EventHandler
-  //  public ListeningStatus onReceive(@NotNull MemberJoinEvent.Active event) {
-  //      entity.moduleManager.onGroupMemberIncrease(event);
-  //      return ListeningStatus.LISTENING;
- //   }
+    //  @NotNull
+    // @EventHandler
+    //  public ListeningStatus onReceive(@NotNull MemberJoinEvent.Active event) {
+    //      entity.moduleManager.onGroupMemberIncrease(event);
+    //      return ListeningStatus.LISTENING;
+    //   }
     //成员已经离开群: MemberLeaveEvent
     //成员被踢出群: Kick
     @NotNull

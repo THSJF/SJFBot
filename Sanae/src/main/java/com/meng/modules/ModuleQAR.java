@@ -22,10 +22,12 @@ public class ModuleQAR extends BaseGroupModule {
     }
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
+        long fromGroup = gme.getGroup().getId();
+        if (!entity.configManager.getGroupConfig(fromGroup).isQAREnable()) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
         long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
-
         QA qar = qaMap.get(fromQQ);
         if (qar != null && msg.equalsIgnoreCase("-qar")) {
             entity.sjfTx.sendGroupMessage(fromGroup, gme, "你还没有回答");
