@@ -124,7 +124,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta)));
                             return true;
                         case "music":
-                            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜听%s", pname, thData.md5RanStr(fromQQ, thData.music)));
+                            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天宜听%s", pname, thData.md5RanMusic(fromQQ)));
                             return true;
                         case "grandma":
                             if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
@@ -153,7 +153,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                         case "all":
                             String allStr = String.format("%s今天宜打%s", pname, thData.md5RanStr(fromQQ, thData.neta));
                             allStr += "\n";
-                            allStr += String.format("%s今天宜听%s", pname, thData.md5RanStr(fromQQ, thData.music));
+                            allStr += String.format("%s今天宜听%s", pname, thData.md5RanMusic(fromQQ));
                             allStr += "\n";
                             if (Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
                                 allStr += String.format("%s今天宜认八云紫当奶奶", pname);

@@ -30,16 +30,22 @@ public class THDataHolder {
     public String[] pl09 = new String[]{"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
     public String[] plDiff = new String[]{"easy", "normal", "hard", "lunatic"};
 
-    public SpellCard[] spells;
+    public SpellCard[][] spells;
     public String[] neta;
-    public String[] music;
-    public TouhouCharacter[] name;
+    public String[][] music;
+    public TouhouCharacter[][] name;
     public String[] wayToGoodEnd;
+
+    private int spellCount = 0;
+    private int charaCount = 0;
+    private int musicCount = 0;
 
     public SpellCard getSpellFromDiff(int diffFlag) {
         SpellCard splc;
         while (true) {
-            splc = spells[new Random().nextInt(spells.length)];
+            Random random = new Random();
+            SpellCard[] spellss = spells[random.nextInt(spells.length)];
+            splc = spellss[random.nextInt(spellss.length)];
             if ((splc.d & diffFlag) != 0) {
                 return splc;
             }
@@ -51,7 +57,9 @@ public class THDataHolder {
         for (int i=0;i < count;++i) {
             SpellCard splc;
             while (true) {
-                splc = spells[new Random().nextInt(spells.length)];
+                Random random = new Random();
+                SpellCard[] spellss = spells[random.nextInt(spells.length)];
+                splc = spellss[random.nextInt(spellss.length)];
                 if ((splc.d & diffFlag) == 0) {
                     spshs[i] = splc;
                     splc = null;
@@ -103,22 +111,27 @@ public class THDataHolder {
 
 	public String getCharaNick(String charaName) {
 		String fullName = null;
-		for (TouhouCharacter s:name) {
-			if (s.charaName.contains(charaName)) {
-				fullName = s.charaName;
-				break;
-			}
+        start:
+		for (TouhouCharacter[] sss:name) {
+            for (TouhouCharacter s:sss) {
+                if (s.charaName.contains(charaName)) {
+                    fullName = s.charaName;
+                    break start;
+                }
+            }
 		}
 		if (fullName == null) {
 			return "该角色信息未填坑";
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(fullName).append("有以下称号:\n");
-		for (TouhouCharacter thc:name) {
-			if (thc.charaName.equals(fullName)) {
-				if (thc.nick.equals("该角色信息未填坑")) {
-					continue;
-				}
+		for (TouhouCharacter[] thcs:name) {
+            for (TouhouCharacter thc:thcs) {
+                if (thc.charaName.equals(fullName)) {
+                    if (thc.nick.equals("该角色信息未填坑")) {
+                        continue;
+                    }
+                }
 				sb.append(thc.nick).append("(").append(thc.game).append(")\n");
 			}
 		}
@@ -130,55 +143,65 @@ public class THDataHolder {
 	}
 
 	public SpellCard getSpellCard(String spellName) {
-		for (SpellCard sc:spells) {
-			if (sc.n.contains(spellName)) {
-				return sc;
-			}
-		}
+		for (SpellCard[] scs:spells) {
+            for (SpellCard sc :scs) {
+                if (sc.n.contains(spellName)) {
+                    return sc;
+                }
+            }
+        }
 		return null;
 	}
 
 	public SpellCard getSpellCard(String spellName, int diff) {
-		for (SpellCard sc:spells) {
-			if (sc.n.contains(spellName) && sc.d == diff) {
-				return sc;
-			}
+		for (SpellCard[] scs:spells) {
+            for (SpellCard sc:scs) {
+                if (sc.n.contains(spellName) && sc.d == diff) {
+                    return sc;
+                }
+            }
 		}
 		return null;
 	}
 
 	public HashSet<SpellCard> getCharaSpellCard(String name) {
-		HashSet<SpellCard> scs = new HashSet<>();
-		for (SpellCard sc:spells) {
-			if (sc.m.equals(name)) {
-				scs.add(sc);
-			}
+		HashSet<SpellCard> hscs = new HashSet<>();
+		for (SpellCard[] scs:spells) {
+            for (SpellCard sc :scs) {
+                if (sc.m.equals(name)) {
+                    hscs.add(sc);
+                }
+            }
 		}
-		return scs;
+		return hscs;
 	}
 
 	public HashSet<SpellCard> getCharaSpellCard(String name, int diff) {
-		HashSet<SpellCard> scs = new HashSet<>();
-		for (SpellCard sc:spells) {
-			if (sc.m.equals(name) && sc.d == diff) {
-				scs.add(sc);
-			}
+		HashSet<SpellCard> hscs = new HashSet<>();
+		for (SpellCard[] scs:spells) {
+            for (SpellCard sc :scs) {
+                if (sc.m.equals(name) && sc.d == diff) {
+                    hscs.add(sc);
+                }
+            }
 		}
-		return scs;
+		return hscs;
 	}
 
 	public HashSet<SpellCard> getCharaSpellCard(String name, String... spellExcept) {
-		HashSet<SpellCard> scs = new HashSet<>();
-		for (SpellCard sc:spells) {
-			if (sc.m.equals(name)) {
-				for (String necx:spellExcept) {
-					if (!sc.n.equals(necx)) {
-						scs.add(sc);
-					}
-				}
+		HashSet<SpellCard> hscs = new HashSet<>();
+		for (SpellCard[] scs:spells) {
+            for (SpellCard sc :scs) {
+                if (sc.m.equals(name)) {
+                    for (String necx:spellExcept) {
+                        if (!sc.n.equals(necx)) {
+                            hscs.add(sc);
+                        }
+                    }
+                }
 			}
 		}
-		return scs;
+		return hscs;
 	} 
 
     public String randomGame(String pname, long fromQQ, boolean goodAt) {
@@ -273,15 +296,63 @@ public class THDataHolder {
     }
 
     public SpellCard randomSpell() {
-        return spells[new Random().nextInt(spells.length)];
+        Random r = new Random();
+        SpellCard[] scs = spells[r.nextInt(spells.length)];
+        return scs[r.nextInt(spells.length)];
     }
 
     public SpellCard md5RanSpell(long fromQQ) {
-        return spells[md5Random(fromQQ) % spells.length];
+        if (spellCount == 0) {
+            for (SpellCard[] scs:spells) {
+                spellCount += scs.length; 
+            }
+        }
+        int num = md5Random(fromQQ) % spellCount;
+        int tmp = 0;
+        for (SpellCard[] scs:spells) {
+            for (SpellCard sc:scs) {
+                if (++tmp == num) {
+                    return sc;
+                }  
+            }
+        }
+        return null;
     }
 
     public TouhouCharacter md5RanChara(long fromQQ) {
-        return name[md5Random(fromQQ) % name.length];
+        if (charaCount == 0) {
+            for (TouhouCharacter[] scs:name) {
+                charaCount += scs.length; 
+            }
+        }
+        int num = md5Random(fromQQ) % charaCount;
+        int tmp = 0;
+        for (TouhouCharacter[] scs:name) {
+            for (TouhouCharacter sc:scs) {
+                if (++tmp == num) {
+                    return sc;
+                }  
+            }
+        }
+        return null;
+    }
+
+    public String md5RanMusic(long fromQQ) {
+        if (musicCount == 0) {
+            for (String[] scs:music) {
+                musicCount += scs.length; 
+            }
+        }
+        int num = md5Random(fromQQ) % musicCount;
+        int tmp = 0;
+        for (String[] scs:music) {
+            for (String sc:scs) {
+                if (++tmp == num) {
+                    return sc;
+                }  
+            }
+        }
+        return null;
     }
 
     public int md5Random(long fromQQ) {
@@ -299,7 +370,19 @@ public class THDataHolder {
     }
 
     {
-        spells = Tools.ArrayTool.mergeArray(TH06GameData.spellcards, TH07GameData.spellcards, TH08GameData.spellcards, TH10GameData.spellcards, TH11GameData.spellcards, TH12GameData.spellcards, TH13GameData.spellcards, TH14GameData.spellcards, TH15GameData.spellcards, TH16GameData.spellcards, TH17GameData.spellcards);
+        spells = new SpellCard[][] {
+            TH06GameData.spellcards,
+            TH07GameData.spellcards,
+            TH08GameData.spellcards,
+            TH10GameData.spellcards,
+            TH11GameData.spellcards,
+            TH12GameData.spellcards,
+            TH13GameData.spellcards,
+            TH14GameData.spellcards,
+            TH15GameData.spellcards,
+            TH16GameData.spellcards,
+            TH17GameData.spellcards
+        };
         neta = new String[]{
             "红lnb",
             "红lnm",
@@ -330,64 +413,82 @@ public class THDataHolder {
             "天空璋extra",
             "鬼形兽normal"
         };
-        music = new String[]{
-            //th4
-            "bad apple",
-        };
-        music = Tools.ArrayTool.mergeArray(music, TH06GameData.musicName, TH07GameData.musicName, TH08GameData.musicName, TH10GameData.musicName, TH11GameData.musicName, TH12GameData.musicName, TH13GameData.musicName, TH14GameData.musicName, TH15GameData.musicName, TH16GameData.musicName, TH17GameData.musicName);
-        name = new TouhouCharacter[]{
+        music = new String[][]{
+            {"bad apple"}, //th4
+            TH06GameData.musicName,
+            TH07GameData.musicName,
+            TH08GameData.musicName,
+            TH10GameData.musicName,
+            TH11GameData.musicName,
+            TH12GameData.musicName,
+            TH13GameData.musicName,
+            TH14GameData.musicName,
+            TH15GameData.musicName,
+            TH16GameData.musicName,
+            TH17GameData.musicName};
+        name = new TouhouCharacter[][]{
             //th2
-            new TouhouCharacter("里香", "东方封魔录"),
-            new TouhouCharacter("明罗", "东方封魔录"),
-            new TouhouCharacter("魅魔", "东方封魔录"),
-            //th3
-            new TouhouCharacter("爱莲", "东方梦时空"),
-            new TouhouCharacter("小兔姬", "东方梦时空"),
-            new TouhouCharacter("卡娜·安娜贝拉尔", "东方梦时空"),
-            new TouhouCharacter("朝仓理香子", "东方梦时空"),
-            new TouhouCharacter("北白河千百合", "东方梦时空"),
-            new TouhouCharacter("冈崎梦美", "东方梦时空"),
-            //th4
-            new TouhouCharacter("奥莲姬", "东方幻想乡"),
-            new TouhouCharacter("胡桃", "东方幻想乡"),
-            new TouhouCharacter("艾丽", "东方幻想乡"),
-            new TouhouCharacter("梦月", "东方幻想乡"),
-            new TouhouCharacter("幻月", "东方幻想乡"),
-            //th5
-            new TouhouCharacter("萨拉", "东方怪绮谈"),
-            new TouhouCharacter("露易兹", "东方怪绮谈"),
-            new TouhouCharacter("爱丽丝", "东方怪绮谈"),
-            new TouhouCharacter("雪", "东方怪绮谈"),
-            new TouhouCharacter("舞", "东方怪绮谈"),
-            new TouhouCharacter("梦子", "东方怪绮谈"),
-            new TouhouCharacter("神绮", "东方怪绮谈")};
-        name = Tools.ArrayTool.mergeArray(name, TH06GameData.charaName, TH07GameData.charaName, TH08GameData.charaName, 
-                                          new TouhouCharacter[]{
-                                              //th9
-                                              new TouhouCharacter("梅蒂欣·梅兰可莉", "东方花映冢"),
-                                              new TouhouCharacter("风见幽香", "东方花映冢"),
-                                              new TouhouCharacter("小野冢小町", "东方花映冢"),
-                                              new TouhouCharacter("四季映姬", "东方花映冢")},
-                                          TH10GameData.charaName, TH11GameData.charaName, TH12GameData.charaName,
-                                          new TouhouCharacter[]{
-                                              //th12.8
-                                              new TouhouCharacter("桑尼·米尔克", "妖精大战争"),
-                                              new TouhouCharacter("露娜·切露德", "妖精大战争"),
-                                              new TouhouCharacter("斯塔·萨菲雅", "妖精大战争")}, TH13GameData.charaName,
-                                          new TouhouCharacter[]{
-                                              //th13.5
-                                              new TouhouCharacter("秦心", "东方心绮楼")},
-                                          TH14GameData.charaName,
-                                          new TouhouCharacter[]{
-                                              //th14.5
-                                              new TouhouCharacter("宇佐见堇子", "东方深秘录")},
-                                          TH15GameData.charaName,
-                                          new TouhouCharacter[]{
-                                              //th15.5
-                                              new TouhouCharacter("依神紫苑", "东方凭依华"),
-                                              new TouhouCharacter("依神女苑", "东方凭依华")},
-                                          TH16GameData.charaName,
-                                          TH17GameData.charaName);
+            new TouhouCharacter[]{ 
+                new TouhouCharacter("里香", "东方封魔录"),
+                new TouhouCharacter("明罗", "东方封魔录"),
+                new TouhouCharacter("魅魔", "东方封魔录"),
+                //th3
+                new TouhouCharacter("爱莲", "东方梦时空"),
+                new TouhouCharacter("小兔姬", "东方梦时空"),
+                new TouhouCharacter("卡娜·安娜贝拉尔", "东方梦时空"),
+                new TouhouCharacter("朝仓理香子", "东方梦时空"),
+                new TouhouCharacter("北白河千百合", "东方梦时空"),
+                new TouhouCharacter("冈崎梦美", "东方梦时空"),
+                //th4
+                new TouhouCharacter("奥莲姬", "东方幻想乡"),
+                new TouhouCharacter("胡桃", "东方幻想乡"),
+                new TouhouCharacter("艾丽", "东方幻想乡"),
+                new TouhouCharacter("梦月", "东方幻想乡"),
+                new TouhouCharacter("幻月", "东方幻想乡"),
+                //th5
+                new TouhouCharacter("萨拉", "东方怪绮谈"),
+                new TouhouCharacter("露易兹", "东方怪绮谈"),
+                new TouhouCharacter("爱丽丝", "东方怪绮谈"),
+                new TouhouCharacter("雪", "东方怪绮谈"),
+                new TouhouCharacter("舞", "东方怪绮谈"),
+                new TouhouCharacter("梦子", "东方怪绮谈"),
+                new TouhouCharacter("神绮", "东方怪绮谈")
+            },
+            TH06GameData.charaName,
+            TH07GameData.charaName,
+            TH08GameData.charaName, 
+            new TouhouCharacter[]{
+                //th9
+                new TouhouCharacter("梅蒂欣·梅兰可莉", "东方花映冢"),
+                new TouhouCharacter("风见幽香", "东方花映冢"),
+                new TouhouCharacter("小野冢小町", "东方花映冢"),
+                new TouhouCharacter("四季映姬", "东方花映冢")},
+            TH10GameData.charaName,
+            TH11GameData.charaName,
+            TH12GameData.charaName,
+            new TouhouCharacter[]{
+                //th12.8
+                new TouhouCharacter("桑尼·米尔克", "妖精大战争"),
+                new TouhouCharacter("露娜·切露德", "妖精大战争"),
+                new TouhouCharacter("斯塔·萨菲雅", "妖精大战争")
+            },
+            TH13GameData.charaName,
+            new TouhouCharacter[]{
+                //th13.5
+                new TouhouCharacter("秦心", "东方心绮楼")
+            },
+            TH14GameData.charaName,
+            new TouhouCharacter[]{
+                //th14.5
+                new TouhouCharacter("宇佐见堇子", "东方深秘录")},
+            TH15GameData.charaName,
+            new TouhouCharacter[]{
+                //th15.5
+                new TouhouCharacter("依神紫苑", "东方凭依华"),
+                new TouhouCharacter("依神女苑", "东方凭依华")},
+            TH16GameData.charaName,
+            TH17GameData.charaName
+        };
         /*	spellCardInfoMap.put("月符「月光」","未填坑");
          spellCardInfoMap.put("夜符「夜雀」","未填坑");
          spellCardInfoMap.put("暗符「境界线」","未填坑");

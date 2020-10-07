@@ -36,7 +36,7 @@ public class MAdminMsg extends BaseGroupModule {
         long fromQQ = gme.getSender().getId();
         long fromGroup = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-        if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 1) {
+        if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() > 0) {
             return false;
 		}
         if (msg.charAt(0) != '.') {
@@ -61,7 +61,7 @@ public class MAdminMsg extends BaseGroupModule {
                     entity.sjfTx.sendGroupMessage(fromGroup, "已设置为:" + wel);
                     return true;
             }
-            if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() < 2) {
+            if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() > 1) {
                 return false;
             }
             switch (first) {
