@@ -28,28 +28,25 @@ public class ModuleRepeater extends BaseGroupModule {
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromQQ = gme.getSender().getId();
         long fromGroup = gme.getGroup().getId();
         Repeater rp = repeaters.get(fromGroup);
+        GroupConfig cfg = entity.configManager.getGroupConfig(fromGroup);
+        if (!cfg.isRepeaterEnable()) {
+            return false; 
+        }
 		if (rp == null) {
-			repeaters.put(fromGroup, rp = new Repeater(fromGroup));
+			repeaters.put(fromGroup, rp = new Repeater());
 		}
+        long fromQQ = gme.getSender().getId();
+
         return rp.check(fromGroup, fromQQ, gme.getMessage());
     }
 
 	private class Repeater {
 		private MessageChain lastMsgRecieved = emptyMessageChain;
 		private boolean lastStatus = false;
-        private GroupConfig cfg;
-
-        private Repeater(long g) {
-            cfg = entity.configManager.getGroupConfig(g);
-        }
 
 		private boolean check(long fromGroup, long fromQQ, MessageChain msg) {
-			if (!cfg.isRepeaterEnable()) {
-                return false;
-            }
             boolean b = false; 
             b = checkRepeatStatu(fromGroup, fromQQ, msg);
             lastMsgRecieved = msg;

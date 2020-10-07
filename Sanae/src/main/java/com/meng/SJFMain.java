@@ -28,6 +28,10 @@ public class SJFMain {
 
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("deviceInfo.json");
+        System.out.println(GSON.toJson(config));
+        BotConfiguration bc2= new BotConfiguration();
+        bc2.randomDeviceInfo();
+        System.out.println(bc2);
         AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
         final Bot bot = BotFactoryJvm.newBot(info.account, info.password, config);
         SJFTX tx = new SJFTX(bot);
@@ -35,11 +39,11 @@ public class SJFMain {
         SJFRX rx = new SJFRX(moduleManager);
         Events.registerEvents(bot, rx);
         ConfigManager configManager = new ConfigManager();
+        configManager.init();
         final BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
         ExceptionCatcher.getInstance(entity).init();
         moduleManager.setBotWrapperEntity(entity);
         configManager.setBotWrapperEntity(entity);
-        configManager.init();
         moduleManager.loadModules(configManager);
         moduleManager.loadModules(entity);
         moduleManager.load();
