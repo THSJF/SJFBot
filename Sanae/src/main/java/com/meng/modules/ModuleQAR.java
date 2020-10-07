@@ -71,44 +71,44 @@ public class ModuleQAR extends BaseGroupModule {
         SpellCard spellCard = entity.moduleManager.getModule(ModuleDiceCmd.class).thData.getSpellFromDiff(diff);
         SpellCard[] sps = entity.moduleManager.getModule(ModuleDiceCmd.class).thData.getSpellFromNotDiff(3, diff);
         QA qa = new QA();
-        qa.a.add(spellCard.n);
+        qa.a.add(spellCard.name);
         for (SpellCard spc:sps) {
-            qa.a.add(spc.n);
+            qa.a.add(spc.name);
         }
         qa.setTrueAns(0);
         qa.shuffleAnswer();
         StringBuilder sb=new StringBuilder();
         sb.append("以下符卡在");
         switch (diff) {
-            case SpellCard.E:
+            case SpellCard.Easy:
                 sb.append("easy难度");
                 break;
-            case SpellCard.N:
+            case SpellCard.Normal:
                 sb.append("normal难度");
                 break;
-            case SpellCard.H:
+            case SpellCard.Hard:
                 sb.append("hard难度");
                 break;
-            case SpellCard.L:
+            case SpellCard.Lunatic:
                 sb.append("lunatic难度");
                 break;
-            case SpellCard.O:
+            case SpellCard.Overdrive:
                 sb.append("overdrive难度");
                 break;
-            case SpellCard.Ls:
+            case SpellCard.LastSpell:
                 sb.append("last spell");
                 break;
-            case SpellCard.Lw:
+            case SpellCard.LastWord:
                 sb.append("lastword");
                 break;
-            case SpellCard.Ex:
+            case SpellCard.Extra:
                 sb.append("extra关卡");
                 break;
-            case SpellCard.Ph:
+            case SpellCard.Phantasm:
                 sb.append("phamtasm关卡");
                 break;
             default:
-                System.out.println(spellCard.n);
+                System.out.println(spellCard.name);
                 System.out.println(diff);
         }
         sb.append("中出现的是:\n");

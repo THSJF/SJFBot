@@ -22,19 +22,19 @@ public class THDataHolder {
 
 	private HashMap<String,String> spellCardInfoMap = new HashMap<>();
 
-    public String[] pl01 = new String[]{"别打砖块了，来飞机"};
-    public String[] pl02 = new String[]{"范围重视型", "高灵击伤害 平衡型", "威力重视型"};
-    public String[] pl03 = new String[]{"博丽灵梦", "魅魔", "雾雨魔理沙", "爱莲", "小兔姬", "卡娜·安娜贝拉尔", "朝仓理香子", "北白河千百合", "冈崎梦美"};
-    public String[] pl04 = new String[]{"博丽灵梦 诱导", "博丽灵梦 大范围", "雾雨魔理沙 激光", "雾雨魔理沙 高速射击"};
-    public String[] pl05 = new String[]{"博丽灵梦", "雾雨魔理沙", "魅魔", "幽香"};
-    public String[] pl09 = new String[]{"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
-    public String[] plDiff = new String[]{"easy", "normal", "hard", "lunatic"};
+    public String[] pl01 = {"别打砖块了，来飞机"};
+    public String[] pl02 = {"范围重视型", "高灵击伤害 平衡型", "威力重视型"};
+    public String[] pl03 = {"博丽灵梦", "魅魔", "雾雨魔理沙", "爱莲", "小兔姬", "卡娜·安娜贝拉尔", "朝仓理香子", "北白河千百合", "冈崎梦美"};
+    public String[] pl04 = {"博丽灵梦 诱导", "博丽灵梦 大范围", "雾雨魔理沙 激光", "雾雨魔理沙 高速射击"};
+    public String[] pl05 = {"博丽灵梦", "雾雨魔理沙", "魅魔", "幽香"};
+    public String[] pl09 = {"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
+    public String[] plDiff = {"easy", "normal", "hard", "lunatic"};
 
     public SpellCard[][] spells;
-    public String[] neta;
+    public String[] neta = {"红lnb", "红lnm", "妖lnm", "妖lnn", "永lnm", "风lnm","风lnn","殿lnm", "船lnm", "船lnn","庙lnm","城lnm","绀lnm","璋lnn"};
     public String[][] music;
     public TouhouCharacter[][] name;
-    public String[] wayToGoodEnd;
+    public String[] wayToGoodEnd = { "红魔乡normal", "妖妖梦easy", "永夜抄6B", "风神录normal", "地灵殿normal", "星莲船normal", "神灵庙normal", "辉针城灵梦B", "辉针城魔理沙B", "辉针城咲夜B", "绀珠传no miss","天空璋extra","鬼形兽normal" };
 
     private int spellCount = 0;
     private int charaCount = 0;
@@ -46,7 +46,7 @@ public class THDataHolder {
             Random random = new Random();
             SpellCard[] spellss = spells[random.nextInt(spells.length)];
             splc = spellss[random.nextInt(spellss.length)];
-            if ((splc.d & diffFlag) != 0) {
+            if ((splc.difficultFlag & diffFlag) != 0) {
                 return splc;
             }
         }
@@ -60,7 +60,7 @@ public class THDataHolder {
                 Random random = new Random();
                 SpellCard[] spellss = spells[random.nextInt(spells.length)];
                 splc = spellss[random.nextInt(spellss.length)];
-                if ((splc.d & diffFlag) == 0) {
+                if ((splc.difficultFlag & diffFlag) == 0) {
                     spshs[i] = splc;
                     splc = null;
                     break;
@@ -72,40 +72,40 @@ public class THDataHolder {
 
 	public String getSpellCardPs(SpellCard sc) {
 		StringBuilder sb=new StringBuilder();
-		sb.append(sc.n).append("是").append(sc.m);
-		if (sc.d != SpellCard.Ls && sc.d != SpellCard.Lw) {
+		sb.append(sc.name).append("是").append(sc.master);
+		if (sc.difficultFlag != SpellCard.LastSpell && sc.difficultFlag != SpellCard.LastWord) {
 			sb.append("在");
-			if ((sc.d & SpellCard.E) == SpellCard.E) {
+			if ((sc.difficultFlag & SpellCard.Easy) == SpellCard.Easy) {
 				sb.append(" easy");
 			}
-			if ((sc.d & SpellCard.N) == SpellCard.N) {
+			if ((sc.difficultFlag & SpellCard.Normal) == SpellCard.Normal) {
 				sb.append(" normal");
 			}
-			if ((sc.d & SpellCard.H) == SpellCard.H) {
+			if ((sc.difficultFlag & SpellCard.Hard) == SpellCard.Hard) {
 				sb.append(" hard");
 			}
-			if ((sc.d & SpellCard.L) == SpellCard.L) {
+			if ((sc.difficultFlag & SpellCard.Lunatic) == SpellCard.Lunatic) {
 				sb.append(" lunatic");
 			}
-			if (sc.d == SpellCard.Ex) {
+			if (sc.difficultFlag == SpellCard.Extra) {
 				sb.append(" extra");
 			}
-			if (sc.d == SpellCard.Ph) {
+			if (sc.difficultFlag == SpellCard.Phantasm) {
 				sb.append(" phantasm");
 			}
-			if (sc.d == SpellCard.O) {
+			if (sc.difficultFlag == SpellCard.Overdrive) {
 				sb.append(" overdrive");
 			}
 			sb.append("难度下的符卡");
 		} else {
-			if (sc.d == SpellCard.Ls) {
+			if (sc.difficultFlag == SpellCard.LastSpell) {
 				sb.append("的lastspell");
-			} else if (sc.d == SpellCard.Lw) {
+			} else if (sc.difficultFlag == SpellCard.LastWord) {
 				sb.append("的lastword");
 			}
 		}
 		sb.append("\n附加:\n");
-		sb.append(spellCardInfoMap.get(sc.n));
+		sb.append(spellCardInfoMap.get(sc.name));
 		return sb.toString();
 	}
 
@@ -145,7 +145,7 @@ public class THDataHolder {
 	public SpellCard getSpellCard(String spellName) {
 		for (SpellCard[] scs:spells) {
             for (SpellCard sc :scs) {
-                if (sc.n.contains(spellName)) {
+                if (sc.name.contains(spellName)) {
                     return sc;
                 }
             }
@@ -156,7 +156,7 @@ public class THDataHolder {
 	public SpellCard getSpellCard(String spellName, int diff) {
 		for (SpellCard[] scs:spells) {
             for (SpellCard sc:scs) {
-                if (sc.n.contains(spellName) && sc.d == diff) {
+                if (sc.name.contains(spellName) && sc.difficultFlag == diff) {
                     return sc;
                 }
             }
@@ -168,7 +168,7 @@ public class THDataHolder {
 		HashSet<SpellCard> hscs = new HashSet<>();
 		for (SpellCard[] scs:spells) {
             for (SpellCard sc :scs) {
-                if (sc.m.equals(name)) {
+                if (sc.master.equals(name)) {
                     hscs.add(sc);
                 }
             }
@@ -180,7 +180,7 @@ public class THDataHolder {
 		HashSet<SpellCard> hscs = new HashSet<>();
 		for (SpellCard[] scs:spells) {
             for (SpellCard sc :scs) {
-                if (sc.m.equals(name) && sc.d == diff) {
+                if (sc.master.equals(name) && sc.difficultFlag == diff) {
                     hscs.add(sc);
                 }
             }
@@ -192,9 +192,9 @@ public class THDataHolder {
 		HashSet<SpellCard> hscs = new HashSet<>();
 		for (SpellCard[] scs:spells) {
             for (SpellCard sc :scs) {
-                if (sc.m.equals(name)) {
+                if (sc.master.equals(name)) {
                     for (String necx:spellExcept) {
-                        if (!sc.n.equals(necx)) {
+                        if (!sc.name.equals(necx)) {
                             hscs.add(sc);
                         }
                     }
@@ -202,10 +202,103 @@ public class THDataHolder {
 			}
 		}
 		return hscs;
-	} 
+	}
+
+    public String randomPlane(String game) {
+        switch (game) {
+            case "东方灵异传":
+            case "th1":
+            case "th01":
+                return Tools.ArrayTool.rfa(pl01);
+            case "东方封魔录":
+            case "th2":
+            case "th02":
+                return Tools.ArrayTool.rfa(pl02);
+            case "东方梦时空":
+            case "th3":
+            case "th03":
+                return Tools.ArrayTool.rfa(pl03);
+            case "东方幻想乡":
+            case "th4":
+            case "th04":
+                return Tools.ArrayTool.rfa(pl04);
+            case "东方怪绮谈":
+            case "th5":
+            case "th05":
+                return Tools.ArrayTool.rfa(pl05);
+            case "东方红魔乡":
+            case "th6":
+            case "th06":
+            case "tEoSD":
+                return Tools.ArrayTool.rfa(TH06GameData.players);
+            case "东方妖妖梦":
+            case "th7":
+            case "th07":
+            case "PCB":
+                return Tools.ArrayTool.rfa(TH07GameData.players);
+            case "东方永夜抄":
+            case "th8":
+            case "th08":
+            case "IN":
+                return Tools.ArrayTool.rfa(TH08GameData.players);
+            case "东方花映冢":
+            case "th9":
+            case "th09":
+            case "PoFV":
+                return Tools.ArrayTool.rfa(pl09);
+            case "东方风神录":
+            case "th10":
+            case "MoF":
+                return Tools.ArrayTool.rfa(TH10GameData.players);
+            case "东方地灵殿":
+            case "th11":
+                return Tools.ArrayTool.rfa(TH11GameData.players);
+            case "东方星莲船":
+            case "th12":
+            case "UFO":
+                return Tools.ArrayTool.rfa(TH12GameData.players);
+            case "东方神灵庙":
+            case "th13":
+            case "TD":
+                return Tools.ArrayTool.rfa(TH13GameData.players);
+            case "东方辉针城":
+            case "th14":
+            case "DDC":
+                return Tools.ArrayTool.rfa(TH14GameData.players) + " " + Tools.ArrayTool.rfa(TH14GameData.playerSub);
+            case "东方绀珠传":
+            case "th15":
+            case "LoLK":
+                return Tools.ArrayTool.rfa(TH15GameData.players);
+            case "东方天空璋":
+            case "th16":
+            case "HSiFS":
+                return Tools.ArrayTool.rfa(TH16GameData.players) + " " + Tools.ArrayTool.rfa(TH16GameData.playerSub);
+            case "东方鬼形兽":
+            case "th17":
+            case "WBaWC":
+                return Tools.ArrayTool.rfa(TH17GameData.players) + "+" + Tools.ArrayTool.rfa(TH17GameData.playerSub);
+            case "东方文花帖":
+            case "th9.5":
+            case "StB":
+                //       case "东方文花帖DS":
+                //       case "th12.5":
+                //       case "DS":
+            case "妖精大战争":
+            case "th12.8":
+            case "弹幕天邪鬼":
+            case "th14.3":
+            case "ISC":
+            case "秘封噩梦日记":
+            case "th16.5":
+            case "VD":
+                return "就一个飞机你roll你🐴呢";
+            default:
+                return "只有2un飞机游戏";
+        }
+    }
 
     public String randomGame(String pname, long fromQQ, boolean goodAt) {
-        int gameNo=md5Random(fromQQ) % 16 + 2;
+        int gameNo = md5Random(fromQQ) % 16 + 2;
         String gameName = null;
         String charaName = null;
         switch (gameNo) {
@@ -382,36 +475,6 @@ public class THDataHolder {
             TH15GameData.spellcards,
             TH16GameData.spellcards,
             TH17GameData.spellcards
-        };
-        neta = new String[]{
-            "红lnb",
-            "红lnm",
-            "妖lnm",
-            "妖lnn",
-            "永lnm",
-            "风lnm",
-            "风lnn",
-            "殿lnm",
-            "船lnm",
-            "船lnn",
-            "庙lnm",
-            "城lnm",
-            "绀lnm",
-            "璋lnn"};
-        wayToGoodEnd = new String[]{
-            "红魔乡normal",
-            "妖妖梦easy",
-            "永夜抄6B",
-            "风神录normal",
-            "地灵殿normal",
-            "星莲船normal",
-            "神灵庙normal",
-            "辉针城灵梦B",
-            "辉针城魔理沙B",
-            "辉针城咲夜B",
-            "绀珠传no miss",
-            "天空璋extra",
-            "鬼形兽normal"
         };
         music = new String[][]{
             {"bad apple"}, //th4

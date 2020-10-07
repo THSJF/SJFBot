@@ -39,7 +39,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
         }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(fromGroup, fromQQ), thData.md5RanSpell(fromQQ).n));
+            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(fromGroup, fromQQ), thData.md5RanSpell(fromQQ).Normal));
             return true;
         }
 		if (msg.charAt(0) != '.') {
@@ -99,7 +99,16 @@ public class ModuleDiceCmd extends BaseGroupModule {
                         fpro = ((float)(thData.md5Random(fromQQ) % 10001)) / 100;
                     }
                     entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
-                    return true;    
+                    return true;
+                case "roll":
+                    switch (iter.next()) {
+                        case "plane":
+                        case "pl":
+                        case "player":
+                            entity.sjfTx.sendGroupMessage(fromGroup, thData.randomPlane(iter.next()));
+                            return true;
+                    }
+                    return true;
                 case "draw":
                     String drawcmd = iter.next();
                     switch (drawcmd) {
@@ -108,7 +117,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             return true;
                         case "spell":
                             if (list.size() == 3) {
-                                entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().n);
+                                entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().name);
                             } else if (list.size() == 4) {
                                 String spellName = iter.next();
                                 SpellCard sc = thData.getSpellCard(spellName);
@@ -116,8 +125,8 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                     entity.sjfTx.sendGroupMessage(fromGroup, "没有找到这张符卡");
                                     return true;
                                 }
-                                float allPro = ((float)(thData.md5Random(fromQQ, sc.n) % 10001)) / 100;
-                                entity.sjfTx.sendGroupMessage(fromGroup, "你今天" + sc.n + "的收率是" + allPro + "%");
+                                float allPro = ((float)(thData.md5Random(fromQQ, sc.name) % 10001)) / 100;
+                                entity.sjfTx.sendGroupMessage(fromGroup, "你今天" + sc.Normal + "的收率是" + allPro + "%");
                             }
                             return true;
                         case "neta":
