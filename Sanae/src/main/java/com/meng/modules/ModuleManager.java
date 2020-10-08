@@ -55,6 +55,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		load(ModuleRepeater.class);
 		load(ModuleReport.class);
 
+        load(MNumberProcess.class);
 		load(ModuleMorning.class);
 		load(ModuleDiceCmd.class);
 		load(ModuleFaith.class);

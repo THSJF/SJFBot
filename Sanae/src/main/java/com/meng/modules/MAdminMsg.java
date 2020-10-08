@@ -75,7 +75,7 @@ public class MAdminMsg extends BaseGroupModule {
                 case "switch":
                     GroupConfig cfg = entity.configManager.getGroupConfig(gme.getGroup().getId());
                     boolean re = false;
-                    switch (iter.next()) {
+                    switch (iter.next().toLowerCase()) {
                         case "recall":
                             cfg.setRecallEnable(re = !cfg.isRecallEnable());
                             break;
@@ -94,6 +94,12 @@ public class MAdminMsg extends BaseGroupModule {
                         case "repeater":
                             cfg.setRepeaterEnable(re = !cfg.isRepeaterEnable());
                             break;
+                        case "groupcount":
+                            cfg.setGroupCounterEnable(re = !cfg.isGroupCountEnable());
+                            break;
+                        case "groupcountchart":
+                            cfg.setGroupCountChartEnable(re = !cfg.isGroupCountChartEnable());
+                            break;  
                         default:
                             return true;
                     }

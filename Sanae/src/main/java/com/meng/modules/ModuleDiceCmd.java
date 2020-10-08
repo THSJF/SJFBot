@@ -126,7 +126,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                     return true;
                                 }
                                 float allPro = ((float)(thData.md5Random(fromQQ, sc.name) % 10001)) / 100;
-                                entity.sjfTx.sendGroupMessage(fromGroup, "你今天" + sc.Normal + "的收率是" + allPro + "%");
+                                entity.sjfTx.sendGroupMessage(fromGroup, "你今天" + sc.name + "的收率是" + allPro + "%");
                             }
                             return true;
                         case "neta":

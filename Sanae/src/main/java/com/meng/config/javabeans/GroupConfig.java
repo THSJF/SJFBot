@@ -117,20 +117,18 @@ public class GroupConfig extends Object {
         }
     }
     
-    
-/*
-	public boolean isBarcodeEnable() {
-		return (f1 & (1 << 7)) != 0;
+	public boolean isNumberProcessEnable() {
+		return (f1 & (1 << 9)) != 0;
 	}
 
-	public void setBarcodeEnable(boolean enable) {
+	public void setNumberProcessEnable(boolean enable) {
 		if (enable) {
-			f1 |= (1 << 7);
+			f1 |= (1 << 9);
 		} else {
-			f1 &= ~(1 << 7);
+			f1 &= ~(1 << 9);
 		}
 	}
-
+/*
 	public boolean isBannerEnable() {
 		return (f1 & (1 << 8)) != 0;
 	}

@@ -53,10 +53,10 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long fromGroup = gme.getGroup().getId();
-        String msg = gme.getMessage().contentToString();
-		if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountEnable()) {
+        if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountEnable()) {
 			return false;
 		}
+        String msg = gme.getMessage().contentToString();
 		GroupInfo groupInfo = getBean(fromGroup);
         ++groupInfo.speak;
 		if (msg.contains("艹") || msg.contains("草")) {

@@ -60,10 +60,10 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long fromGroup = gme.getGroup().getId();
-        String msg = gme.getMessage().contentToString();
         if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountChartEnable()) {
 			return false;
 		}
+        String msg = gme.getMessage().contentToString();
 		GroupSpeak gs = groupsMap.get(fromGroup);
 		if (gs == null) {
 			gs = new GroupSpeak();

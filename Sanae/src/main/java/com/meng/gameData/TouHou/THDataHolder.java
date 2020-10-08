@@ -131,8 +131,8 @@ public class THDataHolder {
                     if (thc.nick.equals("该角色信息未填坑")) {
                         continue;
                     }
+                    sb.append(thc.nick).append("(").append(thc.game).append(")\n"); 
                 }
-				sb.append(thc.nick).append("(").append(thc.game).append(")\n");
 			}
 		}
 		if (sb.toString().equals(fullName + "有以下称号:\n")) {
