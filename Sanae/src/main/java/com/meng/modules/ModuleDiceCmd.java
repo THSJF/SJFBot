@@ -1,6 +1,8 @@
 package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
+import com.meng.SJFInterfaces.IHelpMessage;
+import com.meng.SJFpermission;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
@@ -17,7 +19,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @author: 司徒灵羽
  **/
 
-public class ModuleDiceCmd extends BaseGroupModule {
+public class ModuleDiceCmd extends BaseGroupModule implements IHelpMessage {
 
     public THDataHolder thData = new THDataHolder();
 
@@ -84,9 +86,6 @@ public class ModuleDiceCmd extends BaseGroupModule {
                     entity.configManager.setNickName(fromQQ, name);
                     entity.sjfTx.sendGroupMessage(fromGroup, "我以后会称呼你为" + name);
                     return true;
-                case "help":
-
-                    return true;
                 case "jrrp":
                     float fpro = 0f;
                     if (c == '0') {
@@ -112,9 +111,6 @@ public class ModuleDiceCmd extends BaseGroupModule {
                 case "draw":
                     String drawcmd = iter.next();
                     switch (drawcmd) {
-                        case "help":
-                            entity.sjfTx.sendGroupMessage(fromGroup, "当前有:spell neta music grandma game all");
-                            return true;
                         case "spell":
                             if (list.size() == 3) {
                                 entity.sjfTx.sendGroupMessage(fromGroup, thData.randomSpell().name);
@@ -209,4 +205,23 @@ public class ModuleDiceCmd extends BaseGroupModule {
         return false;
 	}
 
+    @Override
+    public String getHelp(SJFpermission pms, Class<?> cl) {
+        if (cl == getClass() || cl == Object.class) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Dice:\n").append("可用命令:");
+            stringBuilder.append("。jrrp .jrrp .r .ra .li .ti .rd .nn\n");
+            stringBuilder.append(".draw [附加参数],可用参数:spell neta music game ufo grandma\n");
+            stringBuilder.append(".draw spell可再附加一个参数(符卡名,不需要完整符卡名,只需要能确定唯一符卡");
+            stringBuilder.append(".roll [附加参数],现在可用:plane");
+            return stringBuilder.toString();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public String getModuleName() {
+        return "Dice";
+    }
 }

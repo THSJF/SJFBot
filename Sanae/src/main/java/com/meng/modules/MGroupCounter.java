@@ -25,7 +25,7 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
         super(bw);
     }
 
-    public class GroupInfo {
+    public static class GroupInfo {
         public int speak = 0;
         public int pic = 0;
         public int biliLink = 0;
@@ -36,6 +36,11 @@ public class MGroupCounter extends BaseGroupModule implements IPersistentData {
         public int mengEr = 0;
         public int time = 0;
         public int grass = 0;
+    }
+
+    @Override
+    public String getModuleName() {
+        return "GroupCounter";
     }
 
 	@Override

@@ -15,11 +15,12 @@ public abstract class BaseModule {
         entity = bw;
     }
     
-	public final String getModuleName() {
+	public final String getModuleClassName() {
 		if (moduleName == null) {
 			moduleName = getClass().getName();
 		}
 		return moduleName;
 	}
 	public abstract BaseModule load();
+    public abstract String getModuleName();
 }

@@ -20,6 +20,12 @@ public class ModuleQAR extends BaseGroupModule {
     public ModuleQAR load() {
         return this;
     }
+
+    @Override
+    public String getModuleName() {
+        return "Qar";
+    }
+
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long fromGroup = gme.getGroup().getId();
@@ -77,7 +83,7 @@ public class ModuleQAR extends BaseGroupModule {
         }
         qa.setTrueAns(0);
         qa.shuffleAnswer();
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("以下符卡在");
         switch (diff) {
             case SpellCard.Easy:

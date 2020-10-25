@@ -192,5 +192,10 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
     public void setDataBean(Object o) {
         qaList = (ArrayList) o;
     }
+
+    @Override
+    public String getModuleName() {
+        return "问答(题库)";
+    }
 }
 

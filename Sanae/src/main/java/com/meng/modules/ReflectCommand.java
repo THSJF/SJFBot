@@ -12,15 +12,23 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class ReflectCommand extends BaseGroupModule {
 
+    @Override
+    public String getModuleName() {
+        return "反射命令";
+    }
+
+
     public ReflectCommand(BotWrapperEntity bw) {
         super(bw);
     }
 
     @Override
     public ReflectCommand load() {
-        return null;
+        return this;
     }
-
+    // not done
+    //-invoke ClassName MethodName Signature args
+    //    0       1         2           3     4
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long fromQQ = gme.getSender().getId();
@@ -29,7 +37,7 @@ public class ReflectCommand extends BaseGroupModule {
 		if (fromQQ == 2856986197L && msg.startsWith("-invoke")) {
 			String[] args = msg.split(" ");
 			try {
-				Class target = Class.forName(args[1]);
+				Class<?> target = Class.forName(args[1]);
 				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();

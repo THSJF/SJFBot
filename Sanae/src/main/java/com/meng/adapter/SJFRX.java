@@ -365,7 +365,11 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull BotInvitedJoinGroupRequestEvent event) {
-        event.accept();
+        if (entity.configManager.isBlackQQ(event.getInvitorId()) || entity.configManager.isBlackGroup(event.getGroupId())) {
+            event.ignore();
+        } else {
+            event.accept();    
+        }
         return ListeningStatus.LISTENING;
     }
     //成员群名片改动: MemberCardChangeEvent

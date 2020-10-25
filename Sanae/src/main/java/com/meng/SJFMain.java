@@ -27,7 +27,7 @@ public class SJFMain {
     public static void main(String... args) {
 
         BotConfiguration config = new BotConfiguration();
-        config.fileBasedDeviceInfo("deviceInfo.json");
+        config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
         System.out.println(GSON.toJson(config));
         BotConfiguration bc2= new BotConfiguration();
         bc2.randomDeviceInfo();

@@ -106,4 +106,8 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
         return false;
     }
 
+    @Override
+    public String getModuleName() {
+        return "TimeTip";
+    }
 }

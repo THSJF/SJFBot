@@ -23,6 +23,11 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
     }
 
     @Override
+    public String getModuleName() {
+        return "Morning";
+    }
+    
+    @Override
     public BotWrapperEntity getWrapper() {
         return entity;
     }

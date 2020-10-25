@@ -82,5 +82,10 @@ public class ModuleRepeater extends BaseGroupModule {
 			return true;
 		}
 	}
+
+    @Override
+    public String getModuleName() {
+        return "复读机";
+    }
 }
 

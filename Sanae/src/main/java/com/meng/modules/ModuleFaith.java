@@ -22,6 +22,11 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
         super(bw);
     }
 
+    @Override
+    public String getModuleName() {
+        return "Faith";
+    }
+
 	@Override
 	public ModuleFaith load() {
 		DataPersistenter.read(this);

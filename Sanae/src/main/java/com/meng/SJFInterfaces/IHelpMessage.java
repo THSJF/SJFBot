@@ -7,5 +7,5 @@ import com.meng.SJFpermission;
  **/
 
 public interface IHelpMessage {
-	public String getHelp(SJFpermission pms);
+	public String getHelp(SJFpermission pms, Class<?> cl);
 }

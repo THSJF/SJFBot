@@ -17,6 +17,11 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class ModuleMsgDelaySend extends BaseGroupModule implements IPersistentData {
 
+    @Override
+    public String getModuleName() {
+        return "消息延时发送";
+    }
+
 	private ArrayList<MessageWait> delayMsg = new ArrayList<>();
 
     public ModuleMsgDelaySend(BotWrapperEntity bw) {

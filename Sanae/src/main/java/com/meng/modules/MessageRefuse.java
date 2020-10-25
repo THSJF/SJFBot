@@ -92,6 +92,11 @@ public class MessageRefuse extends BaseGroupModule {
 		mtmb.tiped = false;
 		return false;
 	}
+    
+    @Override
+    public String getModuleName() {
+        return "消息阻止";
+    }
 
 	private class FireWallBean {
 		public long qq;//qq

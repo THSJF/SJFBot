@@ -213,4 +213,9 @@ public class MAdminMsg extends BaseGroupModule {
         }
         return false;
     }
+
+    @Override
+    public String getModuleName() {
+        return "admin消息处理";
+    }
 }

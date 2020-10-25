@@ -42,8 +42,8 @@ public class THDataHolder {
 
     public SpellCard getSpellFromDiff(int diffFlag) {
         SpellCard splc;
+        Random random = new Random();
         while (true) {
-            Random random = new Random();
             SpellCard[] spellss = spells[random.nextInt(spells.length)];
             splc = spellss[random.nextInt(spellss.length)];
             if ((splc.difficultFlag & diffFlag) != 0) {
@@ -54,10 +54,10 @@ public class THDataHolder {
 
     public SpellCard[] getSpellFromNotDiff(int count, int diffFlag) {
         SpellCard[] spshs=new SpellCard[count];
+        Random random = new Random();
         for (int i=0;i < count;++i) {
             SpellCard splc;
             while (true) {
-                Random random = new Random();
                 SpellCard[] spellss = spells[random.nextInt(spells.length)];
                 splc = spellss[random.nextInt(spellss.length)];
                 if ((splc.difficultFlag & diffFlag) == 0) {

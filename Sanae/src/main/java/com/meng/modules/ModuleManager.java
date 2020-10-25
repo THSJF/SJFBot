@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.SJFpermission;
 
 /**
  * @Description: 模块管理器
@@ -28,10 +29,6 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 
     public BotWrapperEntity entity;
 
-    public ModuleManager() {
-        super(null);
-    }
-
 	private ArrayList<IGroupMessage> groupModules = new ArrayList<>();
 	private ArrayList<IPrivateMessage> privateModules = new ArrayList<>();
 	private ArrayList<IDiscussMessage> discussModules = new ArrayList<>();
@@ -40,6 +37,10 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	private ArrayList<IFriendEvent> friendEventModules = new ArrayList<>();
 	private ArrayList<Object> all = new ArrayList<>();
 
+    public ModuleManager() {
+        super(null);
+    }
+    
     public void setBotWrapperEntity(BotWrapperEntity bwe) {
         entity = bwe;
     }
@@ -281,6 +282,10 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		return false;
 	}
 
+    public ArrayList<Object> getAllModules() {
+        return all;
+    }
+
 	public <T> T getModule(Class<T> t) {
 		for (Object m :all) {
 			if (m.getClass() == t) {
@@ -343,5 +348,10 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		}
 		return null;
 	}
+
+    @Override
+    public String getModuleName() {
+        return "模块管理器";
+    }
 }
 

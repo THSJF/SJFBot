@@ -85,4 +85,9 @@ public class MNumberProcess extends BaseGroupModule {
     public MNumberProcess load() {
         return this;
     }
+
+    @Override
+    public String getModuleName() {
+        return "数字运算";
+    }
 }

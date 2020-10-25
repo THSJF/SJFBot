@@ -16,7 +16,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class ModuleReport extends BaseGroupModule implements IPersistentData {
 
-	public ArrayList<ReportBean> reportList=new ArrayList<>();
+	public ArrayList<ReportBean> reportList = new ArrayList<>();
 
     public ModuleReport(BotWrapperEntity bw) {
         super(bw);
@@ -136,8 +136,13 @@ public class ModuleReport extends BaseGroupModule implements IPersistentData {
 
 	@Override
 	public void setDataBean(Object o) {
-		reportList = (ArrayList<ModuleReport.ReportBean>) o;
+		reportList = (ArrayList) o;
 	}
+    
+    @Override
+    public String getModuleName() {
+        return "反馈";
+    }
 
 	public static class ReportBean {
 		public long time;

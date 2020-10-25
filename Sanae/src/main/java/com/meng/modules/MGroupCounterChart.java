@@ -41,6 +41,11 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
         super(bw);
     }
 
+    @Override
+    public String getModuleName() {
+        return "GroupCountChart";
+    }
+
 	@Override
 	public MGroupCounterChart load() {
 		DataPersistenter.read(this);
@@ -52,8 +57,8 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			}, 1, 1, TimeUnit.MINUTES);
 		return this;
 	}
-	public class GroupSpeak {
-		public int all=0;
+	public static class GroupSpeak {
+		public int all = 0;
 		public HashMap<String,HashMap<Integer,Integer>> hour=new HashMap<>(16);		
 	}
 
