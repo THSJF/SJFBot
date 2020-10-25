@@ -41,7 +41,7 @@ public class ModuleDiceCmd extends BaseGroupModule implements IHelpMessage {
         }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(fromGroup, fromQQ), thData.md5RanSpell(fromQQ).Normal));
+            entity.sjfTx.sendGroupMessage(fromGroup, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(fromGroup, fromQQ), thData.md5RanSpell(fromQQ).name));
             return true;
         }
 		if (msg.charAt(0) != '.') {
