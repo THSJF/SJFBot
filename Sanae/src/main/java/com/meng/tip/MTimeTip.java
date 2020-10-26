@@ -8,6 +8,7 @@ import com.meng.tools.Tools;
 import java.io.File;
 import java.util.Calendar;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.contact.Group;
 
 /**
  * @author 司徒灵羽
@@ -41,18 +42,18 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
                     SJFExecutors.execute(new Runnable() {
 							@Override
 							public void run() {
-								for (GroupConfig groupConfig : entity.configManager.getGroupConfigs()) {
-									if (groupConfig.isMainSwitchEnable()) {
-										if (entity.sjfTx.sendGroupMessage(groupConfig.n, "少女休息中...") < 0) {
-											continue;
-										}
-										try {
-											Thread.sleep(1000);
-										} catch (InterruptedException e) {
-											e.printStackTrace();
-										}
-									}
-								}
+                                for (Group group : entity.bot.getGroups()) {
+                                    if (entity.configManager.getGroupConfig(group.getId()).isMainSwitchEnable()) {
+                                        if (entity.sjfTx.sendGroupMessage(group.getId(), "少女休息中...") < 0) {
+                                            continue;
+                                        }
+                                        try {
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+										} 
+                                    }
+                                }
 								entity.sleeping = true;
 							}
 						});
@@ -93,7 +94,7 @@ public class MTimeTip extends BaseGroupModule implements Runnable {
         long fromQQ = gme.getSender().getId();
         long fromGroup = gme.getGroup().getId();
         if (!tipedYYS && fromGroup == groupYuTang && fromQQ == YYS) {
-            String[] strings = new String[]{"想吃YYS", "想食YYS", "想上YYS",entity.at(groupYuTang,1418780411L) + "老婆"};
+            String[] strings = new String[]{"想吃YYS", "想食YYS", "想上YYS",entity.at(groupYuTang, 1418780411L) + "老婆"};
             entity.sjfTx.sendGroupMessage(groupYuTang, Tools.ArrayTool.rfa(strings));
             tipedYYS = true;
             return true;
