@@ -21,6 +21,7 @@ import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.MessageEvent;
 
 /**
  * @Description: bot实体包装器
@@ -128,7 +129,11 @@ public class BotWrapperEntity {
     }
 
     public int deleteMsg(int id) {
-        bot.recall(MessagePool.get(id).getMessage());
+        MessageEvent get = MessagePool.get(id);
+        if (get == null) {
+            return -1;
+        }
+        bot.recall(get.getMessage());
         return 0;
     }
 

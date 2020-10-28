@@ -1,6 +1,7 @@
 package com.meng.tools;
 
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.modules.MAimMessage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -10,9 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.contact.BotIsBeingMutedException;
-import net.mamoe.mirai.message.data.PlainText;
 
 public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
@@ -42,45 +40,18 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        if (ex instanceof BotIsBeingMutedException) {
-            BotIsBeingMutedException bibme = (BotIsBeingMutedException) ex;
-            Bot bot = Bot.getBotInstances().get(0);
-            bot.getGroup(bibme.getTarget().getId()).quit();
-            bot.getGroup(BotWrapperEntity.yysGroup).sendMessage(new PlainText("已退出群" + bibme.getTarget().getId() + ",因为被禁言"));
-            return;
+        StringBuilder sb = new StringBuilder();
+        for (StackTraceElement ste:ex.getStackTrace()) {
+            sb.append(ste.toString()).append("\n");
         }
-        if (!handleException(ex) && mDefaultHandler != null) {
-            mDefaultHandler.uncaughtException(thread, ex);
-		} else {
-            try {
-                Thread.sleep(5000);
-			} catch (InterruptedException e) {
-			}
-            System.exit(0);
-		}
-	}
-
-    private boolean handleException(Throwable ex) {
-        if (ex == null) {
-            return false;
-		}
-        collectDeviceInfo();
-        addCustomInfo();
         saveCrashInfo2File(ex);
-        return true;
-	}
-
-    public void collectDeviceInfo() {
-
-	}
-
-    private void addCustomInfo() {
-
+        wrapper.moduleManager.getModule(MAimMessage.class).addTip(2856986197L, sb.toString());
+        //  mDefaultHandler.uncaughtException(thread, ex);
 	}
 
     private String saveCrashInfo2File(Throwable ex) {
 
-        StringBuffer sb=new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String,String> entry : paramsMap.entrySet()) {
             String key=entry.getKey();
             String value=entry.getValue();

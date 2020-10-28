@@ -91,7 +91,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 				everyHourHashMap.put(nowHour, stored);
 			}
 
-			if (everyHourHashMap == null || everyHourHashMap.size() == 0) {
+			if (everyHourHashMap.size() == 0) {
 				entity.sjfTx.sendGroupMessage(fromGroup, "无数据");
 				return true;
 			}
@@ -130,7 +130,9 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			try {
 				pic = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, dframe1.getChart(), 800, 480);
-			} catch (IOException e) {}
+			} catch (IOException e) {
+               throw new RuntimeException(e); 
+            }
 			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic, fromGroup));
 			TimeSeries timeseries = new TimeSeries("你群发言");
 			Calendar cal = Calendar.getInstance();
@@ -163,7 +165,9 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			try {
 				pic2 = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, frame1.getChart(), 800, 480);
-			} catch (IOException e) {}
+			} catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic2, fromGroup));
 			return true;
 		}	
