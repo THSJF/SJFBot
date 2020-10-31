@@ -14,7 +14,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 public class MAimMessage extends BaseGroupModule implements IPersistentData {
 
     /**
-     * @Description: 消息延迟发送
+     * @Description: 定向消息
      * @author: 司徒灵羽
      **/
 
@@ -23,7 +23,7 @@ public class MAimMessage extends BaseGroupModule implements IPersistentData {
         return "定向消息";
     }
 
-    private AimMessageHolder holder;
+    private AimMessageHolder holder = new AimMessageHolder();
 
     public MAimMessage(BotWrapperEntity bw) {
         super(bw);

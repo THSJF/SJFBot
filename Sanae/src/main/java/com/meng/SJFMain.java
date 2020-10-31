@@ -6,17 +6,16 @@ import com.meng.adapter.SJFTX;
 import com.meng.config.ConfigManager;
 import com.meng.modules.ModuleManager;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileTool;
+import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
+import java.io.File;
+import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
-import java.util.concurrent.TimeUnit;
-import com.meng.config.AccountInfo;
-import com.meng.tools.GSON;
-import com.meng.tools.FileTool;
-import java.io.File;
 
 /**
  * @author: 司徒灵羽
@@ -28,20 +27,17 @@ public class SJFMain {
 
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
-        AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
+        BotWrapperEntity.AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")),BotWrapperEntity.AccountInfo.class);
         final Bot bot = BotFactoryJvm.newBot(info.account, info.password, config);
         SJFTX tx = new SJFTX(bot);
         ModuleManager moduleManager = new ModuleManager();
         SJFRX rx = new SJFRX(moduleManager);
         Events.registerEvents(bot, rx);
-        ConfigManager configManager = new ConfigManager();
-        configManager.init();
+        ConfigManager configManager = new ConfigManager().init();
         final BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
         ExceptionCatcher.getInstance(entity).init();
         moduleManager.setBotWrapperEntity(entity);
         configManager.setBotWrapperEntity(entity);
-        moduleManager.loadModules(configManager);
-        moduleManager.loadModules(entity);
         moduleManager.load();
         tx.entity = rx.entity = moduleManager.entity = entity;
         MessagePool.start();

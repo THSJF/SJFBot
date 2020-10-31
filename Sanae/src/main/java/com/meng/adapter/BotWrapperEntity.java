@@ -226,4 +226,8 @@ public class BotWrapperEntity {
         throw new UnsupportedOperationException();
     }
 
+    public static class AccountInfo {
+        public long account;
+        public String password;
+    }
 }

@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import com.meng.tools.Tools;
+import com.meng.tools.Network;
+import com.meng.tools.ExceptionCatcher;
 
 /**
  * @Description: 将数据保存到磁盘
@@ -16,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class DataPersistenter {
 
 	private DataPersistenter() {
-
+        throw new AssertionError();
 	}
 
 	public static boolean save(IPersistentData pb) {
@@ -24,12 +27,12 @@ public class DataPersistenter {
             File file = new File(pb.getWrapper().appDirectory + "/persistent/" + pb.getPersistentName());
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-            writer.write(GSON.toJson(pb.getDataBean()));
+            writer.write(Network.formatJson(GSON.toJson(pb.getDataBean())));
             writer.flush();
             fos.close();
 			return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
 			return false;
         }
 	}
@@ -38,13 +41,14 @@ public class DataPersistenter {
         try {
             File f = new File(pb.getWrapper().appDirectory + "/persistent/" + pb.getPersistentName());
 			if (!f.exists()) {
-                save(pb);
+                pb.setDataBean(GSON.fromJson("{}", pb.getDataType()));
+                return true;
             }
             String readString = FileTool.readString(f);
-			pb.setDataBean(GSON.fromJson(readString, pb.getDataType()));
+			pb.setDataBean(GSON.fromJson((readString == null || readString.equals("null")) ?"{}": readString, pb.getDataType()));
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
 			return false;
 		}
 	}

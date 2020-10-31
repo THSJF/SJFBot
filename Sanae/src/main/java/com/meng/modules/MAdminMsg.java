@@ -133,12 +133,12 @@ public class MAdminMsg extends BaseGroupModule {
                     entity.sjfTx.sendGroupMessage(fromGroup, result.toString());
                     return true;
                 case "stop":
-                    entity.sjfTx.sendGroupMessage(fromGroup, gme, "disabled");
+                    entity.sjfTx.sendQuote(gme, "disabled");
                     entity.sleeping = true;
                     return true;
                 case "start":
                     entity.sleeping = false;
-                    entity.sjfTx.sendGroupMessage(fromGroup, gme, "enabled");
+                    entity.sjfTx.sendQuote(gme, "enabled");
                     return true;
                 case "findConfig":
                     String name = iter.next();

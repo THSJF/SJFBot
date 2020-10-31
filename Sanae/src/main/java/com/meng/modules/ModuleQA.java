@@ -1,7 +1,6 @@
 package com.meng.modules;
 
 import com.google.gson.reflect.TypeToken;
-import com.meng.QA;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
@@ -54,7 +53,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
         long fromQQ = gme.getSender().getId();
         QA qa = qaMap.get(fromQQ);
         if (qa != null && msg.equalsIgnoreCase("-qa")) {
-            entity.sjfTx.sendGroupMessage(fromGroup, gme, "你还没有回答");
+            entity.sjfTx.sendQuote(gme, "你还没有回答");
             return true;
         }
         if (qa != null) {
@@ -66,9 +65,9 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                 } catch (NumberFormatException e) {}
             }
             if (qa.getTrueAns().containsAll(userAnss) && qa.getTrueAns().size() == userAnss.size()) {
-                entity.sjfTx.sendGroupMessage(fromGroup, gme, "回答正确");
+                entity.sjfTx.sendQuote(gme, "回答正确");
             } else {
-                entity.sjfTx.sendGroupMessage(fromGroup, gme, "回答错误");
+                entity.sjfTx.sendQuote(gme, "回答错误");
             }
             qaMap.remove(fromQQ);
             return true;
@@ -147,7 +146,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
             if (qa2.getTrueAns().size() > 1) {
                 sb.append(",本题有多个选项");
             }
-            entity.sjfTx.sendGroupMessage(fromGroup, gme, MiraiCode.parseMiraiCode(sb.toString()));
+            entity.sjfTx.sendQuote(gme, MiraiCode.parseMiraiCode(sb.toString()));
             return true;
         }
         return false;
@@ -196,6 +195,101 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
     @Override
     public String getModuleName() {
         return "问答(题库)";
+    }
+
+    public static class QA {
+        private int flag=0;
+        //flag: id(16bit)                   type(8bit)      diffculty(8bit)
+        //  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|0 0 0 0 0 0 0 0|0 0 0 0 0 0 0 0
+        public int l = 0;//file length
+        public String q;
+        public ArrayList<String> a = new ArrayList<>();
+        private int t;//trueAns
+        public String r;
+
+        public void shuffleAnswer() {
+            Random r = new Random();
+            int index1 = r.nextInt(a.size() - 1);
+            int index2 = r.nextInt(a.size() - 1);
+            boolean is1F = getBit(index1);
+            setBit(index1, getBit(index2));
+            setBit(index2, is1F);
+            String ele1 = a.get(index1);
+            a.set(index1, a.get(index2));
+            a.set(index2, ele1);
+        }
+
+        private boolean getBit(int shift) {
+            return (t & (1 << shift)) != 0;
+        }
+
+        private void setBit(int shift, boolean v) {
+            if (v) {
+                t |= (1 << shift);
+            } else {
+                t &= ~(1 << shift);
+            }
+        }
+
+        public void setTrueFlag(int flag) {
+            t = flag;
+        }
+
+        public int getTrueAnsFlag() {
+            return t;
+        }
+
+        public void setTrueAns(int... ts) {
+            t = 0;
+            for (int i:ts) {
+                t |= (1 << i);
+            }
+        }
+
+        public HashSet<Integer> getTrueAns() {
+            HashSet<Integer> intList = new HashSet<>(32);
+            for (int i = 0;i < 32;++i) {
+                if ((t & (1 << i)) != 0) {
+                    intList.add(i);
+                }
+            }
+            return intList;
+        }
+
+        public void setFlag(int flag) {
+            this.flag = flag;
+        }
+
+        public int getFlag() {
+            return flag;
+        }
+
+        public void setDifficulty(int d) {
+            flag &= 0xffffff00;
+            flag |= d;
+        }
+
+        public int getDifficulty() {
+            return flag & 0xff;
+        }
+
+        public void setId(int id) {
+            flag &= 0x0000ffff;
+            flag |= (id << 16);
+        }
+
+        public int getId() {
+            return (flag >> 16) & 0xff;
+        }
+
+        public void setType(int type) {
+            flag &= 0xffff00ff;
+            flag |= (type << 8);
+        }
+
+        public int getType() {
+            return (flag >> 8) & 0xff;
+        }
     }
 }
 

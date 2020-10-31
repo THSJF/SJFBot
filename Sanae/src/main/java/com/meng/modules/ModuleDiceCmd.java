@@ -190,13 +190,13 @@ public class ModuleDiceCmd extends BaseGroupModule implements IHelpMessage {
                 case "spellInfo":
                     SpellCard sc = thData.getSpellCard(iter.next());
                     if (sc == null) {
-                        entity.sjfTx.sendGroupMessage(fromGroup, gme, "没有找到这张符卡");
+                        entity.sjfTx.sendQuote(gme, "没有找到这张符卡");
                         return true;
                     }
-                    entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getSpellCardPs(sc));
+                    entity.sjfTx.sendQuote(gme, thData.getSpellCardPs(sc));
                     return true;
                 case "charaInfo":
-                    entity.sjfTx.sendGroupMessage(fromGroup, gme, thData.getCharaNick(iter.next()));
+                    entity.sjfTx.sendQuote(gme, thData.getCharaNick(iter.next()));
                     return true;
             }
         } catch (Exception e) {

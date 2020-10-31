@@ -103,7 +103,9 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 
 	@Override
 	public void setDataBean(Object o) {
+        if(o instanceof HashMap){
 		faithMap = (HashMap) o;
+        }
 	}
 }
 

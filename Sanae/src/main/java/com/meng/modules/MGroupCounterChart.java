@@ -75,27 +75,15 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			groupsMap.put(fromGroup, gs);
 		}
 		++gs.all;
+        String date = TimeFormater.getDate();
+        gs.hour.putIfAbsent(date, new HashMap<Integer,Integer>());
+        HashMap<Integer,Integer> everyHourHashMap = gs.hour.get(date);
+        Date da=new Date();
+        int nowHour=da.getHours();
+        everyHourHashMap.putIfAbsent(nowHour, 1);
+        everyHourHashMap.put(nowHour, everyHourHashMap.get(nowHour) + 1);
 		if (msg.equals("-发言统计")) {
-			HashMap<Integer,Integer> everyHourHashMap = gs.hour.get(TimeFormater.getDate());
-			if (everyHourHashMap == null) {
-				everyHourHashMap = new HashMap<>();
-				gs.hour.put(TimeFormater.getDate(), everyHourHashMap);
-			}
-			Date da=new Date();
-			int nowHour=da.getHours();
-			if (everyHourHashMap.get(nowHour) == null) {
-				everyHourHashMap.put(nowHour, 1);
-			} else {
-				int stored=everyHourHashMap.get(nowHour);
-				++stored;
-				everyHourHashMap.put(nowHour, stored);
-			}
-
-			if (everyHourHashMap.size() == 0) {
-				entity.sjfTx.sendGroupMessage(fromGroup, "无数据");
-				return true;
-			}
-			StringBuilder sb=new StringBuilder(String.format("群内共有%d条消息,今日消息情况:\n", groupsMap.get(fromGroup).all));
+            StringBuilder sb=new StringBuilder(String.format("群内共有%d条消息,今日消息情况:\n", groupsMap.get(fromGroup).all));
 			for (int i=0;i < 24;++i) {
 				if (everyHourHashMap.get(i) == null) {
 					continue;
@@ -131,7 +119,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 				pic = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, dframe1.getChart(), 800, 480);
 			} catch (IOException e) {
-               throw new RuntimeException(e); 
+                throw new RuntimeException(e); 
             }
 			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic, fromGroup));
 			TimeSeries timeseries = new TimeSeries("你群发言");

@@ -1,6 +1,6 @@
 package com.meng.gameData.TouHou;
 
-import com.meng.QA;
+import com.meng.modules.ModuleQA.QA;
 import com.meng.SanaeDataPack;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.modules.ModuleQA;
@@ -53,7 +53,7 @@ public class QuestionServer extends WebSocketServer {
 						qa40.setFlag(dataRec.readInt());
 						qa40.q = dataRec.readString();
 						int ans40=dataRec.readInt();
-						qa40.setTrueAnsFlag(dataRec.readInt());
+						qa40.setTrueFlag(dataRec.readInt());
 						for (int i=0;i < ans40;++i) {
 							qa40.a.add(dataRec.readString());
 						}
@@ -77,7 +77,7 @@ public class QuestionServer extends WebSocketServer {
 						qa43.setFlag(dataRec.readInt());
 						qa43.q = dataRec.readString();
 						int ans43=dataRec.readInt();
-						qa43.setTrueAnsFlag(dataRec.readInt());
+						qa43.setTrueFlag(dataRec.readInt());
 						for (int i=0;i < ans43;++i) {
 							qa43.a.add(dataRec.readString());
 						}
@@ -120,7 +120,7 @@ public class QuestionServer extends WebSocketServer {
 		System.out.println("quesServer started!");
 		setConnectionLostTimeout(100);
 	}
-	private SanaeDataPack writeQA(ArrayList<QA> qas) {
+	private SanaeDataPack writeQA(ArrayList<ModuleQA.QA> qas) {
 		SanaeDataPack sdp=SanaeDataPack.encode(SanaeDataPack.opAllQuestion);
 		for (QA qa:qas) {
 			sdp.write(qa.getFlag());//flag

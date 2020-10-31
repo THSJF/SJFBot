@@ -1,12 +1,13 @@
 package com.meng.modules;
 
-import com.meng.QA;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.gameData.TouHou.SpellCard;
 import java.util.HashMap;
 import java.util.Random;
 import net.mamoe.mirai.message.GroupMessageEvent;
+
+import static com.meng.modules.ModuleQA.QA;
 
 public class ModuleQAR extends BaseGroupModule {
 
@@ -36,7 +37,7 @@ public class ModuleQAR extends BaseGroupModule {
         long fromQQ = gme.getSender().getId();
         QA qar = qaMap.get(fromQQ);
         if (qar != null && msg.equalsIgnoreCase("-qar")) {
-            entity.sjfTx.sendGroupMessage(fromGroup, gme, "你还没有回答");
+            entity.sjfTx.sendQuote(gme, "你还没有回答");
             return true;
         }
         if (qar != null) {
@@ -45,9 +46,9 @@ public class ModuleQAR extends BaseGroupModule {
                 userAnser = Integer.parseInt(msg);
             } catch (NumberFormatException e) {}
             if (qar.getTrueAns().contains(userAnser) && qar.getTrueAns().size() == 1) {
-                entity.sjfTx.sendGroupMessage(fromGroup, gme, "回答正确");
+                entity.sjfTx.sendQuote(gme, "回答正确");
             } else {
-                entity.sjfTx.sendGroupMessage(fromGroup, gme, "回答错误");
+                entity.sjfTx.sendQuote(gme, "回答错误");
             }
             qaMap.remove(fromQQ);
             return true;
@@ -66,7 +67,7 @@ public class ModuleQAR extends BaseGroupModule {
             }
             sb.append("回答序号即可");
             qaMap.put(fromQQ, qa2);
-            entity.sjfTx.sendGroupMessage(fromGroup, gme, sb.toString());
+            entity.sjfTx.sendQuote(gme, sb.toString());
             return true;
         }
         return false;

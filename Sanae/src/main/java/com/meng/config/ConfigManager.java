@@ -30,8 +30,9 @@ public class ConfigManager implements IPersistentData {
 		return configHolder;
 	}
 
-    public void init() {
+    public ConfigManager init() {
 		DataPersistenter.read(this);
+        return this;
     }
 
 	public void setFunctionEnabled(long fromGroup, int functionID, boolean enable) {

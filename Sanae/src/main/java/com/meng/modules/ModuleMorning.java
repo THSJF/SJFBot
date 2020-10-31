@@ -26,7 +26,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
     public String getModuleName() {
         return "Morning";
     }
-    
+
     @Override
     public BotWrapperEntity getWrapper() {
         return entity;
@@ -60,6 +60,7 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 		if (msg.equals("早上好")) {
 			for (GetUpBean qif:getUp) {
 				if (qif.qq == fromQQ) {
+                    entity.sjfTx.sendGroupMessage(fromGroup, "你今天已经起床了.jpg");
 					return false;
 				}
 			}
@@ -89,6 +90,14 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 	@Override
 	public ModuleMorning load() {
 		DataPersistenter.read(this);
+        MTimeTask.TaskBean mt = new MTimeTask.TaskBean(0, 0, new Runnable(){
+
+                @Override
+                public void run() {
+                    getUp.clear();
+                }
+            });
+        entity.moduleManager.getModule(MTimeTask.class).addTask(mt);
 		return this;
 	}
 

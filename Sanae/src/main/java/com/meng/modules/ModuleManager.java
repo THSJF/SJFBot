@@ -8,24 +8,22 @@ import com.meng.SJFInterfaces.IGroupMessage;
 import com.meng.SJFInterfaces.IHelpMessage;
 import com.meng.SJFInterfaces.IPrivateMessage;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.config.ConfigManager;
 import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonConfig;
-import com.meng.tip.MTimeTip;
-import com.meng.tools.SJFExecutors;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.SJFpermission;
 
 /**
  * @Description: 模块管理器
  * @author: 司徒灵羽
  **/
 
-public class ModuleManager extends BaseModule implements IGroupMessage, IPrivateMessage, IDiscussMessage, IGroupEvent, IFriendEvent {
+public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMessage, IGroupEvent, IFriendEvent {
 
     public BotWrapperEntity entity;
 
@@ -37,15 +35,10 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 	private ArrayList<IFriendEvent> friendEventModules = new ArrayList<>();
 	private ArrayList<Object> all = new ArrayList<>();
 
-    public ModuleManager() {
-        super(null);
-    }
-    
     public void setBotWrapperEntity(BotWrapperEntity bwe) {
         entity = bwe;
     }
 
-	@Override
 	public ModuleManager load() {
 		load(ReflectCommand.class);
         load(MtestMsg.class);
@@ -60,14 +53,11 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		load(ModuleMorning.class);
 		load(ModuleDiceCmd.class);
 		load(ModuleFaith.class);
-
+        load(MTimeTask.class);
         load(MAimMessage.class);
-		load(MTimeTip.class);
         load(MWelcome.class, false);
         load(ModuleQA.class);
         load(ModuleQAR.class);
-		SJFExecutors.execute(getGroupModule(MTimeTip.class));
-        all.add(this);
 		return this;
 	}
 
@@ -85,7 +75,7 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 				m.invoke(o);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		if (o == null) {
 			entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + cls.getName());
@@ -133,11 +123,11 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
                 GroupConfig groupConfig = entity.configManager.getGroupConfig(group);
                 if (msg.equals(".bot on")) {
                     groupConfig.setMainSwitchEnable(true);
-                    entity.sjfTx.sendGroupMessage(group, gme, "已启用本群响应");
+                    entity.sjfTx.sendQuote(gme, "已启用本群响应");
                     entity.configManager.save();
                     return true;
                 } else if (msg.equals(".bot off")) {
-                    entity.sjfTx.sendGroupMessage(group, gme, "已停用本群响应");
+                    entity.sjfTx.sendQuote(gme, "已停用本群响应");
                     groupConfig.setMainSwitchEnable(false);
                     entity.configManager.save();
                     return true;
@@ -146,12 +136,12 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
                 if (msg.equals(".bot on")) {
                     PersonConfig pc = entity.configManager.getPersonConfig(id);
                     pc.setBotOn(true);
-                    entity.sjfTx.sendGroupMessage(group, gme, "已启用对你的响应");
+                    entity.sjfTx.sendQuote(gme, "已启用对你的响应");
                     return true;
                 } else if (msg.equals(".bot off")) {
                     PersonConfig pc = entity.configManager.getPersonConfig(id);
                     pc.setBotOn(false);
-                    entity.sjfTx.sendGroupMessage(group, gme, "已停用对你的响应");
+                    entity.sjfTx.sendQuote(gme, "已停用对你的响应");
                     return true;
                 }
                 entity.configManager.save(); 
@@ -287,6 +277,15 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
     }
 
 	public <T> T getModule(Class<T> t) {
+        if (t == ModuleManager.class) {
+            return (T)this;
+        }
+        if (t == ConfigManager.class) {
+            return (T)entity.configManager;
+        }
+        if (t == BotWrapperEntity.class) {
+            return (T)entity;
+        }
 		for (Object m :all) {
 			if (m.getClass() == t) {
 				return (T)m;
@@ -294,64 +293,5 @@ public class ModuleManager extends BaseModule implements IGroupMessage, IPrivate
 		}
 		return null;
 	}
-
-	public <T extends IGroupMessage> T getGroupModule(Class<T> t) {
-		for (IGroupMessage m :groupModules) {
-			if (m.getClass() == t) {
-				return (T)m;
-			}
-		}
-		return null;
-	}
-
-	public <T extends IPrivateMessage> T getPrivateModule(Class<T> t) {
-		for (IPrivateMessage m : privateModules) {
-			if (m.getClass() == t) {
-				return (T)m;
-			}
-		}
-		return null;
-	}
-
-	public <T extends IDiscussMessage> T getDiscussModule(Class<T> t) {
-		for (IDiscussMessage m : discussModules) {
-			if (m.getClass() == t) {
-				return (T)m;
-			}
-		}
-		return null;
-	}
-
-	public <T extends IHelpMessage> T getHelpModule(Class<T> t) {
-		for (IHelpMessage m : helpModules) {
-			if (m.getClass() == t) {
-				return (T)m;
-			}
-		}
-		return null;
-	}
-
-	public <T extends IGroupEvent> T getGroupEventModule(Class<T> t) {
-		for (IGroupEvent m : groupEventModules) {
-			if (m.getClass() == t) {
-				return (T)m;
-			}
-		}
-		return null;
-	}
-
-	public <T extends IFriendEvent> T getFriendEventModule(Class<T> t) {
-		for (IFriendEvent m : friendEventModules) {
-			if (m.getClass() == t) {
-				return (T)m;
-			}
-		}
-		return null;
-	}
-
-    @Override
-    public String getModuleName() {
-        return "模块管理器";
-    }
 }
 

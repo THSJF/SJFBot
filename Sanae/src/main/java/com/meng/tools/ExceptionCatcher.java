@@ -9,15 +9,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
-    private Thread.UncaughtExceptionHandler mDefaultHandler;
-	private Map<String,String> paramsMap=new HashMap<>();
     private SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-    private String TAG=this.getClass().getSimpleName();
     private static ExceptionCatcher mInstance;
 	private String fileName;
     private BotWrapperEntity wrapper;
@@ -33,31 +28,22 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
         return mInstance;
 	}
 
+    public static synchronized ExceptionCatcher getInstance() {
+        return mInstance;
+	}
+
     public void init() {
-        mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
 	}
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        StringBuilder sb = new StringBuilder();
-        for (StackTraceElement ste:ex.getStackTrace()) {
-            sb.append(ste.toString()).append("\n");
-        }
         saveCrashInfo2File(ex);
-        wrapper.moduleManager.getModule(MAimMessage.class).addTip(2856986197L, sb.toString());
-        //  mDefaultHandler.uncaughtException(thread, ex);
+        wrapper.moduleManager.getModule(MAimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
 	}
 
     private String saveCrashInfo2File(Throwable ex) {
-
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String,String> entry : paramsMap.entrySet()) {
-            String key=entry.getKey();
-            String value=entry.getValue();
-            sb.append(key + "=" + value + "\n");
-		}
-
         Writer writer=new StringWriter();
         PrintWriter printWriter=new PrintWriter(writer);
         ex.printStackTrace(printWriter);
