@@ -11,7 +11,7 @@ import static com.meng.modules.ModuleQA.QA;
 
 public class ModuleQAR extends BaseGroupModule {
 
-    public HashMap<Long,QA> qaMap = new HashMap<>();
+    public HashMap<Long,QA> onGoingMap = new HashMap<>();
 
     public ModuleQAR(BotWrapperEntity bwe) {
         super(bwe);
@@ -35,38 +35,38 @@ public class ModuleQAR extends BaseGroupModule {
         }
         String msg = gme.getMessage().contentToString();
         long fromQQ = gme.getSender().getId();
-        QA qar = qaMap.get(fromQQ);
-        if (qar != null && msg.equalsIgnoreCase("-qar")) {
+        QA onGoingQA = onGoingMap.get(fromQQ);
+        if (onGoingQA != null && msg.equalsIgnoreCase("-qar")) {
             entity.sjfTx.sendQuote(gme, "你还没有回答");
             return true;
         }
-        if (qar != null) {
+        if (onGoingQA != null) {
             int userAnser=-1;
             try {
                 userAnser = Integer.parseInt(msg);
             } catch (NumberFormatException e) {}
-            if (qar.getTrueAns().contains(userAnser) && qar.getTrueAns().size() == 1) {
+            if (onGoingQA.getTrueAns().contains(userAnser) && onGoingQA.getTrueAns().size() == 1) {
                 entity.sjfTx.sendQuote(gme, "回答正确");
             } else {
                 entity.sjfTx.sendQuote(gme, "回答错误");
             }
-            qaMap.remove(fromQQ);
+            onGoingMap.remove(fromQQ);
             return true;
         }
         if (msg.equalsIgnoreCase("-qar")) {
-            QA qa2 = createQA();
-            qa2.shuffleAnswer();
+            QA qar = createQA();
+            qar.shuffleAnswer();
             StringBuilder sb=new StringBuilder("\n");
-            sb.append(qa2.q);
+            sb.append(qar.q);
             int i=0;
-            for (String s:qa2.a) {
+            for (String s:qar.a) {
                 if (s.equals("")) {
                     continue;
                 }
                 sb.append(i++).append(": ").append(s).append("\n");
             }
             sb.append("回答序号即可");
-            qaMap.put(fromQQ, qa2);
+            onGoingMap.put(fromQQ, qar);
             entity.sjfTx.sendQuote(gme, sb.toString());
             return true;
         }

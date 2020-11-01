@@ -12,7 +12,7 @@ public final class PersonInfo extends Object {
     public long qq = 0;
     public int bid = 0;
     public int bliveRoom = 0;
-    private int hash = 0;
+    private transient int hash = 0;
 
     @Override
     public int hashCode() {

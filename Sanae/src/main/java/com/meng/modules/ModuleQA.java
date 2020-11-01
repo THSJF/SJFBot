@@ -13,10 +13,11 @@ import java.util.HashSet;
 import java.util.Random;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
+import java.util.Collections;
 
 public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
-    public HashMap<Long,QA> qaMap = new HashMap<>();
+    public HashMap<Long,QA> onGoingQA = new HashMap<>();
     public ArrayList<QA> qaList = new ArrayList<>();
     public String imagePath;
     public static final int easy=0;
@@ -51,12 +52,12 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
         }
         String msg = gme.getMessage().contentToString();
         long fromQQ = gme.getSender().getId();
-        QA qa = qaMap.get(fromQQ);
-        if (qa != null && msg.equalsIgnoreCase("-qa")) {
+        QA qaLast = onGoingQA.get(fromQQ);
+        if (qaLast != null && msg.equalsIgnoreCase("-qa")) {
             entity.sjfTx.sendQuote(gme, "你还没有回答");
             return true;
         }
-        if (qa != null) {
+        if (qaLast != null) {
             HashSet<Integer> userAnss = new HashSet<>();
             String[] usAnsStrs = msg.split(" ");
             for (String s : usAnsStrs) {
@@ -64,20 +65,22 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                     userAnss.add(Integer.parseInt(s));
                 } catch (NumberFormatException e) {}
             }
-            if (qa.getTrueAns().containsAll(userAnss) && qa.getTrueAns().size() == userAnss.size()) {
+            if (qaLast.getTrueAns().containsAll(userAnss) && qaLast.getTrueAns().size() == userAnss.size()) {
                 entity.sjfTx.sendQuote(gme, "回答正确");
+                qaLast.incTrueTimes();
+                saveData();
             } else {
                 entity.sjfTx.sendQuote(gme, "回答错误");
             }
-            qaMap.remove(fromQQ);
+            onGoingQA.remove(fromQQ);
             return true;
         }
         if (msg.equalsIgnoreCase("-qa")) {
-            int ran = new Random().nextInt(qaList.size());
-            QA qa2 = qaList.get(ran);
-            StringBuilder sb=new StringBuilder().append("\n题目ID:").append(ran).append("\n");
+            int randomInt = new Random().nextInt(qaList.size());
+            QA qaNow = qaList.get(randomInt);
+            StringBuilder sb=new StringBuilder().append("\n题目ID:").append(randomInt).append("\n");
             sb.append("难度:");
-            switch (qa2.getDifficulty()) {
+            switch (qaNow.getDifficulty()) {
                 case 0:
                     sb.append("easy");
                     break;
@@ -97,7 +100,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                     sb.append("kidding");
             }
             sb.append("\n分类:");
-            switch (qa2.getType()) {
+            switch (qaNow.getType()) {
                 case 0:
                     sb.append("未定义");
                     break;
@@ -126,24 +129,28 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                     sb.append("未知");
             }   
             sb.append("\n");
-            if (qa2.q.contains("(image)")) {
-                sb.append(qa2.q.replace("(image)", entity.image(new File(imagePath + qa2.getId() + ".jpg"), fromGroup).toMiraiCode()));
+            if (qaNow.getShowTimes() > 0) {
+                sb.append(String.format("正确率:%.2f", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes()));
+                sb.append("\n");
+            }
+            if (qaNow.q.contains("(image)")) {
+                sb.append(qaNow.q.replace("(image)", entity.image(new File(imagePath + qaNow.getId() + ".jpg"), fromGroup).toMiraiCode()));
             } else {
-                sb.append(qa2.q);
+                sb.append(qaNow.q);
             }
             sb.append("\n");
-            qa2.shuffleAnswer();
+            qaNow.shuffleAnswer();
             saveData();
-            qaMap.put(fromQQ, qa2);
+            onGoingQA.put(fromQQ, qaNow);
             int i=0;
-            for (String s:qa2.a) {
+            for (String s:qaNow.a) {
                 if (s.equals("")) {
                     continue;
                 }
                 sb.append(i++).append(": ").append(s).append("\n");
             }
             sb.append("回答序号即可");
-            if (qa2.getTrueAns().size() > 1) {
+            if (qaNow.getTrueAns().size() > 1) {
                 sb.append(",本题有多个选项");
             }
             entity.sjfTx.sendQuote(gme, MiraiCode.parseMiraiCode(sb.toString()));
@@ -206,6 +213,24 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
         public ArrayList<String> a = new ArrayList<>();
         private int t;//trueAns
         public String r;
+        private int showTimes;
+        private int trueTimes;
+
+        public void incShowTimes() {
+            ++showTimes;
+        }
+
+        public void incTrueTimes() {
+            ++trueTimes;
+        }
+
+        public int getShowTimes() {
+            return showTimes;
+        }
+
+        public int getTrueTimes() {
+            return trueTimes;
+        }
 
         public void shuffleAnswer() {
             Random r = new Random();
@@ -214,9 +239,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
             boolean is1F = getBit(index1);
             setBit(index1, getBit(index2));
             setBit(index2, is1F);
-            String ele1 = a.get(index1);
-            a.set(index1, a.get(index2));
-            a.set(index2, ele1);
+            Collections.swap(a, index1, index2);
         }
 
         private boolean getBit(int shift) {
