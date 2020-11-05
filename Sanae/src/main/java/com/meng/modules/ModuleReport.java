@@ -9,6 +9,7 @@ import com.meng.tools.TimeFormater;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.SjfPersistentData;
 
 /**
  * @author 司徒灵羽
@@ -16,6 +17,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class ModuleReport extends BaseGroupModule implements IPersistentData {
 
+    @SjfPersistentData("report.json")
 	public ArrayList<ReportBean> reportList = new ArrayList<>();
 
     public ModuleReport(BotWrapperEntity bw) {

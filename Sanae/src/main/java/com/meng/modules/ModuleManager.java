@@ -43,7 +43,6 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
 		load(ReflectCommand.class);
         load(MtestMsg.class);
 		load(MAdminMsg.class);
-		load(MGroupCounter.class);
         load(MGroupCounterChart.class);
 		load(MessageRefuse.class);
 		load(ModuleRepeater.class);

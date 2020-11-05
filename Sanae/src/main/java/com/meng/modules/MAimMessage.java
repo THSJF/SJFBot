@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.SjfPersistentData;
 
 public class MAimMessage extends BaseGroupModule implements IPersistentData {
 
@@ -23,6 +24,7 @@ public class MAimMessage extends BaseGroupModule implements IPersistentData {
         return "定向消息";
     }
 
+    @SjfPersistentData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
 
     public MAimMessage(BotWrapperEntity bw) {

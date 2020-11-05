@@ -3,6 +3,7 @@ package com.meng.modules;
 import com.google.gson.reflect.TypeToken;
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.SjfPersistentData;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.DataPersistenter;
 import java.lang.reflect.Type;
@@ -16,6 +17,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 
+    @SjfPersistentData("faith.json")
 	private HashMap<Long, Integer> faithMap = new HashMap<>();
 
     public ModuleFaith(BotWrapperEntity bw) {
@@ -103,8 +105,8 @@ public class ModuleFaith extends BaseGroupModule implements IPersistentData {
 
 	@Override
 	public void setDataBean(Object o) {
-        if(o instanceof HashMap){
-		faithMap = (HashMap) o;
+        if (o instanceof HashMap) {
+            faithMap = (HashMap) o;
         }
 	}
 }

@@ -23,6 +23,6 @@ public class GSON {
 	}
 
 	public static String toJson(Object obj) {
-		return gson.toJson(obj);
+		return Network.formatJson(gson.toJson(obj));
 	}
 }

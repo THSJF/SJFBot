@@ -14,10 +14,12 @@ import java.util.Random;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 import java.util.Collections;
+import com.meng.SjfPersistentData;
 
 public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
     public HashMap<Long,QA> onGoingQA = new HashMap<>();
+    @SjfPersistentData("qa.json")
     public ArrayList<QA> qaList = new ArrayList<>();
     public String imagePath;
     public static final int easy=0;

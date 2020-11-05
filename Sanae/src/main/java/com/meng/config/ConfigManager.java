@@ -1,16 +1,17 @@
 package com.meng.config;
 
 import com.meng.SJFInterfaces.IPersistentData;
+import com.meng.SjfPersistentData;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.javabeans.ConfigHolder;
 import com.meng.config.javabeans.GroupConfig;
+import com.meng.config.javabeans.PersonConfig;
 import com.meng.config.javabeans.PersonInfo;
 import com.meng.tools.SJFExecutors;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import com.meng.config.javabeans.PersonConfig;
 
 /**
  * @Description: 配置文件管理器
@@ -19,6 +20,7 @@ import com.meng.config.javabeans.PersonConfig;
 
 public class ConfigManager implements IPersistentData {
 
+    @SjfPersistentData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
     public BotWrapperEntity entity;
 

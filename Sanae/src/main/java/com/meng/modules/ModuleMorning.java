@@ -8,6 +8,7 @@ import com.meng.config.DataPersistenter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.SjfPersistentData;
 
 /**
  * @Description: 早安
@@ -16,6 +17,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class ModuleMorning extends BaseGroupModule implements IPersistentData {
 
+    @SjfPersistentData("getUp.json")
 	private ArrayList<GetUpBean> getUp = new ArrayList<>();
 
     public ModuleMorning(BotWrapperEntity bw) {

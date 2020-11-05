@@ -27,6 +27,7 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import com.meng.SjfPersistentData;
 
 /**
  * @Description: 群消息统计图
@@ -35,6 +36,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 
 public class MGroupCounterChart extends BaseGroupModule implements IPersistentData {
 
+    @SjfPersistentData("GroupCount2.json")
 	public HashMap<Long,GroupSpeak> groupsMap = new HashMap<>(32);
 
     public MGroupCounterChart(BotWrapperEntity bw) {
