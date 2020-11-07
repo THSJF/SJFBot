@@ -30,7 +30,7 @@ import net.mamoe.mirai.message.data.MessageSource;
 
 public class BotWrapperEntity {
 
-    public static final String appDirectory = "C://Program Files/bot_data/";
+    public static final String appDirectory = "C://Program Files/sanae_data/";
     public static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
     public static final long mainGroup = 807242547L;
     public static final long yysGroup = 617745343L;

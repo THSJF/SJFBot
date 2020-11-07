@@ -1,15 +1,21 @@
 package com.meng;
 
-import com.meng.adapter.*;
-import com.meng.config.*;
-import com.meng.modules.*;
-import com.meng.tools.*;
-import java.io.*;
-import java.util.concurrent.*;
-import net.mamoe.mirai.*;
-import net.mamoe.mirai.contact.*;
-import net.mamoe.mirai.event.*;
-import net.mamoe.mirai.utils.*;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.adapter.SJFRX;
+import com.meng.adapter.SJFTX;
+import com.meng.config.ConfigManager;
+import com.meng.modules.ModuleManager;
+import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileTool;
+import com.meng.tools.GSON;
+import com.meng.tools.SJFExecutors;
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.BotFactoryJvm;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.event.Events;
+import net.mamoe.mirai.utils.BotConfiguration;
 
 /**
  * @author: 司徒灵羽
@@ -20,7 +26,7 @@ public class SJFMain {
     public static void main(String... args) {
 
         BotConfiguration config = new BotConfiguration();
-        config.fileBasedDeviceInfo("C://Program Files/bot_data/deviceInfo.json");
+        config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
         AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
         final Bot bot = BotFactoryJvm.newBot(info.account, info.password, config);
         SJFTX tx = new SJFTX(bot);
