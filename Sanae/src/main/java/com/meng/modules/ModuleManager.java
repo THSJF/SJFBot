@@ -1,21 +1,22 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseModule;
-import com.meng.SJFInterfaces.IDiscussMessage;
 import com.meng.SJFInterfaces.IFriendEvent;
+import com.meng.SJFInterfaces.IFriendMessage;
 import com.meng.SJFInterfaces.IGroupEvent;
 import com.meng.SJFInterfaces.IGroupMessage;
-import com.meng.SJFInterfaces.IHelpMessage;
-import com.meng.SJFInterfaces.IPrivateMessage;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.ConfigManager;
 import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonConfig;
+import com.meng.gameData.TouHou.Faith;
+import com.meng.tools.ExceptionCatcher;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
+import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
@@ -23,17 +24,15 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @author: 司徒灵羽
  **/
 
-public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMessage, IGroupEvent, IFriendEvent {
+public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent, IFriendEvent {
 
     public BotWrapperEntity entity;
 
-	private ArrayList<IGroupMessage> groupModules = new ArrayList<>();
-	private ArrayList<IPrivateMessage> privateModules = new ArrayList<>();
-	private ArrayList<IDiscussMessage> discussModules = new ArrayList<>();
-	private ArrayList<IHelpMessage> helpModules = new ArrayList<>();
-	private ArrayList<IGroupEvent> groupEventModules = new ArrayList<>();
-	private ArrayList<IFriendEvent> friendEventModules = new ArrayList<>();
-	private ArrayList<Object> all = new ArrayList<>();
+	private List<IGroupMessage> groupModules = new ArrayList<>();
+	private List<IFriendMessage> friendModules = new ArrayList<>();
+	private List<IGroupEvent> groupEventModules = new ArrayList<>();
+	private List<IFriendEvent> friendEventModules = new ArrayList<>();
+	private List<Object> all = new ArrayList<>();
 
     public void setBotWrapperEntity(BotWrapperEntity bwe) {
         entity = bwe;
@@ -51,13 +50,12 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
         load(MNumberProcess.class);
 		load(ModuleMorning.class);
 		load(ModuleDiceCmd.class);
-		load(ModuleFaith.class);
+		load(Faith.class);
         load(MTimeTask.class);
         load(MAimMessage.class);
         load(MWelcome.class, false);
         load(ModuleQA.class);
-        load(ModuleQAR.class);
-		return this;
+        return this;
 	}
 
 	public void load(Class<?> cls) {
@@ -74,7 +72,7 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
 				m.invoke(o);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
 		}
 		if (o == null) {
 			entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + cls.getName());
@@ -95,14 +93,8 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
 		if (module instanceof IGroupMessage) {
 			groupModules.add((IGroupMessage)module);
 		}
-		if (module instanceof IPrivateMessage) {
-			privateModules.add((IPrivateMessage)module);
-		}
-		if (module instanceof IDiscussMessage) {
-			discussModules.add((IDiscussMessage)module);
-		}
-		if (module instanceof IHelpMessage) {
-			helpModules.add((IHelpMessage)module);
+		if (module instanceof IFriendMessage) {
+			friendModules.add((IFriendMessage)module);
 		}
 		if (module instanceof IGroupEvent) {
 			groupEventModules.add((IGroupEvent)module);
@@ -114,12 +106,15 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-        long id = gme.getSender().getId();
-        long group = gme.getGroup().getId();
+        long qqId = gme.getSender().getId();
+        long groupId = gme.getGroup().getId();
+//        if (groupId != BotWrapperEntity.yysGroup) {
+//            return true;
+//        }
         String msg = gme.getMessage().contentToString();
         if (msg.startsWith(".bot")) {
-            if (entity.configManager.isAdminPermission(id) || entity.getGroupMemberInfo(group, id).getPermission().getLevel() > 0) {
-                GroupConfig groupConfig = entity.configManager.getGroupConfig(group);
+            if (entity.configManager.isAdminPermission(qqId) || entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
+                GroupConfig groupConfig = entity.configManager.getGroupConfig(groupId);
                 if (msg.equals(".bot on")) {
                     groupConfig.setMainSwitchEnable(true);
                     entity.sjfTx.sendQuote(gme, "已启用本群响应");
@@ -133,12 +128,12 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
                 } 
             } else {
                 if (msg.equals(".bot on")) {
-                    PersonConfig pc = entity.configManager.getPersonConfig(id);
+                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
                     pc.setBotOn(true);
                     entity.sjfTx.sendQuote(gme, "已启用对你的响应");
                     return true;
                 } else if (msg.equals(".bot off")) {
-                    PersonConfig pc = entity.configManager.getPersonConfig(id);
+                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
                     pc.setBotOn(false);
                     entity.sjfTx.sendQuote(gme, "已停用对你的响应");
                     return true;
@@ -158,20 +153,10 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
 		return false;
 	}
 
-	@Override
-	public boolean onPrivateMsg(long fromQQ, String msg, int msgId) {
-		for (IPrivateMessage m : privateModules) {
-			if (m.onPrivateMsg(fromQQ, msg, msgId)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onDiscussMessage(long fromDiscuss, long fromQQ, String msg, int msgId) {
-		for (IDiscussMessage m : discussModules) {
-			if (m.onDiscussMessage(fromDiscuss, fromQQ, msg, msgId)) {
+    @Override
+    public boolean onFriendMessage(FriendMessageEvent event) {
+		for (IFriendMessage m : friendModules) {
+			if (m.onFriendMessage(event)) {
 				return true;
 			}
 		}
@@ -271,7 +256,7 @@ public class ModuleManager implements IGroupMessage, IPrivateMessage, IDiscussMe
 		return false;
 	}
 
-    public ArrayList<Object> getAllModules() {
+    public List<Object> getAllModules() {
         return all;
     }
 

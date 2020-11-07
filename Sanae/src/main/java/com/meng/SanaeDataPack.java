@@ -1,14 +1,12 @@
 package com.meng;
 
-import com.meng.tools.BitConverter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
+import com.meng.tools.*;
+import java.io.*;
+import java.util.*;
 
 public class SanaeDataPack {
 
-	public ArrayList<Byte> data=new ArrayList<>();
+	public ArrayList<Byte> data = new ArrayList<>();
 	public byte[] dataArray;
 	public static final short headLength=28;
 	public int dataPointer=0;

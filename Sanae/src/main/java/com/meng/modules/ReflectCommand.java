@@ -31,17 +31,17 @@ public class ReflectCommand extends BaseGroupModule {
     //    0       1         2           3     4
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
+        long qqId = gme.getSender().getId();
+        long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-		if (fromQQ == 2856986197L && msg.startsWith("-invoke")) {
+		if (qqId == 2856986197L && msg.startsWith("-invoke")) {
 			String[] args = msg.split(" ");
 			try {
 				Class<?> target = Class.forName(args[1]);
 				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();
-					entity.sjfTx.sendGroupMessage(fromGroup, "新模块:" + target.getName());
+					entity.sjfTx.sendGroupMessage(groupId, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
 				Class[] paramTypes = new Class[parseInt];
@@ -50,11 +50,11 @@ public class ReflectCommand extends BaseGroupModule {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
 				}
 				Method m = target.getMethod(args[2], paramTypes);
-				entity.sjfTx.sendGroupMessage(fromGroup, "运行结果:\n" + m.invoke(module, param));
+				entity.sjfTx.sendGroupMessage(groupId, "运行结果:\n" + m.invoke(module, param));
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				entity.sjfTx.sendGroupMessage(fromGroup, e.toString());
+				entity.sjfTx.sendGroupMessage(groupId, e.toString());
 				return true;
 			}
 		}
@@ -99,7 +99,7 @@ public class ReflectCommand extends BaseGroupModule {
 				try {
 					types[arrayIndex] = Class.forName(typeStr);
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					
 					return;
 				}
 				values[arrayIndex] = valueStr;

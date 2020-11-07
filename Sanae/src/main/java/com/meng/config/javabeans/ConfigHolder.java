@@ -1,6 +1,7 @@
 package com.meng.config.javabeans;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * @Description: 配置存储bean

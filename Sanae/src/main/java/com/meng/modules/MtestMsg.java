@@ -1,8 +1,9 @@
 package com.meng.modules;
+
 import com.meng.SJFInterfaces.BaseGroupModule;
-import net.mamoe.mirai.message.GroupMessageEvent;
 import com.meng.SJFInterfaces.BaseModule;
 import com.meng.adapter.BotWrapperEntity;
+import net.mamoe.mirai.message.GroupMessageEvent;
 
 public class MtestMsg extends BaseGroupModule {
 

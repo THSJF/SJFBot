@@ -16,7 +16,7 @@ import net.mamoe.mirai.message.data.MessageChain;
 public class ModuleRepeater extends BaseGroupModule {
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();
-    private MessageChain emptyMessageChain = EmptyMessageChain.INSTANCE;
+
     public ModuleRepeater(BotWrapperEntity bw) {
         super(bw);
     }
@@ -28,57 +28,56 @@ public class ModuleRepeater extends BaseGroupModule {
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromGroup = gme.getGroup().getId();
-        Repeater rp = repeaters.get(fromGroup);
-        GroupConfig cfg = entity.configManager.getGroupConfig(fromGroup);
+        long groupId = gme.getGroup().getId();
+        Repeater rp = repeaters.get(groupId);
+        GroupConfig cfg = entity.configManager.getGroupConfig(groupId);
         if (!cfg.isRepeaterEnable()) {
             return false; 
         }
 		if (rp == null) {
-			repeaters.put(fromGroup, rp = new Repeater());
+			repeaters.put(groupId, rp = new Repeater());
 		}
-        long fromQQ = gme.getSender().getId();
-
-        return rp.check(fromGroup, fromQQ, gme.getMessage());
+        long qqId = gme.getSender().getId();
+        return rp.check(groupId, qqId, gme.getMessage());
     }
 
 	private class Repeater {
-		private MessageChain lastMsgRecieved = emptyMessageChain;
+		private MessageChain lastMsgRecieved = EmptyMessageChain.INSTANCE;
 		private boolean lastStatus = false;
 
-		private boolean check(long fromGroup, long fromQQ, MessageChain msg) {
+		private boolean check(long groupId, long qqId, MessageChain msg) {
             boolean b = false; 
-            b = checkRepeatStatu(fromGroup, fromQQ, msg);
+            b = checkRepeatStatu(groupId, qqId, msg);
             lastMsgRecieved = msg;
 			return b;
 		}
 
 		// 复读状态
-		private boolean checkRepeatStatu(long group, long qq, MessageChain msg) {
+		private boolean checkRepeatStatu(long groupId, long qqId, MessageChain msg) {
 			boolean b = false;
 			if (!lastStatus && entity.messageEquals(lastMsgRecieved, msg)) {
-				b = repeatStart(group, qq, msg);
+				b = repeatStart(groupId, qqId, msg);
 			}
 			if (lastStatus && entity.messageEquals(lastMsgRecieved, msg)) {
-				b = repeatRunning(group, qq, msg);
+				b = repeatRunning(groupId, qqId, msg);
 			}
 			if (lastStatus && !entity.messageEquals(lastMsgRecieved, msg)) {
-				b = repeatEnd(group, qq, msg);
+				b = repeatEnd(groupId, qqId, msg);
 			}
 			lastStatus = entity.messageEquals(lastMsgRecieved, msg);
 			return b;
 		}
 
-		private boolean repeatEnd(long group, long qq, MessageChain msg) {
+		private boolean repeatEnd(long groupId, long qqId, MessageChain msg) {
 			return false;
 		}
 
-		private boolean repeatRunning(long group, long qq, MessageChain msg) {
+		private boolean repeatRunning(long groupId, long qqId, MessageChain msg) {
 			return false;
 		}
 
-		private boolean repeatStart(long group,  long qq,  MessageChain msg) {
-			entity.sjfTx.sendGroupMessage(group, msg);
+		private boolean repeatStart(long groupId,  long qqId,  MessageChain msg) {
+			entity.sjfTx.sendGroupMessage(groupId, msg);
 			return true;
 		}
 	}

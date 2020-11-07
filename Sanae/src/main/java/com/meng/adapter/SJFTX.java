@@ -2,7 +2,7 @@ package com.meng.adapter;
 
 import com.meng.tools.Tools;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Message;
@@ -55,7 +55,7 @@ public class SJFTX {
     }
 
     public int sendGroupMessage(long fromGroup, ArrayList<String> msg) {
-        return sendGroupMessage(fromGroup, msg.get(new Random().nextInt(msg.size())));
+        return sendGroupMessage(fromGroup, msg.get(ThreadLocalRandom.current().nextInt(msg.size())));
     }
 
     public int sendPrivateMessage(long qqId, String msg) {

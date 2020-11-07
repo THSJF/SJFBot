@@ -1,14 +1,12 @@
 package com.meng.config;
 
-import com.meng.SJFInterfaces.IPersistentData;
-import com.meng.SjfPersistentData;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.annotation.SanaeData;
 import com.meng.config.javabeans.ConfigHolder;
 import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonConfig;
 import com.meng.config.javabeans.PersonInfo;
 import com.meng.tools.SJFExecutors;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -18,10 +16,11 @@ import java.util.Set;
  * @author: 司徒灵羽
  **/
 
-public class ConfigManager implements IPersistentData {
+public class ConfigManager {
 
-    @SjfPersistentData("ncfg.json")
+    @SanaeData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
+    
     public BotWrapperEntity entity;
 
     public void setBotWrapperEntity(BotWrapperEntity bwe) {
@@ -331,31 +330,6 @@ public class ConfigManager implements IPersistentData {
 	public long getOgg() {
 		return -1;
     }
-
-	@Override
-	public String getPersistentName() {
-		return "ncfg.json";
-	}
-
-	@Override
-	public Type getDataType() {
-		return ConfigHolder.class;
-	}
-
-	@Override
-	public ConfigHolder getDataBean() {
-		return configHolder;
-	}
-
-    @Override
-    public BotWrapperEntity getWrapper() {
-        return entity;
-    }
-
-	@Override
-	public void setDataBean(Object o) {
-		configHolder = (ConfigHolder) o;
-	}
 
     public void save() {
 		DataPersistenter.save(this);

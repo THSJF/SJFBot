@@ -1,13 +1,13 @@
 package com.meng.gameData.TouHou;
 
-import com.meng.modules.ModuleQA.QA;
 import com.meng.SanaeDataPack;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.modules.ModuleQA;
+import com.meng.modules.ModuleQA.QA;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.util.List;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -63,14 +63,14 @@ public class QuestionServer extends WebSocketServer {
 						}
 						if (dataRec.hasNext()) {
 							ModuleQA module = entity.moduleManager.getModule(ModuleQA.class);
-                            qa40.l = (int)dataRec.readFile(new File(module.imagePath + module.qaList.size() + ".jpg")).length();
+                            qa40.l = (int)dataRec.readFile(new File(module.imagePath + module.getQaCount() + ".jpg")).length();
 						}
 						entity.moduleManager.getModule(ModuleQA.class).addQA(qa40);
 						sdp = SanaeDataPack.encode(SanaeDataPack.opNotification, dataRec);
 						sdp.write("添加成功");
 						break;
 					case SanaeDataPack.opAllQuestion:
-						sdp = writeQA(entity.moduleManager.getModule(ModuleQA.class).qaList);
+						sdp = writeQA(entity.moduleManager.getModule(ModuleQA.class).getQas());
 						break;
 					case SanaeDataPack.opSetQuestion:
 						QA qa43= new QA();
@@ -120,7 +120,7 @@ public class QuestionServer extends WebSocketServer {
 		System.out.println("quesServer started!");
 		setConnectionLostTimeout(100);
 	}
-	private SanaeDataPack writeQA(ArrayList<ModuleQA.QA> qas) {
+	private SanaeDataPack writeQA(List<ModuleQA.QA> qas) {
 		SanaeDataPack sdp=SanaeDataPack.encode(SanaeDataPack.opAllQuestion);
 		for (QA qa:qas) {
 			sdp.write(qa.getFlag());//flag

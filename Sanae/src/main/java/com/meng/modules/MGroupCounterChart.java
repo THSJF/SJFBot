@@ -1,16 +1,14 @@
 package com.meng.modules;
 
-import com.google.gson.reflect.TypeToken;
 import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TimeFormater;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,17 +25,16 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import com.meng.SjfPersistentData;
 
 /**
  * @Description: 群消息统计图
  * @author: 司徒灵羽
  **/
 
-public class MGroupCounterChart extends BaseGroupModule implements IPersistentData {
+public class MGroupCounterChart extends BaseGroupModule {
 
-    @SjfPersistentData("GroupCount2.json")
-	public HashMap<Long,GroupSpeak> groupsMap = new HashMap<>(32);
+    @SanaeData("GroupCount2.json")
+	private HashMap<Long,GroupSpeak> groupsMap = new HashMap<>(32);
 
     public MGroupCounterChart(BotWrapperEntity bw) {
         super(bw);
@@ -66,15 +63,15 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-		long fromGroup = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(fromGroup).isGroupCountChartEnable()) {
+		long groupId = gme.getGroup().getId();
+        if (!entity.configManager.getGroupConfig(groupId).isGroupCountChartEnable()) {
 			return false;
 		}
         String msg = gme.getMessage().contentToString();
-		GroupSpeak gs = groupsMap.get(fromGroup);
+		GroupSpeak gs = groupsMap.get(groupId);
 		if (gs == null) {
 			gs = new GroupSpeak();
-			groupsMap.put(fromGroup, gs);
+			groupsMap.put(groupId, gs);
 		}
 		++gs.all;
         String date = TimeFormater.getDate();
@@ -85,14 +82,14 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
         everyHourHashMap.putIfAbsent(nowHour, 1);
         everyHourHashMap.put(nowHour, everyHourHashMap.get(nowHour) + 1);
 		if (msg.equals("-发言统计")) {
-            StringBuilder sb=new StringBuilder(String.format("群内共有%d条消息,今日消息情况:\n", groupsMap.get(fromGroup).all));
+            StringBuilder sb=new StringBuilder(String.format("群内共有%d条消息,今日消息情况:\n", groupsMap.get(groupId).all));
 			for (int i=0;i < 24;++i) {
 				if (everyHourHashMap.get(i) == null) {
 					continue;
 				}
 				sb.append(String.format("%d:00-%d:00  共%d条消息\n", i, i + 1, everyHourHashMap.get(i)));
 			}
-			entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
+			entity.sjfTx.sendGroupMessage(groupId, sb.toString());
 			TimeSeries dtimeseries = new TimeSeries("你群发言");
 			Calendar dc = Calendar.getInstance();
 			dc.add(Calendar.HOUR_OF_DAY, -24);
@@ -123,7 +120,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			} catch (IOException e) {
                 throw new RuntimeException(e); 
             }
-			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic, fromGroup));
+			entity.sjfTx.sendGroupMessage(groupId, entity.image(pic, groupId));
 			TimeSeries timeseries = new TimeSeries("你群发言");
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, -30);
@@ -158,7 +155,7 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 			} catch (IOException e) {
                 throw new RuntimeException(e);
             }
-			entity.sjfTx.sendGroupMessage(fromGroup, entity.image(pic2, fromGroup));
+			entity.sjfTx.sendGroupMessage(groupId, entity.image(pic2, groupId));
 			return true;
 		}	
 		return false;
@@ -179,31 +176,6 @@ public class MGroupCounterChart extends BaseGroupModule implements IPersistentDa
 	private void saveData() {
         DataPersistenter.save(this);
     }
-
-	@Override
-	public String getPersistentName() {
-		return "GroupCount2.json";
-	}
-
-	@Override
-	public Type getDataType() {
-		return new TypeToken<HashMap<Long, GroupSpeak>>() {}.getType();
-	}
-
-	@Override
-	public Object getDataBean() {
-		return groupsMap;
-	}
-
-    @Override
-    public BotWrapperEntity getWrapper() {
-        return entity;
-    }
-
-	@Override
-	public void setDataBean(Object o) {
-		groupsMap = (HashMap) o;
-	}
 }
 
 

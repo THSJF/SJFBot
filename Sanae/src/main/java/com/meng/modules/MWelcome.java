@@ -1,10 +1,10 @@
 package com.meng.modules;
 
 import com.meng.SJFInterfaces.IGroupEvent;
+import com.meng.adapter.BotWrapperEntity;
+import com.meng.tools.ExceptionCatcher;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
-import com.meng.adapter.BotWrapperEntity;
-import net.mamoe.mirai.event.events.EventCancelledException;
 
 public class MWelcome implements IGroupEvent {
 
@@ -39,9 +39,12 @@ public class MWelcome implements IGroupEvent {
                 MemberJoinEvent.Active mji = (MemberJoinEvent.Active)event;
                 event.getGroup().sendMessage(String.format("active,member:%s,arg:%s", mji.getMember(), mji.component1()));
             }
-        } catch (EventCancelledException e) {} catch (IllegalStateException e) {}
-        String welc = entity.configManager.getWelcome(event.getGroup().getId());
-        event.getGroup().sendMessage(welc == null ?"欢迎新人": welc);
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+        }
+        long groupId = event.getGroup().getId();
+        String welc = entity.configManager.getWelcome(groupId);
+        entity.sjfTx.sendGroupMessage(groupId, welc == null ?"欢迎新人": welc);
         return false;
     }
 

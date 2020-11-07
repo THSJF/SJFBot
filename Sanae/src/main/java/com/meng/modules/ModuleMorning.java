@@ -1,23 +1,20 @@
 package com.meng.modules;
 
-import com.google.gson.reflect.TypeToken;
 import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.SjfPersistentData;
 
 /**
  * @Description: 早安
  * @author: 司徒灵羽
  **/
 
-public class ModuleMorning extends BaseGroupModule implements IPersistentData {
+public class ModuleMorning extends BaseGroupModule {
 
-    @SjfPersistentData("getUp.json")
+    @SanaeData("getUp.json")
 	private ArrayList<GetUpBean> getUp = new ArrayList<>();
 
     public ModuleMorning(BotWrapperEntity bw) {
@@ -29,57 +26,32 @@ public class ModuleMorning extends BaseGroupModule implements IPersistentData {
         return "Morning";
     }
 
-    @Override
-    public BotWrapperEntity getWrapper() {
-        return entity;
-    }
-
-	@Override
-	public String getPersistentName() {
-		return "getUp.json";
-	}
-
-	@Override
-	public Type getDataType() {
-		return new TypeToken<ArrayList<GetUpBean>>() {}.getType();
-	}
-
-	@Override
-	public Object getDataBean() {
-		return getUp;
-	}
-
-	@Override
-	public void setDataBean(Object o) {
-		getUp = (ArrayList) o;
-	}
-
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
+        long qqId = gme.getSender().getId();
+        long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
 		if (msg.equals("早上好")) {
 			for (GetUpBean qif:getUp) {
-				if (qif.qq == fromQQ) {
-                    entity.sjfTx.sendGroupMessage(fromGroup, "你今天已经起床了.jpg");
+				if (qif.qq == qqId) {
+                    entity.sjfTx.sendGroupMessage(groupId, "你今天已经起床了.jpg");
 					return false;
 				}
 			}
-			GetUpBean qi=new GetUpBean();
-			qi.qq = fromQQ;
+			GetUpBean qi = new GetUpBean();
+			qi.qq = qqId;
             qi.isBoy = false;
             qi.getUptimeStamp = System.currentTimeMillis();
 			getUp.add(qi);
-            entity.sjfTx.sendGroupMessage(fromGroup, String.format("你是今天第%d位起床的少女哦", getUp.size()));
+            entity.sjfTx.sendGroupMessage(groupId, String.format("你是今天第%d位起床的少女哦", getUp.size()));
 			save();
 		} else if (msg.equals("晚安")) {
 			for (GetUpBean qif:getUp) {
-				if (qif.qq == fromQQ) {
+				if (qif.qq == qqId) {
 					if (qif.getUptimeStamp == 0 || qif.isSleep) {
 						return false;
 					} else {
-						entity.sjfTx.sendGroupMessage(fromGroup, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
+						entity.sjfTx.sendGroupMessage(groupId, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
 						qif.isSleep = true;
 						save();
 					}

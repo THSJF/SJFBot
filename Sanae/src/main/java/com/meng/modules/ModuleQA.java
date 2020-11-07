@@ -1,39 +1,40 @@
 package com.meng.modules;
 
-import com.google.gson.reflect.TypeToken;
 import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
+import com.meng.gameData.TouHou.SpellCard;
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import java.util.Collections;
-import com.meng.SjfPersistentData;
 
-public class ModuleQA extends BaseGroupModule implements IPersistentData {
+public class ModuleQA extends BaseGroupModule {
+
+    @SanaeData("qa.json")
+    private ArrayList<QA> qaList = new ArrayList<>();
 
     public HashMap<Long,QA> onGoingQA = new HashMap<>();
-    @SjfPersistentData("qa.json")
-    public ArrayList<QA> qaList = new ArrayList<>();
     public String imagePath;
-    public static final int easy=0;
-    public static final int normal=1;
-    public static final int hard=2;
-    public static final int lunatic=3;
+    public static final int easy = 0;
+    public static final int normal = 1;
+    public static final int hard = 2;
+    public static final int lunatic = 3;
 
-    public static final int touhouBase=1;
-    public static final int _2unDanmakuIntNew=2;
-    public static final int _2unDanmakuAll=3;
-    public static final int _2unNotDanmaku=4;
-    public static final int _2unAll=5;
-    public static final int otherDanmaku=6;
-    public static final int luastg=7;
+    public static final int touhouBase = 1;
+    public static final int _2unDanmakuIntNew = 2;
+    public static final int _2unDanmakuAll = 3;
+    public static final int _2unNotDanmaku = 4;
+    public static final int _2unAll = 5;
+    public static final int otherDanmaku = 6;
+    public static final int luastg = 7;
 
     public ModuleQA(BotWrapperEntity bwe) {
         super(bwe);
@@ -48,13 +49,23 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromGroup = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(fromGroup).isQAEnable()) {
+        if (processQa(gme)) {
+            return true;
+        }
+        if (processQar(gme)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean processQa(GroupMessageEvent gme) {
+        long groupId = gme.getGroup().getId();
+        if (!entity.configManager.getGroupConfig(groupId).isQAEnable()) {
             return false;
         }
         String msg = gme.getMessage().contentToString();
-        long fromQQ = gme.getSender().getId();
-        QA qaLast = onGoingQA.get(fromQQ);
+        long qqId = gme.getSender().getId();
+        QA qaLast = onGoingQA.get(qqId);
         if (qaLast != null && msg.equalsIgnoreCase("-qa")) {
             entity.sjfTx.sendQuote(gme, "你还没有回答");
             return true;
@@ -65,22 +76,24 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
             for (String s : usAnsStrs) {
                 try {
                     userAnss.add(Integer.parseInt(s));
-                } catch (NumberFormatException e) {}
+                } catch (NumberFormatException ignore) {
+                    //if not number,answer will never true 
+                }
             }
             if (qaLast.getTrueAns().containsAll(userAnss) && qaLast.getTrueAns().size() == userAnss.size()) {
                 entity.sjfTx.sendQuote(gme, "回答正确");
                 qaLast.incTrueTimes();
-                saveData();
+                save();
             } else {
                 entity.sjfTx.sendQuote(gme, "回答错误");
             }
-            onGoingQA.remove(fromQQ);
+            onGoingQA.remove(qqId);
             return true;
         }
         if (msg.equalsIgnoreCase("-qa")) {
-            int randomInt = new Random().nextInt(qaList.size());
+            int randomInt = ThreadLocalRandom.current().nextInt(qaList.size());
             QA qaNow = qaList.get(randomInt);
-            StringBuilder sb=new StringBuilder().append("\n题目ID:").append(randomInt).append("\n");
+            StringBuilder sb = new StringBuilder().append("\n题目ID:").append(randomInt).append("\n");
             sb.append("难度:");
             switch (qaNow.getDifficulty()) {
                 case 0:
@@ -136,15 +149,15 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
                 sb.append("\n");
             }
             if (qaNow.q.contains("(image)")) {
-                sb.append(qaNow.q.replace("(image)", entity.image(new File(imagePath + qaNow.getId() + ".jpg"), fromGroup).toMiraiCode()));
+                sb.append(qaNow.q.replace("(image)", entity.image(new File(imagePath + qaNow.getId() + ".jpg"), groupId).toMiraiCode()));
             } else {
                 sb.append(qaNow.q);
             }
             sb.append("\n");
             qaNow.shuffleAnswer();
-            saveData();
-            onGoingQA.put(fromQQ, qaNow);
-            int i=0;
+            save();
+            onGoingQA.put(qqId, qaNow);
+            int i = 0;
             for (String s:qaNow.a) {
                 if (s.equals("")) {
                     continue;
@@ -161,44 +174,124 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
         return false;
     }
 
+    private boolean processQar(GroupMessageEvent gme) {
+        long groupId = gme.getGroup().getId();
+        if (!entity.configManager.getGroupConfig(groupId).isQAREnable()) {
+            return false;
+        }
+        String msg = gme.getMessage().contentToString();
+        long qqId = gme.getSender().getId();
+        QA onGoing = onGoingQA.get(qqId);
+        if (onGoing != null && msg.equalsIgnoreCase("-qar")) {
+            entity.sjfTx.sendQuote(gme, "你还没有回答");
+            return true;
+        }
+        if (onGoing != null) {
+            int userAnser = -1;
+            try {
+                userAnser = Integer.parseInt(msg);
+            } catch (NumberFormatException ignore) {
+                //if not number,answer will never true
+            }
+            if (onGoing.getTrueAns().contains(userAnser)) {
+                entity.sjfTx.sendQuote(gme, "回答正确");
+            } else {
+                entity.sjfTx.sendQuote(gme, "回答错误");
+            }
+            onGoingQA.remove(qqId);
+            return true;
+        }
+        if (msg.equalsIgnoreCase("-qar")) {
+            QA qar = createQA();
+            qar.shuffleAnswer();
+            StringBuilder sb=new StringBuilder("\n");
+            sb.append(qar.q);
+            int i=0;
+            for (String s:qar.a) {
+                if (s.equals("")) {
+                    continue;
+                }
+                sb.append(i++).append(": ").append(s).append("\n");
+            }
+            sb.append("回答序号即可");
+            onGoingQA.put(qqId, qar);
+            entity.sjfTx.sendQuote(gme, sb.toString());
+            return true;
+        }
+        return false;
+    }
+
+    private QA createQA() {
+        int diff = 1 << ThreadLocalRandom.current().nextInt(9);
+        SpellCard spellCard = entity.moduleManager.getModule(ModuleDiceCmd.class).thData.getSpellFromDiff(diff);
+        SpellCard[] sps = entity.moduleManager.getModule(ModuleDiceCmd.class).thData.getSpellFromNotDiff(3, diff);
+        QA qa = new QA();
+        qa.a.add(spellCard.name);
+        for (SpellCard spc:sps) {
+            qa.a.add(spc.name);
+        }
+        qa.setTrueAns(0);
+        qa.shuffleAnswer();
+        StringBuilder sb = new StringBuilder();
+        sb.append("以下符卡在");
+        switch (diff) {
+            case SpellCard.Easy:
+                sb.append("easy难度");
+                break;
+            case SpellCard.Normal:
+                sb.append("normal难度");
+                break;
+            case SpellCard.Hard:
+                sb.append("hard难度");
+                break;
+            case SpellCard.Lunatic:
+                sb.append("lunatic难度");
+                break;
+            case SpellCard.Overdrive:
+                sb.append("overdrive难度");
+                break;
+            case SpellCard.LastSpell:
+                sb.append("last spell");
+                break;
+            case SpellCard.LastWord:
+                sb.append("lastword");
+                break;
+            case SpellCard.Extra:
+                sb.append("extra关卡");
+                break;
+            case SpellCard.Phantasm:
+                sb.append("phamtasm关卡");
+                break;
+            default:
+                System.out.println(spellCard.name);
+                System.out.println(diff);
+        }
+        sb.append("中出现的是:\n");
+        qa.q = sb.toString();
+        return qa;
+    }
+
     public void addQA(QA qa) {
         qa.setId(qaList.size());
         qaList.add(qa);
-        saveData();
+        save();
     }
 
     public void setQA(QA qa) {
         qaList.set(qa.getId(), qa);
-        saveData();
+        save();
     }
 
-    private void saveData() {
+    private void save() {
         DataPersistenter.save(this);
     }
 
-    @Override
-    public BotWrapperEntity getWrapper() {
-        return entity;
+    public int getQaCount() {
+        return qaList.size();
     }
 
-    @Override
-    public String getPersistentName() {
-        return "qa.json";
-    }
-
-    @Override
-    public Type getDataType() {
-        return new TypeToken<ArrayList<QA>>() {}.getType();
-    }
-
-    @Override
-    public Object getDataBean() {
-        return qaList;
-    }
-
-    @Override
-    public void setDataBean(Object o) {
-        qaList = (ArrayList) o;
+    public List<QA> getQas() {
+        return Collections.unmodifiableList(qaList);
     }
 
     @Override
@@ -207,7 +300,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
     }
 
     public static class QA {
-        private int flag=0;
+        private int flag = 0;
         //flag: id(16bit)                   type(8bit)      diffculty(8bit)
         //  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|0 0 0 0 0 0 0 0|0 0 0 0 0 0 0 0
         public int l = 0;//file length
@@ -235,7 +328,7 @@ public class ModuleQA extends BaseGroupModule implements IPersistentData {
         }
 
         public void shuffleAnswer() {
-            Random r = new Random();
+            Random r = ThreadLocalRandom.current();
             int index1 = r.nextInt(a.size() - 1);
             int index2 = r.nextInt(a.size() - 1);
             boolean is1F = getBit(index1);

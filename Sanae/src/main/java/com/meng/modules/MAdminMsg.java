@@ -33,10 +33,10 @@ public class MAdminMsg extends BaseGroupModule {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
+        long qqId = gme.getSender().getId();
+        long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-        if (!entity.configManager.isAdminPermission(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() > 0) {
+        if (!entity.configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
             return false;
 		}
         if (msg.charAt(0) != '.') {
@@ -49,27 +49,27 @@ public class MAdminMsg extends BaseGroupModule {
             String first = iter.next();
             switch (first) {
                 case "findGroup":
-                    Tools.CQ.findQQInAllGroup(entity, fromGroup, fromQQ, iter.next());
+                    Tools.CQ.findQQInAllGroup(entity, groupId, qqId, iter.next());
                     return true;
                 case "welcome":
                     String wel = null;
                     if (iter.hasNext()) {
                         wel = iter.next();
                     }
-                    entity.configManager.setWelcome(fromGroup, wel);
+                    entity.configManager.setWelcome(groupId, wel);
                     entity.configManager.save();
-                    entity.sjfTx.sendGroupMessage(fromGroup, "已设置为:" + wel);
+                    entity.sjfTx.sendGroupMessage(groupId, "已设置为:" + wel);
                     return true;
             }
-            if (!entity.configManager.isMaster(fromQQ) && entity.getGroupMemberInfo(fromGroup, fromQQ).getPermission().getLevel() > 1) {
+            if (!entity.configManager.isMaster(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 1) {
                 return false;
             }
             switch (first) {
                 case "groupCard":
                     if (list.size() == 3) {
-                        entity.setGroupCard(fromGroup, entity.getLoginQQ(), iter.next());
+                        entity.setGroupCard(groupId, entity.getLoginQQ(), iter.next());
                     } else if (list.size() == 4) {
-                        entity.setGroupCard(fromGroup, Long.parseLong(iter.next()), iter.next());
+                        entity.setGroupCard(groupId, Long.parseLong(iter.next()), iter.next());
                     }
                     return true;
                 case "switch":
@@ -107,7 +107,7 @@ public class MAdminMsg extends BaseGroupModule {
                     entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), "已设置为" + (re ?"启用": "禁用"));
                     return true;
             }
-            if (!entity.configManager.isMaster(fromQQ)) {
+            if (!entity.configManager.isMaster(qqId)) {
                 return false;
             }
             switch (first) {
@@ -130,7 +130,7 @@ public class MAdminMsg extends BaseGroupModule {
                     for (Group g:hs) {
                         result.append("\n").append(g.getId()).append(":").append(g.getName());
                     }
-                    entity.sjfTx.sendGroupMessage(fromGroup, result.toString());
+                    entity.sjfTx.sendGroupMessage(groupId, result.toString());
                     return true;
                 case "stop":
                     entity.sjfTx.sendQuote(gme, "disabled");
@@ -157,7 +157,7 @@ public class MAdminMsg extends BaseGroupModule {
                             hashSet.add(personInfo);
                         }
                     }
-                    entity.sjfTx.sendGroupMessage(fromGroup, GSON.toJson(hashSet)); 
+                    entity.sjfTx.sendGroupMessage(groupId, GSON.toJson(hashSet)); 
                     return true;
                 case "thread":
                     String s = "taskCount：" + SJFExecutors.getTaskCount() + "\n" +
@@ -165,21 +165,21 @@ public class MAdminMsg extends BaseGroupModule {
                         "largestPoolSize：" + SJFExecutors.getLargestPoolSize() + "\n" +
                         "poolSize：" + SJFExecutors.getPoolSize() + "\n" +
                         "activeCount：" + SJFExecutors.getActiveCount();
-                    entity.sjfTx.sendGroupMessage(fromGroup, s);
+                    entity.sjfTx.sendGroupMessage(groupId, s);
                     return true;
                 case "gc":
                     System.gc();
-                    entity.sjfTx.sendGroupMessage(fromGroup, "gc start");
+                    entity.sjfTx.sendGroupMessage(groupId, "gc start");
                     return true;
                 case "send":
                     if (list.size() == 3) {
-                        entity.sjfTx.sendGroupMessage(fromGroup, iter.next());
+                        entity.sjfTx.sendGroupMessage(groupId, iter.next());
                     } else if (list.size() == 4) {
                         entity.sjfTx.sendGroupMessage(Long.parseLong(iter.next()), iter.next());
                     }
                     return true;
                 case "groupTitle":
-                    entity.setGroupSpecialTitle(fromGroup, Long.parseLong(iter.next()), iter.next());
+                    entity.setGroupSpecialTitle(groupId, Long.parseLong(iter.next()), iter.next());
                     return true;
                 case "block":
                     {
@@ -191,7 +191,7 @@ public class MAdminMsg extends BaseGroupModule {
                             sb.append(nextqq).append(" ");
                             entity.configManager.save();
                         }
-                        entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
+                        entity.sjfTx.sendGroupMessage(groupId, sb.toString());
                     }
                     return true;
                 case "black":
@@ -204,12 +204,12 @@ public class MAdminMsg extends BaseGroupModule {
                             sb.append(nextqq).append(" ");
                         }
                         entity.configManager.save();
-                        entity.sjfTx.sendGroupMessage(fromGroup, sb.toString());
+                        entity.sjfTx.sendGroupMessage(groupId, sb.toString());
                     }
                     return true;
             }
         } catch (Exception e) {
-            entity.sjfTx.sendGroupMessage(fromGroup, "参数错误:" + e.toString());
+            entity.sjfTx.sendGroupMessage(groupId, "参数错误:" + e.toString());
         }
         return false;
     }

@@ -1,30 +1,22 @@
 package com.meng.modules;
 
-import com.google.gson.reflect.TypeToken;
 import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.SJFInterfaces.IPersistentData;
 import com.meng.adapter.BotWrapperEntity;
+import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.SjfPersistentData;
 
-public class MAimMessage extends BaseGroupModule implements IPersistentData {
+public class MAimMessage extends BaseGroupModule {
 
     /**
      * @Description: 定向消息
      * @author: 司徒灵羽
      **/
-
-    @Override
-    public String getModuleName() {
-        return "定向消息";
-    }
-
-    @SjfPersistentData("AimMessage.json")
+    
+    @SanaeData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
 
     public MAimMessage(BotWrapperEntity bw) {
@@ -32,28 +24,8 @@ public class MAimMessage extends BaseGroupModule implements IPersistentData {
     }
 
     @Override
-    public BotWrapperEntity getWrapper() {
-        return entity;
-    }
-
-    @Override
-    public String getPersistentName() {
-        return "AimMessage.json";
-    }
-
-    @Override
-    public Type getDataType() {
-        return new TypeToken<AimMessageHolder>(){}.getType();
-    }
-
-    @Override
-    public Object getDataBean() {
-        return holder;
-    }
-
-    @Override
-    public void setDataBean(Object o) {
-        holder = (AimMessageHolder) o;
+    public String getModuleName() {
+        return "定向消息";
     }
 
     @Override
@@ -64,30 +36,30 @@ public class MAimMessage extends BaseGroupModule implements IPersistentData {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
+        long qqId = gme.getSender().getId();
+        long groupId = gme.getGroup().getId();
         if (holder.delayList.size() != 0) {
             Iterator<MessageWait> iter = holder.delayList.iterator();
             while (iter.hasNext()) {
                 MessageWait mw = iter.next();
-                if (mw.qq == fromQQ) {
+                if (mw.qq == qqId) {
                     if (mw.group == -1) {
-                        entity.sjfTx.sendGroupMessage(fromGroup, mw.content);
+                        entity.sjfTx.sendGroupMessage(groupId, mw.content);
                         iter.remove();
-                    } else if (mw.group == fromGroup) {
-                        entity.sjfTx.sendGroupMessage(fromGroup, mw.content);
+                    } else if (mw.group == groupId) {
+                        entity.sjfTx.sendGroupMessage(groupId, mw.content);
                         iter.remove();
                     }
                 }
             }
         }
-        MessageWait mw = holder.delayMap.remove(fromQQ);
+        MessageWait mw = holder.delayMap.remove(qqId);
         if (mw != null) {
-            if (mw.qq == fromQQ) {
+            if (mw.qq == qqId) {
                 if (mw.group == -1) {
-                    entity.sjfTx.sendGroupMessage(fromGroup, mw.content);
-                } else if (mw.group == fromGroup) {
-                    entity.sjfTx.sendGroupMessage(fromGroup, mw.content);
+                    entity.sjfTx.sendGroupMessage(groupId, mw.content);
+                } else if (mw.group == groupId) {
+                    entity.sjfTx.sendGroupMessage(groupId, mw.content);
                 }
             }
         }

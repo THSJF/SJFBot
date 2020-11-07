@@ -6,8 +6,8 @@ import com.meng.tools.SJFExecutors;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
+import net.mamoe.mirai.message.data.MessageChain;
 
 /**
  * @Description: 阻止刷屏消息进入
@@ -38,18 +38,18 @@ public class MessageRefuse extends BaseGroupModule {
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
-		long fromQQ = gme.getSender().getId();
-        long fromGroup = gme.getGroup().getId();
-        if (entity.configManager.isBlackQQ(fromQQ)) {
+		long qqId = gme.getSender().getId();
+        long groupId = gme.getGroup().getId();
+        if (entity.configManager.isBlackQQ(qqId)) {
 
         }
-        if (entity.configManager.isBlockQQ(fromQQ) || entity.configManager.isBlockWord(gme.getMessage().contentToString())) {
+        if (entity.configManager.isBlockQQ(qqId) || entity.configManager.isBlockWord(gme.getMessage().contentToString())) {
             return true;
         }
-		FireWallBean mtmb = msgMap.get(fromQQ);
+		FireWallBean mtmb = msgMap.get(qqId);
 		if (mtmb == null) {
 			mtmb = new FireWallBean();
-			msgMap.put(fromQQ, mtmb);
+			msgMap.put(qqId, mtmb);
 		}
 		//发言间隔过短
 		if (System.currentTimeMillis() - mtmb.lastSpeakTimeStamp < 500) {
@@ -60,7 +60,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.timeSubLowTimes > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sjfTx.sendGroupMessage(fromGroup,  "你说话真快");
+				entity.sjfTx.sendGroupMessage(groupId,  "你说话真快");
 			}
 			return true;
 		}
@@ -74,7 +74,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.repeatTime > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sjfTx.sendGroupMessage(fromGroup,  "怎么又是这句话");
+				entity.sjfTx.sendGroupMessage(groupId,  "怎么又是这句话");
 			}
 			mtmb.lastMsg = gme.getMessage();
 			return true;
@@ -85,7 +85,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.lastSeconedMsgs > 4) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sjfTx.sendGroupMessage(fromGroup,  "你真稳");
+				entity.sjfTx.sendGroupMessage(groupId,  "你真稳");
 			}
 			return true;
 		}

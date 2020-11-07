@@ -9,19 +9,19 @@ import com.meng.modules.ModuleManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageSource;
-import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.message.data.MessageSource;
 
 /**
  * @Description: bot实体包装器
@@ -30,7 +30,7 @@ import net.mamoe.mirai.message.MessageEvent;
 
 public class BotWrapperEntity {
 
-    public static final String appDirectory = "C://Program Files/sanae_data/";
+    public static final String appDirectory = "C://Program Files/bot_data/";
     public static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
     public static final long mainGroup = 807242547L;
     public static final long yysGroup = 617745343L;
@@ -68,7 +68,9 @@ public class BotWrapperEntity {
     }
 
     public boolean isAtme(String msg) {
-        List<Long> list = getAts(msg);
+        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+        messageChainBuilder.add(msg);
+        List<Long> list = getAts(messageChainBuilder.asMessageChain());
         long me = bot.getSelfQQ().getId();
         for (long l : list) {
             if (l == me) {
@@ -94,27 +96,18 @@ public class BotWrapperEntity {
         return msg.firstOrNull(At.Key).getTarget();
     }
 
-    public long getAt(String msg) {
-        MessageChainBuilder mcb = new MessageChainBuilder();
-        mcb.add(new PlainText(msg));
-        return getAt(mcb.asMessageChain());
-    }
+    public List<Long> getAts(MessageChain msg) {
+        final ArrayList<Long> al = new ArrayList<>();
+        msg.forEachContent(new Function1<Message,Unit>(){
 
-    public List<Long> getAts(String msg) {
-        ArrayList<Long> al = new ArrayList<>();
-        int pointer = 0;
-        while (true) {
-            int index = msg.indexOf("[mirai:at:", pointer);
-            if (index == -1) break;
-            int index2 = msg.indexOf(",", index);
-            if (index == -2) break;
-            try {
-                al.add(Long.parseLong(msg.substring(index + 10, index2)));
-            } catch (NumberFormatException e) {
-
-            }
-            pointer = index2;
-        }
+                @Override
+                public Unit invoke(Message p1) {
+                    if (p1 instanceof At) {
+                        al.add(((At)p1).getTarget()); 
+                    }
+                    return null;
+                }
+            });
         return al;
     }
 
@@ -224,10 +217,5 @@ public class BotWrapperEntity {
 
     public String location(double p0, double p1, int p2, String p3, String p4) {
         throw new UnsupportedOperationException();
-    }
-
-    public static class AccountInfo {
-        public long account;
-        public String password;
     }
 }

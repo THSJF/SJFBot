@@ -1,6 +1,5 @@
 package com.meng.gameData.TouHou;
 
-import com.meng.gameData.TouHou.TouhouCharacter;
 import com.meng.gameData.TouHou.zun.TH06GameData;
 import com.meng.gameData.TouHou.zun.TH07GameData;
 import com.meng.gameData.TouHou.zun.TH08GameData;
@@ -17,6 +16,7 @@ import com.meng.tools.Tools;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class THDataHolder {
 
@@ -42,7 +42,7 @@ public class THDataHolder {
 
     public SpellCard getSpellFromDiff(int diffFlag) {
         SpellCard splc;
-        Random random = new Random();
+        Random random = ThreadLocalRandom.current();
         while (true) {
             SpellCard[] spellss = spells[random.nextInt(spells.length)];
             splc = spellss[random.nextInt(spellss.length)];
@@ -53,8 +53,8 @@ public class THDataHolder {
     }
 
     public SpellCard[] getSpellFromNotDiff(int count, int diffFlag) {
-        SpellCard[] spshs=new SpellCard[count];
-        Random random = new Random();
+        SpellCard[] spshs = new SpellCard[count];
+        Random random = ThreadLocalRandom.current();
         for (int i=0;i < count;++i) {
             SpellCard splc;
             while (true) {
@@ -71,7 +71,7 @@ public class THDataHolder {
     }
 
 	public String getSpellCardPs(SpellCard sc) {
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append(sc.name).append("是").append(sc.master);
 		if (sc.difficultFlag != SpellCard.LastSpell && sc.difficultFlag != SpellCard.LastWord) {
 			sb.append("在");
@@ -389,7 +389,7 @@ public class THDataHolder {
     }
 
     public SpellCard randomSpell() {
-        Random r = new Random();
+        Random r = ThreadLocalRandom.current();
         SpellCard[] scs = spells[r.nextInt(spells.length)];
         return scs[r.nextInt(spells.length)];
     }

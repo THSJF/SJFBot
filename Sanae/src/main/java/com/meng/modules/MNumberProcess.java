@@ -15,7 +15,7 @@ public class MNumberProcess extends BaseGroupModule {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        long fromGroup = gme.getGroup().getId();
+        long groupId = gme.getGroup().getId();
         if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isNumberProcessEnable()) {
             return false;
         }
@@ -30,7 +30,7 @@ public class MNumberProcess extends BaseGroupModule {
             try {
                 String firstArg = iter.next();
                 if (firstArg.equals("~")) {
-                    entity.sjfTx.sendGroupMessage(fromGroup, "result:" + (~Integer.parseInt(iter.next()))); 
+                    entity.sjfTx.sendGroupMessage(groupId, "result:" + (~Integer.parseInt(iter.next()))); 
                     return true;
                 }
                 int a1 = Integer.parseInt(firstArg);
@@ -72,9 +72,9 @@ public class MNumberProcess extends BaseGroupModule {
                         resu = "result:" + (a1 & a2);
                         break;
                 }
-                entity.sjfTx.sendGroupMessage(fromGroup, resu);
+                entity.sjfTx.sendGroupMessage(groupId, resu);
             } catch (Exception e) {
-                entity.sjfTx.sendGroupMessage(fromGroup, e.toString());
+                entity.sjfTx.sendGroupMessage(groupId, e.toString());
             }
             return true;
         }

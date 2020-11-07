@@ -1,26 +1,12 @@
 package com.meng.tools;
 
-import com.meng.adapter.BotWrapperEntity;
-import com.meng.gameData.TouHou.SpellCard;
-import com.meng.gameData.TouHou.TouhouCharacter;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
+import com.meng.adapter.*;
+import com.meng.gameData.TouHou.*;
+import java.io.*;
+import java.nio.charset.*;
+import java.util.*;
+import java.util.concurrent.*;
+import net.mamoe.mirai.contact.*;
 
 public class Tools {
 
@@ -159,7 +145,7 @@ public class Tools {
 			return finalArray;
 		}
 		public static <T> T rfa(T[] array) {
-			return array[new Random().nextInt(array.length)];
+			return array[ThreadLocalRandom.current().nextInt(array.length)];
 		}
 	}
 

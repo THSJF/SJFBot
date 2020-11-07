@@ -79,14 +79,14 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(@NotNull FriendMessageEvent event) {
-        moduleManager.onPrivateMsg(event.getSender().getId(), event.getMessage().contentToString(), event.getSource().getId());
+        moduleManager.onFriendMessage(event);
         return ListeningStatus.LISTENING;
     }
     //临时消息
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(@NotNull TempMessageEvent event) {
-        moduleManager.onPrivateMsg(event.getSender().getId(), event.getMessage().contentToString(), event.getSource().getId());
+       // moduleManager.onFriendMessage(event);
         return ListeningStatus.LISTENING;
     }
     //Bot 登录完成: BotOnlineEvent

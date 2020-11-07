@@ -1,10 +1,9 @@
 package com.meng;
 
-import com.meng.tools.SJFExecutors;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
-import net.mamoe.mirai.message.MessageEvent;
+import com.meng.tools.*;
+import java.util.*;
+import java.util.concurrent.*;
+import net.mamoe.mirai.message.*;
 
 /**
  * @author: 司徒灵羽
