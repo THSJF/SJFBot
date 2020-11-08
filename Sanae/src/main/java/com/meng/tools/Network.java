@@ -82,8 +82,12 @@ public class Network {
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
 		int count = 0;
+        boolean inString = false;
 		while (index < content.length()) {
 			char ch = content.charAt(index);
+            if (ch == '"' && content.charAt(index - 1) != '\\') {
+                inString = !inString;  
+            }
 			if (ch == '{' || ch == '[') {
 				sb.append(ch);
 				sb.append('\n');
@@ -100,7 +104,9 @@ public class Network {
 				sb.append(ch);
 			} else if (ch == ',') {
 				sb.append(ch);
-				sb.append('\n');
+                if (!inString) {
+                    sb.append('\n');
+                }
 				for (int i = 0; i < count; i++) {                   
 					sb.append('\t');
 				}

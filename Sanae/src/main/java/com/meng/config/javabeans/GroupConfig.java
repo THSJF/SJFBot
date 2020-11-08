@@ -128,6 +128,18 @@ public class GroupConfig extends Object {
 			f1 &= ~(1 << 9);
 		}
 	}
+    
+    public boolean isGroupDicEnable() {
+        return (f1 & (1 << 10)) != 0;
+    }
+
+    public void setGroupDicEnable(boolean enable) {
+        if (enable) {
+            f1 |= (1 << 10);
+        } else {
+            f1 &= ~(1 << 10);
+        }
+	} 
 /*
 	public boolean isBannerEnable() {
 		return (f1 & (1 << 8)) != 0;

@@ -48,13 +48,14 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 		load(ModuleReport.class);
 
         load(MNumberProcess.class);
-		load(ModuleMorning.class);
 		load(ModuleDiceCmd.class);
 		load(Faith.class);
         load(MTimeTask.class);
         load(MAimMessage.class);
         load(MWelcome.class, false);
         load(ModuleQA.class);
+        load(MDictionary.class);
+        load(ModuleMorning.class);
         return this;
 	}
 
@@ -66,7 +67,12 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 		Object o = null;
 		try {
             Constructor cos = cls.getConstructor(BotWrapperEntity.class);
-			o = cos.newInstance(entity);
+            if (cos == null) {
+                cos = cls.getConstructor();
+                o = cos.newInstance();
+            } else {
+                o = cos.newInstance(entity);
+            }
 			if (needLoad) {
 				Method m = o.getClass().getMethod("load");
 				m.invoke(o);

@@ -93,6 +93,7 @@ public class ModuleQA extends BaseGroupModule {
         if (msg.equalsIgnoreCase("-qa")) {
             int randomInt = ThreadLocalRandom.current().nextInt(qaList.size());
             QA qaNow = qaList.get(randomInt);
+            qaNow.incShowTimes();
             StringBuilder sb = new StringBuilder().append("\n题目ID:").append(randomInt).append("\n");
             sb.append("难度:");
             switch (qaNow.getDifficulty()) {
@@ -145,7 +146,7 @@ public class ModuleQA extends BaseGroupModule {
             }   
             sb.append("\n");
             if (qaNow.getShowTimes() > 0) {
-                sb.append(String.format("正确率:%.2f", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes()));
+                sb.append(String.format("正确率:%.2f%%", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes()));
                 sb.append("\n");
             }
             if (qaNow.q.contains("(image)")) {
