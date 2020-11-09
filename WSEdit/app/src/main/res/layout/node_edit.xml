@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<HorizontalScrollView
+		android:layout_alignParentBottom="true"
+		android:id="@+id/node_editScrollView"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent">
+
+		<LinearLayout
+			android:id="@+id/node_editLinearLayout"
+			android:orientation="horizontal"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent">
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="TXT"
+				android:id="@+id/node_editButton_txt"/>
+
+			<Button
+				android:id="@+id/node_editButton_img"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="IMG"/>
+
+			<Button
+				android:id="@+id/node_editButton_qid"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="QID"/>
+
+			<Button
+				android:id="@+id/node_editButton_qname"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="QNAME"/>
+
+			<Button
+				android:id="@+id/node_editButton_gid"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="GID"/>
+
+			<Button
+				android:id="@+id/node_editButton_gname"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="GNAME"/>
+
+			<Button
+				android:id="@+id/node_editButton_at_qid"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="AT_QID"/>
+
+		</LinearLayout>
+
+	</HorizontalScrollView>
+
+	<ListView
+		android:id="@+id/node_editListView"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_above="@id/node_editScrollView"
+		android:layout_alignParentTop="true"/>
+
+</RelativeLayout>
+

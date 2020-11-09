@@ -13,12 +13,12 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.At;
 
-public class MDictionary extends BaseGroupModule {
+public class DynamicWordStock extends BaseGroupModule {
 
-    @SanaeData("dictionary.json")
+    @SanaeData("dynamic_word_stock.json")
     private WordStock dictionary;
 
-    public MDictionary(BotWrapperEntity bw) {
+    public DynamicWordStock(BotWrapperEntity bw) {
         super(bw);
     }
 
@@ -28,36 +28,36 @@ public class MDictionary extends BaseGroupModule {
             return false; 
         }
         String msg = gme.getMessage().contentToString();
-        for (String k : dictionary.map.keySet()) {
+        for (String k : dictionary.w.keySet()) {
             if (msg.contains(k)) {
-                ArrayList<WordStock.Entry> list = dictionary.map.get(k);
+                ArrayList<WordStock.Entry> list = dictionary.w.get(k);
                 WordStock.Entry entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
                 MessageChainBuilder mcb = new MessageChainBuilder();
-                for (WordStock.Entry.Node node:entry.items) {
-                    switch (node.type) {
-                        case Type_text:
-                            mcb.add(node.content);
+                for (WordStock.Entry.Node node:entry.e) {
+                    switch (node.t) {
+                        case TXT:
+                            mcb.add(node.c);
                             break;
-                        case Type_image:
+                        case IMG:
                             try {
                                 mcb.add(gme.getGroup().uploadImage(new File(BotWrapperEntity.appDirectory + node.content)));
                             } catch (Exception e) {
                                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                             }
                             break;
-                        case Type_senderId:
+                        case QID:
                             mcb.add(String.valueOf(gme.getSender().getId()));
                             break;
-                        case Type_senderName:
+                        case QNAME:
                             mcb.add(gme.getSenderName());
                             break;
-                        case Type_fromGroupId:
+                        case GID:
                             mcb.add(String.valueOf(gme.getGroup().getId()));
                             break;
-                        case Type_fromGroupName:
+                        case GNAME:
                             mcb.add(gme.getGroup().getName());
                             break;
-                        case Type_at_sender:
+                        case AT_QID:
                             mcb.add(new At(gme.getSender()));
                             break;
                     }
@@ -70,7 +70,7 @@ public class MDictionary extends BaseGroupModule {
     }
 
     @Override
-    public MDictionary load() {
+    public DynamicWordStock load() {
         DataPersistenter.read(this);
         return this;
     }
@@ -81,29 +81,43 @@ public class MDictionary extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "词库";
+        return "动态词库";
     }
 
-    enum ItemType {
-        Type_text,
-        Type_image,
-        Type_senderId,
-        Type_senderName,
-        Type_fromGroupId,
-        Type_fromGroupName,
-        Type_at_sender,
+    public enum ItemType {
+        TXT,
+        IMG,
+        QID,
+        QNAME,
+        GID,
+        GNAME,
+        AT_QID,
     }
 
-    public static class WordStock {
-        public HashMap<String,ArrayList<Entry>> map = new HashMap<>();
+    public class WordStock {
 
-        public static class Entry {
-            public ArrayList<Node> items = new ArrayList<>();
+        public HashMap<String,ArrayList<Entry>> w = new HashMap<>(); 
 
-            public static class Node {
-                public String content = "";
-                public ItemType type;
+        public class Entry {
+            public ArrayList<Node> e = new ArrayList<>();
+
+            public void add(Node node) {
+                e.add(node);
             }
-        }  
+
+            public class Node {
+                public String c = "";
+                public ItemType t;
+
+                public Node() { }
+                public Node(String content, ItemType type) {
+                    this.c = content;
+                    this.t = type;
+                    if (c == null) {
+                        c = "";
+                    }
+                }
+            }
+        }
     }
 }

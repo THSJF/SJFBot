@@ -54,7 +54,7 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
         load(MAimMessage.class);
         load(MWelcome.class, false);
         load(ModuleQA.class);
-        load(MDictionary.class);
+        load(DynamicWordStock.class);
         load(ModuleMorning.class);
         return this;
 	}
