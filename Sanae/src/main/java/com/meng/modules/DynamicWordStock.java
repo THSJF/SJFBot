@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.QuoteReply;
 
 public class DynamicWordStock extends BaseGroupModule {
 
@@ -40,7 +41,7 @@ public class DynamicWordStock extends BaseGroupModule {
                             break;
                         case IMG:
                             try {
-                                mcb.add(gme.getGroup().uploadImage(new File(BotWrapperEntity.appDirectory + node.content)));
+                                mcb.add(gme.getGroup().uploadImage(new File(BotWrapperEntity.appDirectory + node.c)));
                             } catch (Exception e) {
                                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                             }
@@ -59,6 +60,39 @@ public class DynamicWordStock extends BaseGroupModule {
                             break;
                         case AT_QID:
                             mcb.add(new At(gme.getSender()));
+                            break;
+                        case QUOTE:
+                            mcb.add(new QuoteReply(gme.getSource()));
+                            break;
+                        case RAN_INT:
+                            int b = -1;
+                            try {
+                                b = Integer.parseInt(node.c);  
+                            } catch (NumberFormatException ignore) { }
+                            mcb.add(String.valueOf(b == -1 ? ThreadLocalRandom.current().nextInt(): ThreadLocalRandom.current().nextInt(b)));
+                            break;
+                        case RAN_FLOAT:
+                            float scale = Float.NaN;
+                            try {
+                                scale = Float.parseFloat(node.c);
+                            } catch (NumberFormatException ignore) {}
+                            if (Float.isNaN(scale)) {
+                                scale = 1f;
+                            }
+                            mcb.add(String.valueOf(ThreadLocalRandom.current().nextFloat() * scale));
+                            break;
+                        case HASH_RAN_INT:
+                            mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomInt(gme.getSender().getId())));
+                            break;
+                        case HASH_RAN_FLOAT:
+                            float rscale = Float.NaN;
+                            try {
+                                rscale = Float.parseFloat(node.c);
+                            } catch (NumberFormatException ignore) {}
+                            if (Float.isNaN(rscale)) {
+                                scale = 1f;
+                            }
+                            mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
                             break;
                     }
                 }
@@ -92,7 +126,12 @@ public class DynamicWordStock extends BaseGroupModule {
         GID,
         GNAME,
         AT_QID,
-    }
+        QUOTE,
+        RAN_INT,
+        RAN_FLOAT,
+        HASH_RAN_INT,
+        HASH_RAN_FLOAT
+        }
 
     public class WordStock {
 

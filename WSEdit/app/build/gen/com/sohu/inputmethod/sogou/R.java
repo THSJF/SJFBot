@@ -26,14 +26,19 @@ public final class R {
         public static final int node_editButton_at_qid=0x7f07000c;
         public static final int node_editButton_gid=0x7f07000a;
         public static final int node_editButton_gname=0x7f07000b;
+        public static final int node_editButton_hash_ran_float=0x7f070011;
+        public static final int node_editButton_hash_ran_int=0x7f070010;
         public static final int node_editButton_img=0x7f070007;
         public static final int node_editButton_qid=0x7f070008;
         public static final int node_editButton_qname=0x7f070009;
+        public static final int node_editButton_quote=0x7f07000d;
+        public static final int node_editButton_ran_float=0x7f07000f;
+        public static final int node_editButton_ran_int=0x7f07000e;
         public static final int node_editButton_txt=0x7f070006;
         public static final int node_editLinearLayout=0x7f070005;
-        public static final int node_editListView=0x7f07000d;
+        public static final int node_editListView=0x7f070012;
         public static final int node_editScrollView=0x7f070004;
-        public static final int text=0x7f07000e;
+        public static final int text=0x7f070013;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

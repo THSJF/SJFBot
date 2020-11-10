@@ -40,7 +40,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
         }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(groupId, qqId), thData.md5RanSpell(qqId).name));
+            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(groupId, qqId), thData.hashRandomSpell(qqId).name));
             return true;
         }
 		if (msg.charAt(0) != '.') {
@@ -94,7 +94,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                     } else if (c == '2') {
                         fpro = 100.00f;
                     } else {
-                        fpro = ((float)(thData.md5Random(qqId) % 10001)) / 100;
+                        fpro = ((float)(thData.hashRandomInt(qqId) % 10001)) / 100;
                     }
                     entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
                     return true;
@@ -120,22 +120,22 @@ public class ModuleDiceCmd extends BaseGroupModule {
                                     entity.sjfTx.sendGroupMessage(groupId, "没有找到这张符卡");
                                     return true;
                                 }
-                                float allPro = ((float)(thData.md5Random(qqId, sc.name) % 10001)) / 100;
+                                float allPro = ((float)(thData.hashRandom(qqId, sc.name) % 10001)) / 100;
                                 entity.sjfTx.sendGroupMessage(groupId, "你今天" + sc.name + "的收率是" + allPro + "%");
                             }
                             return true;
                         case "neta":
-                            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜打%s", pname, thData.md5RanStr(qqId, thData.neta)));
+                            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜打%s", pname, thData.hashRandomString(qqId, thData.neta)));
                             return true;
                         case "music":
-                            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜听%s", pname, thData.md5RanMusic(qqId)));
+                            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜听%s", pname, thData.hashRandomMusic(qqId)));
                             return true;
                         case "grandma":
                             if (Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
                                 entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜认八云紫当奶奶", pname));
                                 return true;
                             }
-                            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜认%s当奶奶", pname, thData.md5RanChara(qqId).charaName));
+                            entity.sjfTx.sendGroupMessage(groupId, String.format("%s今天宜认%s当奶奶", pname, thData.hashRandomCharacter(qqId).charaName));
                             return true;
                         case "game":
                             String s = thData.randomGame(pname, qqId, true);
@@ -155,14 +155,14 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             }
                             return true;
                         case "all":
-                            String allStr = String.format("%s今天宜打%s", pname, thData.md5RanStr(qqId, thData.neta));
+                            String allStr = String.format("%s今天宜打%s", pname, thData.hashRandomString(qqId, thData.neta));
                             allStr += "\n";
-                            allStr += String.format("%s今天宜听%s", pname, thData.md5RanMusic(qqId));
+                            allStr += String.format("%s今天宜听%s", pname, thData.hashRandomMusic(qqId));
                             allStr += "\n";
                             if (Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
                                 allStr += String.format("%s今天宜认八云紫当奶奶", pname);
                             } else {
-                                allStr += String.format("%s今天宜认%s当奶奶", pname, thData.md5RanChara(qqId).charaName);
+                                allStr += String.format("%s今天宜认%s当奶奶", pname, thData.hashRandomCharacter(qqId).charaName);
                             }
                             allStr += "\n";
                             allStr += thData.randomGame(pname, qqId, true);
@@ -177,7 +177,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
                             } else if (c == '2') {
                                 allPro = 100.00f;
                             } else {
-                                allPro = ((float)(thData.md5Random(qqId) % 10001)) / 100;
+                                allPro = ((float)(thData.hashRandomInt(qqId) % 10001)) / 100;
                             }
                             allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
                             entity.sjfTx.sendGroupMessage(groupId, allStr);

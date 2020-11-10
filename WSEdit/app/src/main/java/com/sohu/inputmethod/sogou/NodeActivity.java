@@ -18,6 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import android.widget.Toast;
 import android.widget.LinearLayout;
+import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class NodeActivity extends Activity {
 
@@ -70,9 +76,9 @@ public class NodeActivity extends Activity {
 
         @Override
         public void onClick(View p1) {
+            final EditText et = new EditText(NodeActivity.this);
             switch (p1.getId()) {
                 case R.id.node_editButton_txt:
-                    final EditText et = new EditText(NodeActivity.this);
                     new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface p11, int p2) {
@@ -97,7 +103,32 @@ public class NodeActivity extends Activity {
                     break;  
                 case R.id.node_editButton_at_qid:
                     nodes.add(new Node("", ItemType.AT_QID));
-                    break;     
+                    break;
+                case R.id.node_editButton_quote:
+                    nodes.add(new Node("", ItemType.QUOTE));
+                    break;
+                case R.id.node_editButton_ran_int:
+                    new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface p11, int p2) {
+                                nodes.add(new Node(et.getText().toString(), ItemType.RAN_INT));
+                            }
+                        }).setNegativeButton("取消", null).show();
+                    break;
+                case R.id.node_editButton_ran_float:
+                    new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface p11, int p2) {
+                                nodes.add(new Node(et.getText().toString(), ItemType.RAN_FLOAT));
+                            }
+                        }).setNegativeButton("取消", null).show();
+                    break;
+                case R.id.node_editButton_hash_ran_int:
+                    nodes.add(new Node("", ItemType.HASH_RAN_INT));
+                    break;
+                case R.id.node_editButton_hash_ran_float:
+                    nodes.add(new Node("", ItemType.HASH_RAN_FLOAT));
+                    break;
             }
             update();
         }
@@ -120,9 +151,20 @@ public class NodeActivity extends Activity {
                     showToast("选择图片出错");
                     return;
                 }
-                int index = path.indexOf("sanae_data") + "sanae_data".length();
-                nodes.add(new Node(path.substring(index), ItemType.IMG));
-                update();
+                File source = new File(path);
+                File target = new File("/storage/emulated/0/AppProjects/sanae_data/image/" + source.getName());
+                if (target.exists()) {
+                    target.delete();
+                }
+                try {
+                    Files.copy(source.toPath(), target.toPath());
+                    int index = target.getAbsolutePath().indexOf("sanae_data") + "sanae_data".length();
+                    nodes.add(new Node(target.getAbsolutePath().substring(index), ItemType.IMG));
+                    update();
+                } catch (IOException e) {
+                    ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                }
+
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             showToast("取消选择图片");

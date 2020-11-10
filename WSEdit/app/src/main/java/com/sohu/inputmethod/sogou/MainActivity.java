@@ -105,13 +105,13 @@ public class MainActivity extends Activity {
 
     public static void save() throws IOException {
         {
-            File jsonFile = new File("/storage/emulated/0/AppProjects/SJFBot/word_stock.json");
+            File jsonFile = new File("/storage/emulated/0/AppProjects/sanae_data/dynamic_word_stock.json");
             FileOutputStream fos = new FileOutputStream(jsonFile);
             fos.write(formatJson(new Gson().toJson(wordStork)).getBytes(StandardCharsets.UTF_8));
             fos.close();
         }
         {
-            File jsonFile = new File("/storage/emulated/0/AppProjects/SJFBot/backup/word_stock" + System.currentTimeMillis() + ".json");
+            File jsonFile = new File("/storage/emulated/0/AppProjects/sanae_data/backup/dynamic_word_stock" + (System.currentTimeMillis() / 1000 / 60) + ".json");
             FileOutputStream fos = new FileOutputStream(jsonFile);
             fos.write(formatJson(new Gson().toJson(wordStork)).getBytes(StandardCharsets.UTF_8));
             fos.close();        
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
     }
 
     public static String read() throws IOException {
-        File jsonFile = new File("/storage/emulated/0/AppProjects/SJFBot/word_stock.json");
+        File jsonFile = new File("/storage/emulated/0/AppProjects/sanae_data/dynamic_word_stock.json");
         FileInputStream fis = new FileInputStream(jsonFile);
         byte[] bytes = new byte[(int)jsonFile.length()];
         fis.read(bytes);

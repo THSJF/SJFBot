@@ -8,4 +8,9 @@ public enum ItemType {
     GID,
     GNAME,
     AT_QID,
-}
+    QUOTE,
+    RAN_INT,
+    RAN_FLOAT,
+    HASH_RAN_INT,
+    HASH_RAN_FLOAT
+    }

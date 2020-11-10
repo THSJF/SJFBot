@@ -298,85 +298,85 @@ public class THDataHolder {
     }
 
     public String randomGame(String pname, long fromQQ, boolean goodAt) {
-        int gameNo = md5Random(fromQQ) % 16 + 2;
+        int gameNo = hashRandomInt(fromQQ) % 16 + 2;
         String gameName = null;
         String charaName = null;
         switch (gameNo) {
             case 2:
                 gameName = "封魔录";
-                charaName = md5RanStr(fromQQ + 2, pl02);
+                charaName = hashRandomString(fromQQ + 2, pl02);
                 break;
             case 3:
                 gameName = "梦时空";
-                charaName = md5RanStr(fromQQ + 2, pl03);
+                charaName = hashRandomString(fromQQ + 2, pl03);
                 break;
             case 4:
                 gameName = "幻想乡";
-                charaName = md5RanStr(fromQQ + 2, pl04);
+                charaName = hashRandomString(fromQQ + 2, pl04);
                 break;
             case 5:
                 gameName = "怪绮谈";
-                charaName = md5RanStr(fromQQ + 2, pl05);
+                charaName = hashRandomString(fromQQ + 2, pl05);
                 break;
             case 6:
                 gameName = "红魔乡";
-                charaName = md5RanStr(fromQQ + 2, TH06GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH06GameData.players);
                 break;
             case 7:
                 gameName = "妖妖梦";
-                charaName = md5RanStr(fromQQ + 2, TH07GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH07GameData.players);
                 break;
             case 8:
                 gameName = "永夜抄";
-                charaName = md5RanStr(fromQQ + 2, TH08GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH08GameData.players);
                 break;
             case 9:
                 gameName = "花映冢";
-                charaName = md5RanStr(fromQQ + 2, pl09);
+                charaName = hashRandomString(fromQQ + 2, pl09);
                 break;
             case 10:
                 gameName = "风神录";
-                charaName = md5RanStr(fromQQ + 2, TH10GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH10GameData.players);
                 break;
             case 11:
                 gameName = "地灵殿";
-                charaName = md5RanStr(fromQQ + 2, TH11GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH11GameData.players);
                 break;
             case 12:
                 gameName = "星莲船";
-                charaName = md5RanStr(fromQQ + 2, TH12GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH12GameData.players);
                 break;
             case 13:
                 gameName = "神灵庙";
-                charaName = md5RanStr(fromQQ + 2, TH13GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH13GameData.players);
                 break;
             case 14:
                 gameName = "辉针城";
-                charaName = md5RanStr(fromQQ + 2, TH14GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH14GameData.players);
                 if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, md5RanStr(fromQQ + 1, TH14GameData.playerSub), gameName);
+                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, hashRandomString(fromQQ + 1, TH14GameData.playerSub), gameName);
                 } else {
-                    return String.format("忌用%s-%s打%s", charaName, md5RanStr(fromQQ + 1, TH14GameData.playerSub), gameName);
+                    return String.format("忌用%s-%s打%s", charaName, hashRandomString(fromQQ + 1, TH14GameData.playerSub), gameName);
                 }
             case 15:
                 gameName = "绀珠传";
-                charaName = md5RanStr(fromQQ + 2, TH15GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH15GameData.players);
                 break;
             case 16:
                 gameName = "天空璋";
-                charaName = md5RanStr(fromQQ + 2, TH16GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH16GameData.players);
                 if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, md5RanStr(fromQQ + 1, TH16GameData.playerSub), gameName);
+                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, hashRandomString(fromQQ + 1, TH16GameData.playerSub), gameName);
                 } else {
-                    return String.format("忌用%s-%s打%s", charaName, md5RanStr(fromQQ + 1, TH16GameData.playerSub), gameName);
+                    return String.format("忌用%s-%s打%s", charaName, hashRandomString(fromQQ + 1, TH16GameData.playerSub), gameName);
                 }
             case 17:
                 gameName = "鬼形兽";
-                charaName = md5RanStr(fromQQ + 2, TH17GameData.players);
+                charaName = hashRandomString(fromQQ + 2, TH17GameData.players);
                 if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, md5RanStr(fromQQ + 1, TH17GameData.playerSub), gameName);
+                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, hashRandomString(fromQQ + 1, TH17GameData.playerSub), gameName);
                 } else {
-                    return String.format("忌用%s-%s打%s", charaName, md5RanStr(fromQQ + 1, TH17GameData.playerSub), gameName);
+                    return String.format("忌用%s-%s打%s", charaName, hashRandomString(fromQQ + 1, TH17GameData.playerSub), gameName);
                 }
             default:
                 return "";
@@ -394,13 +394,13 @@ public class THDataHolder {
         return scs[r.nextInt(spells.length)];
     }
 
-    public SpellCard md5RanSpell(long fromQQ) {
+    public SpellCard hashRandomSpell(long fromQQ) {
         if (spellCount == 0) {
             for (SpellCard[] scs:spells) {
                 spellCount += scs.length; 
             }
         }
-        int num = md5Random(fromQQ) % spellCount;
+        int num = hashRandomInt(fromQQ) % spellCount;
         int tmp = 0;
         for (SpellCard[] scs:spells) {
             for (SpellCard sc:scs) {
@@ -412,13 +412,13 @@ public class THDataHolder {
         return null;
     }
 
-    public TouhouCharacter md5RanChara(long fromQQ) {
+    public TouhouCharacter hashRandomCharacter(long fromQQ) {
         if (charaCount == 0) {
             for (TouhouCharacter[] scs:name) {
                 charaCount += scs.length; 
             }
         }
-        int num = md5Random(fromQQ) % charaCount;
+        int num = hashRandomInt(fromQQ) % charaCount;
         int tmp = 0;
         for (TouhouCharacter[] scs:name) {
             for (TouhouCharacter sc:scs) {
@@ -430,13 +430,13 @@ public class THDataHolder {
         return null;
     }
 
-    public String md5RanMusic(long fromQQ) {
+    public String hashRandomMusic(long fromQQ) {
         if (musicCount == 0) {
             for (String[] scs:music) {
                 musicCount += scs.length; 
             }
         }
-        int num = md5Random(fromQQ) % musicCount;
+        int num = hashRandomInt(fromQQ) % musicCount;
         int tmp = 0;
         for (String[] scs:music) {
             for (String sc:scs) {
@@ -448,16 +448,21 @@ public class THDataHolder {
         return null;
     }
 
-    public int md5Random(long fromQQ) {
+    public int hashRandomInt(long fromQQ) {
         String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
         return Integer.parseInt(md5.substring(26), 16);
     }
 
-    public String md5RanStr(long fromQQ, String[] arr) {
-        return arr[md5Random(fromQQ) % arr.length];
+    public float hashRandomFloat(long fromQQ) {
+        String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
+        return new Random(Integer.parseInt(md5.substring(26), 16)).nextFloat();
     }
 
-    public int md5Random(long fromQQ, String spellName) {
+    public String hashRandomString(long fromQQ, String[] arr) {
+        return arr[hashRandomInt(fromQQ) % arr.length];
+    }
+
+    public int hashRandom(long fromQQ, String spellName) {
         String md5 = Hash.getMd5Instance().calculate(spellName + fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000));
         return Integer.parseInt(md5.substring(26), 16);
     }
