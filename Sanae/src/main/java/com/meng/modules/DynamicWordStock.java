@@ -33,78 +33,71 @@ public class DynamicWordStock extends BaseGroupModule {
         String msg = gme.getMessage().contentToString();
         for (String k : dictionary.w.keySet()) {
             if (Pattern.matches(k, msg)) {
-                //
                 ArrayList<Entry> list = dictionary.w.get(k);
                 Entry entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
                 MessageChainBuilder mcb = new MessageChainBuilder();
                 for (Node node:entry.e) {
-                    switch (node.t) {
-                        case TXT:
-                            mcb.add(node.c);
-                            break;
-                        case IMG:
-                            try {
-                                mcb.add(gme.getGroup().uploadImage(new File(BotWrapperEntity.appDirectory + node.c)));
-                            } catch (Exception e) {
-                                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                            }
-                            break;
-                        case QID:
-                            mcb.add(String.valueOf(gme.getSender().getId()));
-                            break;
-                        case QNAME:
-                            mcb.add(gme.getSenderName());
-                            break;
-                        case GID:
-                            mcb.add(String.valueOf(gme.getGroup().getId()));
-                            break;
-                        case GNAME:
-                            mcb.add(gme.getGroup().getName());
-                            break;
-                        case AT_QID:
-                            mcb.add(new At(gme.getSender()));
-                            break;
-                        case QUOTE:
-                            mcb.add(new QuoteReply(gme.getSource()));
-                            break;
-                        case RAN_INT:
-                            int b = -1;
-                            try {
-                                b = Integer.parseInt(node.c);  
-                            } catch (NumberFormatException ignore) { }
-                            mcb.add(String.valueOf(b == -1 ? ThreadLocalRandom.current().nextInt(): ThreadLocalRandom.current().nextInt(b)));
-                            break;
-                        case RAN_FLOAT:
-                            float scale = Float.NaN;
-                            try {
-                                scale = Float.parseFloat(node.c);
-                            } catch (NumberFormatException ignore) {}
-                            if (Float.isNaN(scale)) {
-                                scale = 1f;
-                            }
-                            mcb.add(String.valueOf(ThreadLocalRandom.current().nextFloat() * scale));
-                            break;
-                        case HASH_RAN_INT:
-                            mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomInt(gme.getSender().getId())));
-                            break;
-                        case HASH_RAN_FLOAT:
-                            float rscale = Float.NaN;
-                            try {
-                                rscale = Float.parseFloat(node.c);
-                            } catch (NumberFormatException ignore) {}
-                            if (Float.isNaN(rscale)) {
-                                scale = 1f;
-                            }
-                            mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
-                            break;
-                        case IMG_FOLDER:
-                            try {
-                                File[] fs = new File(BotWrapperEntity.appDirectory + node.c).listFiles();
-                                mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(fs)));
-                            } catch (Exception e) {
-                                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                            }
-                            break;
+                    try {
+                        switch (node.t) {
+                            case TXT:
+                                mcb.add(node.c);
+                                break;
+                            case IMG:
+                                try {
+                                    mcb.add(gme.getGroup().uploadImage(new File(BotWrapperEntity.appDirectory + node.c)));
+                                } catch (Exception e) {
+                                    ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                                }
+                                break;
+                            case QID:
+                                mcb.add(String.valueOf(gme.getSender().getId()));
+                                break;
+                            case QNAME:
+                                mcb.add(gme.getSenderName());
+                                break;
+                            case GID:
+                                mcb.add(String.valueOf(gme.getGroup().getId()));
+                                break;
+                            case GNAME:
+                                mcb.add(gme.getGroup().getName());
+                                break;
+                            case AT_QID:
+                                mcb.add(new At(gme.getSender()));
+                                break;
+                            case QUOTE:
+                                mcb.add(new QuoteReply(gme.getSource()));
+                                break;
+                            case RAN_INT:
+                                int b = -1;
+                                try {
+                                    b = Integer.parseInt(node.c);  
+                                } catch (NumberFormatException ignore) {}
+                                ThreadLocalRandom current = ThreadLocalRandom.current();
+                                mcb.add(String.valueOf(b == -1 ? current.nextInt(): current.nextInt(b)));
+                                break;
+                            case RAN_FLOAT:
+                                float scale = 1f;
+                                try {
+                                    scale = Float.parseFloat(node.c);
+                                } catch (NumberFormatException ignore) {}
+                                mcb.add(String.valueOf(ThreadLocalRandom.current().nextFloat() * scale));
+                                break;
+                            case HASH_RAN_INT:
+                                mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomInt(gme.getSender().getId())));
+                                break;
+                            case HASH_RAN_FLOAT:
+                                float rscale = 1f;
+                                try {
+                                    rscale = Float.parseFloat(node.c);
+                                } catch (NumberFormatException ignore) {}
+                                mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
+                                break;
+                            case IMG_FOLDER:
+                                mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(BotWrapperEntity.appDirectory + node.c).listFiles())));
+                                break;
+                        }    
+                    } catch (Exception e) {
+                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                     }
                 }
                 entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());

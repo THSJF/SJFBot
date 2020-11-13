@@ -67,19 +67,22 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 		Object o = null;
 		try {
             Constructor cos = cls.getConstructor(BotWrapperEntity.class);
-            if (cos == null) {
-                cos = cls.getConstructor();
-                o = cos.newInstance();
-            } else {
-                o = cos.newInstance(entity);
-            }
+            o = cos.newInstance(entity);
 			if (needLoad) {
 				Method m = o.getClass().getMethod("load");
 				m.invoke(o);
 			}
 		} catch (Exception e) {
-			ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-		}
+			try {
+                o = cls.newInstance();
+                if (needLoad) {
+                    Method m = o.getClass().getMethod("load");
+                    m.invoke(o);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
 		if (o == null) {
 			entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "加载失败:" + cls.getName());
 		}

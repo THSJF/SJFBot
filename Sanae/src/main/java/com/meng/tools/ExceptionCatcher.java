@@ -39,8 +39,12 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         saveCrashInfo2File(ex);
-        wrapper.moduleManager.getModule(MAimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
-	}
+        try {
+            wrapper.moduleManager.getModule(MAimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private String saveCrashInfo2File(Throwable ex) {
         StringBuilder sb = new StringBuilder();
