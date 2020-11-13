@@ -5,13 +5,15 @@ import com.meng.adapter.BotWrapperEntity;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.QuoteReply;
 
 public class DynamicWordStock extends BaseGroupModule {
@@ -30,11 +32,11 @@ public class DynamicWordStock extends BaseGroupModule {
         }
         String msg = gme.getMessage().contentToString();
         for (String k : dictionary.w.keySet()) {
-            if (msg.contains(k)) {
-                ArrayList<WordStock.Entry> list = dictionary.w.get(k);
-                WordStock.Entry entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
+            if (Pattern.matches(k, msg)) {
+                ArrayList<Entry> list = dictionary.w.get(k);
+                Entry entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
                 MessageChainBuilder mcb = new MessageChainBuilder();
-                for (WordStock.Entry.Node node:entry.e) {
+                for (Node node:entry.e) {
                     switch (node.t) {
                         case TXT:
                             mcb.add(node.c);
@@ -94,6 +96,14 @@ public class DynamicWordStock extends BaseGroupModule {
                             }
                             mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
                             break;
+                        case IMG_FOLDER:
+                            try {
+                                File[] fs = new File(BotWrapperEntity.appDirectory + node.c).listFiles();
+                                mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(fs)));
+                            } catch (Exception e) {
+                                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                            }
+                            break;
                     }
                 }
                 entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
@@ -130,32 +140,32 @@ public class DynamicWordStock extends BaseGroupModule {
         RAN_INT,
         RAN_FLOAT,
         HASH_RAN_INT,
-        HASH_RAN_FLOAT
+        HASH_RAN_FLOAT,
+        IMG_FOLDER
         }
 
     public class WordStock {
-
         public HashMap<String,ArrayList<Entry>> w = new HashMap<>(); 
+    }
 
-        public class Entry {
-            public ArrayList<Node> e = new ArrayList<>();
+    public class Entry {
+        public ArrayList<Node> e = new ArrayList<>();
 
-            public void add(Node node) {
-                e.add(node);
-            }
+        public void add(Node node) {
+            e.add(node);
+        }
+    }
 
-            public class Node {
-                public String c = "";
-                public ItemType t;
+    public class Node {
+        public String c = "";
+        public ItemType t;
 
-                public Node() { }
-                public Node(String content, ItemType type) {
-                    this.c = content;
-                    this.t = type;
-                    if (c == null) {
-                        c = "";
-                    }
-                }
+        public Node() { }
+        public Node(String content, ItemType type) {
+            this.c = content;
+            this.t = type;
+            if (c == null) {
+                c = "";
             }
         }
     }

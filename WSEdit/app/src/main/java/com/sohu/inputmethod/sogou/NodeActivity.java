@@ -88,7 +88,10 @@ public class NodeActivity extends Activity {
                     break;
                 case R.id.node_editButton_img:
                     selectImage();
-                    break; 
+                    break;
+                case R.id.node_editButton_img_folder:
+                    selectFolder();
+                    break;
                 case R.id.node_editButton_qid:
                     nodes.add(new Node("", ItemType.QID));
                     break;
@@ -134,6 +137,13 @@ public class NodeActivity extends Activity {
         }
     };
 
+    private void selectFolder() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, 9962);
+    }
+
     private void selectImage() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -160,6 +170,26 @@ public class NodeActivity extends Activity {
                     Files.copy(source.toPath(), target.toPath());
                     int index = target.getAbsolutePath().indexOf("sanae_data") + "sanae_data".length();
                     nodes.add(new Node(target.getAbsolutePath().substring(index), ItemType.IMG));
+                    update();
+                } catch (IOException e) {
+                    ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                }
+            } else if (requestCode == 9962) {
+                //    uploadBmpAbsPath = ContentHelper.absolutePathFromUri(getActivity(), data.getData());//= Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures/picTool/search_tmp.png";
+                final String path = ContentHelper.absolutePathFromUri(this, data.getData());
+                if (path == null) {
+                    showToast("选择图片出错");
+                    return;
+                }
+                File source = new File(path).getParentFile();
+                File target = new File("/storage/emulated/0/AppProjects/sanae_data/image/" + source.getName());
+                if (target.exists()) {
+                    target.delete();
+                }
+                try {
+                    Files.copy(source.toPath(), target.toPath());
+                    int index = target.getAbsolutePath().indexOf("sanae_data") + "sanae_data".length();
+                    nodes.add(new Node(target.getAbsolutePath().substring(index), ItemType.IMG_FOLDER));
                     update();
                 } catch (IOException e) {
                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

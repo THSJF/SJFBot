@@ -12,5 +12,6 @@ public enum ItemType {
     RAN_INT,
     RAN_FLOAT,
     HASH_RAN_INT,
-    HASH_RAN_FLOAT
+    HASH_RAN_FLOAT,
+    IMG_FOLDER
     }

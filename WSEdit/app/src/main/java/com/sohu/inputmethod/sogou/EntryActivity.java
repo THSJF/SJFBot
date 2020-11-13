@@ -64,6 +64,10 @@ public class EntryActivity extends Activity {
                 public void onClick(View view) {
                     entrys.add(new Entry());
                     update();
+                    Intent i = new Intent(EntryActivity.this, NodeActivity.class);
+                    i.putExtra("key", key);
+                    i.putExtra("pos", entrys.size() - 1);
+                    startActivity(i);
                 }
             });
 
