@@ -33,6 +33,7 @@ public class DynamicWordStock extends BaseGroupModule {
         String msg = gme.getMessage().contentToString();
         for (String k : dictionary.w.keySet()) {
             if (Pattern.matches(k, msg)) {
+                //
                 ArrayList<Entry> list = dictionary.w.get(k);
                 Entry entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
                 MessageChainBuilder mcb = new MessageChainBuilder();

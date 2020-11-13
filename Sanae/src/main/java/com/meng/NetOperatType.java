@@ -23,7 +23,7 @@ public enum NetOperatType {
         return value;
     }
     
-    public NetOperatType(int i){
+    private NetOperatType(int i){
         value = i;
     }
 }
