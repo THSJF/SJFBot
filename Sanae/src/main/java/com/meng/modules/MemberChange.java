@@ -5,13 +5,22 @@ import com.meng.adapter.BotWrapperEntity;
 import com.meng.tools.ExceptionCatcher;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
+import com.meng.SJFInterfaces.BaseModule;
 
-public class MWelcome implements IGroupEvent {
+public class MemberChange extends BaseModule implements IGroupEvent {
 
-    private BotWrapperEntity entity;
+    @Override
+    public BaseModule load() {
+        return this;
+    }
 
-    public MWelcome(BotWrapperEntity bwe) {
-        entity = bwe;
+    @Override
+    public String getModuleName() {
+        return "welcome";
+    }
+
+    public MemberChange(BotWrapperEntity bwe) {
+       super(bwe);
     }
 
     @Override

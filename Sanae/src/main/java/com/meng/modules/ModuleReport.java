@@ -116,7 +116,7 @@ public class ModuleReport extends BaseGroupModule {
     
     @Override
     public String getModuleName() {
-        return "反馈";
+        return "report";
     }
 
 	public static class ReportBean {

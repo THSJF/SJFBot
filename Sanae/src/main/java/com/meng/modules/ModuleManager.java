@@ -6,10 +6,8 @@ import com.meng.SJFInterfaces.IGroupEvent;
 import com.meng.SJFInterfaces.IGroupMessage;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.config.ConfigManager;
-import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonConfig;
 import com.meng.gameData.TouHou.Faith;
-import com.meng.tools.ExceptionCatcher;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,6 +40,8 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 		load(ReflectCommand.class);
         load(MtestMsg.class);
 		load(MAdminMsg.class);
+        load(Recall.class);
+        load(MainSwitch.class);
         load(MGroupCounterChart.class);
 		load(MessageRefuse.class);
 		load(ModuleRepeater.class);
@@ -52,7 +52,7 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 		load(Faith.class);
         load(MTimeTask.class);
         load(MAimMessage.class);
-        load(MWelcome.class, false);
+        load(MemberChange.class, false);
         load(ModuleQA.class);
         load(DynamicWordStock.class);
         load(ModuleMorning.class);
@@ -122,17 +122,17 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 //        }
         String msg = gme.getMessage().contentToString();
         if (msg.startsWith(".bot")) {
-            if (entity.configManager.isAdminPermission(qqId) || entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
-                GroupConfig groupConfig = entity.configManager.getGroupConfig(groupId);
+            ConfigManager cm = entity.configManager;
+            if (cm.isAdminPermission(qqId) || entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
                 if (msg.equals(".bot on")) {
-                    groupConfig.setMainSwitchEnable(true);
+                    cm.setFunctionDisable(groupId, MainSwitch.class);
                     entity.sjfTx.sendQuote(gme, "已启用本群响应");
-                    entity.configManager.save();
+                    cm.save();
                     return true;
                 } else if (msg.equals(".bot off")) {
                     entity.sjfTx.sendQuote(gme, "已停用本群响应");
-                    groupConfig.setMainSwitchEnable(false);
-                    entity.configManager.save();
+                    cm.setFunctionDisable(groupId, MainSwitch.class);
+                    cm.save();
                     return true;
                 } 
             } else {
@@ -151,9 +151,9 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
                 return true;
             }  
         }
-		if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isMainSwitchEnable()) {
-			return true;
-		}
+        if (!entity.configManager.isFunctionEnbled(groupId, MainSwitch.class)) {
+            return false; 
+        }
 		for (IGroupMessage m : groupModules) {
 			if (m.onGroupMessage(gme)) {
 				return true;
@@ -174,7 +174,7 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 
 	@Override
 	public boolean onGroupFileUpload(int sendTime, long fromGroup, long fromQQ, String file) {
-		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.isFunctionEnbled(fromGroup, MainSwitch.class)) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -187,7 +187,7 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 
 	@Override
 	public boolean onGroupAdminChange(int subtype, int sendTime, long fromGroup, long beingOperateQQ) {
-		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.isFunctionEnbled(fromGroup, MainSwitch.class)) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -201,7 +201,7 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 	@Override
 	public boolean onGroupMemberDecrease(MemberLeaveEvent event) {
         long fromGroup = event.getGroup().getId();
-		if (!entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+		if (!entity.configManager.isFunctionEnbled(fromGroup, MainSwitch.class)) {
             return true;
         }
 		for (IGroupEvent e : groupEventModules) {
@@ -214,7 +214,10 @@ public class ModuleManager implements IGroupMessage, IFriendMessage, IGroupEvent
 
 	@Override
 	public boolean onGroupMemberIncrease(MemberJoinEvent event) {
-		for (IGroupEvent e : groupEventModules) {
+		if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), MainSwitch.class)) {
+            return true;
+        }
+        for (IGroupEvent e : groupEventModules) {
 			if (e.onGroupMemberIncrease(event)) {
 				return true;
 			}

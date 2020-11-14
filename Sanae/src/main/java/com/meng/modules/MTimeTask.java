@@ -27,10 +27,10 @@ public class MTimeTask extends BaseGroupModule {
         return false;
     }
 
-    public void addTask(TaskBean tb){
+    public void addTask(TaskBean tb) {
         tasks.add(tb);
     }
-    
+
     @Override
     public MTimeTask load() {
         SJFExecutors.executeAtFixedRate(new Runnable(){
@@ -68,9 +68,9 @@ public class MTimeTask extends BaseGroupModule {
 
                         @Override
                         public void run() {
-                            String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧","Good evening!"};   
+                            String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
                             for (Group group : entity.bot.getGroups()) {
-                                if (entity.configManager.getGroupConfig(group.getId()).isMainSwitchEnable()) {
+                                if (entity.configManager.isFunctionEnbled(group.getId(), MainSwitch.class)) {
                                     if (entity.sjfTx.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }
@@ -86,25 +86,25 @@ public class MTimeTask extends BaseGroupModule {
                     }));
         addTask(new TaskBean(6, 0, new Runnable(){
 
-                          @Override
-                          public void run() {
-                              entity.sleeping = false;
-                              String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
-                              for (Group group : entity.bot.getGroups()) {
-                                  if (entity.configManager.getGroupConfig(group.getId()).isMainSwitchEnable()) {
-                                      if (entity.sjfTx.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                          continue;
-                                      }
-                                      try {
-                                          Thread.sleep(1000);
-                                      } catch (InterruptedException e) {
-                                          e.printStackTrace();
-                                      } 
-                                  }
-                              }
-                              entity.sleeping = true; 
-                          }
-                      }));           
+                        @Override
+                        public void run() {
+                            entity.sleeping = false;
+                            String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
+                            for (Group group : entity.bot.getGroups()) {
+                                if (entity.configManager.isFunctionEnbled(group.getId(), MainSwitch.class)) {
+                                    if (entity.sjfTx.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                        continue;
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } 
+                                }
+                            }
+                            entity.sleeping = true; 
+                        }
+                    }));           
         return this;
     }
 
@@ -114,9 +114,9 @@ public class MTimeTask extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "定时任务";
+        return "timetask";
     }
-    
+
     public static class TaskBean {
         public int h;
         public int min;

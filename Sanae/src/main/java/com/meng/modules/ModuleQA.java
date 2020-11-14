@@ -49,6 +49,9 @@ public class ModuleQA extends BaseGroupModule {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
+            return false;
+        }
         if (processQa(gme)) {
             return true;
         }
@@ -60,9 +63,6 @@ public class ModuleQA extends BaseGroupModule {
 
     private boolean processQa(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(groupId).isQAEnable()) {
-            return false;
-        }
         String msg = gme.getMessage().contentToString();
         long qqId = gme.getSender().getId();
         QA qaLast = onGoingQA.get(qqId);
@@ -176,10 +176,6 @@ public class ModuleQA extends BaseGroupModule {
     }
 
     private boolean processQar(GroupMessageEvent gme) {
-        long groupId = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(groupId).isQAREnable()) {
-            return false;
-        }
         String msg = gme.getMessage().contentToString();
         long qqId = gme.getSender().getId();
         QA onGoing = onGoingQA.get(qqId);
@@ -297,7 +293,7 @@ public class ModuleQA extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "问答(题库)";
+        return "qa";
     }
 
     public static class QA {

@@ -14,7 +14,7 @@ public class ReflectCommand extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "反射命令";
+        return "reflex";
     }
 
 

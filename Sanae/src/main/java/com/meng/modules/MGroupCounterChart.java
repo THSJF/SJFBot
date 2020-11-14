@@ -42,7 +42,7 @@ public class MGroupCounterChart extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "GroupCountChart";
+        return "groupcount";
     }
 
 	@Override
@@ -64,9 +64,9 @@ public class MGroupCounterChart extends BaseGroupModule {
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long groupId = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(groupId).isGroupCountChartEnable()) {
-			return false;
-		}
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
 		GroupSpeak gs = groupsMap.get(groupId);
 		if (gs == null) {

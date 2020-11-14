@@ -25,7 +25,7 @@ public class MAimMessage extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "定向消息";
+        return "aimmsg";
     }
 
     @Override

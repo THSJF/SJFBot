@@ -16,7 +16,7 @@ public class MNumberProcess extends BaseGroupModule {
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isNumberProcessEnable()) {
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();
@@ -88,6 +88,6 @@ public class MNumberProcess extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "数字运算";
+        return "number";
     }
 }

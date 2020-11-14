@@ -1,13 +1,12 @@
 package com.meng.config;
 
+import com.meng.SJFInterfaces.BaseModule;
 import com.meng.adapter.BotWrapperEntity;
 import com.meng.annotation.SanaeData;
 import com.meng.config.javabeans.ConfigHolder;
-import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonConfig;
 import com.meng.config.javabeans.PersonInfo;
 import com.meng.tools.SJFExecutors;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -20,7 +19,7 @@ public class ConfigManager {
 
     @SanaeData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
-    
+
     public BotWrapperEntity entity;
 
     public void setBotWrapperEntity(BotWrapperEntity bwe) {
@@ -36,56 +35,31 @@ public class ConfigManager {
         return this;
     }
 
-	public void setFunctionEnabled(long fromGroup, int functionID, boolean enable) {
-		if (enable) {
-			getGroupConfig(fromGroup).f1 |= (1 << functionID);
-		} else {
-			getGroupConfig(fromGroup).f1 &= ~(1 << functionID);
-		}
-		save();
-	}
-
-	public void addGroupConfig(GroupConfig gc) {
-		configHolder.groupConfigs.add(gc);
-		save();
-	}
-
-	public void removeGroupConfig(long gcn) {
-		for (GroupConfig gc : configHolder.groupConfigs) {
-			if (gc.n == gcn) {
-				configHolder.groupConfigs.remove(gc);
-				break;
-			}
-		}
-		save();
-	}
-
-	public void removeGroupConfig(GroupConfig gc) {
-		configHolder.groupConfigs.remove(gc);
-		save();
-	}
-
-	public void removeGroupConfig(Collection<GroupConfig> gc) {
-		configHolder.groupConfigs.removeAll(gc);
-		save();
-	}
-
-    public GroupConfig getGroupConfig(long fromGroup) {
-        for (GroupConfig gc : configHolder.groupConfigs) {
-            if (fromGroup == gc.n) {
-                return gc;
-            }
-        }
-        GroupConfig gc = new GroupConfig();
-        gc.n = fromGroup;
-        configHolder.groupConfigs.add(gc);
-        save();
-        return gc;
+    public void setFunctionEnable(long gid, Class<? extends BaseModule> gm) {
+        setFunctionEnbled(gid, entity.moduleManager.getModule(gm));
     }
 
-	public Set<GroupConfig> getGroupConfigs() {
-		return Collections.unmodifiableSet(configHolder.groupConfigs);
-	}
+    public void setFunctionEnbled(long gid, BaseModule gm) {
+        configHolder.groupCfgs.get(gid).remove(gm.getModuleName());
+        save();
+    }
+
+    public void setFunctionDisable(long gid, Class<? extends BaseModule> gm) {
+        setFunctionDisable(gid, entity.moduleManager.getModule(gm));
+    }
+
+	public void setFunctionDisable(long gid, BaseModule gm) {
+        configHolder.groupCfgs.get(gid).add(gm.getModuleName());
+        save();
+    }
+
+    public boolean isFunctionEnbled(long gid, Class<? extends BaseModule> gm) {
+        return !configHolder.groupCfgs.get(gid).contains(entity.moduleManager.getModule(gm));
+    }
+
+	public boolean isFunctionEnbled(long gid, BaseModule gm) {
+        return !configHolder.groupCfgs.get(gid).contains(gm.getModuleName());
+    }
 
     public PersonConfig getPersonConfig(long qq) {
         PersonConfig get = configHolder.personCfg.get(qq);
@@ -305,30 +279,10 @@ public class ConfigManager {
     public void addBlack(long group, final long qq) {
         configHolder.blackQQ.add(qq);
         configHolder.blackGroup.add(group);
-        for (GroupConfig groupConfig : configHolder.groupConfigs) {
-            if (groupConfig.n == group) {
-                configHolder.groupConfigs.remove(groupConfig);
-                break;
-            }
-        }
+        configHolder.groupCfgs.remove(group);
         save();
-        SJFExecutors.execute(new Runnable() {
-				@Override
-				public void run() {
-					//    HashSet<Group> groups = Tools.CQ.findQQInAllGroup(qq);
-					//   for (Group g : groups) {
-                    // if (Tools.CQ.ban(g.getId(), qq, 300)) {
-                    //    sendMessage(g.getId(), 0, "不要问为什么你会进黑名单，你干了什么自己知道");
-                    //   }
-					//    }
-				}
-			});
         entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "已将用户" + qq + "加入黑名单");
         entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "已将群" + group + "加入黑名单");
-    }
-
-	public long getOgg() {
-		return -1;
     }
 
     public void save() {

@@ -2,7 +2,6 @@ package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
-import com.meng.config.javabeans.GroupConfig;
 import java.util.HashMap;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
@@ -30,8 +29,7 @@ public class ModuleRepeater extends BaseGroupModule {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         Repeater rp = repeaters.get(groupId);
-        GroupConfig cfg = entity.configManager.getGroupConfig(groupId);
-        if (!cfg.isRepeaterEnable()) {
+        if (!entity.configManager.isFunctionEnbled(groupId, this)) {
             return false; 
         }
 		if (rp == null) {
@@ -84,7 +82,7 @@ public class ModuleRepeater extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "复读机";
+        return "repeater";
     }
 }
 

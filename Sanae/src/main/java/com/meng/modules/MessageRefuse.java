@@ -95,7 +95,7 @@ public class MessageRefuse extends BaseGroupModule {
     
     @Override
     public String getModuleName() {
-        return "消息阻止";
+        return "msgrefuse";
     }
 
 	private class FireWallBean {

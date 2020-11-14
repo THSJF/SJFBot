@@ -2,6 +2,7 @@ package com.meng.adapter;
 
 import com.meng.MessagePool;
 import com.meng.modules.ModuleManager;
+import com.meng.modules.Recall;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -50,7 +51,6 @@ import net.mamoe.mirai.event.events.TempMessagePreSendEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.TempMessageEvent;
-import net.mamoe.mirai.message.data.PlainText;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -86,7 +86,7 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(@NotNull TempMessageEvent event) {
-       // moduleManager.onFriendMessage(event);
+        // moduleManager.onFriendMessage(event);
         return ListeningStatus.LISTENING;
     }
     //Bot 登录完成: BotOnlineEvent
@@ -204,10 +204,10 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MessageRecallEvent.GroupRecall event) {
-        if (!entity.configManager.getGroupConfig(event.getGroup().getId()).isRecallEnable()) {
+        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Recall.class)) {
             return ListeningStatus.LISTENING;
         }
-        event.getGroup().sendMessage(new PlainText(event.getOperator().getId() + "撤回了").plus(MessagePool.get(event.getMessageId()).getMessage()));
+        entity.moduleManager.getModule(Recall.class).onReceive(event);
         return ListeningStatus.LISTENING;
     }
     //群撤回: TempRecall
@@ -329,9 +329,6 @@ public class SJFRX extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MemberJoinEvent event) {
-        if (!entity.configManager.getGroupConfig(event.getGroup().getId()).isMemberIncEnable()) {
-            return ListeningStatus.LISTENING;
-        } 
         entity.moduleManager.onGroupMemberIncrease(event);
         return ListeningStatus.LISTENING;
     }
@@ -346,15 +343,16 @@ public class SJFRX extends SimpleListenerHost {
     //成员被踢出群: Kick
     @NotNull
     @EventHandler
-    public ListeningStatus onReceive(@NotNull MemberLeaveEvent.Kick event) {
+    public ListeningStatus onReceive(@NotNull MemberLeaveEvent event) {
+        entity.moduleManager.onGroupMemberDecrease(event);
         return ListeningStatus.LISTENING;
     }
-    //成员主动离开群: Quit
+ /*   //成员主动离开群: Quit
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(@NotNull MemberLeaveEvent.Quit event) {
         return ListeningStatus.LISTENING;
-    }
+    }*/
     //一个账号请求加入群: MemberJoinRequestEvent
     @NotNull
     @EventHandler

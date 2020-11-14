@@ -9,7 +9,7 @@ import java.util.HashSet;
  **/
  
 public class ConfigHolder {
-    public HashSet<GroupConfig> groupConfigs = new HashSet<>();
+    public HashMap<Long,HashSet<String>> groupCfgs = new HashMap<>();
     public HashSet<Long> blockOnlyQQ = new HashSet<>();
     public HashSet<Long> blackQQ = new HashSet<>();
     public HashSet<Long> blackGroup = new HashSet<>();

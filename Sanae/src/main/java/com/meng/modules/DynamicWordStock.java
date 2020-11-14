@@ -27,7 +27,7 @@ public class DynamicWordStock extends BaseGroupModule {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isGroupDicEnable()) {
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
             return false; 
         }
         String msg = gme.getMessage().contentToString();
@@ -119,7 +119,7 @@ public class DynamicWordStock extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "动态词库";
+        return "wordstock";
     }
 
     public enum ItemType {

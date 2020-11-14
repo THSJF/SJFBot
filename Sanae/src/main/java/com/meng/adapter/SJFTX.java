@@ -9,6 +9,7 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
+import com.meng.modules.MainSwitch;
 
 /**
  * @Description: bot发送数据
@@ -24,7 +25,7 @@ public class SJFTX {
     }
 
     public int sendGroupMessage(long fromGroup, Message msg) {
-        if (entity.sleeping || !entity.configManager.getGroupConfig(fromGroup).isMainSwitchEnable()) {
+        if (entity.sleeping || !entity.configManager.isFunctionEnbled(fromGroup, MainSwitch.class)) {
             return -1;
         }
         return bot.getGroup(fromGroup).sendMessage(msg).getSource().getId();

@@ -35,7 +35,7 @@ public class ModuleDiceCmd extends BaseGroupModule {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.getGroupConfig(gme.getGroup().getId()).isDiceEnable()) {
+        if (!entity.configManager.isFunctionEnbled(groupId, this)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();
@@ -206,6 +206,6 @@ public class ModuleDiceCmd extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "Dice";
+        return "dice";
     }
 }

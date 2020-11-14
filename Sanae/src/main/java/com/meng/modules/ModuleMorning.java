@@ -23,7 +23,7 @@ public class ModuleMorning extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "Morning";
+        return "morning";
     }
 
 	@Override

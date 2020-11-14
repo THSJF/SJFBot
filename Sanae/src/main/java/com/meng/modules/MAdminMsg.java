@@ -2,7 +2,6 @@ package com.meng.modules;
 
 import com.meng.SJFInterfaces.BaseGroupModule;
 import com.meng.adapter.BotWrapperEntity;
-import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonInfo;
 import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
@@ -11,9 +10,13 @@ import com.meng.tools.Tools;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import java.util.Collection;
+import com.meng.SJFInterfaces.BaseModule;
+import com.meng.config.ConfigManager;
 
 /**
  * @Description: 管理员命令
@@ -73,38 +76,42 @@ public class MAdminMsg extends BaseGroupModule {
                     }
                     return true;
                 case "switch":
-                    GroupConfig cfg = entity.configManager.getGroupConfig(gme.getGroup().getId());
-                    boolean re = false;
-                    switch (iter.next().toLowerCase()) {
-                        case "recall":
-                            cfg.setRecallEnable(re = !cfg.isRecallEnable());
-                            break;
-                        case "dice":
-                            cfg.setDiceEnable(re = !cfg.isDiceEnable());
-                            break;
-                        case "qa":
-                            cfg.setQAEnable(re = !cfg.isQAEnable());
-                            break;
-                        case "qar":
-                            cfg.setQAREnable(re = !cfg.isQAREnable());
-                            break;
-                        case "welcome":
-                            cfg.setMemberIncEnable(re = !cfg.isMemberIncEnable());
-                            break;
-                        case "repeater":
-                            cfg.setRepeaterEnable(re = !cfg.isRepeaterEnable());
-                            break;
-                        case "groupcount":
-                            cfg.setGroupCounterEnable(re = !cfg.isGroupCountEnable());
-                            break;
-                        case "groupcountchart":
-                            cfg.setGroupCountChartEnable(re = !cfg.isGroupCountChartEnable());
-                            break;  
-                        default:
-                            return true;
+                    if (list.size() == 2) {
+                        List<Object> all = entity.moduleManager.getAllModules();
+                        StringBuilder sb = new StringBuilder("当前有:\n");
+                        for (Object o : all) {
+                            Class<?> cls = o.getClass();
+                            if (cls == ReflectCommand.class || cls == MtestMsg.class || cls == MAdminMsg.class) {
+                                continue;
+                            }
+                            if (o instanceof BaseModule) {
+                                sb.append(((BaseModule)o).getModuleName()).append("\n");
+                            }
+                        }
+                        sb.setLength(sb.length() - 1);
+                        entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), sb.toString());
+                    } else if (list.size() == 3) {
+                        List<Object> all = entity.moduleManager.getAllModules();
+                        ConfigManager configManager = entity.configManager;
+                        String mn = iter.next();
+                        for (Object o : all) {
+                            Class<?> cls = o.getClass();
+                            if (cls == ReflectCommand.class || cls == MtestMsg.class || cls == MAdminMsg.class) {
+                                continue;
+                            }
+                            if (o instanceof BaseModule) {
+                                BaseModule bm = ((BaseModule)o);
+                                if (bm.getModuleName().equals(mn)) {
+                                    if (configManager.isFunctionEnbled(groupId, bm)) {
+                                        configManager.setFunctionDisable(groupId, bm);
+                                    } else {
+                                        configManager.setFunctionEnbled(groupId, bm);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
-                    entity.configManager.save();
-                    entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), "已设置为" + (re ?"启用": "禁用"));
                     return true;
             }
             if (!entity.configManager.isMaster(qqId)) {
@@ -114,13 +121,12 @@ public class MAdminMsg extends BaseGroupModule {
                 case "broadcast":
                     String broadcast = iter.next();
                     HashSet<Group> hs = new HashSet<>();
-                    ContactList<Group> glist = entity.getGroupList();
+                    Collection<Group> glist = entity.getGroupList();
                     for (Group g:glist) {
-                        GroupConfig gc = entity.configManager.getGroupConfig(g.getId());
-                        if (!gc.isMainSwitchEnable()) {
+                        if (!entity.configManager.isFunctionEnbled(groupId, MainSwitch.class)) {
                             continue;
                         }
-                        entity.sjfTx.sendGroupMessage(gc.n, broadcast);
+                        entity.sjfTx.sendGroupMessage(g.getId(), broadcast);
                         hs.add(g);
                         try {
                             Thread.sleep(200);
@@ -216,6 +222,6 @@ public class MAdminMsg extends BaseGroupModule {
 
     @Override
     public String getModuleName() {
-        return "admin消息处理";
+        return "adminmsg";
     }
 }
