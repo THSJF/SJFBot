@@ -1,15 +1,17 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
+import com.meng.handler.group.IGroupMessageEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
-public class MAimMessage extends BaseGroupModule {
+public class MAimMessage extends BaseModule implements IGroupMessageEvent {
 
     /**
      * @Description: 定向消息
@@ -19,7 +21,7 @@ public class MAimMessage extends BaseGroupModule {
     @SanaeData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
 
-    public MAimMessage(BotWrapperEntity bw) {
+    public MAimMessage(SBot bw) {
         super(bw);
     }
 
@@ -44,10 +46,10 @@ public class MAimMessage extends BaseGroupModule {
                 MessageWait mw = iter.next();
                 if (mw.qq == qqId) {
                     if (mw.group == -1) {
-                        entity.sjfTx.sendGroupMessage(groupId, mw.content);
+                        entity.sendGroupMessage(groupId, mw.content);
                         iter.remove();
                     } else if (mw.group == groupId) {
-                        entity.sjfTx.sendGroupMessage(groupId, mw.content);
+                        entity.sendGroupMessage(groupId, mw.content);
                         iter.remove();
                     }
                 }
@@ -57,13 +59,23 @@ public class MAimMessage extends BaseGroupModule {
         if (mw != null) {
             if (mw.qq == qqId) {
                 if (mw.group == -1) {
-                    entity.sjfTx.sendGroupMessage(groupId, mw.content);
+                    entity.sendGroupMessage(groupId, mw.content);
                 } else if (mw.group == groupId) {
-                    entity.sjfTx.sendGroupMessage(groupId, mw.content);
+                    entity.sendGroupMessage(groupId, mw.content);
                 }
             }
         }
         save();
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
         return false;
     }
 
@@ -85,10 +97,6 @@ public class MAimMessage extends BaseGroupModule {
     public void addTipSingleton(long toQQ, String msg) {
         addTipSingleton(-1, toQQ, msg);
     }  
-
-    public void save() {
-        DataPersistenter.save(this);
-    }
 
     private class AimMessageHolder {
         public ArrayList<MessageWait> delayList = new ArrayList<>();

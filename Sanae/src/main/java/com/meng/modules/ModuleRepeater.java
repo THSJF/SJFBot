@@ -1,8 +1,10 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
+import com.meng.handler.group.IGroupMessageEvent;
 import java.util.HashMap;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -12,11 +14,11 @@ import net.mamoe.mirai.message.data.MessageChain;
  * @author: 司徒灵羽
  **/
 
-public class ModuleRepeater extends BaseGroupModule {
+public class ModuleRepeater extends BaseModule implements IGroupMessageEvent{
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();
 
-    public ModuleRepeater(BotWrapperEntity bw) {
+    public ModuleRepeater(SBot bw) {
         super(bw);
     }
 
@@ -29,7 +31,7 @@ public class ModuleRepeater extends BaseGroupModule {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         Repeater rp = repeaters.get(groupId);
-        if (!entity.configManager.isFunctionEnbled(groupId, this)) {
+        if (!entity.configManager.isFunctionEnbled(groupId, Modules.REPEATER)) {
             return false; 
         }
 		if (rp == null) {
@@ -37,6 +39,16 @@ public class ModuleRepeater extends BaseGroupModule {
 		}
         long qqId = gme.getSender().getId();
         return rp.check(groupId, qqId, gme.getMessage());
+    }
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
     }
 
 	private class Repeater {
@@ -75,7 +87,7 @@ public class ModuleRepeater extends BaseGroupModule {
 		}
 
 		private boolean repeatStart(long groupId,  long qqId,  MessageChain msg) {
-			entity.sjfTx.sendGroupMessage(groupId, msg);
+			entity.sendGroupMessage(groupId, msg);
 			return true;
 		}
 	}

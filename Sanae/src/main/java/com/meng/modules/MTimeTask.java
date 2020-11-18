@@ -1,14 +1,14 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.*;
-import com.meng.adapter.*;
-import com.meng.tools.*;
-import java.util.*;
-import java.util.concurrent.*;
-import net.mamoe.mirai.contact.*;
-import net.mamoe.mirai.message.*;
+import com.meng.SBot;
+import com.meng.tools.SJFExecutors;
+import com.meng.tools.Tools;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.contact.Group;
 
-public class MTimeTask extends BaseGroupModule {
+public class MTimeTask extends BaseModule {
 
     private final long groupYuTang = 617745343L;
     private final long groupDNFmoDao = 424838564L;
@@ -18,15 +18,10 @@ public class MTimeTask extends BaseGroupModule {
 
     private HashSet<TaskBean> tasks = new HashSet<>();
 
-    public MTimeTask(BotWrapperEntity bw) {
+    public MTimeTask(SBot bw) {
         super(bw);
     }
-
-    @Override
-    public boolean onGroupMessage(GroupMessageEvent gme) {
-        return false;
-    }
-
+    
     public void addTask(TaskBean tb) {
         tasks.add(tb);
     }
@@ -37,17 +32,17 @@ public class MTimeTask extends BaseGroupModule {
 
                 @Override
                 public void run() {
-                    entity.moduleManager.getModule(MAimMessage.class).addTipSingleton(groupYuTang, YYS, Tools.ArrayTool.rfa(new String[]{"想吃YYS", "想食YYS", "想上YYS", entity.at(groupYuTang, YYS) + "老婆"}));
+                    entity.moduleManager.getModule(MAimMessage.class).addTipSingleton(groupYuTang, YYS, Tools.ArrayTool.rfa(new String[]{"想吃YYS", "想食YYS", "想上YYS", entity.at(groupYuTang, YYS).toMiraiCode() + "老婆"}));
                     entity.moduleManager.getModule(MAimMessage.class).addTipSingleton(alice, "老婆");
                     Calendar c = Calendar.getInstance();
                     if (getTipHour(c)) {
                         if (c.getActualMaximum(Calendar.DAY_OF_MONTH) == c.get(Calendar.DATE)) {
-                            entity.sjfTx.sendGroupMessage(groupDNFmoDao, "最后一天莉，，，看看冒险团商店");
-                            entity.sjfTx.sendGroupMessage(groupXueXi, "最后一天莉，，，看看冒险团商店");
+                            entity.sendGroupMessage(groupDNFmoDao, "最后一天莉，，，看看冒险团商店");
+                            entity.sendGroupMessage(groupXueXi, "最后一天莉，，，看看冒险团商店");
                         }
                         if (c.get(Calendar.DAY_OF_WEEK) == 4) {
-                            entity.sjfTx.sendGroupMessage(groupDNFmoDao, "星期三莉，，，看看成长胶囊");
-                            entity.sjfTx.sendGroupMessage(groupXueXi, "星期三莉，，，看看成长胶囊");
+                            entity.sendGroupMessage(groupDNFmoDao, "星期三莉，，，看看成长胶囊");
+                            entity.sendGroupMessage(groupXueXi, "星期三莉，，，看看成长胶囊");
                         }
                     }
                 }
@@ -69,9 +64,9 @@ public class MTimeTask extends BaseGroupModule {
                         @Override
                         public void run() {
                             String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
-                            for (Group group : entity.bot.getGroups()) {
-                                if (entity.configManager.isFunctionEnbled(group.getId(), MainSwitch.class)) {
-                                    if (entity.sjfTx.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                            for (Group group : entity.getGroups()) {
+                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
+                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }
                                     try {
@@ -90,9 +85,9 @@ public class MTimeTask extends BaseGroupModule {
                         public void run() {
                             entity.sleeping = false;
                             String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
-                            for (Group group : entity.bot.getGroups()) {
-                                if (entity.configManager.isFunctionEnbled(group.getId(), MainSwitch.class)) {
-                                    if (entity.sjfTx.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                            for (Group group : entity.getGroups()) {
+                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
+                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }
                                     try {

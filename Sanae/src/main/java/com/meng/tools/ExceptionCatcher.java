@@ -1,6 +1,6 @@
 package com.meng.tools;
 
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.modules.MAimMessage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,16 +12,16 @@ import java.util.Date;
 
 public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
-    private SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     private static ExceptionCatcher mInstance;
 	private String fileName;
-    private BotWrapperEntity wrapper;
+    private SBot bot;
 
-    private ExceptionCatcher(BotWrapperEntity bw) {
-        wrapper = bw;
+    private ExceptionCatcher(SBot bw) {
+        bot = bw;
 	}
 
-    public static synchronized ExceptionCatcher getInstance(BotWrapperEntity bw) {
+    public static synchronized ExceptionCatcher getInstance(SBot bw) {
         if (null == mInstance) {
             mInstance = new ExceptionCatcher(bw);
 		}
@@ -40,7 +40,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable ex) {
         saveCrashInfo2File(ex);
         try {
-            wrapper.moduleManager.getModule(MAimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
+            bot.moduleManager.getModule(MAimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
             long timestamp=System.currentTimeMillis();
             String time=format.format(new Date());
 			fileName = "crash-" + time + "-" + timestamp + ".log";
-			String path = wrapper.appDirectory + "/crash/";
+			String path = bot.appDirectory + "/crash/";
 			File dir=new File(path);
 			if (!dir.exists()) {
 				dir.mkdirs();
@@ -73,7 +73,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 			fos.close();
             return fileName;
 		} catch (Exception e) {
-
+            e.printStackTrace();
 		}
         return null;
 	}

@@ -1,10 +1,13 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
+import com.meng.handler.group.IGroupMessageEvent;
+import com.meng.modules.MTimeTask;
 import java.util.ArrayList;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
@@ -12,12 +15,12 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @author: 司徒灵羽
  **/
 
-public class ModuleMorning extends BaseGroupModule {
+public class ModuleMorning extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("getUp.json")
 	private ArrayList<GetUpBean> getUp = new ArrayList<>();
 
-    public ModuleMorning(BotWrapperEntity bw) {
+    public ModuleMorning(SBot bw) {
         super(bw);
     }
 
@@ -34,7 +37,7 @@ public class ModuleMorning extends BaseGroupModule {
 		if (msg.equals("早上好")) {
 			for (GetUpBean qif:getUp) {
 				if (qif.qq == qqId) {
-                    entity.sjfTx.sendGroupMessage(groupId, "你今天已经起床了.jpg");
+                    entity.sendGroupMessage(groupId, "你今天已经起床了.jpg");
 					return false;
 				}
 			}
@@ -43,7 +46,7 @@ public class ModuleMorning extends BaseGroupModule {
             qi.isBoy = false;
             qi.getUptimeStamp = System.currentTimeMillis();
 			getUp.add(qi);
-            entity.sjfTx.sendGroupMessage(groupId, String.format("你是今天第%d位起床的少女哦", getUp.size()));
+            entity.sendGroupMessage(groupId, String.format("你是今天第%d位起床的少女哦", getUp.size()));
 			save();
 		} else if (msg.equals("晚安")) {
 			for (GetUpBean qif:getUp) {
@@ -51,7 +54,7 @@ public class ModuleMorning extends BaseGroupModule {
 					if (qif.getUptimeStamp == 0 || qif.isSleep) {
 						return false;
 					} else {
-						entity.sjfTx.sendGroupMessage(groupId, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
+						entity.sendGroupMessage(groupId, "你今天清醒了" + secondToTime((System.currentTimeMillis() - qif.getUptimeStamp) / 1000));
 						qif.isSleep = true;
 						save();
 					}
@@ -60,6 +63,16 @@ public class ModuleMorning extends BaseGroupModule {
 		}
 		return false;
 	}
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
 
 	@Override
 	public ModuleMorning load() {
@@ -74,10 +87,6 @@ public class ModuleMorning extends BaseGroupModule {
         entity.moduleManager.getModule(MTimeTask.class).addTask(mt);
 		return this;
 	}
-
-	private void save() {
-		DataPersistenter.save(this);
-    }
 
 	public void reset() {
 		getUp.clear();

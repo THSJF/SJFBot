@@ -1,6 +1,7 @@
 package com.meng.config;
 
 import com.meng.annotation.SanaeData;
+import com.meng.modules.BaseModule;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import com.meng.tools.GSON;
@@ -20,7 +21,7 @@ public class DataPersistenter {
 
 	}
 
-	public static boolean save(Object module) {
+	public static boolean save(BaseModule module) {
         Class<?> moduleClass = module.getClass();
         //Field[] fields = classObj.getFields();        //只能获取public
         Field[] fields = moduleClass.getDeclaredFields();  //public和private
@@ -40,7 +41,7 @@ public class DataPersistenter {
         return true;   
 	}
 
-	public static boolean read(Object module) {
+	public static boolean read(BaseModule module) {
         Class<?> moduleClass = module.getClass();
         //Field[] fields = classObj.getFields();        //只能获取public
         Field[] fields = moduleClass.getDeclaredFields();  //public和private

@@ -1,10 +1,10 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.meng.gameData.TouHou.SpellCard;
+import com.meng.handler.group.IGroupMessageEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,10 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 
-public class ModuleQA extends BaseGroupModule {
+public class ModuleQA extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("qa.json")
     private ArrayList<QA> qaList = new ArrayList<>();
@@ -36,7 +38,7 @@ public class ModuleQA extends BaseGroupModule {
     public static final int otherDanmaku = 6;
     public static final int luastg = 7;
 
-    public ModuleQA(BotWrapperEntity bwe) {
+    public ModuleQA(SBot bwe) {
         super(bwe);
         imagePath = bwe.appDirectory + "/qaImages";
     }
@@ -48,8 +50,18 @@ public class ModuleQA extends BaseGroupModule {
     }
 
     @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
+
+    @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.QA)) {
             return false;
         }
         if (processQa(gme)) {
@@ -67,7 +79,7 @@ public class ModuleQA extends BaseGroupModule {
         long qqId = gme.getSender().getId();
         QA qaLast = onGoingQA.get(qqId);
         if (qaLast != null && msg.equalsIgnoreCase("-qa")) {
-            entity.sjfTx.sendQuote(gme, "你还没有回答");
+            entity.sendQuote(gme, "你还没有回答");
             return true;
         }
         if (qaLast != null) {
@@ -81,11 +93,11 @@ public class ModuleQA extends BaseGroupModule {
                 }
             }
             if (qaLast.getTrueAns().containsAll(userAnss) && qaLast.getTrueAns().size() == userAnss.size()) {
-                entity.sjfTx.sendQuote(gme, "回答正确");
+                entity.sendQuote(gme, "回答正确");
                 qaLast.incTrueTimes();
                 save();
             } else {
-                entity.sjfTx.sendQuote(gme, "回答错误");
+                entity.sendQuote(gme, "回答错误");
             }
             onGoingQA.remove(qqId);
             return true;
@@ -95,58 +107,8 @@ public class ModuleQA extends BaseGroupModule {
             QA qaNow = qaList.get(randomInt);
             qaNow.incShowTimes();
             StringBuilder sb = new StringBuilder().append("\n题目ID:").append(randomInt).append("\n");
-            sb.append("难度:");
-            switch (qaNow.getDifficulty()) {
-                case 0:
-                    sb.append("easy");
-                    break;
-                case 1:
-                    sb.append("normal");
-                    break;
-                case 2:
-                    sb.append("hard");
-                    break;
-                case 3:
-                    sb.append("lunatic");
-                    break;
-                case 4:
-                    sb.append("overdrive");
-                    break;
-                case 5:
-                    sb.append("kidding");
-            }
-            sb.append("\n分类:");
-            switch (qaNow.getType()) {
-                case 0:
-                    sb.append("未定义");
-                    break;
-                case touhouBase:
-                    sb.append("东方project基础");
-                    break;
-                case _2unDanmakuIntNew:
-                    sb.append("新作整数作");
-                    break;
-                case _2unDanmakuAll:
-                    sb.append("官方弹幕作");
-                    break;
-                case _2unNotDanmaku:
-                    sb.append("官方非弹幕");
-                    break;
-                case _2unAll:
-                    sb.append("官方所有");
-                    break;
-                case otherDanmaku:
-                    sb.append("同人弹幕");
-                    break;
-                case luastg:
-                    sb.append("LuaSTG");
-                    break;
-                default:
-                    sb.append("未知");
-            }   
-            sb.append("\n");
             if (qaNow.getShowTimes() > 0) {
-                sb.append(String.format("正确率:%.2f%%", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes()));
+                sb.append(String.format("正确率:%.2f%%", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes() * 100));
                 sb.append("\n");
             }
             if (qaNow.q.contains("(image)")) {
@@ -169,7 +131,7 @@ public class ModuleQA extends BaseGroupModule {
             if (qaNow.getTrueAns().size() > 1) {
                 sb.append(",本题有多个选项");
             }
-            entity.sjfTx.sendQuote(gme, MiraiCode.parseMiraiCode(sb.toString()));
+            entity.sendQuote(gme, MiraiCode.parseMiraiCode(sb.toString()));
             return true;
         }
         return false;
@@ -180,7 +142,7 @@ public class ModuleQA extends BaseGroupModule {
         long qqId = gme.getSender().getId();
         QA onGoing = onGoingQA.get(qqId);
         if (onGoing != null && msg.equalsIgnoreCase("-qar")) {
-            entity.sjfTx.sendQuote(gme, "你还没有回答");
+            entity.sendQuote(gme, "你还没有回答");
             return true;
         }
         if (onGoing != null) {
@@ -191,9 +153,9 @@ public class ModuleQA extends BaseGroupModule {
                 //if not number,answer will never true
             }
             if (onGoing.getTrueAns().contains(userAnser)) {
-                entity.sjfTx.sendQuote(gme, "回答正确");
+                entity.sendQuote(gme, "回答正确");
             } else {
-                entity.sjfTx.sendQuote(gme, "回答错误");
+                entity.sendQuote(gme, "回答错误");
             }
             onGoingQA.remove(qqId);
             return true;
@@ -212,7 +174,7 @@ public class ModuleQA extends BaseGroupModule {
             }
             sb.append("回答序号即可");
             onGoingQA.put(qqId, qar);
-            entity.sjfTx.sendQuote(gme, sb.toString());
+            entity.sendQuote(gme, sb.toString());
             return true;
         }
         return false;
@@ -279,10 +241,6 @@ public class ModuleQA extends BaseGroupModule {
         save();
     }
 
-    private void save() {
-        DataPersistenter.save(this);
-    }
-
     public int getQaCount() {
         return qaList.size();
     }
@@ -298,8 +256,8 @@ public class ModuleQA extends BaseGroupModule {
 
     public static class QA {
         private int flag = 0;
-        //flag: id(16bit)                   type(8bit)      diffculty(8bit)
-        //  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|0 0 0 0 0 0 0 0|0 0 0 0 0 0 0 0
+        //flag: id(16bit)                      
+        //  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         public int l = 0;//file length
         public String q;
         public ArrayList<String> a = new ArrayList<>();
@@ -379,15 +337,6 @@ public class ModuleQA extends BaseGroupModule {
             return flag;
         }
 
-        public void setDifficulty(int d) {
-            flag &= 0xffffff00;
-            flag |= d;
-        }
-
-        public int getDifficulty() {
-            return flag & 0xff;
-        }
-
         public void setId(int id) {
             flag &= 0x0000ffff;
             flag |= (id << 16);
@@ -395,15 +344,6 @@ public class ModuleQA extends BaseGroupModule {
 
         public int getId() {
             return (flag >> 16) & 0xff;
-        }
-
-        public void setType(int type) {
-            flag &= 0xffff00ff;
-            flag |= (type << 8);
-        }
-
-        public int getType() {
-            return (flag >> 8) & 0xff;
         }
     }
 }

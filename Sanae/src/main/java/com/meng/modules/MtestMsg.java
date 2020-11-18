@@ -1,18 +1,19 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.SJFInterfaces.BaseModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
+import com.meng.handler.group.IGroupMessageEvent;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
-public class MtestMsg extends BaseGroupModule {
+public class MtestMsg extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
         return "测试模块";
     }
 
-    public MtestMsg(BotWrapperEntity bw) {
+    public MtestMsg(SBot bw) {
         super(bw);
     }
     
@@ -21,6 +22,16 @@ public class MtestMsg extends BaseGroupModule {
         if (gme.getMessage().contentToString().equals("emoji")) {
             gme.getGroup().sendMessage("🐴");
         }
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
         return false;
     }
 

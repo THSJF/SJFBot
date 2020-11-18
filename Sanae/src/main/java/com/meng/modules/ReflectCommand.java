@@ -1,8 +1,10 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
+import com.meng.handler.group.IGroupMessageEvent;
 import java.lang.reflect.Method;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
@@ -10,7 +12,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @author: 司徒灵羽
  **/
 
-public class ReflectCommand extends BaseGroupModule {
+public class ReflectCommand extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
@@ -18,7 +20,7 @@ public class ReflectCommand extends BaseGroupModule {
     }
 
 
-    public ReflectCommand(BotWrapperEntity bw) {
+    public ReflectCommand(SBot bw) {
         super(bw);
     }
 
@@ -41,7 +43,7 @@ public class ReflectCommand extends BaseGroupModule {
 				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();
-					entity.sjfTx.sendGroupMessage(groupId, "新模块:" + target.getName());
+					entity.sendGroupMessage(groupId, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
 				Class[] paramTypes = new Class[parseInt];
@@ -50,16 +52,26 @@ public class ReflectCommand extends BaseGroupModule {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
 				}
 				Method m = target.getMethod(args[2], paramTypes);
-				entity.sjfTx.sendGroupMessage(groupId, "运行结果:\n" + m.invoke(module, param));
+				entity.sendGroupMessage(groupId, "运行结果:\n" + m.invoke(module, param));
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				entity.sjfTx.sendGroupMessage(groupId, e.toString());
+				entity.sendGroupMessage(groupId, e.toString());
 				return true;
 			}
 		}
 		return false;
 	}
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
 
 	private void getTypeAndValue(String typeStr, String valueStr, int arrayIndex, Class[] types, Object[] values) {
 		switch (typeStr) {

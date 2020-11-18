@@ -1,10 +1,12 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
+import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.SJFExecutors;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -14,11 +16,11 @@ import net.mamoe.mirai.message.data.MessageChain;
  * @author: 司徒灵羽
  **/
 
-public class MessageRefuse extends BaseGroupModule {
+public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 
 	public ConcurrentHashMap<Long,FireWallBean> msgMap = new ConcurrentHashMap<>();
 
-    public MessageRefuse(BotWrapperEntity bw) {
+    public MessageRefuse(SBot bw) {
         super(bw);
     }
 
@@ -60,7 +62,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.timeSubLowTimes > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sjfTx.sendGroupMessage(groupId,  "你说话真快");
+				entity.sendGroupMessage(groupId,  "你说话真快");
 			}
 			return true;
 		}
@@ -74,7 +76,7 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.repeatTime > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sjfTx.sendGroupMessage(groupId,  "怎么又是这句话");
+				entity.sendGroupMessage(groupId,  "怎么又是这句话");
 			}
 			mtmb.lastMsg = gme.getMessage();
 			return true;
@@ -85,13 +87,23 @@ public class MessageRefuse extends BaseGroupModule {
 		if (mtmb.lastSeconedMsgs > 4) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sjfTx.sendGroupMessage(groupId,  "你真稳");
+				entity.sendGroupMessage(groupId,  "你真稳");
 			}
 			return true;
 		}
 		mtmb.tiped = false;
 		return false;
 	}
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
     
     @Override
     public String getModuleName() {

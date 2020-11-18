@@ -1,26 +1,26 @@
 package com.meng.tools;
 
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import java.util.concurrent.TimeUnit;
 
 public class MessageDeleter {
 
-	public static void autoDelete(final BotWrapperEntity bw, final int msgId, int second) {
+	public static void autoDelete(final SBot bw, final int msgId, int second) {
 		SJFExecutors.executeAfterTime(new Runnable(){
 
 				@Override
 				public void run() {
-					bw.deleteMsg(msgId);
+					bw.recall(msgId);
 				}
 			}, second, TimeUnit.SECONDS);
 	}
 
-	public static void autoDelete(final BotWrapperEntity bw, final int msgId) {
+	public static void autoDelete(final SBot bw, final int msgId) {
 		SJFExecutors.executeAfterTime(new Runnable(){
 
 				@Override
 				public void run() {
-                    bw.deleteMsg(msgId);
+                    bw.recall(msgId);
 				}
 			}, 60, TimeUnit.SECONDS);
 	}

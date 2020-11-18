@@ -1,17 +1,11 @@
 package com.meng;
 
-import com.meng.adapter.BotWrapperEntity;
-import com.meng.adapter.SJFRX;
-import com.meng.adapter.SJFTX;
-import com.meng.config.ConfigManager;
-import com.meng.modules.ModuleManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
@@ -28,45 +22,37 @@ public class SJFMain {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
         AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
-        final Bot bot = BotFactoryJvm.newBot(info.account, info.password, config);
-        SJFTX tx = new SJFTX(bot);
-        ModuleManager moduleManager = new ModuleManager();
-        SJFRX rx = new SJFRX(moduleManager);
-        Events.registerEvents(bot, rx);
-        ConfigManager configManager = new ConfigManager().init();
-        final BotWrapperEntity entity = new BotWrapperEntity(bot, tx, rx, moduleManager, configManager);
-        ExceptionCatcher.getInstance(entity).init();
-        moduleManager.setBotWrapperEntity(entity);
-        configManager.setBotWrapperEntity(entity);
-        moduleManager.load();
-        tx.entity = rx.entity = moduleManager.entity = entity;
+        final SBot sb = new SBot(BotFactoryJvm.newBot(info.account, info.password, config), config);
+        sb.init();
+        BotMessageHandler bmh = new BotMessageHandler(sb);
+        Events.registerEvents(sb, bmh);
+        ExceptionCatcher.getInstance(sb).init();
         MessagePool.start();
-        bot.login();
+        sb.login();
         SJFExecutors.execute(new Runnable(){
 
                 @Override
                 public void run() {
-                    bot.join();
+                    sb.join();
                 }
             });
         SJFExecutors.executeAfterTime(new Runnable(){
 
                 @Override
                 public void run() {
-                    for (Group group:bot.getGroups()) {
+                    for (Group group:sb.getGroups()) {
                         if (group.getBotMuteRemaining() > 0) {
-                            if (group.getId() == entity.yysGroup) {
+                            if (group.getId() == SBot.yysGroup) {
                                 continue;
                             }
                             group.quit();
-                            entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "退出群" + group.getId());
+                            sb.sendGroupMessage(SBot.yysGroup, "退出群" + group.getId());
                         }
                     }
                 }
             }, 1, TimeUnit.MINUTES); 
-        moduleManager.loadModules(bot);
     }
-    
+
     public static class AccountInfo {
         public long account;
         public String password;

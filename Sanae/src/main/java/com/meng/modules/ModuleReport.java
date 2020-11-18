@@ -1,24 +1,26 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.meng.gameData.TouHou.Faith;
+import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.TimeFormater;
 import java.util.ArrayList;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
 /**
  * @author 司徒灵羽
  */
 
-public class ModuleReport extends BaseGroupModule {
+public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("report.json")
 	private ArrayList<ReportBean> reportList = new ArrayList<>();
 
-    public ModuleReport(BotWrapperEntity bw) {
+    public ModuleReport(SBot bw) {
         super(bw);
     }
 
@@ -36,7 +38,7 @@ public class ModuleReport extends BaseGroupModule {
 		if (entity.configManager.isMaster(qqId)) {
 			if (msg.equals("-留言查看")) {
 				ReportBean rb = getReport();
-				entity.sjfTx.sendGroupMessage(groupId, rb == null ?"无留言": rb.toString());
+				entity.sendGroupMessage(groupId, rb == null ?"无留言": rb.toString());
 				return true;
 			}
 			if (msg.startsWith("-留言查看 t ")) {
@@ -48,12 +50,12 @@ public class ModuleReport extends BaseGroupModule {
 				} else {
 					entity.moduleManager.getModule(MAimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,获得5信仰奖励,附加消息:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("t") + 1)));
 				}
-				entity.sjfTx.sendGroupMessage(groupId, "处理成功");
+				entity.sendGroupMessage(groupId, "处理成功");
 				return true;
 			}
 			if (msg.startsWith("-留言查看 f ")) {
 				ReportBean rb = removeReport();
-				entity.sjfTx.sendGroupMessage(groupId, "处理成功");
+				entity.sendGroupMessage(groupId, "处理成功");
 				entity.moduleManager.getModule(MAimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("f") + 1)));
 				return true;
 			}
@@ -65,17 +67,27 @@ public class ModuleReport extends BaseGroupModule {
 					entity.moduleManager.getModule(MAimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,开发者认为目前还不是处理此留言的时候", rb.qq, TimeFormater.getTime(rb.time), rb.content));
 				}
 				reportToLast();
-				entity.sjfTx.sendGroupMessage(groupId, "处理成功");
+				entity.sendGroupMessage(groupId, "处理成功");
 				return true;
 			}
 		} 
 		if (msg.startsWith("-留言 ")) {
 			addReport(groupId, qqId, msg);
-			entity.sjfTx.sendGroupMessage(groupId, "留言成功");
+			entity.sendGroupMessage(groupId, "留言成功");
 			return true;
 		}
 		return false;
 	}
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
 
 	public void addReport(long fromGroup, long fromQQ, String content) {
 		ReportBean report = new ReportBean();
@@ -103,17 +115,13 @@ public class ModuleReport extends BaseGroupModule {
 		save();
 	}
 
-	public void save() {
-		DataPersistenter.save(this);
-	}
-
 	public ReportBean getReport() {
 		if (reportList.size() == 0) {
 			return null;
 		}
 		return reportList.get(0);
 	}
-    
+
     @Override
     public String getModuleName() {
         return "report";

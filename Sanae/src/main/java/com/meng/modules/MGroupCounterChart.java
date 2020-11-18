@@ -1,9 +1,9 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
+import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TimeFormater;
 import java.awt.Font;
@@ -14,6 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -31,12 +33,12 @@ import org.jfree.data.time.TimeSeriesCollection;
  * @author: 司徒灵羽
  **/
 
-public class MGroupCounterChart extends BaseGroupModule {
+public class MGroupCounterChart extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("GroupCount2.json")
 	private HashMap<Long,GroupSpeak> groupsMap = new HashMap<>(32);
 
-    public MGroupCounterChart(BotWrapperEntity bw) {
+    public MGroupCounterChart(SBot bw) {
         super(bw);
     }
 
@@ -64,7 +66,7 @@ public class MGroupCounterChart extends BaseGroupModule {
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.GROUP_COUNT_CHART)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();
@@ -89,7 +91,7 @@ public class MGroupCounterChart extends BaseGroupModule {
 				}
 				sb.append(String.format("%d:00-%d:00  共%d条消息\n", i, i + 1, everyHourHashMap.get(i)));
 			}
-			entity.sjfTx.sendGroupMessage(groupId, sb.toString());
+			entity.sendGroupMessage(groupId, sb.toString());
 			TimeSeries dtimeseries = new TimeSeries("你群发言");
 			Calendar dc = Calendar.getInstance();
 			dc.add(Calendar.HOUR_OF_DAY, -24);
@@ -120,7 +122,7 @@ public class MGroupCounterChart extends BaseGroupModule {
 			} catch (IOException e) {
                 throw new RuntimeException(e); 
             }
-			entity.sjfTx.sendGroupMessage(groupId, entity.image(pic, groupId));
+			entity.sendGroupMessage(groupId, entity.image(pic, groupId));
 			TimeSeries timeseries = new TimeSeries("你群发言");
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, -30);
@@ -155,13 +157,23 @@ public class MGroupCounterChart extends BaseGroupModule {
 			} catch (IOException e) {
                 throw new RuntimeException(e);
             }
-			entity.sjfTx.sendGroupMessage(groupId, entity.image(pic2, groupId));
+			entity.sendGroupMessage(groupId, entity.image(pic2, groupId));
 			return true;
 		}	
 		return false;
 	}
 
-	public HashMap<Integer,Integer> getSpeak(long group, String date) {
+    @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+	private HashMap<Integer,Integer> getSpeak(long group, String date) {
 		GroupSpeak gs = groupsMap.get(group);
 		if (gs == null) {
 			return null;

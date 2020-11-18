@@ -1,24 +1,23 @@
 package com.meng.gameData.TouHou;
 
 import com.meng.NetDataPackage;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.NetOperatType;
+import com.meng.SBot;
 import com.meng.modules.ModuleQA;
 import com.meng.modules.ModuleQA.QA;
 import com.meng.tools.ExceptionCatcher;
-import java.io.File;
+import com.meng.tools.GSON;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import com.meng.NetOperatType;
-import com.meng.tools.GSON;
 
 public class QuestionServer extends WebSocketServer {
 
-    private BotWrapperEntity entity;
+    private SBot entity;
 
-	public QuestionServer(int port, BotWrapperEntity bwe) {
+	public QuestionServer(int port, SBot bwe) {
 		super(new InetSocketAddress(port));
         entity = bwe;
 	}

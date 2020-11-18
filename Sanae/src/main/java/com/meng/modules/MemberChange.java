@@ -1,13 +1,66 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.IGroupEvent;
-import com.meng.adapter.BotWrapperEntity;
-import com.meng.tools.ExceptionCatcher;
+import com.meng.SBot;
+import com.meng.handler.group.IGroupMemberEvent;
+import net.mamoe.mirai.event.events.MemberSpecialTitleChangeEvent;
+import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
+import net.mamoe.mirai.event.events.MemberPermissionChangeEvent;
+import net.mamoe.mirai.event.events.MemberCardChangeEvent;
+import net.mamoe.mirai.event.events.MemberMuteEvent;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
+import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
-import com.meng.SJFInterfaces.BaseModule;
+import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 
-public class MemberChange extends BaseModule implements IGroupEvent {
+public class MemberChange extends BaseModule implements IGroupMemberEvent {
+
+    @Override
+    public boolean onMemberJoinRequest(MemberJoinRequestEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onMemberJoin(MemberJoinEvent event) {
+        long groupId = event.getGroup().getId();
+        String welc = entity.configManager.getWelcome(groupId);
+        entity.sendGroupMessage(groupId, welc == null ?"欢迎新人": welc);
+        return false;
+    }
+
+    @Override
+    public boolean onMemberLeave(MemberLeaveEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onInviteBot(BotInvitedJoinGroupRequestEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onCardChange(MemberCardChangeEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onTitleChange(MemberSpecialTitleChangeEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onPermissionChange(MemberPermissionChangeEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onMemberMute(MemberMuteEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onMemberUnmute(MemberUnmuteEvent event) {
+        return false;
+    }
 
     @Override
     public BaseModule load() {
@@ -16,50 +69,12 @@ public class MemberChange extends BaseModule implements IGroupEvent {
 
     @Override
     public String getModuleName() {
-        return "welcome";
+        return "memmberevent";
     }
 
-    public MemberChange(BotWrapperEntity bwe) {
-       super(bwe);
+    public MemberChange(SBot bwe) {
+        super(bwe);
     }
 
-    @Override
-    public boolean onGroupFileUpload(int sendTime, long fromGroup, long fromQQ, String file) {
-        return false;
-    }
-
-    @Override
-    public boolean onGroupAdminChange(int subtype, int sendTime, long fromGroup, long beingOperateQQ) {
-        return false;
-    }
-
-    @Override
-    public boolean onGroupMemberDecrease(MemberLeaveEvent event) {
-        return false;
-    }
-
-    @Override
-    public boolean onGroupMemberIncrease(MemberJoinEvent event) {
-        try {
-            if (event instanceof MemberJoinEvent.Invite) {
-                MemberJoinEvent.Invite mji = (MemberJoinEvent.Invite)event;
-                event.getGroup().sendMessage(String.format("invite,member:%s,arg:%s", mji.getMember(), mji.component1())); 
-            } else if (event instanceof MemberJoinEvent.Active) {
-                MemberJoinEvent.Active mji = (MemberJoinEvent.Active)event;
-                event.getGroup().sendMessage(String.format("active,member:%s,arg:%s", mji.getMember(), mji.component1()));
-            }
-        } catch (Exception e) {
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-        }
-        long groupId = event.getGroup().getId();
-        String welc = entity.configManager.getWelcome(groupId);
-        entity.sjfTx.sendGroupMessage(groupId, welc == null ?"欢迎新人": welc);
-        return false;
-    }
-
-    @Override
-    public boolean onRequestAddGroup(int subtype, int sendTime, long fromGroup, long fromQQ, String msg, String responseFlag) {
-        return false;
-    }
 
 }

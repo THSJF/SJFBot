@@ -1,9 +1,9 @@
 package com.meng.modules;
 
-import com.meng.SJFInterfaces.BaseGroupModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
+import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
 import java.io.File;
@@ -11,23 +11,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.QuoteReply;
 
-public class DynamicWordStock extends BaseGroupModule {
+public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("dynamic_word_stock.json")
     private WordStock dictionary;
 
-    public DynamicWordStock(BotWrapperEntity bw) {
+    public DynamicWordStock(SBot bw) {
         super(bw);
     }
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), this)) {
+        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.WORDSTOCK)) {
             return false; 
         }
         String msg = gme.getMessage().contentToString();
@@ -44,7 +46,7 @@ public class DynamicWordStock extends BaseGroupModule {
                                 break;
                             case IMG:
                                 try {
-                                    mcb.add(gme.getGroup().uploadImage(new File(BotWrapperEntity.appDirectory + node.c)));
+                                    mcb.add(gme.getGroup().uploadImage(new File(SBot.appDirectory + node.c)));
                                 } catch (Exception e) {
                                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                                 }
@@ -93,14 +95,14 @@ public class DynamicWordStock extends BaseGroupModule {
                                 mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
                                 break;
                             case IMG_FOLDER:
-                                mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(BotWrapperEntity.appDirectory + node.c).listFiles())));
+                                mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.c).listFiles())));
                                 break;
                         }    
                     } catch (Exception e) {
                         ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                     }
                 }
-                entity.sjfTx.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
+                entity.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
                 return true;
             }
         }
@@ -108,13 +110,19 @@ public class DynamicWordStock extends BaseGroupModule {
     }
 
     @Override
+    public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        return false;
+    }
+
+    @Override
     public DynamicWordStock load() {
         DataPersistenter.read(this);
         return this;
-    }
-
-    public void save() {
-        DataPersistenter.save(this);
     }
 
     @Override

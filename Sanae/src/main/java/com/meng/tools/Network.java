@@ -1,6 +1,6 @@
 package com.meng.tools;
 
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,7 +63,7 @@ public class Network {
 			if (refer != null) {
 				connection.referrer(refer);
 			}
-			connection.userAgent(BotWrapperEntity.userAgent);
+			connection.userAgent(SBot.userAgent);
 			connection.ignoreContentType(true).method(Connection.Method.GET);
 			response = connection.execute();
 			if (response.statusCode() != 200) {

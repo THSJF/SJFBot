@@ -1,64 +1,75 @@
 package com.meng.config;
 
-import com.meng.SJFInterfaces.BaseModule;
-import com.meng.adapter.BotWrapperEntity;
+import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.javabeans.ConfigHolder;
 import com.meng.config.javabeans.PersonConfig;
 import com.meng.config.javabeans.PersonInfo;
-import com.meng.tools.SJFExecutors;
+import com.meng.modules.BaseModule;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import com.meng.modules.Modules;
+import com.meng.config.javabeans.GroupConfig;
 
 /**
  * @Description: 配置文件管理器
  * @author: 司徒灵羽
  **/
 
-public class ConfigManager {
+public class ConfigManager extends BaseModule {
 
     @SanaeData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
 
-    public BotWrapperEntity entity;
+    public SBot entity;
 
-    public void setBotWrapperEntity(BotWrapperEntity bwe) {
-        entity = bwe;
+    public ConfigManager(SBot sb) {
+        super(sb);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "configmanager";
     }
 
 	public ConfigHolder getConfigHolder() {
 		return configHolder;
 	}
 
-    public ConfigManager init() {
+    public ConfigManager load() {
 		DataPersistenter.read(this);
         return this;
     }
 
-    public void setFunctionEnable(long gid, Class<? extends BaseModule> gm) {
-        setFunctionEnbled(gid, entity.moduleManager.getModule(gm));
-    }
-
-    public void setFunctionEnbled(long gid, BaseModule gm) {
-        configHolder.groupCfgs.get(gid).remove(gm.getModuleName());
+    public void setFunctionEnbled(long gid, Modules m) {
+        GroupConfig get = configHolder.groupConfigs.get(gid);
+        if (get == null) {
+            get = new GroupConfig();
+            configHolder.groupConfigs.put(gid, get);
+        }
+        get.enabled.remove(m);
         save();
     }
 
-    public void setFunctionDisable(long gid, Class<? extends BaseModule> gm) {
-        setFunctionDisable(gid, entity.moduleManager.getModule(gm));
-    }
-
-	public void setFunctionDisable(long gid, BaseModule gm) {
-        configHolder.groupCfgs.get(gid).add(gm.getModuleName());
+	public void setFunctionDisable(long gid, Modules m) {
+        GroupConfig get = configHolder.groupConfigs.get(gid);
+        if (get == null) {
+            get = new GroupConfig();
+            configHolder.groupConfigs.put(gid, get);
+        }
+        get.enabled.add(m);
         save();
     }
 
-    public boolean isFunctionEnbled(long gid, Class<? extends BaseModule> gm) {
-        return !configHolder.groupCfgs.get(gid).contains(entity.moduleManager.getModule(gm));
-    }
-
-	public boolean isFunctionEnbled(long gid, BaseModule gm) {
-        return !configHolder.groupCfgs.get(gid).contains(gm.getModuleName());
+	public boolean isFunctionEnbled(long gid, Modules m) {
+        GroupConfig get = configHolder.groupConfigs.get(gid);
+        if (get == null) {
+            get = new GroupConfig();
+            configHolder.groupConfigs.put(gid, get);
+            save();
+        }
+        return !get.enabled.contains(m);
     }
 
     public PersonConfig getPersonConfig(long qq) {
@@ -263,8 +274,7 @@ public class ConfigManager {
 	}
 
 	public String getNickName(long group, long qq) {
-		String nick = null;
-		nick = configHolder.nicknameMap.get(qq);
+		String nick = configHolder.nicknameMap.get(qq);
 		if (nick == null) {
 			PersonInfo pi = getPersonInfoFromQQ(qq);
 			if (pi == null) {
@@ -276,16 +286,13 @@ public class ConfigManager {
 		return nick;
 	}
 
-    public void addBlack(long group, final long qq) {
+    public void addBlack(long group, long qq) {
         configHolder.blackQQ.add(qq);
         configHolder.blackGroup.add(group);
-        configHolder.groupCfgs.remove(group);
+        configHolder.groupConfigs.remove(group);
         save();
-        entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "已将用户" + qq + "加入黑名单");
-        entity.sjfTx.sendGroupMessage(BotWrapperEntity.yysGroup, "已将群" + group + "加入黑名单");
+        entity.sendGroupMessage(SBot.yysGroup, "已将用户" + qq + "加入黑名单");
+        entity.sendGroupMessage(SBot.yysGroup, "已将群" + group + "加入黑名单");
     }
 
-    public void save() {
-		DataPersistenter.save(this);
-    }
 }

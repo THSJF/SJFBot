@@ -1,12 +1,18 @@
 package com.meng.tools;
 
-import com.meng.adapter.*;
-import com.meng.gameData.TouHou.*;
-import java.io.*;
-import java.nio.charset.*;
-import java.util.*;
-import java.util.concurrent.*;
-import net.mamoe.mirai.contact.*;
+import com.meng.SBot;
+import com.meng.gameData.TouHou.SpellCard;
+import com.meng.gameData.TouHou.TouhouCharacter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import net.mamoe.mirai.contact.ContactList;
+import net.mamoe.mirai.contact.Group;
 
 public class Tools {
 
@@ -47,7 +53,7 @@ public class Tools {
 
 	public static class CQ {
 		
-		public static void findQQInAllGroup(BotWrapperEntity bw, long fromGroup, long fromQQ, String msg) {
+		public static void findQQInAllGroup(SBot bw, long fromGroup, long fromQQ, String msg) {
 			long findqq;
 			try {
 				findqq = Long.parseLong(msg);
@@ -55,21 +61,21 @@ public class Tools {
                 return;
 			}
 			if (findqq <= 0) {
-				bw.sjfTx.sendGroupMessage(fromGroup, "QQ账号错误");
+				bw.sendGroupMessage(fromGroup, "QQ账号错误");
 				return;
 			}
-			bw.sjfTx.sendGroupMessage(fromGroup, "running");
+			bw.sendGroupMessage(fromGroup, "running");
 			HashSet<Group> hashSet = findQQInAllGroup(bw, findqq);
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append(findqq).append("在这些群中出现");
 			for (Group l : hashSet) {
 				stringBuilder.append("\n").append(l.getId()).append(l.getName());
 			}
-			bw.sjfTx.sendGroupMessage(fromGroup, stringBuilder.toString());
+			bw.sendGroupMessage(fromGroup, stringBuilder.toString());
 		}
         
-		public static HashSet<Group> findQQInAllGroup(BotWrapperEntity bw, long findQQ) {
-			ContactList<Group> groups = bw.getGroupList();
+		public static HashSet<Group> findQQInAllGroup(SBot bw, long findQQ) {
+			ContactList<Group> groups = bw.getGroups();
 			HashSet<Group> hashSet = new HashSet<>();
 			for (Group group : groups) {
 				if (group.getId() == 959615179L || group.getId() == 666247478L) {
