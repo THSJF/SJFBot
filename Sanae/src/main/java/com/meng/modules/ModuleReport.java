@@ -14,7 +14,6 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 /**
  * @author 司徒灵羽
  */
-
 public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("report.json")

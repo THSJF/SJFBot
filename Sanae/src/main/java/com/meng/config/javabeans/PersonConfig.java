@@ -1,10 +1,8 @@
 package com.meng.config.javabeans;
 
 /**
- * @Description: 单人设置bean
  * @author: 司徒灵羽
  **/
-
 public class PersonConfig {
 
 	public static final int qa = 1 << 0;

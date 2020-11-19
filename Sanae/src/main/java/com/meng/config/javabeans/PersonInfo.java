@@ -3,10 +3,8 @@ package com.meng.config.javabeans;
 import java.util.Objects;
 
 /**
- * @Description: 人员信息bean
  * @author: 司徒灵羽
  **/
-
 public final class PersonInfo extends Object {
     public String name = "";
     public long qq = 0;

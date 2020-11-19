@@ -12,10 +12,8 @@ import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
 
 /**
- * @Description: 阻止刷屏消息进入
  * @author: 司徒灵羽
  **/
-
 public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 
 	public ConcurrentHashMap<Long,FireWallBean> msgMap = new ConcurrentHashMap<>();

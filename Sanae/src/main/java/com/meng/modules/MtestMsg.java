@@ -6,6 +6,9 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class MtestMsg extends BaseModule implements IGroupMessageEvent {
 
     @Override

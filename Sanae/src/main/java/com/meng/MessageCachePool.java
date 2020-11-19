@@ -1,15 +1,15 @@
 package com.meng;
 
-import com.meng.tools.*;
-import java.util.*;
-import java.util.concurrent.*;
-import net.mamoe.mirai.message.*;
+import com.meng.tools.SJFExecutors;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.message.MessageEvent;
 
 /**
  * @author: 司徒灵羽
  **/
-
-public class MessagePool {
+public class MessageCachePool {
 
     private static LinkedList<MessageEvent> msgList = new LinkedList<>();
     private static boolean first = true;

@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * @Description: 配置存储bean
  * @author: 司徒灵羽
  **/
- 
 public class ConfigHolder {
     public HashMap<Long,GroupConfig> groupConfigs = new HashMap<>();
     public HashSet<Long> blockOnlyQQ = new HashSet<>();

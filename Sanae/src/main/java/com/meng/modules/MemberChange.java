@@ -12,6 +12,9 @@ import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class MemberChange extends BaseModule implements IGroupMemberEvent {
 
     @Override

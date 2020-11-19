@@ -18,6 +18,9 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class ModuleQA extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("qa.json")

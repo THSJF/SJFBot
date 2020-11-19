@@ -18,6 +18,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class THDataHolder {
 
 	private HashMap<String,String> spellCardInfoMap = new HashMap<>();

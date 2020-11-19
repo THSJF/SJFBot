@@ -83,6 +83,7 @@ public class NodeActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface p11, int p2) {
                                 nodes.add(new Node(et.getText().toString(), ItemType.TXT));
+                                update();
                             }
                         }).setNegativeButton("取消", null).show();
                     break;
@@ -115,6 +116,7 @@ public class NodeActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface p11, int p2) {
                                 nodes.add(new Node(et.getText().toString(), ItemType.RAN_INT));
+                                update();
                             }
                         }).setNegativeButton("取消", null).show();
                     break;
@@ -123,6 +125,7 @@ public class NodeActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface p11, int p2) {
                                 nodes.add(new Node(et.getText().toString(), ItemType.RAN_FLOAT));
+                                update();
                             }
                         }).setNegativeButton("取消", null).show();
                     break;

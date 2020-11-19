@@ -14,7 +14,6 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Description: 早安
  * @author: 司徒灵羽
  **/
-
 public class ModuleMorning extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("getUp.json")

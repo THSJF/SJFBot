@@ -11,13 +11,11 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class MAimMessage extends BaseModule implements IGroupMessageEvent {
-
-    /**
-     * @Description: 定向消息
-     * @author: 司徒灵羽
-     **/
-    
+ 
     @SanaeData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
 

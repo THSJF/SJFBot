@@ -7,10 +7,8 @@ import com.meng.modules.BaseModule;
 import java.util.HashMap;
 
 /**
- * @Description: 信仰
  * @author: 司徒灵羽
  **/
-
 public class Faith extends BaseModule {
 
     @SanaeData("faith.json")

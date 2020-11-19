@@ -6,7 +6,6 @@ import com.meng.config.DataPersistenter;
 /**
  * @author: 司徒灵羽
  **/
-
 public abstract class BaseModule {
 
     public SBot entity;

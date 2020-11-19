@@ -14,11 +14,9 @@ import net.mamoe.mirai.utils.BotConfiguration;
 /**
  * @author: 司徒灵羽
  **/
-
 public class SJFMain {
 
     public static void main(String... args) {
-
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
         AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
@@ -27,7 +25,7 @@ public class SJFMain {
         BotMessageHandler bmh = new BotMessageHandler(sb);
         Events.registerEvents(sb, bmh);
         ExceptionCatcher.getInstance(sb).init();
-        MessagePool.start();
+        MessageCachePool.start();
         sb.login();
         SJFExecutors.execute(new Runnable(){
 

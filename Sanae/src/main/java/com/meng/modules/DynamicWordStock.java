@@ -18,6 +18,9 @@ import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.QuoteReply;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("dynamic_word_stock.json")

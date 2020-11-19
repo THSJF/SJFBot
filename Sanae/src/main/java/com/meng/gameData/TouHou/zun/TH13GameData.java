@@ -3,6 +3,9 @@ package com.meng.gameData.TouHou.zun;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.TouhouCharacter;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class TH13GameData {
 	public static final String gameName = "东方神灵庙 ~ Ten Desires.";
 	public static final String gameNameCN = "东方神灵庙";

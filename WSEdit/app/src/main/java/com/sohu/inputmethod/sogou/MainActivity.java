@@ -130,6 +130,9 @@ public class MainActivity extends Activity {
         if (content == null) {
             return "{}";
         }
+        if(content != null){
+            return content;
+        }
         StringBuilder sb = new StringBuilder();
         int index = 0;
         int count = 0;

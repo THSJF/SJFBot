@@ -6,6 +6,9 @@ import net.mamoe.mirai.event.events.BotLeaveEvent;
 import net.mamoe.mirai.event.events.BotMuteEvent;
 import net.mamoe.mirai.event.events.BotUnmuteEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public interface IGroupBotEvent {
     public boolean onBotLeave(BotLeaveEvent event);
     public boolean onBotPermissionChange(BotGroupPermissionChangeEvent event);

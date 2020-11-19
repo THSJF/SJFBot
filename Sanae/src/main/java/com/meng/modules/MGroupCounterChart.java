@@ -32,7 +32,6 @@ import org.jfree.data.time.TimeSeriesCollection;
  * @Description: 群消息统计图
  * @author: 司徒灵羽
  **/
-
 public class MGroupCounterChart extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("GroupCount2.json")

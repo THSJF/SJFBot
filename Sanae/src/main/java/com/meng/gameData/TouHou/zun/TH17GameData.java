@@ -3,6 +3,9 @@ package com.meng.gameData.TouHou.zun;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.TouhouCharacter;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class TH17GameData {
 	public static final String gameName = "东方鬼形兽 ~ Wily Beast and Weakest Creature.";
 	public static final String gameNameCN = "东方鬼形兽";

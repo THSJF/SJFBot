@@ -30,7 +30,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(GroupMessageEvent event) {
-        MessagePool.put(event);
+        MessageCachePool.put(event);
         moduleManager.onGroupMessage(event);
         return ListeningStatus.LISTENING;
     }

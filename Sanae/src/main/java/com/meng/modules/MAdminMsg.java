@@ -22,7 +22,6 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Description: 管理员命令
  * @author: 司徒灵羽
  **/
-
 public class MAdminMsg extends BaseModule implements IGroupMessageEvent {
 
     public MAdminMsg(SBot bw) {

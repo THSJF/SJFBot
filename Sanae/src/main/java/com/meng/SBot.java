@@ -45,6 +45,9 @@ import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.Context;
 import net.mamoe.mirai.utils.MiraiLogger;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class SBot extends Bot {
     private Bot bot;
 
@@ -249,7 +252,7 @@ public class SBot extends Bot {
     }
 
     public void recall(int msgId) {
-        bot.recall(MessagePool.get(msgId).getSource());
+        bot.recall(MessageCachePool.get(msgId).getSource());
     }
 
     @Override

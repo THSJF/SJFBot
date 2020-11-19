@@ -11,10 +11,8 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 
 /**
- * @Description: 将数据保存到磁盘
  * @author: 司徒灵羽
  **/
-
 public class DataPersistenter {
 
 	private DataPersistenter() {

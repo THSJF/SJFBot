@@ -3,6 +3,9 @@ package com.meng.gameData.TouHou.zun;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.TouhouCharacter;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class TH07GameData {
 	public static final String gameName = "东方妖妖梦 ~ Perfect Cherry Blossom.";
 	public static final String gameNameCN = "东方妖妖梦";

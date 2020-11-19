@@ -1,5 +1,8 @@
 package com.meng.gameData.TouHou;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class TouhouCharacter {
 	
 	public String charaName;

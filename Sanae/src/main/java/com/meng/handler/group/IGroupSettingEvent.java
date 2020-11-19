@@ -8,6 +8,9 @@ import net.mamoe.mirai.event.events.GroupMuteAllEvent;
 import net.mamoe.mirai.event.events.GroupNameChangeEvent;
 import net.mamoe.mirai.event.events.GroupSettingChangeEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public interface IGroupSettingEvent {      
     public boolean onGroupSettingChange(GroupSettingChangeEvent event);
     public boolean onGroupNameChange(GroupNameChangeEvent event);

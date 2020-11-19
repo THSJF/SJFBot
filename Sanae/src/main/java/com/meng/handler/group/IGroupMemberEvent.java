@@ -9,6 +9,9 @@ import net.mamoe.mirai.event.events.MemberPermissionChangeEvent;
 import net.mamoe.mirai.event.events.MemberMuteEvent;
 import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public interface IGroupMemberEvent {
     public boolean onMemberJoinRequest(MemberJoinRequestEvent event);
     public boolean onMemberJoin(MemberJoinEvent event);

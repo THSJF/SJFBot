@@ -1,5 +1,8 @@
 package com.meng.gameData.TouHou;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class SpellCard {
 
 	public static final int Easy = 1 << 0;

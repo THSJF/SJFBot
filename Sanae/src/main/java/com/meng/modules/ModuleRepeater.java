@@ -13,7 +13,6 @@ import net.mamoe.mirai.message.data.MessageChain;
  * @Description: 复读机
  * @author: 司徒灵羽
  **/
-
 public class ModuleRepeater extends BaseModule implements IGroupMessageEvent{
 
 	private HashMap<Long, Repeater> repeaters = new HashMap<>();

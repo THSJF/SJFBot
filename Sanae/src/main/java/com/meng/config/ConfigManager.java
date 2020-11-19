@@ -13,10 +13,9 @@ import com.meng.modules.Modules;
 import com.meng.config.javabeans.GroupConfig;
 
 /**
- * @Description: 配置文件管理器
+ * @Description: 配置管理器
  * @author: 司徒灵羽
  **/
-
 public class ConfigManager extends BaseModule {
 
     @SanaeData("ncfg.json")

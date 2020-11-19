@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.contact.Group;
 
+/**
+ * @author: 司徒灵羽
+ **/
 public class MTimeTask extends BaseModule {
 
     private final long groupYuTang = 617745343L;
