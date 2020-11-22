@@ -20,7 +20,7 @@ import net.mamoe.mirai.message.data.MessageChainBuilder;
  * @Description: 模拟骰子
  * @author: 司徒灵羽
  **/
-public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent{
+public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
 
     public THDataHolder thData = new THDataHolder();
 
@@ -206,7 +206,7 @@ public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent{
                     return true;
             }
         } catch (Exception e) {
-            entity.sendGroupMessage(groupId, "参数错误");
+            entity.sendGroupMessage(groupId, "参数错误:" + e.toString());
         }
         return false;
 	}

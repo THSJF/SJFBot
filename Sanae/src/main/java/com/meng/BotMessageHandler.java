@@ -1,6 +1,7 @@
 package com.meng;
 
 import com.meng.config.ConfigManager;
+import com.meng.handler.MessageManager;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -30,7 +31,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(GroupMessageEvent event) {
-        MessageCachePool.put(event);
+        MessageManager.put(event);
         moduleManager.onGroupMessage(event);
         return ListeningStatus.LISTENING;
     }

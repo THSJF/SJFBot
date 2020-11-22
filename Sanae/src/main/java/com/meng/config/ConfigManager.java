@@ -68,7 +68,7 @@ public class ConfigManager extends BaseModule {
             configHolder.groupConfigs.put(gid, get);
             save();
         }
-        return !get.enabled.contains(m);
+        return get.enabled.contains(m);
     }
 
     public PersonConfig getPersonConfig(long qq) {

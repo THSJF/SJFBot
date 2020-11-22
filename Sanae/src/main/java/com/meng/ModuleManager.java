@@ -60,6 +60,7 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.gameData.TouHou.Goodwill;
 
 /**
  * @Description: 模块管理器
@@ -67,9 +68,6 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  **/
 
 public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEvent {
-
-
-    public SBot entity;
 
     private List<IGroupBotEvent> groupBotHandlers = new ArrayList<>();
     private List<IGroupMessageEvent> groupMsgHandlers = new ArrayList<>();
@@ -108,6 +106,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(ModuleQA.class);
         load(DynamicWordStock.class);
         load(ModuleMorning.class);
+        load(Goodwill.class);
         return this;
     }
 
@@ -152,22 +151,22 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
     public void loadModules(Object module) {
         all.add(module);
         if (module instanceof IGroupBotEvent) {
-            groupBotHandlers.add((IGroupEvent)module);
+            groupBotHandlers.add((IGroupBotEvent)module);
         }
         if (module instanceof IGroupMessageEvent) {
-            groupMsgHandlers.add((IGroupEvent)module);
+            groupMsgHandlers.add((IGroupMessageEvent)module);
         }
         if (module instanceof IGroupSettingEvent) {
-            groupSettingsHandlers.add((IGroupEvent)module);
+            groupSettingsHandlers.add((IGroupSettingEvent)module);
         }
         if (module instanceof IGroupMemberEvent) {
-            groupMemberHandlers.add((IGroupEvent)module);
+            groupMemberHandlers.add((IGroupMemberEvent)module);
         }
         if (module instanceof IFriendMessageEvent) {
-            friendMsgHandlers.add((IFriendEvent)module);
+            friendMsgHandlers.add((IFriendMessageEvent)module);
         }
         if (module instanceof IFriendChangeEvent) {
-            friendChangeHandlers.add((IFriendEvent)module);
+            friendChangeHandlers.add((IFriendChangeEvent)module);
         }
     }
 

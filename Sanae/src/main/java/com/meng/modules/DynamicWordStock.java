@@ -3,12 +3,15 @@ package com.meng.modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
+import com.meng.gameData.TouHou.Goodwill;
+import com.meng.handler.MessageManager;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
@@ -35,12 +38,26 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
         if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.WORDSTOCK)) {
             return false; 
         }
+        Goodwill.UserData gu = entity.moduleManager.getModule(Goodwill.class).getUsetData(gme.getSender().getId());
         String msg = gme.getMessage().contentToString();
         for (String k : dictionary.w.keySet()) {
             if (Pattern.matches(k, msg)) {
                 ArrayList<Entry> list = dictionary.w.get(k);
                 Entry entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
+                if (entry.range != null) {
+                    if (entry.range[1] == 0) {
+                        entry.range[1] = Integer.MAX_VALUE;
+                    }
+                    int i = 0;
+                    while (gu.goodwill < entry.range[0] || gu.goodwill > entry.range[1]) {
+                        if (++i > 10000) {
+                            throw new NoSuchElementException();
+                        }
+                        entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
+                    }
+                }
                 MessageChainBuilder mcb = new MessageChainBuilder();
+                boolean recall = false;
                 for (Node node:entry.e) {
                     try {
                         switch (node.t) {
@@ -100,12 +117,18 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                             case IMG_FOLDER:
                                 mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.c).listFiles())));
                                 break;
+                            case AUTO_RECALL:
+                                recall = true;
+                                break;
                         }    
                     } catch (Exception e) {
                         ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                     }
                 }
-                entity.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
+                int id = entity.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
+                if (recall) {
+                    MessageManager.autoRecall(entity, id);  
+                }
                 return true;
             }
         }
@@ -146,7 +169,8 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
         RAN_FLOAT,
         HASH_RAN_INT,
         HASH_RAN_FLOAT,
-        IMG_FOLDER
+        IMG_FOLDER,
+        AUTO_RECALL
         }
 
     public class WordStock {
@@ -155,7 +179,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     public class Entry {
         public ArrayList<Node> e = new ArrayList<>();
-
+        public int[] range = new int[2];
         public void add(Node node) {
             e.add(node);
         }

@@ -3,6 +3,7 @@ package com.meng.modules;
 import com.meng.SBot;
 import com.meng.config.ConfigManager;
 import com.meng.config.javabeans.PersonInfo;
+import com.meng.handler.MessageManager;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
@@ -228,6 +229,7 @@ public class MAdminMsg extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
+        entity.sendGroupMessage(event.getGroup().getId(), String.format("%s撤回了:%s", event.getOperator().getId(), MessageManager.get(event)));
         return false;
     }
 

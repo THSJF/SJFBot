@@ -44,6 +44,7 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.Context;
 import net.mamoe.mirai.utils.MiraiLogger;
+import com.meng.handler.MessageManager;
 
 /**
  * @author: 司徒灵羽
@@ -77,7 +78,9 @@ public class SBot extends Bot {
 
     public void init() {
         moduleManager = new ModuleManager(this);
+        moduleManager.load();
         configManager = new ConfigManager(this);
+        configManager.load();
     }
 
     public Member getGroupMemberInfo(long gid, long qq) {
@@ -252,7 +255,7 @@ public class SBot extends Bot {
     }
 
     public void recall(int msgId) {
-        bot.recall(MessageCachePool.get(msgId).getSource());
+        bot.recall(MessageManager.get(msgId).getSource());
     }
 
     @Override

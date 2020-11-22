@@ -10,6 +10,7 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
+import com.meng.handler.MessageManager;
 
 /**
  * @author: 司徒灵羽
@@ -25,7 +26,7 @@ public class SJFMain {
         BotMessageHandler bmh = new BotMessageHandler(sb);
         Events.registerEvents(sb, bmh);
         ExceptionCatcher.getInstance(sb).init();
-        MessageCachePool.start();
+        MessageManager.init();
         sb.login();
         SJFExecutors.execute(new Runnable(){
 
