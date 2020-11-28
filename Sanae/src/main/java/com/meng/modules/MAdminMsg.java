@@ -75,46 +75,46 @@ public class MAdminMsg extends BaseModule implements IGroupMessageEvent {
                         entity.setGroupCard(groupId, Long.parseLong(iter.next()), iter.next());
                     }
                     return true;
-                case "switch":
-                    if (list.size() == 2) {
-                        List<Object> all = entity.moduleManager.getAllModules();
-                        StringBuilder sb = new StringBuilder("当前有:\n");
-                        for (Object o : all) {
-                            Class<?> cls = o.getClass();
-                            if (cls == ReflectCommand.class || cls == MtestMsg.class || cls == MAdminMsg.class) {
-                                continue;
-                            }
-                            if (o instanceof BaseModule) {
-                                sb.append(((BaseModule)o).getModuleName()).append("\n");
-                            }
-                        }
-                        sb.setLength(sb.length() - 1);
-                        entity.sendGroupMessage(gme.getGroup().getId(), sb.toString());
-                    } else if (list.size() == 3) {
-                        List<Object> all = entity.moduleManager.getAllModules();
-                        ConfigManager configManager = entity.configManager;
-                        String mn = iter.next();
-                        for (Object o : all) {
-                            Class<?> cls = o.getClass();
-                            if (cls == ReflectCommand.class || cls == MtestMsg.class || cls == MAdminMsg.class) {
-                                continue;
-                            }
-                            if (o instanceof BaseModule) {
-                                BaseModule bm = ((BaseModule)o);
-                                if (bm.getModuleName().equals(mn)) {
-                                    if (configManager.isFunctionEnbled(groupId, Modules.ADMIN)) {
-                                        configManager.setFunctionDisable(groupId, Modules.ADMIN);
-                                        entity.sendGroupMessage(groupId, "已禁用");
-                                    } else {
-                                        configManager.setFunctionEnbled(groupId, Modules.ADMIN);
-                                        entity.sendGroupMessage(groupId, "已启用");  
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    return true;
+//                case "switch":
+//                    if (list.size() == 2) {
+//                        List<Object> all = entity.moduleManager.getAllModules();
+//                        StringBuilder sb = new StringBuilder("当前有:\n");
+//                        for (Object o : all) {
+//                            Class<?> cls = o.getClass();
+//                            if (cls == ReflectCommand.class || cls == MtestMsg.class || cls == MAdminMsg.class) {
+//                                continue;
+//                            }
+//                            if (o instanceof BaseModule) {
+//                                sb.append(((BaseModule)o).getModuleName()).append("\n");
+//                            }
+//                        }
+//                        sb.setLength(sb.length() - 1);
+//                        entity.sendGroupMessage(gme.getGroup().getId(), sb.toString());
+//                    } else if (list.size() == 3) {
+//                        List<Object> all = entity.moduleManager.getAllModules();
+//                        ConfigManager configManager = entity.configManager;
+//                        String mn = iter.next();
+//                        for (Object o : all) {
+//                            Class<?> cls = o.getClass();
+//                            if (cls == ReflectCommand.class || cls == MtestMsg.class || cls == MAdminMsg.class) {
+//                                continue;
+//                            }
+//                            if (o instanceof BaseModule) {
+//                                BaseModule bm = ((BaseModule)o);
+//                                if (bm.getModuleName().equals(mn)) {
+//                                    if (configManager.isFunctionEnbled(groupId, Modules.ADMIN)) {
+//                                        configManager.setFunctionDisable(groupId, Modules.ADMIN);
+//                                        entity.sendGroupMessage(groupId, "已禁用");
+//                                    } else {
+//                                        configManager.setFunctionEnbled(groupId, Modules.ADMIN);
+//                                        entity.sendGroupMessage(groupId, "已启用");  
+//                                    }
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//                    return true;
             }
             if (!entity.configManager.isMaster(qqId)) {
                 return false;
@@ -125,9 +125,9 @@ public class MAdminMsg extends BaseModule implements IGroupMessageEvent {
                     HashSet<Group> hs = new HashSet<>();
                     Collection<Group> glist = entity.getGroups();
                     for (Group g:glist) {
-                        if (!entity.configManager.isFunctionEnbled(groupId, Modules.MAIN_SWITCH)) {
-                            continue;
-                        }
+//                        if (!entity.configManager.isFunctionEnbled(groupId, Modules.MAIN_SWITCH)) {
+//                            continue;
+//                        }
                         entity.sendGroupMessage(g.getId(), broadcast);
                         hs.add(g);
                         try {

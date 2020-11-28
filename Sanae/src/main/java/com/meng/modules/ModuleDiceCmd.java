@@ -37,9 +37,9 @@ public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnbled(groupId, Modules.DICE)) {
-            return false;
-        }
+//        if (!entity.configManager.isFunctionEnbled(groupId, Modules.DICE)) {
+//            return false;
+//        }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
             entity.sendGroupMessage(groupId, String.format("%s今天会在%s疮痍", entity.configManager.getNickName(groupId, qqId), thData.hashRandomSpell(qqId).name));

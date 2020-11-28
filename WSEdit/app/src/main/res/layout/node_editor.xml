@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+
+	<LinearLayout
+		android:id="@+id/node_editorLinearLayout"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:orientation="vertical"
+		android:layout_alignParentBottom="true">
+
+		<RadioGroup
+			android:id="@+id/node_editorRadioGroup_msg_type"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<RadioButton
+				android:text="normal"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_RadioButton_normal"/>
+
+			<RadioButton
+				android:text="quote"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_RadioButton_quote"/>
+
+			<RadioButton
+				android:text="at"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_RadioButton_at"/>
+
+		</RadioGroup>
+
+		<View
+			android:background="?android:attr/dividerVertical"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"/>
+
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:orientation="horizontal"
+			android:id="@+id/node_editor_LinearLayout_checkBox">
+
+			<CheckBox
+				android:text="E"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_CheckBox_easy"/>
+
+			<CheckBox
+				android:text="N"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_CheckBox_normal"/>
+
+			<CheckBox
+				android:text="H"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_CheckBox_hard"/>
+
+			<CheckBox
+				android:text="L"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_CheckBox_lunatic"/>
+
+			<CheckBox
+				android:text="X"
+				android:layout_weight="1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/node_editor_CheckBox_extra"/>
+
+		</LinearLayout>
+
+		<View
+			android:background="?android:attr/dividerVertical"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"/>
+
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent">
+
+			<CheckBox
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:id="@+id/node_editor_CheckBox_auto_recall"
+				android:text="auto recall"/>
+
+		</LinearLayout>
+
+		<Button
+			android:layout_width="fill_parent"
+			android:text="添加"
+			android:layout_height="wrap_content"
+			android:id="@+id/node_editor_Button_add"/>
+
+	</LinearLayout>
+
+	<ListView
+		android:layout_above="@id/node_editorLinearLayout"
+		android:id="@+id/node_editorListView"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"/>
+
+	<View
+		android:background="?android:attr/dividerVertical"
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:layout_above="@id/node_editorLinearLayout"/>
+
+</RelativeLayout>
+

@@ -178,39 +178,39 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 //            return true;
 //        }
         String msg = gme.getMessage().contentToString();
-        if (msg.startsWith(".bot")) {
-            ConfigManager cm = entity.configManager;
-            if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {
-                if (msg.equals(".bot on")) {
-                    cm.setFunctionDisable(groupId, Modules.MAIN_SWITCH);
-                    entity.sendQuote(gme, "已启用本群响应");
-                    cm.save();
-                    return true;
-                } else if (msg.equals(".bot off")) {
-                    entity.sendQuote(gme, "已停用本群响应");
-                    cm.setFunctionDisable(groupId, Modules.MAIN_SWITCH);
-                    cm.save();
-                    return true;
-                } 
-            } else {
-                if (msg.equals(".bot on")) {
-                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
-                    pc.setBotOn(true);
-                    entity.sendQuote(gme, "已启用对你的响应");
-                    return true;
-                } else if (msg.equals(".bot off")) {
-                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
-                    pc.setBotOn(false);
-                    entity.sendQuote(gme, "已停用对你的响应");
-                    return true;
-                }
-                entity.configManager.save(); 
-                return true;
-            }  
-        }
-        if (!entity.configManager.isFunctionEnbled(groupId, Modules.MAIN_SWITCH)) {
-            return false; 
-        }
+//        if (msg.startsWith(".bot")) {
+//            ConfigManager cm = entity.configManager;
+//            if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {
+//                if (msg.equals(".bot on")) {
+//                    cm.setFunctionDisable(groupId, Modules.MAIN_SWITCH);
+//                    entity.sendQuote(gme, "已启用本群响应");
+//                    cm.save();
+//                    return true;
+//                } else if (msg.equals(".bot off")) {
+//                    entity.sendQuote(gme, "已停用本群响应");
+//                    cm.setFunctionDisable(groupId, Modules.MAIN_SWITCH);
+//                    cm.save();
+//                    return true;
+//                } 
+//            } else {
+//                if (msg.equals(".bot on")) {
+//                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
+//                    pc.setBotOn(true);
+//                    entity.sendQuote(gme, "已启用对你的响应");
+//                    return true;
+//                } else if (msg.equals(".bot off")) {
+//                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
+//                    pc.setBotOn(false);
+//                    entity.sendQuote(gme, "已停用对你的响应");
+//                    return true;
+//                }
+//                entity.configManager.save(); 
+//                return true;
+//            }  
+//        }
+//        if (!entity.configManager.isFunctionEnbled(groupId, Modules.MAIN_SWITCH)) {
+//            return false; 
+//        }
         for (IGroupMessageEvent m : groupMsgHandlers) {
             if (m.onGroupMessage(gme)) {
                 return true;
@@ -221,9 +221,9 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
     @Override
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
-        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Modules.MAIN_SWITCH)) {
-            return false; 
-        }
+//        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Modules.MAIN_SWITCH)) {
+//            return false; 
+//        }
         for (IGroupMessageEvent m : groupMsgHandlers) {
             if (m.onGroupMemberNudge(event)) {
                 return true;
@@ -234,9 +234,9 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Modules.RECALL)) {
-            return false; 
-        }
+//        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Modules.RECALL)) {
+//            return false; 
+//        }
         for (IGroupMessageEvent m : groupMsgHandlers) {
             if (m.onGroupMessageRecall(event)) {
                 return true;

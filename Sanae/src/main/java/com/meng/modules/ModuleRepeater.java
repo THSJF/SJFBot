@@ -30,9 +30,9 @@ public class ModuleRepeater extends BaseModule implements IGroupMessageEvent{
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         Repeater rp = repeaters.get(groupId);
-        if (!entity.configManager.isFunctionEnbled(groupId, Modules.REPEATER)) {
-            return false; 
-        }
+//        if (!entity.configManager.isFunctionEnbled(groupId, Modules.REPEATER)) {
+//            return false; 
+//        }
 		if (rp == null) {
 			repeaters.put(groupId, rp = new Repeater());
 		}

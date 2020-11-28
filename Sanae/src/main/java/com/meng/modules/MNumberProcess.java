@@ -21,9 +21,9 @@ public class MNumberProcess extends BaseModule implements IGroupMessageEvent {
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.NUMBER_PROCESS)) {
-            return false;
-        }
+//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.NUMBER_PROCESS)) {
+//            return false;
+//        }
         String msg = gme.getMessage().contentToString();
         if (msg.charAt(0) != '.') {
             return false;

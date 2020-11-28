@@ -88,7 +88,7 @@ public class SBot extends Bot {
     }
 
     public int sendGroupMessage(long fromGroup, Message msg) {
-        if (sleeping || !configManager.isFunctionEnbled(fromGroup, Modules.MAIN_SWITCH)) {
+        if (sleeping) { // || !configManager.isFunctionEnbled(fromGroup, Modules.MAIN_SWITCH)) {
             return -1;
         }
         return bot.getGroup(fromGroup).sendMessage(msg).getSource().getId();

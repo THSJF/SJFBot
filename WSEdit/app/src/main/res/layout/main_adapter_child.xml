@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:descendantFocusability="blocksDescendants"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<TextView
+		android:textAllCaps="false"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="40sp"
+		android:paddingTop="5sp"
+		android:gravity="left"
+		android:id="@+id/main_adapter_childTextView_goodwill"
+		android:textColor="#FF00B2FF"/>
+
+	<TextView
+		android:textAllCaps="false"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="40sp"
+		android:gravity="left"
+		android:layout_below="@id/main_adapter_childTextView_goodwill"
+		android:id="@+id/main_adapter_childTextView_content"
+		android:layout_centerVertical="true"/>
+
+</RelativeLayout>
+

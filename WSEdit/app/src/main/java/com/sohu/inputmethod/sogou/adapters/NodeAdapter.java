@@ -1,9 +1,10 @@
-package com.sohu.inputmethod.sogou;
+package com.sohu.inputmethod.sogou.adapters;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import com.sohu.inputmethod.sogou.MainActivity;
 import com.sohu.inputmethod.sogou.R;
 import com.sohu.inputmethod.sogou.jb.Node;
 import java.util.ArrayList;
@@ -42,8 +43,7 @@ public class NodeAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String node = list.get(position).toString();
-        holder.text.setText(node.equals("")?list.get(position).t.toString():node);
+        holder.text.setText(list.get(position).getCharSequence());
         return convertView;
     }
 

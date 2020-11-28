@@ -6,29 +6,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
-import android.widget.ListView;
-import com.google.gson.Gson;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import com.sohu.inputmethod.ExceptionCatcher;
+import com.sohu.inputmethod.sogou.adapters.MainListAdapter;
 import com.sohu.inputmethod.sogou.jb.Entry;
 import com.sohu.inputmethod.sogou.jb.WordStock;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import com.leon.lfilepickerlibrary.utils.StringUtils;
 
 public class MainActivity extends Activity { 
 
-    public static WordStock wordStork = new WordStock();
+    public WordStock wordstock = new WordStock();
     public static MainActivity instance;
-    public MainAdapter wsa;
-    public ListView lv;
-
+    public ExpandableListView lv;
+    public MainListAdapter mla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,45 +30,56 @@ public class MainActivity extends Activity {
         instance = this;
         ExceptionCatcher.getInstance().init();
         setContentView(R.layout.activity_main);
-        try {
-            wordStork = new Gson().fromJson(read(), WordStock.class);
-        } catch (Exception e) {
-
+        SharedPreferenceHelper.init(this, "sjf");
+        if (StringUtils.isEmpty(SharedPreferenceHelper.getValue("lastpath"))) {
+            SharedPreferenceHelper.putValue("lastpath", "/storage/emulated/0/");
         }
-        wsa = new MainAdapter();
+        try {
+            wordstock = WordStock.read();
+        } catch (IOException e) {}
+        mla = new MainListAdapter(wordstock);
         lv = findViewById(R.id.activity_mainListView);
-        lv.setAdapter(wsa);
-        lv.setOnItemClickListener(new OnItemClickListener(){
+        lv.setAdapter(mla);
+        lv.setOnChildClickListener(new OnChildClickListener(){
 
                 @Override
-                public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
-                    Intent i = new Intent(MainActivity.this, EntryActivity.class);
-                    i.putExtra("key", wsa.getItem(p3));
-                    startActivity(i);
-                }
-            });
+                public boolean onChildClick(ExpandableListView p1, View p2, final int groupP, final int childP, long p5) {
 
-        lv.setOnItemLongClickListener(new OnItemLongClickListener(){
-
-                @Override
-                public boolean onItemLongClick(AdapterView<?> p1, View p2, final int p3, long p4) {
-                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("删除")
-                        .setMessage("确定删除" + wordStork.w.get(wsa.getItem(p3)) + "吗")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener(){
+                    new AlertDialog.Builder(MainActivity.instance)
+                        .setTitle("编辑")
+                        .setPositiveButton("删除", new DialogInterface.OnClickListener(){
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                wordStork.w.remove(wsa.getItem(p3));
-                                update();
+                                new AlertDialog.Builder(MainActivity.instance)
+                                    .setTitle("删除")
+                                    .setMessage("确定删除" + mla.getChild(groupP, childP).getCharSequence() + "吗")
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener(){
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            wordstock.words.get(mla.getGroup(groupP)).remove(childP);
+                                            MainActivity.instance.update();
+                                        }
+                                    }).setNegativeButton("取消", null).show();
                             }
                         })
-                        .setNegativeButton("取消", null)
-                        .create();
-                    dialog.show();
-                    return true;
+                        .setNegativeButton("修改", new DialogInterface.OnClickListener(){
+
+                            @Override
+                            public void onClick(DialogInterface p1, int p2) {
+                                Intent i = new Intent(MainActivity.this, NodeActivity.class);
+                                i.putExtra("key", mla.getGroup(groupP));
+                                i.putExtra("pos", childP);
+                                startActivity(i);
+                            }
+                        }).show();
+
+
+                    return false;
                 }
-            });  
+            });
+
         findViewById(R.id.activity_main_Button1).setOnClickListener(new View.OnClickListener(){
 
                 @Override
@@ -87,7 +92,7 @@ public class MainActivity extends Activity {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                wordStork.w.put(et.getText().toString(), new ArrayList<Entry>());
+                                wordstock.words.put(et.getText().toString(), new ArrayList<Entry>());
                                 update();
                             }
                         })
@@ -96,79 +101,16 @@ public class MainActivity extends Activity {
             });
     }
 
-    private void update() {
+    public void update() {
         try {
-            MainActivity.save();
+            wordstock.save();
         } catch (IOException e) {}
-        wsa.notifyDataSetChanged();
+        mla.notifyDataSetChanged();
     }
-
-    public static void save() throws IOException {
-        {
-            File jsonFile = new File("/storage/emulated/0/AppProjects/sanae_data/persistent/dynamic_word_stock.json");
-            FileOutputStream fos = new FileOutputStream(jsonFile);
-            fos.write(formatJson(new Gson().toJson(wordStork)).getBytes(StandardCharsets.UTF_8));
-            fos.close();
-        }
-        {
-            File jsonFile = new File("/storage/emulated/0/AppProjects/sanae_data/backup/dynamic_word_stock" + (System.currentTimeMillis() / 1000 / 60) + ".json");
-            FileOutputStream fos = new FileOutputStream(jsonFile);
-            fos.write(formatJson(new Gson().toJson(wordStork)).getBytes(StandardCharsets.UTF_8));
-            fos.close();        
-        }
-    }
-
-    public static String read() throws IOException {
-        File jsonFile = new File("/storage/emulated/0/AppProjects/sanae_data/persistent/dynamic_word_stock.json");
-        FileInputStream fis = new FileInputStream(jsonFile);
-        byte[] bytes = new byte[(int)jsonFile.length()];
-        fis.read(bytes);
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
-
-    public static String formatJson(String content) {
-        if (content == null) {
-            return "{}";
-        }
-        if(content != null){
-            return content;
-        }
-        StringBuilder sb = new StringBuilder();
-        int index = 0;
-        int count = 0;
-        while (index < content.length()) {
-            char ch = content.charAt(index);
-            if (ch == '{' || ch == '[') {
-                sb.append(ch);
-                sb.append('\n');
-                count++;
-                for (int i = 0; i < count; i++) {                   
-                    sb.append('\t');
-                }
-            } else if (ch == '}' || ch == ']') {
-                sb.append('\n');
-                count--;
-                for (int i = 0; i < count; i++) {                   
-                    sb.append('\t');
-                }
-                sb.append(ch);
-            } else if (ch == ',') {
-                sb.append(ch);
-                sb.append('\n');
-                for (int i = 0; i < count; i++) {                   
-                    sb.append('\t');
-                }
-            } else {
-                sb.append(ch);              
-            }
-            index++;
-        }
-        return sb.toString();
-	}
 
     @Override
     protected void onResume() {
         super.onResume();
-        wsa.notifyDataSetChanged();
+        mla.notifyDataSetChanged();
     }
 } 

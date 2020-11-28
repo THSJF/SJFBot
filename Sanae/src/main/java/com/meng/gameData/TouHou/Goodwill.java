@@ -6,16 +6,17 @@ import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.google.gson.annotations.SerializedName;
 import com.meng.SBot;
+import net.mamoe.mirai.contact.Member;
 
 public class Goodwill extends BaseModule {
 
     @SanaeData("goodwill.json")
-    private HashMap<Long,UserData> values;
-    
+    private HashMap<Long,UserData> values = new HashMap<>();
+
     public Goodwill(SBot sb) {
         super(sb);
     }
-    
+
     @Override
     public Goodwill load() {
         DataPersistenter.read(this);
@@ -26,12 +27,12 @@ public class Goodwill extends BaseModule {
     public String getModuleName() {
         return "userdata";
     }
-    
-    public UserData getUsetData(long uid){
-        return values.get(uid);
+
+    public UserData getUsetData(Member user) {
+        return values.get(user.getId());
     }
 
-    public static class UserData{
+    public static class UserData {
         @SerializedName("a")
         public int goodwill;
         @SerializedName("b")

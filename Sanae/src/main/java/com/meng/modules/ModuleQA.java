@@ -64,9 +64,9 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.QA)) {
-            return false;
-        }
+//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.QA)) {
+//            return false;
+//        }
         if (processQa(gme)) {
             return true;
         }

@@ -31,13 +31,24 @@
         </activity>
 
         <activity
-            android:name=".EntryActivity"
-            android:label="Entry(MessageChain)"/>
+            android:name=".SelectActivity"
+            android:label="select img"/>
 
         <activity
             android:name=".NodeActivity"
             android:label="Node(SingleMessage)"/>
-
+        
+        <activity android:name="com.leon.lfilepickerlibrary.ui.LFilePickerActivity" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        
         <meta-data
             android:name="android.max_aspect"
             android:value="4.0"/>

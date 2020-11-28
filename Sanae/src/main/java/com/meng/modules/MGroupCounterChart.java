@@ -65,9 +65,9 @@ public class MGroupCounterChart extends BaseModule implements IGroupMessageEvent
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.GROUP_COUNT_CHART)) {
-            return false;
-        }
+//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.GROUP_COUNT_CHART)) {
+//            return false;
+//        }
         String msg = gme.getMessage().contentToString();
 		GroupSpeak gs = groupsMap.get(groupId);
 		if (gs == null) {

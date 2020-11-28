@@ -68,7 +68,7 @@ public class MTimeTask extends BaseModule {
                         public void run() {
                             String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
                             for (Group group : entity.getGroups()) {
-                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
+//                              if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
                                     if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }
@@ -77,7 +77,7 @@ public class MTimeTask extends BaseModule {
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     } 
-                                }
+//                              }
                             }
                             entity.sleeping = true; 
                         }
@@ -89,7 +89,7 @@ public class MTimeTask extends BaseModule {
                             entity.sleeping = false;
                             String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
                             for (Group group : entity.getGroups()) {
-                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
+//                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
                                     if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }
@@ -98,7 +98,7 @@ public class MTimeTask extends BaseModule {
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     } 
-                                }
+//                                }
                             }
                             entity.sleeping = true; 
                         }

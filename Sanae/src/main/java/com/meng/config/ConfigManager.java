@@ -41,7 +41,7 @@ public class ConfigManager extends BaseModule {
         return this;
     }
 
-    public void setFunctionEnbled(long gid, Modules m) {
+/*    public void setFunctionEnbled(long gid, Modules m) {
         GroupConfig get = configHolder.groupConfigs.get(gid);
         if (get == null) {
             get = new GroupConfig();
@@ -70,7 +70,7 @@ public class ConfigManager extends BaseModule {
         }
         return get.enabled.contains(m);
     }
-
+*/
     public PersonConfig getPersonConfig(long qq) {
         PersonConfig get = configHolder.personCfg.get(qq);
         if (get == null) {
