@@ -18,6 +18,7 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @Description: 管理员命令
@@ -224,12 +225,15 @@ public class MAdminMsg extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            entity.sendGroupMessage(event.getGroup().getId(), "你群日常乱戳");
+        }
         return false;
     }
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-        entity.sendGroupMessage(event.getGroup().getId(), String.format("%s撤回了:%s", event.getOperator().getId(), MessageManager.get(event)));
+        entity.sendGroupMessage(event.getGroup().getId(), String.format("%s撤回了:%s", event.getOperator().getId(), MessageManager.get(event).getMessage().contentToString()));
         return false;
     }
 

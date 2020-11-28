@@ -50,7 +50,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
             if (mapEntry.getValue().matcher(msg).find()) {
                 ArrayList<Entry> list = dictionary.words.get(mapEntry.getKey());
                 Entry entry = null;
-                GoodwillLevel gl = GoodwillLevel.getLevel(userData.goodwill);
+                GoodwillLevel gl = GoodwillLevel.getLevel(userData == null ? 0 : userData.goodwill);
                 for (int i = 0;i < 10000;i++) {
                     entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
                     if (goodwillMatch(entry, gl)) {
@@ -107,7 +107,11 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 mcb.add(String.valueOf(ThreadLocalRandom.current().nextFloat() * scale));
                                 break;
                             case HASH_RAN_INT:
-                                mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomInt(gme.getSender().getId())));
+                                int hi = -1;
+                                try {
+                                    hi = Integer.parseInt(node.content);  
+                                } catch (NumberFormatException ignore) {} 
+                                mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomInt(gme.getSender().getId(), hi)));
                                 break;
                             case HASH_RAN_FLOAT:
                                 float rscale = 1f;
@@ -184,11 +188,11 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
         QNAME(4),
         GID(5),
         GNAME(6),
-        RAN_INT(7),
-        RAN_FLOAT(8),
-        HASH_RAN_INT(9),
-        HASH_RAN_FLOAT(10),
-        IMG_FOLDER(11);
+        RAN_INT(9),
+        RAN_FLOAT(10),
+        HASH_RAN_INT(11),
+        HASH_RAN_FLOAT(12),
+        IMG_FOLDER(13);
 
         public static NodeType valueOf(int v){
             for(NodeType it : values()){

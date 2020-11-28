@@ -456,6 +456,10 @@ public class THDataHolder {
         return Integer.parseInt(md5.substring(26), 16);
     }
 
+    public int hashRandomInt(long fromQQ, int bound) {
+        return hashRandomInt(fromQQ) % bound;
+    }
+
     public float hashRandomFloat(long fromQQ) {
         String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
         return new Random(Integer.parseInt(md5.substring(26), 16)).nextFloat();

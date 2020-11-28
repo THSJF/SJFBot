@@ -20,13 +20,15 @@ import com.sohu.inputmethod.ExceptionCatcher;
 import com.sohu.inputmethod.sogou.R;
 import com.sohu.inputmethod.sogou.adapters.NodeAdapter;
 import com.sohu.inputmethod.sogou.jb.Entry;
-import com.sohu.inputmethod.sogou.jb.ItemType;
+import com.sohu.inputmethod.sogou.jb.NodeType;
 import com.sohu.inputmethod.sogou.jb.Node;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Adapter;
 
 public class NodeActivity extends Activity {
 
@@ -88,7 +90,7 @@ public class NodeActivity extends Activity {
 
                 @Override
                 public void onClick(View p1) {
-                    final ItemType[] its = ItemType.values();
+                    final NodeType[] its = NodeType.values();
                     String[] s = new String[its.length];
                     for (int i = 0;i < its.length;++i) {
                         s[i] = its[i].toString();
@@ -104,7 +106,7 @@ public class NodeActivity extends Activity {
                                         new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface p11, int p2) {
-                                                    nodes.add(new Node(et.getText().toString(), ItemType.TXT));
+                                                    nodes.add(new Node(et.getText().toString(), NodeType.TXT));
                                                     update();
                                                 }
                                             }).setNegativeButton("取消", null).show();
@@ -116,22 +118,22 @@ public class NodeActivity extends Activity {
                                         selectFolder();
                                         break;
                                     case QID:
-                                        nodes.add(new Node(ItemType.QID));
+                                        nodes.add(new Node(NodeType.QID));
                                         break;
                                     case QNAME:
-                                        nodes.add(new Node(ItemType.QNAME));
+                                        nodes.add(new Node(NodeType.QNAME));
                                         break;
                                     case GID:
-                                        nodes.add(new Node(ItemType.GID));
+                                        nodes.add(new Node(NodeType.GID));
                                         break; 
                                     case GNAME:
-                                        nodes.add(new Node(ItemType.GNAME));
+                                        nodes.add(new Node(NodeType.GNAME));
                                         break;  
                                     case RAN_INT:
                                         new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface p11, int p2) {
-                                                    nodes.add(new Node(et.getText().toString(), ItemType.RAN_INT));
+                                                    nodes.add(new Node(et.getText().toString(), NodeType.RAN_INT));
                                                     update();
                                                 }
                                             }).setNegativeButton("取消", null).show();
@@ -140,7 +142,7 @@ public class NodeActivity extends Activity {
                                         new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface p11, int p2) {
-                                                    nodes.add(new Node(et.getText().toString(), ItemType.RAN_FLOAT));
+                                                    nodes.add(new Node(et.getText().toString(), NodeType.RAN_FLOAT));
                                                     update();
                                                 }
                                             }).setNegativeButton("取消", null).show();
@@ -149,7 +151,7 @@ public class NodeActivity extends Activity {
                                         new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface p11, int p2) {
-                                                    nodes.add(new Node(et.getText().toString(), ItemType.HASH_RAN_INT));
+                                                    nodes.add(new Node(et.getText().toString(), NodeType.HASH_RAN_INT));
                                                     update();
                                                 }
                                             }).setNegativeButton("取消", null).show();
@@ -158,7 +160,7 @@ public class NodeActivity extends Activity {
                                         new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface p11, int p2) {
-                                                    nodes.add(new Node(et.getText().toString(), ItemType.HASH_RAN_FLOAT));
+                                                    nodes.add(new Node(et.getText().toString(), NodeType.HASH_RAN_FLOAT));
                                                     update();
                                                 }
                                             }).setNegativeButton("取消", null).show();
@@ -168,6 +170,22 @@ public class NodeActivity extends Activity {
                                 dialog.dismiss();
                             }
                         }).show();
+                }
+            });
+        lv.setOnItemClickListener(new OnItemClickListener(){
+
+                @Override
+                public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
+                    final EditText et = new EditText(NodeActivity.this);
+                    final Node node = na.getItem(p3);
+                    et.setText(node.content);
+                    new AlertDialog.Builder(NodeActivity.this).setView(et).setTitle("编辑").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface p11, int p2) {
+                                node.content = et.getText().toString();
+                                update();
+                            }
+                        }).setNegativeButton("取消", null).show();
                 }
             });
         lv.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -295,7 +313,7 @@ public class NodeActivity extends Activity {
                     File source = new File(filePath);
                     File target = new File("/storage/emulated/0/AppProjects/sanae_data/image/" + source.getName());
                     int index = target.getAbsolutePath().indexOf("sanae_data") + "sanae_data".length();
-                    nodes.add(new Node(target.getAbsolutePath().substring(index), ItemType.IMG));
+                    nodes.add(new Node(target.getAbsolutePath().substring(index), NodeType.IMG));
                     update();
                     if (target.exists() && !source.equals(target)) {
                         target.delete();
@@ -311,7 +329,7 @@ public class NodeActivity extends Activity {
                 File source = new File(path);
                 File target = new File("/storage/emulated/0/AppProjects/sanae_data/image/" + source.getName());
                 int index = target.getAbsolutePath().indexOf("sanae_data") + "sanae_data".length();
-                nodes.add(new Node(target.getAbsolutePath().substring(index), ItemType.IMG_FOLDER));
+                nodes.add(new Node(target.getAbsolutePath().substring(index), NodeType.IMG_FOLDER));
                 update();
                 if (target.exists() && !source.equals(target)) {
                     target.delete();

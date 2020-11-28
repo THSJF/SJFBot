@@ -14,7 +14,7 @@ public class Node {
 
     public Node() { }
 
-    public Node(ItemType type) {
+    public Node(NodeType type) {
         this.type = type.value();
     }
 
@@ -22,10 +22,10 @@ public class Node {
         if (content != null) {
             this.content = content;
         }
-        this.type = ItemType.TXT.value();
+        this.type = NodeType.TXT.value();
     }
 
-    public Node(String content, ItemType type) {
+    public Node(String content, NodeType type) {
         if (content != null) {
             this.content = content;
         }
@@ -38,7 +38,7 @@ public class Node {
     }  
 
     public CharSequence getCharSequence() {
-        switch (ItemType.valueOf(type)) {
+        switch (NodeType.valueOf(type)) {
             case TXT:
                 return content;
             case IMG:

@@ -46,12 +46,22 @@ public class MessageManager {
         return null;
     }
 
-    public static void autoRecall(SBot sb, int msgId, int second) {
-        sb.recallIn(get(msgId).getSource(), second * 1000);
+    public static void autoRecall(final SBot sb, final int msgId, int second) {
+        SJFExecutors.executeAfterTime(new Runnable(){
+                @Override
+                public void run() {
+                    sb.recall(get(msgId).getSource());
+                }
+            }, second, TimeUnit.SECONDS);
     }
 
-    public static void autoRecall(SBot sb, int msgId) {
-        sb.recallIn(get(msgId).getSource(), 60000);
+    public static void autoRecall(final SBot sb, final int msgId) {
+        SJFExecutors.executeAfterTime(new Runnable(){
+                @Override
+                public void run() {
+                    sb.recall(get(msgId).getSource());
+                }
+            }, 1, TimeUnit.MINUTES);
 	}
 
     public static void init() {

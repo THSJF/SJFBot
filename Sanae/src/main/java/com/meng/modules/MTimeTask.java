@@ -61,7 +61,7 @@ public class MTimeTask extends BaseModule {
                         }
                     }
                 }
-            }, 0, 2, TimeUnit.MINUTES);
+            }, 0, 1, TimeUnit.MINUTES);
         addTask(new TaskBean(23, 0, new Runnable(){
 
                         @Override
@@ -102,7 +102,14 @@ public class MTimeTask extends BaseModule {
                             }
                             entity.sleeping = true; 
                         }
-                    }));           
+                    }));
+        addTask(new TaskBean(0, 0, new Runnable(){
+
+                        @Override
+                        public void run() {
+                            
+                        }
+                    }));
         return this;
     }
 

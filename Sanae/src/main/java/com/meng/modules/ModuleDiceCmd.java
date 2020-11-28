@@ -15,6 +15,7 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import com.meng.gameData.TouHou.Goodwill;
 
 /**
  * @Description: 模拟骰子
@@ -57,6 +58,12 @@ public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
             String md5 = Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
             char c = md5.charAt(0);   
             switch (iter.next()) {
+                case "签到":
+                    if (qqId == 2856986197L) {
+                        Goodwill gw = entity.moduleManager.getModule(Goodwill.class);
+                        entity.sendGroupMessage(groupId, gw.onSign(gme.getSender()));
+                    }
+                    break;
                 case "r":
                     entity.sendGroupMessage(groupId, String.format("%s投掷%s:D100 = %d", entity.configManager.getNickName(groupId, qqId), iter.hasNext() ?iter.next(): "", random.nextInt(100)));
                     return true;
