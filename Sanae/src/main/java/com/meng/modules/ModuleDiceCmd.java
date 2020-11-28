@@ -61,6 +61,12 @@ public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
                 case "签到":
                     if (qqId == 2856986197L) {
                         Goodwill gw = entity.moduleManager.getModule(Goodwill.class);
+                        gw.onNewDay();
+                    }
+                    break;
+                case "签到":
+                    if (qqId == 2856986197L) {
+                        Goodwill gw = entity.moduleManager.getModule(Goodwill.class);
                         entity.sendGroupMessage(groupId, gw.onSign(gme.getSender()));
                     }
                     break;

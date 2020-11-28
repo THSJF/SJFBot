@@ -44,8 +44,7 @@ public class Goodwill extends BaseModule {
     }
 
     public String onSign(Member user) {
-        long qq = user.getId();
-        UserData ud = values.get(qq);
+        UserData ud = getUsetData(user);
         if (ud.todaySigned) {
             return "你今天已经签到过了";
         }

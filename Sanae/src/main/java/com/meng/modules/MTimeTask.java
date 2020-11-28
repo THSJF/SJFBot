@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.contact.Group;
+import com.meng.gameData.TouHou.Goodwill;
 
 /**
  * @author: 司徒灵羽
@@ -24,7 +25,7 @@ public class MTimeTask extends BaseModule {
     public MTimeTask(SBot bw) {
         super(bw);
     }
-    
+
     public void addTask(TaskBean tb) {
         tasks.add(tb);
     }
@@ -69,14 +70,14 @@ public class MTimeTask extends BaseModule {
                             String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
                             for (Group group : entity.getGroups()) {
 //                              if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
-                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                        continue;
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    } 
+                                if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                    continue;
+                                }
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } 
 //                              }
                             }
                             entity.sleeping = true; 
@@ -90,24 +91,23 @@ public class MTimeTask extends BaseModule {
                             String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
                             for (Group group : entity.getGroups()) {
 //                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
-                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                        continue;
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    } 
+                                if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                    continue;
+                                }
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } 
 //                                }
                             }
-                            entity.sleeping = true; 
                         }
                     }));
         addTask(new TaskBean(0, 0, new Runnable(){
 
                         @Override
                         public void run() {
-                            
+                            entity.moduleManager.getModule(Goodwill.class).onNewDay();
                         }
                     }));
         return this;
