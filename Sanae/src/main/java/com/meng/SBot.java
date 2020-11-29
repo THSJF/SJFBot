@@ -98,6 +98,30 @@ public class SBot extends Bot {
         return sendGroupMessage(fromGroup, new PlainText(msg));
     }
 
+    public int sendGroupMessage(long fromGroup, String[] msg) {
+        return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
+    }
+
+    public int sendGroupMessage(long fromGroup, ArrayList<String> msg) {
+        return sendGroupMessage(fromGroup, msg.toArray(new String[0]));
+    }
+
+    public int sendMessage(Group group, String msg) {
+        return sendGroupMessage(group.getId(), msg);
+    }
+
+    public int sendMessage(Group group, Message msg) {
+        return sendGroupMessage(group.getId(), msg);
+    }
+
+    public int sendMessage(Group group, String[] msg) {
+        return sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(msg));
+    }
+
+    public int sendMessage(Group group, ArrayList<String> msg) {
+        return sendGroupMessage(group.getId(), msg.toArray(new String[0]));
+    } 
+
     public int sendQuote(GroupMessageEvent gme, String msg) {
         return sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
@@ -105,14 +129,6 @@ public class SBot extends Bot {
     public int sendQuote(GroupMessageEvent gme, Message msg) {
         return sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
-
-    public int sendGroupMessage(long fromGroup, String[] msg) {
-        return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
-    }
-
-    public int sendGroupMessage(long fromGroup, ArrayList<String> msg) {
-        return sendGroupMessage(fromGroup, msg.get(ThreadLocalRandom.current().nextInt(msg.size())));
-    } 
 
     public boolean isAtme(String msg) {
         MessageChainBuilder messageChainBuilder = new MessageChainBuilder();

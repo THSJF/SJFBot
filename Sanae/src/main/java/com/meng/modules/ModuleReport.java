@@ -3,7 +3,7 @@ package com.meng.modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
-import com.meng.gameData.TouHou.Faith;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.TimeFormater;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 			}
 			if (msg.startsWith("-留言查看 t ")) {
 				ReportBean rb = getReport();
-				entity.moduleManager.getModule(Faith.class).addFaith(rb.qq, 5);
+				entity.moduleManager.getModule(UserInfo.class).addFaith(rb.qq, 5);
 				removeReport();
 				if (rb.group == -5) {
 
@@ -71,7 +71,7 @@ public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 			}
 		} 
 		if (msg.startsWith("-留言 ")) {
-			addReport(groupId, qqId, msg);
+			addReport(groupId, qqId, msg.substring(4));
 			entity.sendGroupMessage(groupId, "留言成功");
 			return true;
 		}

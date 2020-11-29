@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
-import com.meng.gameData.TouHou.Goodwill;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.MessageManager;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
@@ -45,12 +45,12 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 //            return false; 
 //        }
         String msg = gme.getMessage().contentToString();
-        Goodwill.UserData userData = entity.moduleManager.getModule(Goodwill.class).getUsetData(gme.getSender());
+        UserInfo.UserData userData = entity.moduleManager.getModule(UserInfo.class).getUserData(gme);
         for (Map.Entry<String,Pattern> mapEntry : regexMap.entrySet()) {
             if (mapEntry.getValue().matcher(msg).find()) {
                 ArrayList<Entry> list = dictionary.words.get(mapEntry.getKey());
                 Entry entry = null;
-                GoodwillLevel gl = GoodwillLevel.getLevel(userData == null ? 0 : userData.goodwill);
+                GoodwillLevel gl = GoodwillLevel.getLevel(userData == null ? 0 : userData.faith);
                 for (int i = 0;i < 10000;i++) {
                     entry = list.get(ThreadLocalRandom.current().nextInt(list.size()));
                     if (goodwillMatch(entry, gl)) {

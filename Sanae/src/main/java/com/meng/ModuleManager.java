@@ -1,8 +1,7 @@
 package com.meng;
 
 import com.meng.config.ConfigManager;
-import com.meng.config.javabeans.PersonConfig;
-import com.meng.gameData.TouHou.Faith;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.friend.IFriendChangeEvent;
 import com.meng.handler.friend.IFriendEvent;
 import com.meng.handler.friend.IFriendMessageEvent;
@@ -25,7 +24,6 @@ import com.meng.modules.ModuleMorning;
 import com.meng.modules.ModuleQA;
 import com.meng.modules.ModuleRepeater;
 import com.meng.modules.ModuleReport;
-import com.meng.modules.Modules;
 import com.meng.modules.MtestMsg;
 import com.meng.modules.ReflectCommand;
 import java.lang.reflect.Constructor;
@@ -60,7 +58,6 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.gameData.TouHou.Goodwill;
 
 /**
  * @Description: 模块管理器
@@ -99,14 +96,13 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
         load(MNumberProcess.class);
         load(ModuleDiceCmd.class);
-        load(Faith.class);
         load(MTimeTask.class);
         load(MAimMessage.class);
         load(MemberChange.class, false);
         load(ModuleQA.class);
         load(DynamicWordStock.class);
         load(ModuleMorning.class);
-        load(Goodwill.class);
+        load(UserInfo.class);
         return this;
     }
 

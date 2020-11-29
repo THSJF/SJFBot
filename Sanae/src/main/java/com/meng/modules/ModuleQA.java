@@ -17,6 +17,7 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
+import com.meng.gameData.TouHou.UserInfo;
 
 /**
  * @author: 司徒灵羽
@@ -98,6 +99,9 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
             if (qaLast.getTrueAns().containsAll(userAnss) && qaLast.getTrueAns().size() == userAnss.size()) {
                 entity.sendQuote(gme, "回答正确");
                 qaLast.incTrueTimes();
+                UserInfo module = entity.moduleManager.getModule(UserInfo.class);
+                module.getUserData(gme).qaRight++;
+                module.save();
                 save();
             } else {
                 entity.sendQuote(gme, "回答错误");
@@ -109,6 +113,9 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
             int randomInt = ThreadLocalRandom.current().nextInt(qaList.size());
             QA qaNow = qaList.get(randomInt);
             qaNow.incShowTimes();
+            UserInfo module = entity.moduleManager.getModule(UserInfo.class);
+            module.getUserData(gme).qaCount++;
+            module.save();
             StringBuilder sb = new StringBuilder().append("\n题目ID:").append(randomInt).append("\n");
             if (qaNow.getShowTimes() > 0) {
                 sb.append(String.format("正确率:%.2f%%", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes() * 100));

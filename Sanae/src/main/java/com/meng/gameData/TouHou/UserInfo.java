@@ -11,18 +11,20 @@ import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.contact.Group;
 
-public class Goodwill extends BaseModule {
+public class UserInfo extends BaseModule {
 
     @SanaeData("goodwill.json")
     private HashMap<Long,UserData> values = new HashMap<>();
 
-    public Goodwill(SBot sb) {
+    public UserInfo(SBot sb) {
         super(sb);
     }
 
+
     @Override
-    public Goodwill load() {
+    public UserInfo load() {
         DataPersistenter.read(this);
         return this;
     }
@@ -32,29 +34,40 @@ public class Goodwill extends BaseModule {
         return "userdata";
     }
 
-    public UserData getUsetData(Member user) {
+    public void addFaith(long qq, int v) {
+        values.get(qq).faith += v;
+        save();
+    }
+    
+    public UserData getUserData(GroupMessageEvent event){
+        return getUserData(event.getGroup(),event.getSender());
+    }
+
+    public UserData getUserData(Group group, Member user) {
         if (values.containsKey(user.getId())) {
             return values.get(user.getId());
         }
         UserData ud = new UserData();
-        ud.firstMeet = System.currentTimeMillis();
+        ud.firstMeetTime = System.currentTimeMillis();
+        ud.firstMeetGroup = group.getId();
         values.put(user.getId(), ud);
         save();
         return ud;
     }
 
-    public String onSign(Member user) {
-        UserData ud = getUsetData(user);
+    public boolean onSign(Group group, Member user) {
+        UserData ud = getUserData(group, user);
         if (ud.todaySigned) {
-            return "你今天已经签到过了";
+            return false;
         }
         ud.signedDays++;
         ud.todaySigned = true;
         if (ud.todaySigned && ud.yesterdaySigned) {
             ud.continuousSignedDays++;
         }
+        ud.faith += (10 + ud.continuousSignedDays);
         save();
-        return String.format("签到成功,累计%d天,连续签到%d天", ud.signedDays, ud.continuousSignedDays);
+        return true;
     }
 
     public void onNewDay() {
@@ -71,8 +84,6 @@ public class Goodwill extends BaseModule {
 
     public static class UserData {
         @SerializedName("a")
-        public int goodwill;
-        @SerializedName("b")
         public int faith;
         @SerializedName("c")
         public int signedDays;
@@ -83,6 +94,12 @@ public class Goodwill extends BaseModule {
         @SerializedName("f")
         public int continuousSignedDays = 1;
         @SerializedName("g")
-        public long firstMeet;
+        public long firstMeetTime;
+        @SerializedName("h")
+        public long firstMeetGroup;
+        @SerializedName("i")
+        public int qaCount;
+        @SerializedName("j")
+        public int qaRight;
     }
 }

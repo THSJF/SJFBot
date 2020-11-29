@@ -152,7 +152,7 @@ public class MGroupCounterChart extends BaseModule implements IGroupMessageEvent
 			File pic2=null;
 			try {
 				pic2 = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
-				ChartUtils.saveChartAsJPEG(pic, 1.0f, frame1.getChart(), 800, 480);
+				ChartUtils.saveChartAsJPEG(pic2, 1.0f, frame1.getChart(), 800, 480);
 			} catch (IOException e) {
                 throw new RuntimeException(e);
             }

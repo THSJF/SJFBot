@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.contact.Group;
-import com.meng.gameData.TouHou.Goodwill;
+import com.meng.gameData.TouHou.UserInfo;
 
 /**
  * @author: 司徒灵羽
@@ -107,7 +107,7 @@ public class MTimeTask extends BaseModule {
 
                         @Override
                         public void run() {
-                            entity.moduleManager.getModule(Goodwill.class).onNewDay();
+                            entity.moduleManager.getModule(UserInfo.class).onNewDay();
                         }
                     }));
         return this;
