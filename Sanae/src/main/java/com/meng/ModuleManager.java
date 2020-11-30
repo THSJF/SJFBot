@@ -1,6 +1,7 @@
 package com.meng;
 
 import com.meng.config.ConfigManager;
+import com.meng.config.javabeans.PersonConfig;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.friend.IFriendChangeEvent;
 import com.meng.handler.friend.IFriendEvent;
@@ -10,22 +11,22 @@ import com.meng.handler.group.IGroupEvent;
 import com.meng.handler.group.IGroupMemberEvent;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.handler.group.IGroupSettingEvent;
+import com.meng.modules.AdminMessage;
+import com.meng.modules.AimMessage;
 import com.meng.modules.BaseModule;
+import com.meng.modules.Dice;
 import com.meng.modules.DynamicWordStock;
-import com.meng.modules.MAdminMsg;
-import com.meng.modules.MAimMessage;
-import com.meng.modules.MGroupCounterChart;
-import com.meng.modules.MNumberProcess;
-import com.meng.modules.MTimeTask;
+import com.meng.modules.GroupCounterChart;
+import com.meng.modules.NumberProcess;
 import com.meng.modules.MemberChange;
 import com.meng.modules.MessageRefuse;
-import com.meng.modules.ModuleDiceCmd;
-import com.meng.modules.ModuleMorning;
-import com.meng.modules.ModuleQA;
-import com.meng.modules.ModuleRepeater;
-import com.meng.modules.ModuleReport;
+import com.meng.modules.Morning;
+import com.meng.modules.Repeater;
+import com.meng.modules.Report;
 import com.meng.modules.MtestMsg;
-import com.meng.modules.ReflectCommand;
+import com.meng.modules.QuestionAndAnswer;
+import com.meng.modules.ReflexCommand;
+import com.meng.modules.TimeTask;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
     private List<IFriendMessageEvent> friendMsgHandlers = new ArrayList<>();
     private List<IFriendChangeEvent> friendChangeHandlers = new ArrayList<>();
 
-    private List<Object> all = new ArrayList<>();
+    private List<BaseModule> all = new ArrayList<>();
 
     public ModuleManager(SBot bwe) {
         super(bwe);
@@ -85,35 +86,35 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
     }
 
     public ModuleManager load() {
-        load(ReflectCommand.class);
+        load(ReflexCommand.class);
         load(MtestMsg.class);
-        load(MAdminMsg.class);
+        load(AdminMessage.class);
 
-        load(MGroupCounterChart.class);
+        load(GroupCounterChart.class);
         load(MessageRefuse.class);
-        load(ModuleRepeater.class);
-        load(ModuleReport.class);
+        load(Repeater.class);
+        load(Report.class);
 
-        load(MNumberProcess.class);
-        load(ModuleDiceCmd.class);
-        load(MTimeTask.class);
-        load(MAimMessage.class);
+        load(NumberProcess.class);
+        load(Dice.class);
+        load(TimeTask.class);
+        load(AimMessage.class);
         load(MemberChange.class, false);
-        load(ModuleQA.class);
+        load(QuestionAndAnswer.class);
         load(DynamicWordStock.class);
-        load(ModuleMorning.class);
+        load(Morning.class);
         load(UserInfo.class);
         return this;
     }
 
-    public void load(Class<?> cls) {
+    public void load(Class<? extends BaseModule> cls) {
         load(cls, true);
     }
 
-    public void load(Class<?> cls, boolean needLoad) {
-        Object o = null;
+    public void load(Class<? extends BaseModule> cls, boolean needLoad) {
+        BaseModule o = null;
         try {
-            Constructor cos = cls.getConstructor(SBot.class);
+            Constructor<? extends BaseModule> cos = cls.getConstructor(SBot.class);
             o = cos.newInstance(entity);
             if (needLoad) {
                 Method m = o.getClass().getMethod("load");
@@ -136,15 +137,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         loadModules(o);
     }
 
-    public void load(String className, boolean needLoad) {
-        try {
-            load(Class.forName(className), needLoad);
-        } catch (ClassNotFoundException e) {
-            entity.sendGroupMessage(SBot.yysGroup, "加载失败:" + className);
-        }
-    }
-
-    public void loadModules(Object module) {
+    public <T extends BaseModule> void loadModules(T module) {
         all.add(module);
         if (module instanceof IGroupBotEvent) {
             groupBotHandlers.add((IGroupBotEvent)module);
@@ -174,39 +167,39 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 //            return true;
 //        }
         String msg = gme.getMessage().contentToString();
-//        if (msg.startsWith(".bot")) {
-//            ConfigManager cm = entity.configManager;
-//            if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {
-//                if (msg.equals(".bot on")) {
-//                    cm.setFunctionDisable(groupId, Modules.MAIN_SWITCH);
-//                    entity.sendQuote(gme, "已启用本群响应");
-//                    cm.save();
-//                    return true;
-//                } else if (msg.equals(".bot off")) {
-//                    entity.sendQuote(gme, "已停用本群响应");
-//                    cm.setFunctionDisable(groupId, Modules.MAIN_SWITCH);
-//                    cm.save();
-//                    return true;
-//                } 
-//            } else {
-//                if (msg.equals(".bot on")) {
-//                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
-//                    pc.setBotOn(true);
-//                    entity.sendQuote(gme, "已启用对你的响应");
-//                    return true;
-//                } else if (msg.equals(".bot off")) {
-//                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
-//                    pc.setBotOn(false);
-//                    entity.sendQuote(gme, "已停用对你的响应");
-//                    return true;
-//                }
-//                entity.configManager.save(); 
-//                return true;
-//            }  
-//        }
-//        if (!entity.configManager.isFunctionEnbled(groupId, Modules.MAIN_SWITCH)) {
-//            return false; 
-//        }
+        if (msg.startsWith(".bot")) {
+            ConfigManager cm = entity.configManager;
+            if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {
+                if (msg.equals(".bot on")) {
+                    cm.setFunctionEnabled(groupId, Modules.get("main_switch"), true);
+                    entity.sendQuote(gme, "已启用本群响应");
+                    cm.save();
+                    return true;
+                } else if (msg.equals(".bot off")) {
+                    entity.sendQuote(gme, "已停用本群响应");
+                    cm.setFunctionEnabled(groupId, Modules.get("main_switch"), false);
+                    cm.save();
+                    return true;
+                } 
+            } else {
+                if (msg.equals(".bot on")) {
+                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
+                    pc.setBotOn(true);
+                    entity.sendQuote(gme, "已启用对你的响应");
+                    return true;
+                } else if (msg.equals(".bot off")) {
+                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
+                    pc.setBotOn(false);
+                    entity.sendQuote(gme, "已停用对你的响应");
+                    return true;
+                }
+                entity.configManager.save(); 
+                return true;
+            }  
+        }
+        if (!entity.configManager.isFunctionEnabled(groupId, Modules.get("main_switch"))) {
+            return false; 
+        }
         for (IGroupMessageEvent m : groupMsgHandlers) {
             if (m.onGroupMessage(gme)) {
                 return true;
@@ -217,9 +210,9 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
     @Override
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
-//        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Modules.MAIN_SWITCH)) {
-//            return false; 
-//        }
+        if (!entity.configManager.isFunctionEnabled(event.getGroup(), Modules.get("main_switch"))) {
+            return false; 
+        }
         for (IGroupMessageEvent m : groupMsgHandlers) {
             if (m.onGroupMemberNudge(event)) {
                 return true;
@@ -230,9 +223,9 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-//        if (!entity.configManager.isFunctionEnbled(event.getGroup().getId(), Modules.RECALL)) {
-//            return false; 
-//        }
+        if (!entity.configManager.isFunctionEnabled(event.getGroup(), Modules.get("recall"))) {
+            return false; 
+        }
         for (IGroupMessageEvent m : groupMsgHandlers) {
             if (m.onGroupMessageRecall(event)) {
                 return true;
@@ -492,7 +485,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         return false;
     }
 
-    public List<Object> getAllModules() {
+    public List<? extends BaseModule> getAllModules() {
         return all;
     }
 

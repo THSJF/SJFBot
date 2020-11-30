@@ -11,19 +11,19 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Description: 通过反射执行方法
  * @author: 司徒灵羽
  **/
-public class ReflectCommand extends BaseModule implements IGroupMessageEvent {
+public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
         return "reflex";
     }
 
-    public ReflectCommand(SBot bw) {
+    public ReflexCommand(SBot bw) {
         super(bw);
     }
 
     @Override
-    public ReflectCommand load() {
+    public ReflexCommand load() {
         return this;
     }
     // not done

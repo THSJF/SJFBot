@@ -1,5 +1,6 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -14,22 +15,22 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 /**
  * @author: 司徒灵羽
  **/
-public class MAimMessage extends BaseModule implements IGroupMessageEvent {
+public class AimMessage extends BaseModule implements IGroupMessageEvent {
  
     @SanaeData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
 
-    public MAimMessage(SBot bw) {
+    public AimMessage(SBot bw) {
         super(bw);
     }
 
     @Override
     public String getModuleName() {
-        return "aimmsg";
+        return Modules.AimMessage.toString();
     }
 
     @Override
-    public MAimMessage load() {
+    public AimMessage load() {
         DataPersistenter.read(this);
         return this;
     }

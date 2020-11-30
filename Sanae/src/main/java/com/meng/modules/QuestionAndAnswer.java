@@ -1,9 +1,11 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.meng.gameData.TouHou.SpellCard;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.group.IGroupMessageEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -17,17 +19,16 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import com.meng.gameData.TouHou.UserInfo;
 
 /**
  * @author: 司徒灵羽
  **/
-public class ModuleQA extends BaseModule implements IGroupMessageEvent {
+public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("qa.json")
-    private ArrayList<QA> qaList = new ArrayList<>();
+    private ArrayList<QABean> qaList = new ArrayList<>();
 
-    public HashMap<Long,QA> onGoingQA = new HashMap<>();
+    public HashMap<Long,QABean> onGoingQA = new HashMap<>();
     public String imagePath;
     public static final int easy = 0;
     public static final int normal = 1;
@@ -42,13 +43,13 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
     public static final int otherDanmaku = 6;
     public static final int luastg = 7;
 
-    public ModuleQA(SBot bwe) {
+    public QuestionAndAnswer(SBot bwe) {
         super(bwe);
         imagePath = bwe.appDirectory + "/qaImages";
     }
 
     @Override
-    public ModuleQA load() {
+    public QuestionAndAnswer load() {
         DataPersistenter.read(this);
         return this;
     }
@@ -65,9 +66,9 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.QA)) {
-//            return false;
-//        }
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+            return false;
+        }
         if (processQa(gme)) {
             return true;
         }
@@ -81,7 +82,7 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
         long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
         long qqId = gme.getSender().getId();
-        QA qaLast = onGoingQA.get(qqId);
+        QABean qaLast = onGoingQA.get(qqId);
         if (qaLast != null && msg.equalsIgnoreCase("-qa")) {
             entity.sendQuote(gme, "你还没有回答");
             return true;
@@ -111,7 +112,7 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
         }
         if (msg.equalsIgnoreCase("-qa")) {
             int randomInt = ThreadLocalRandom.current().nextInt(qaList.size());
-            QA qaNow = qaList.get(randomInt);
+            QABean qaNow = qaList.get(randomInt);
             qaNow.incShowTimes();
             UserInfo module = entity.moduleManager.getModule(UserInfo.class);
             module.getUserData(gme).qaCount++;
@@ -150,7 +151,7 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
     private boolean processQar(GroupMessageEvent gme) {
         String msg = gme.getMessage().contentToString();
         long qqId = gme.getSender().getId();
-        QA onGoing = onGoingQA.get(qqId);
+        QABean onGoing = onGoingQA.get(qqId);
         if (onGoing != null && msg.equalsIgnoreCase("-qar")) {
             entity.sendQuote(gme, "你还没有回答");
             return true;
@@ -171,7 +172,7 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
             return true;
         }
         if (msg.equalsIgnoreCase("-qar")) {
-            QA qar = createQA();
+            QABean qar = createQA();
             qar.shuffleAnswer();
             StringBuilder sb=new StringBuilder("\n");
             sb.append(qar.q);
@@ -190,11 +191,11 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
         return false;
     }
 
-    private QA createQA() {
+    private QABean createQA() {
         int diff = 1 << ThreadLocalRandom.current().nextInt(9);
-        SpellCard spellCard = entity.moduleManager.getModule(ModuleDiceCmd.class).thData.getSpellFromDiff(diff);
-        SpellCard[] sps = entity.moduleManager.getModule(ModuleDiceCmd.class).thData.getSpellFromNotDiff(3, diff);
-        QA qa = new QA();
+        SpellCard spellCard = entity.moduleManager.getModule(Dice.class).thData.getSpellFromDiff(diff);
+        SpellCard[] sps = entity.moduleManager.getModule(Dice.class).thData.getSpellFromNotDiff(3, diff);
+        QABean qa = new QABean();
         qa.a.add(spellCard.name);
         for (SpellCard spc:sps) {
             qa.a.add(spc.name);
@@ -240,13 +241,13 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
         return qa;
     }
 
-    public void addQA(QA qa) {
+    public void addQA(QABean qa) {
         qa.setId(qaList.size());
         qaList.add(qa);
         save();
     }
 
-    public void setQA(QA qa) {
+    public void setQA(QABean qa) {
         qaList.set(qa.getId(), qa);
         save();
     }
@@ -255,7 +256,7 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
         return qaList.size();
     }
 
-    public List<QA> getQas() {
+    public List<QABean> getQas() {
         return Collections.unmodifiableList(qaList);
     }
 
@@ -264,7 +265,7 @@ public class ModuleQA extends BaseModule implements IGroupMessageEvent {
         return "qa";
     }
 
-    public static class QA {
+    public static class QABean {
         private int flag = 0;
         //flag: id(16bit)                      
         //  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

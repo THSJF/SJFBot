@@ -1,6 +1,6 @@
 package com.meng.config.javabeans;
 
-import com.meng.modules.Modules;
+import com.meng.Modules;
 import java.util.EnumSet;
 
 /**

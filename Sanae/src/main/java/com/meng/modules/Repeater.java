@@ -1,5 +1,6 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
 import java.util.HashMap;
@@ -13,28 +14,28 @@ import net.mamoe.mirai.message.data.MessageChain;
  * @Description: 复读机
  * @author: 司徒灵羽
  **/
-public class ModuleRepeater extends BaseModule implements IGroupMessageEvent{
+public class Repeater extends BaseModule implements IGroupMessageEvent {
 
-	private HashMap<Long, Repeater> repeaters = new HashMap<>();
+	private HashMap<Long, SubRepeater> repeaters = new HashMap<>();
 
-    public ModuleRepeater(SBot bw) {
+    public Repeater(SBot bw) {
         super(bw);
     }
 
 	@Override
-	public ModuleRepeater load() {
+	public Repeater load() {
 		return this;
 	}
 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-        Repeater rp = repeaters.get(groupId);
-//        if (!entity.configManager.isFunctionEnbled(groupId, Modules.REPEATER)) {
-//            return false; 
-//        }
+        SubRepeater rp = repeaters.get(groupId);
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+            return false;
+        }
 		if (rp == null) {
-			repeaters.put(groupId, rp = new Repeater());
+			repeaters.put(groupId, rp = new SubRepeater());
 		}
         long qqId = gme.getSender().getId();
         return rp.check(groupId, qqId, gme.getMessage());
@@ -50,7 +51,7 @@ public class ModuleRepeater extends BaseModule implements IGroupMessageEvent{
         return false;
     }
 
-	private class Repeater {
+	private class SubRepeater {
 		private MessageChain lastMsgRecieved = EmptyMessageChain.INSTANCE;
 		private boolean lastStatus = false;
 

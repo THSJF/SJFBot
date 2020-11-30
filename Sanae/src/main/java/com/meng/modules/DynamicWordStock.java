@@ -1,6 +1,7 @@
 package com.meng.modules;
 
 import com.google.gson.annotations.SerializedName;
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -12,8 +13,8 @@ import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
@@ -22,9 +23,6 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.QuoteReply;
-import org.jsoup.nodes.Node;
-import java.util.Map;
-import com.meng.modules.DynamicWordStock.GoodwillLevel;
 
 /**
  * @author: 司徒灵羽
@@ -41,9 +39,9 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.WORDSTOCK)) {
-//            return false; 
-//        }
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
         UserInfo.UserData userData = entity.moduleManager.getModule(UserInfo.class).getUserData(gme);
         for (Map.Entry<String,Pattern> mapEntry : regexMap.entrySet()) {
@@ -111,14 +109,14 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 try {
                                     hi = Integer.parseInt(node.content);  
                                 } catch (NumberFormatException ignore) {} 
-                                mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomInt(gme.getSender().getId(), hi)));
+                                mcb.add(String.valueOf(entity.moduleManager.getModule(Dice.class).thData.hashRandomInt(gme.getSender().getId(), hi)));
                                 break;
                             case HASH_RAN_FLOAT:
                                 float rscale = 1f;
                                 try {
                                     rscale = Float.parseFloat(node.content);
                                 } catch (NumberFormatException ignore) {}
-                                mcb.add(String.valueOf(entity.moduleManager.getModule(ModuleDiceCmd.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
+                                mcb.add(String.valueOf(entity.moduleManager.getModule(Dice.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
                                 break;
                             case IMG_FOLDER:
                                 mcb.add(gme.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.content).listFiles())));
@@ -178,7 +176,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
-        return "wordstock";
+        return Modules.DynamicWordStock.toString();
     }
 
     public enum NodeType {

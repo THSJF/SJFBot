@@ -1,5 +1,6 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.TextLexer;
@@ -12,18 +13,18 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 /**
  * @author: 司徒灵羽
  **/
-public class MNumberProcess extends BaseModule implements IGroupMessageEvent {
+public class NumberProcess extends BaseModule implements IGroupMessageEvent {
 
-    public MNumberProcess(SBot bwe) {
+    public NumberProcess(SBot bwe) {
         super(bwe);
     }
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.NUMBER_PROCESS)) {
-//            return false;
-//        }
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
         if (msg.charAt(0) != '.') {
             return false;
@@ -97,12 +98,12 @@ public class MNumberProcess extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public MNumberProcess load() {
+    public NumberProcess load() {
         return this;
     }
 
     @Override
     public String getModuleName() {
-        return "number";
+        return Modules.NumberProcess.toString();
     }
 }

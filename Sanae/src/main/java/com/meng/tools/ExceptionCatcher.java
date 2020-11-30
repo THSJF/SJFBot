@@ -1,7 +1,7 @@
 package com.meng.tools;
 
 import com.meng.SBot;
-import com.meng.modules.MAimMessage;
+import com.meng.modules.AimMessage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -40,7 +40,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable ex) {
         saveCrashInfo2File(ex);
         try {
-            bot.moduleManager.getModule(MAimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
+            bot.moduleManager.getModule(AimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

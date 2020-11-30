@@ -1,8 +1,10 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.Hash;
 import com.meng.tools.TextLexer;
@@ -15,22 +17,21 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import com.meng.gameData.TouHou.UserInfo;
 
 /**
  * @Description: 模拟骰子
  * @author: 司徒灵羽
  **/
-public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
+public class Dice extends BaseModule implements IGroupMessageEvent {
 
     public THDataHolder thData = new THDataHolder();
 
-    public ModuleDiceCmd(SBot bw) {
+    public Dice(SBot bw) {
         super(bw);
     }
 
 	@Override
-	public ModuleDiceCmd load() {
+	public Dice load() {
 		return this;
 	}
 
@@ -38,9 +39,9 @@ public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
-//        if (!entity.configManager.isFunctionEnbled(groupId, Modules.DICE)) {
-//            return false;
-//        }
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
             entity.sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", entity.configManager.getNickName(groupId, qqId), thData.hashRandomSpell(qqId).name));
@@ -63,14 +64,14 @@ public class ModuleDiceCmd extends BaseModule implements IGroupMessageEvent {
                 case "签到":
                     if (userInfo.onSign(gme.getGroup(), gme.getSender())) {
                         UserInfo.UserData gu = userInfo.getUserData(gme);
-                        String result = String.format("签到成功,累计签到%d天,连续签到%d天,获得%d(基础:10,连续签到:%d)信仰", gu.signedDays, gu.continuousSignedDays, 10 + gu.continuousSignedDays, gu.continuousSignedDays);
+                        String result = String.format("签到成功,获得%d(基础:10,连续签到:%d)信仰", 10 + gu.continuousSignedDays, gu.continuousSignedDays);
                         entity.sendMessage(gme.getGroup(), result);
                     } else {
                         entity.sendMessage(gme.getGroup(), "你今天已经签到过啦");
                     }
                     break;
                 case "info":
-                    entity.sendMessage(gme.getGroup(), String.format("信仰:%d,答题%d道,正确率%.2f", userData.faith, ((float)userData.qaRight) / userData.qaCount));
+                    entity.sendMessage(gme.getGroup(), String.format("累计签到%d天,连续签到%d天,信仰:%d,答题%d道,正确率%.2f%%", userData.signedDays, userData.continuousSignedDays, userData.faith, userData.qaCount, (((float)userData.qaRight) / userData.qaCount) * 100));
                     break;
                 case "r":
                     entity.sendMessage(gme.getGroup(), String.format("%s投掷%s:D100 = %d", entity.configManager.getNickName(groupId, qqId), iter.hasNext() ?iter.next(): "", random.nextInt(100)));

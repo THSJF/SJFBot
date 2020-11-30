@@ -15,7 +15,7 @@ import net.mamoe.mirai.contact.Group;
 
 public class UserInfo extends BaseModule {
 
-    @SanaeData("goodwill.json")
+    @SanaeData("userinfo.json")
     private HashMap<Long,UserData> values = new HashMap<>();
 
     public UserInfo(SBot sb) {

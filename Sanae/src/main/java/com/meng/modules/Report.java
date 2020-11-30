@@ -14,17 +14,17 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 /**
  * @author 司徒灵羽
  */
-public class ModuleReport extends BaseModule implements IGroupMessageEvent {
+public class Report extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("report.json")
 	private ArrayList<ReportBean> reportList = new ArrayList<>();
 
-    public ModuleReport(SBot bw) {
+    public Report(SBot bw) {
         super(bw);
     }
 
 	@Override
-	public ModuleReport load() {
+	public Report load() {
 		DataPersistenter.read(this);
 		return this;
 	}
@@ -47,7 +47,7 @@ public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 				if (rb.group == -5) {
 
 				} else {
-					entity.moduleManager.getModule(MAimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,获得5信仰奖励,附加消息:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("t") + 1)));
+					entity.moduleManager.getModule(AimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,获得5信仰奖励,附加消息:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("t") + 1)));
 				}
 				entity.sendGroupMessage(groupId, "处理成功");
 				return true;
@@ -55,7 +55,7 @@ public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 			if (msg.startsWith("-留言查看 f ")) {
 				ReportBean rb = removeReport();
 				entity.sendGroupMessage(groupId, "处理成功");
-				entity.moduleManager.getModule(MAimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("f") + 1)));
+				entity.moduleManager.getModule(AimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("f") + 1)));
 				return true;
 			}
 			if (msg.equalsIgnoreCase("-留言查看 w")) {
@@ -63,7 +63,7 @@ public class ModuleReport extends BaseModule implements IGroupMessageEvent {
 				if (rb.group == -5) {
 
 				} else {
-					entity.moduleManager.getModule(MAimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,开发者认为目前还不是处理此留言的时候", rb.qq, TimeFormater.getTime(rb.time), rb.content));
+					entity.moduleManager.getModule(AimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,开发者认为目前还不是处理此留言的时候", rb.qq, TimeFormater.getTime(rb.time), rb.content));
 				}
 				reportToLast();
 				entity.sendGroupMessage(groupId, "处理成功");

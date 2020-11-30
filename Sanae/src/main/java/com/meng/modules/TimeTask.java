@@ -1,18 +1,19 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.Tools;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.contact.Group;
-import com.meng.gameData.TouHou.UserInfo;
 
 /**
  * @author: 司徒灵羽
  **/
-public class MTimeTask extends BaseModule {
+public class TimeTask extends BaseModule {
 
     private final long groupYuTang = 617745343L;
     private final long groupDNFmoDao = 424838564L;
@@ -22,7 +23,7 @@ public class MTimeTask extends BaseModule {
 
     private HashSet<TaskBean> tasks = new HashSet<>();
 
-    public MTimeTask(SBot bw) {
+    public TimeTask(SBot bw) {
         super(bw);
     }
 
@@ -31,13 +32,13 @@ public class MTimeTask extends BaseModule {
     }
 
     @Override
-    public MTimeTask load() {
+    public TimeTask load() {
         SJFExecutors.executeAtFixedRate(new Runnable(){
 
                 @Override
                 public void run() {
-                    entity.moduleManager.getModule(MAimMessage.class).addTipSingleton(groupYuTang, YYS, Tools.ArrayTool.rfa(new String[]{"想吃YYS", "想食YYS", "想上YYS", entity.at(groupYuTang, YYS).toMiraiCode() + "老婆"}));
-                    entity.moduleManager.getModule(MAimMessage.class).addTipSingleton(alice, "老婆");
+                    entity.moduleManager.getModule(AimMessage.class).addTipSingleton(groupYuTang, YYS, Tools.ArrayTool.rfa(new String[]{"想吃YYS", "想食YYS", "想上YYS", entity.at(groupYuTang, YYS).toMiraiCode() + "老婆"}));
+                    entity.moduleManager.getModule(AimMessage.class).addTipSingleton(alice, "老婆");
                     Calendar c = Calendar.getInstance();
                     if (getTipHour(c)) {
                         if (c.getActualMaximum(Calendar.DAY_OF_MONTH) == c.get(Calendar.DATE)) {
@@ -69,16 +70,16 @@ public class MTimeTask extends BaseModule {
                         public void run() {
                             String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
                             for (Group group : entity.getGroups()) {
-//                              if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
-                                if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                    continue;
+                                if (entity.configManager.isFunctionEnabled(group, Modules.get("main_switch"))) {
+                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                        continue;
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } 
                                 }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } 
-//                              }
                             }
                             entity.sleeping = true; 
                         }
@@ -90,16 +91,16 @@ public class MTimeTask extends BaseModule {
                             entity.sleeping = false;
                             String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
                             for (Group group : entity.getGroups()) {
-//                                if (entity.configManager.isFunctionEnbled(group.getId(), Modules.MAIN_SWITCH)) {
-                                if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                    continue;
+                                if (entity.configManager.isFunctionEnabled(group, Modules.get("main_switch"))) {
+                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                        continue;
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } 
                                 }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } 
-//                                }
                             }
                         }
                     }));

@@ -4,14 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.meng.config.ConfigManager;
-import com.meng.modules.Modules;
+import com.meng.handler.MessageManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.jvm.functions.Function1;
@@ -44,7 +43,6 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.Context;
 import net.mamoe.mirai.utils.MiraiLogger;
-import com.meng.handler.MessageManager;
 
 /**
  * @author: 司徒灵羽
@@ -88,7 +86,7 @@ public class SBot extends Bot {
     }
 
     public int sendGroupMessage(long fromGroup, Message msg) {
-        if (sleeping) { // || !configManager.isFunctionEnbled(fromGroup, Modules.MAIN_SWITCH)) {
+        if (sleeping || !configManager.isFunctionEnabled(fromGroup, Modules.get("main_switch"))) {
             return -1;
         }
         return bot.getGroup(fromGroup).sendMessage(msg).getSource().getId();

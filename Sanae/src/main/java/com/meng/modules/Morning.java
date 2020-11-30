@@ -4,7 +4,7 @@ import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
 import com.meng.handler.group.IGroupMessageEvent;
-import com.meng.modules.MTimeTask;
+import com.meng.modules.TimeTask;
 import java.util.ArrayList;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
@@ -14,12 +14,12 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Description: 早安
  * @author: 司徒灵羽
  **/
-public class ModuleMorning extends BaseModule implements IGroupMessageEvent {
+public class Morning extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("getUp.json")
 	private ArrayList<GetUpBean> getUp = new ArrayList<>();
 
-    public ModuleMorning(SBot bw) {
+    public Morning(SBot bw) {
         super(bw);
     }
 
@@ -74,16 +74,16 @@ public class ModuleMorning extends BaseModule implements IGroupMessageEvent {
     }
 
 	@Override
-	public ModuleMorning load() {
+	public Morning load() {
 		DataPersistenter.read(this);
-        MTimeTask.TaskBean mt = new MTimeTask.TaskBean(0, 0, new Runnable(){
+        TimeTask.TaskBean mt = new TimeTask.TaskBean(0, 0, new Runnable(){
 
                 @Override
                 public void run() {
                     getUp.clear();
                 }
             });
-        entity.moduleManager.getModule(MTimeTask.class).addTask(mt);
+        entity.moduleManager.getModule(TimeTask.class).addTask(mt);
 		return this;
 	}
 

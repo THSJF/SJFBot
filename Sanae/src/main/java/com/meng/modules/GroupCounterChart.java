@@ -1,5 +1,6 @@
 package com.meng.modules;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -32,22 +33,22 @@ import org.jfree.data.time.TimeSeriesCollection;
  * @Description: 群消息统计图
  * @author: 司徒灵羽
  **/
-public class MGroupCounterChart extends BaseModule implements IGroupMessageEvent {
+public class GroupCounterChart extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("GroupCount2.json")
 	private HashMap<Long,GroupSpeak> groupsMap = new HashMap<>(32);
 
-    public MGroupCounterChart(SBot bw) {
+    public GroupCounterChart(SBot bw) {
         super(bw);
     }
 
     @Override
     public String getModuleName() {
-        return "groupcount";
+        return Modules.GroupCounterChart.toString();
     }
 
 	@Override
-	public MGroupCounterChart load() {
+	public GroupCounterChart load() {
 		DataPersistenter.read(this);
 		SJFExecutors.executeAtFixedRate(new Runnable() {
 				@Override
@@ -65,9 +66,9 @@ public class MGroupCounterChart extends BaseModule implements IGroupMessageEvent
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long groupId = gme.getGroup().getId();
-//        if (!entity.configManager.isFunctionEnbled(gme.getGroup().getId(), Modules.GROUP_COUNT_CHART)) {
-//            return false;
-//        }
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+            return false;
+        }
         String msg = gme.getMessage().contentToString();
 		GroupSpeak gs = groupsMap.get(groupId);
 		if (gs == null) {

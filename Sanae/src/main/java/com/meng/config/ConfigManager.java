@@ -1,16 +1,16 @@
 package com.meng.config;
 
+import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.javabeans.ConfigHolder;
+import com.meng.config.javabeans.GroupConfig;
 import com.meng.config.javabeans.PersonConfig;
 import com.meng.config.javabeans.PersonInfo;
 import com.meng.modules.BaseModule;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
-import com.meng.modules.Modules;
-import com.meng.config.javabeans.GroupConfig;
+import net.mamoe.mirai.contact.Group;
 
 /**
  * @Description: 配置管理器
@@ -41,27 +41,33 @@ public class ConfigManager extends BaseModule {
         return this;
     }
 
-/*    public void setFunctionEnbled(long gid, Modules m) {
+    public void setFunctionEnabled(long gid, Modules m, boolean enable) {
         GroupConfig get = configHolder.groupConfigs.get(gid);
         if (get == null) {
             get = new GroupConfig();
             configHolder.groupConfigs.put(gid, get);
         }
-        get.enabled.remove(m);
-        save();
-    }
-
-	public void setFunctionDisable(long gid, Modules m) {
-        GroupConfig get = configHolder.groupConfigs.get(gid);
-        if (get == null) {
-            get = new GroupConfig();
-            configHolder.groupConfigs.put(gid, get);
+        if (enable) {
+            get.enabled.add(m);
+        } else {
+            get.enabled.remove(m);
         }
-        get.enabled.add(m);
         save();
     }
 
-	public boolean isFunctionEnbled(long gid, Modules m) {
+    public void setFunctionEnabled(Group group, Modules m, boolean enable) {
+        setFunctionEnabled(group.getId(), m, enable);
+    }
+
+    public void setFunctionEnabled(Group group, BaseModule m, boolean enable) {
+        setFunctionEnabled(group.getId(), Modules.get(m), enable);
+    }
+    
+    public void setFunctionEnabled(long group, BaseModule m, boolean enable) {
+        setFunctionEnabled(group, Modules.get(m), enable);
+    }
+    
+	public boolean isFunctionEnabled(long gid, Modules m) {
         GroupConfig get = configHolder.groupConfigs.get(gid);
         if (get == null) {
             get = new GroupConfig();
@@ -70,7 +76,19 @@ public class ConfigManager extends BaseModule {
         }
         return get.enabled.contains(m);
     }
-*/
+
+    public boolean isFunctionEnabled(Group group, Modules m) {
+        return isFunctionEnabled(group.getId(), m);
+    }
+
+    public boolean isFunctionEnabled(Group group, BaseModule m) {
+        return isFunctionEnabled(group.getId(), Modules.get(m));
+    }
+
+    public boolean isFunctionEnabled(long group, BaseModule m) {
+        return isFunctionEnabled(group, Modules.get(m));
+    }
+    
     public PersonConfig getPersonConfig(long qq) {
         PersonConfig get = configHolder.personCfg.get(qq);
         if (get == null) {
@@ -282,7 +300,7 @@ public class ConfigManager extends BaseModule {
 				nick = pi.name;
 			}
 		}
-		return nick;
+		return nick == null ? String.valueOf(qq) : nick;
 	}
 
     public void addBlack(long group, long qq) {
