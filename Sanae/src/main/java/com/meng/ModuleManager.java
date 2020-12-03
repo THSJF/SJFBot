@@ -171,13 +171,13 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
             ConfigManager cm = entity.configManager;
             if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {
                 if (msg.equals(".bot on")) {
-                    cm.setFunctionEnabled(groupId, Modules.get("main_switch"), true);
+                    cm.setReceiverEnabled(groupId, EventReceivers.GroupMessageEvent, true);
                     entity.sendQuote(gme, "已启用本群响应");
                     cm.save();
                     return true;
                 } else if (msg.equals(".bot off")) {
                     entity.sendQuote(gme, "已停用本群响应");
-                    cm.setFunctionEnabled(groupId, Modules.get("main_switch"), false);
+                    cm.setReceiverEnabled(groupId, EventReceivers.GroupMessageEvent, false);
                     cm.save();
                     return true;
                 } 
@@ -197,7 +197,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
                 return true;
             }  
         }
-        if (!entity.configManager.isFunctionEnabled(groupId, Modules.get("main_switch"))) {
+        if (!entity.configManager.isReceiverEnabled(groupId, EventReceivers.GroupMessageEvent)) {
             return false; 
         }
         for (IGroupMessageEvent m : groupMsgHandlers) {
@@ -210,7 +210,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
     @Override
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup(), Modules.get("main_switch"))) {
+        if (!entity.configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.GroupMessageEvent)) {
             return false; 
         }
         for (IGroupMessageEvent m : groupMsgHandlers) {
@@ -223,7 +223,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup(), Modules.get("recall"))) {
+        if (!entity.configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.MessageRecallEvent_GroupRecall)) {
             return false; 
         }
         for (IGroupMessageEvent m : groupMsgHandlers) {

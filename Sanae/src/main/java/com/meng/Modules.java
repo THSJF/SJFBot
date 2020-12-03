@@ -71,7 +71,7 @@ public enum Modules {
                 return mos;
             }
         }
-        throw new NoSuchElementException();
+        return null;
     }
 
     public static <T extends BaseModule> Modules get(Class<? extends BaseModule> obj){
@@ -80,6 +80,6 @@ public enum Modules {
                 return mos;
             }
         }
-        throw new NoSuchElementException();
+        return null;
     }
 }

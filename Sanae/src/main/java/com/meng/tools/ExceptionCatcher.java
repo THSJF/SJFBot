@@ -40,7 +40,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable ex) {
         saveCrashInfo2File(ex);
         try {
-            bot.moduleManager.getModule(AimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString());
+            bot.moduleManager.getModule(AimMessage.class).addTipSingleton(2856986197L, "出现了一个错误:" + ex.toString().replace("java", "jvav"));
         } catch (Exception e) {
             e.printStackTrace();
         }

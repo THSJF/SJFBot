@@ -20,6 +20,7 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.EventReceivers;
 
 /**
  * @Description: 管理员命令
@@ -82,26 +83,36 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                         List<? extends BaseModule> allModules = entity.moduleManager.getAllModules();
                         StringBuilder sb = new StringBuilder("当前有:\n");
                         for (BaseModule baseModule : allModules) {
-                            if (Modules.get(baseModule.getClass()).isAllowSwitch()) {
-                                sb.append(baseModule.getModuleName()).append("\n");
+                            Modules module = Modules.get(baseModule.getClass());
+                            if (module != null && module.isAllowSwitch()) {
+                                sb.append(module.toString()).append("\n");
                             }
                         }
                         sb.setLength(sb.length() - 1);
                         entity.sendGroupMessage(gme.getGroup().getId(), sb.toString());
                     } else if (list.size() == 3) {
                         ConfigManager configManager = entity.configManager;
-                        Modules getM = Modules.get(iter.next());
-                        if (getM != null) {
-                            if (getM.isAllowSwitch()) {
-                                if (configManager.isFunctionEnabled(groupId, getM)) {
-                                    configManager.setFunctionEnabled(groupId, getM, false);
-                                    entity.sendGroupMessage(groupId, "禁用" + getM);
+                        String mName = iter.next();
+                        Modules module = Modules.get(mName);
+                        if (module != null) {
+                            if (module.isAllowSwitch()) {
+                                if (configManager.isFunctionEnabled(groupId, module)) {
+                                    configManager.setFunctionEnabled(groupId, module, false);
+                                    entity.sendGroupMessage(groupId, "禁用" + module);
                                 } else {
-                                    configManager.setFunctionEnabled(groupId, getM, true);
-                                    entity.sendGroupMessage(groupId, "启用" + getM);  
+                                    configManager.setFunctionEnabled(groupId, module, true);
+                                    entity.sendGroupMessage(groupId, "启用" + module);  
                                 }
                             }
-
+                        } else {
+                            EventReceivers eventReceiver = EventReceivers.get(mName);
+                            if (configManager.isReceiverEnabled(groupId, eventReceiver)) {
+                                configManager.setReceiverEnabled(groupId, eventReceiver, false);
+                                entity.sendGroupMessage(groupId, "禁用" + eventReceiver);
+                            } else {
+                                configManager.setReceiverEnabled(groupId, eventReceiver, true);
+                                entity.sendGroupMessage(groupId, "启用" + eventReceiver);  
+                            }
                         }
                     }
                     return true;
@@ -115,7 +126,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                     HashSet<Group> hs = new HashSet<>();
                     Collection<Group> glist = entity.getGroups();
                     for (Group g:glist) {
-                        if (!entity.configManager.isFunctionEnabled(groupId, Modules.get("main_switch"))) {
+                        if (!entity.configManager.isReceiverEnabled(groupId, EventReceivers.GroupMessageEvent)) {
                             continue;
                         }
                         entity.sendGroupMessage(g.getId(), broadcast);

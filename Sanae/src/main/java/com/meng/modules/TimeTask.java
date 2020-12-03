@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.contact.Group;
+import com.meng.EventReceivers;
 
 /**
  * @author: 司徒灵羽
@@ -70,7 +71,7 @@ public class TimeTask extends BaseModule {
                         public void run() {
                             String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
                             for (Group group : entity.getGroups()) {
-                                if (entity.configManager.isFunctionEnabled(group, Modules.get("main_switch"))) {
+                                if (entity.configManager.isReceiverEnabled(group.getId(), EventReceivers.GroupMessageEvent)) {
                                     if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }
@@ -91,7 +92,7 @@ public class TimeTask extends BaseModule {
                             entity.sleeping = false;
                             String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
                             for (Group group : entity.getGroups()) {
-                                if (entity.configManager.isFunctionEnabled(group, Modules.get("main_switch"))) {
+                                if (entity.configManager.isReceiverEnabled(group.getId(), EventReceivers.GroupMessageEvent)) {
                                     if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
                                         continue;
                                     }

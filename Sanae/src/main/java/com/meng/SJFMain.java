@@ -22,10 +22,10 @@ public class SJFMain {
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
         AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
         final SBot sb = new SBot(BotFactoryJvm.newBot(info.account, info.password, config), config);
+        ExceptionCatcher.getInstance(sb).init();
         sb.init();
         BotMessageHandler bmh = new BotMessageHandler(sb);
         Events.registerEvents(sb, bmh);
-        ExceptionCatcher.getInstance(sb).init();
         MessageManager.init();
         sb.login();
         SJFExecutors.execute(new Runnable(){

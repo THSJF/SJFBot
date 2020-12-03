@@ -11,6 +11,9 @@ import com.meng.modules.BaseModule;
 import java.util.Collections;
 import java.util.Set;
 import net.mamoe.mirai.contact.Group;
+import com.meng.EventReceivers;
+import com.meng.config.javabeans.ReceiverConfig;
+import net.mamoe.mirai.event.Event;
 
 /**
  * @Description: 配置管理器
@@ -20,8 +23,6 @@ public class ConfigManager extends BaseModule {
 
     @SanaeData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
-
-    public SBot entity;
 
     public ConfigManager(SBot sb) {
         super(sb);
@@ -41,6 +42,29 @@ public class ConfigManager extends BaseModule {
         return this;
     }
 
+    public void setReceiverEnabled(long gid, EventReceivers er, boolean enable) {
+        ReceiverConfig rc = configHolder.receivers.get(gid);
+        if (rc == null) {
+            rc = new ReceiverConfig();
+            configHolder.receivers.put(gid, rc);
+        }
+        if (enable) {
+            rc.enabled.add(er);
+        } else {
+            rc.enabled.remove(er);
+        }
+        save();
+    }
+
+    public boolean isReceiverEnabled(long l, EventReceivers er) {
+        ReceiverConfig get = configHolder.receivers.get(l);
+        if (get == null) {
+            get = new ReceiverConfig();
+            configHolder.receivers.put(l, get);
+        } 
+        return get.enabled.contains(er);
+    }
+    
     public void setFunctionEnabled(long gid, Modules m, boolean enable) {
         GroupConfig get = configHolder.groupConfigs.get(gid);
         if (get == null) {
@@ -55,18 +79,6 @@ public class ConfigManager extends BaseModule {
         save();
     }
 
-    public void setFunctionEnabled(Group group, Modules m, boolean enable) {
-        setFunctionEnabled(group.getId(), m, enable);
-    }
-
-    public void setFunctionEnabled(Group group, BaseModule m, boolean enable) {
-        setFunctionEnabled(group.getId(), Modules.get(m), enable);
-    }
-    
-    public void setFunctionEnabled(long group, BaseModule m, boolean enable) {
-        setFunctionEnabled(group, Modules.get(m), enable);
-    }
-    
 	public boolean isFunctionEnabled(long gid, Modules m) {
         GroupConfig get = configHolder.groupConfigs.get(gid);
         if (get == null) {
@@ -85,10 +97,6 @@ public class ConfigManager extends BaseModule {
         return isFunctionEnabled(group.getId(), Modules.get(m));
     }
 
-    public boolean isFunctionEnabled(long group, BaseModule m) {
-        return isFunctionEnabled(group, Modules.get(m));
-    }
-    
     public PersonConfig getPersonConfig(long qq) {
         PersonConfig get = configHolder.personCfg.get(qq);
         if (get == null) {
@@ -295,8 +303,12 @@ public class ConfigManager extends BaseModule {
 		if (nick == null) {
 			PersonInfo pi = getPersonInfoFromQQ(qq);
 			if (pi == null) {
-				nick = entity.getGroupMemberInfo(group, qq).getNameCard();
-			} else {
+                try {
+                    nick = entity.getGroupMemberInfo(group, qq).getNameCard();
+                } catch (Exception ignore) {
+                    //mirai有时候会获取失败
+                }
+            } else {
 				nick = pi.name;
 			}
 		}

@@ -1,11 +1,11 @@
 package com.meng.modules;
 
-import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.handler.group.IGroupMessageEvent;
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Hash;
 import com.meng.tools.TextLexer;
 import java.io.File;
@@ -222,6 +222,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     return true;
             }
         } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             entity.sendMessage(gme.getGroup(), "参数错误:" + e.toString());
         }
         return false;
