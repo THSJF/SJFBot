@@ -1,6 +1,6 @@
 package com.meng.modules;
 
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.config.ConfigManager;
 import com.meng.config.javabeans.PersonInfo;
@@ -14,13 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.EventReceivers;
+import net.mamoe.mirai.message.data.PlainText;
 
 /**
  * @Description: 管理员命令
@@ -80,39 +79,18 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                     return true;
                 case "switch":
                     if (list.size() == 2) {
-                        List<? extends BaseModule> allModules = entity.moduleManager.getAllModules();
                         StringBuilder sb = new StringBuilder("当前有:\n");
-                        for (BaseModule baseModule : allModules) {
-                            Modules module = Modules.get(baseModule.getClass());
-                            if (module != null && module.isAllowSwitch()) {
-                                sb.append(module.toString()).append("\n");
-                            }
+                        for (Functions function:Functions.values()) {
+                            sb.append(function.toString()).append("\n");
                         }
                         sb.setLength(sb.length() - 1);
                         entity.sendGroupMessage(gme.getGroup().getId(), sb.toString());
                     } else if (list.size() == 3) {
-                        ConfigManager configManager = entity.configManager;
-                        String mName = iter.next();
-                        Modules module = Modules.get(mName);
-                        if (module != null) {
-                            if (module.isAllowSwitch()) {
-                                if (configManager.isFunctionEnabled(groupId, module)) {
-                                    configManager.setFunctionEnabled(groupId, module, false);
-                                    entity.sendGroupMessage(groupId, "禁用" + module);
-                                } else {
-                                    configManager.setFunctionEnabled(groupId, module, true);
-                                    entity.sendGroupMessage(groupId, "启用" + module);  
-                                }
-                            }
+                        Functions function = Functions.get(iter.next());
+                        if (function != null) {
+                            entity.sendQuote(gme, (function.change(entity.configManager, groupId) ?"已启用" : "已停用") + function.toString());
                         } else {
-                            EventReceivers eventReceiver = EventReceivers.get(mName);
-                            if (configManager.isReceiverEnabled(groupId, eventReceiver)) {
-                                configManager.setReceiverEnabled(groupId, eventReceiver, false);
-                                entity.sendGroupMessage(groupId, "禁用" + eventReceiver);
-                            } else {
-                                configManager.setReceiverEnabled(groupId, eventReceiver, true);
-                                entity.sendGroupMessage(groupId, "启用" + eventReceiver);  
-                            }
+                            entity.sendQuote(gme, "无此开关");
                         }
                     }
                     return true;
@@ -126,7 +104,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                     HashSet<Group> hs = new HashSet<>();
                     Collection<Group> glist = entity.getGroups();
                     for (Group g:glist) {
-                        if (!entity.configManager.isReceiverEnabled(groupId, EventReceivers.GroupMessageEvent)) {
+                        if (!entity.configManager.isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
                             continue;
                         }
                         entity.sendGroupMessage(g.getId(), broadcast);
@@ -233,12 +211,12 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-        entity.sendGroupMessage(event.getGroup().getId(), String.format("%s撤回了:%s", event.getOperator().getId(), MessageManager.get(event).getMessage().contentToString()));
+        entity.sendGroupMessage(event.getGroup().getId(), new PlainText("撤回了:").plus(String.valueOf(event.getOperator().getId())).plus(MessageManager.get(event).getMessage()));
         return false;
     }
 
     @Override
     public String getModuleName() {
-        return Modules.AdminMessage.toString();
+        return "AdminMessage";
     }
 }

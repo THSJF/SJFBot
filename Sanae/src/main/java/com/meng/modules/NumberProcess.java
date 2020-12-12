@@ -1,6 +1,6 @@
 package com.meng.modules;
 
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.TextLexer;
@@ -22,7 +22,7 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.NumberProcess)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();
@@ -104,6 +104,6 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
-        return Modules.NumberProcess.toString();
+        return Functions.NumberProcess.toString();
     }
 }

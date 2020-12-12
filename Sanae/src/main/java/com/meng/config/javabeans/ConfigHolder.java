@@ -7,8 +7,7 @@ import java.util.HashSet;
  * @author: 司徒灵羽
  **/
 public class ConfigHolder {
-    public HashMap<Long,ReceiverConfig> receivers = new HashMap<>();
-    public HashMap<Long,GroupConfig> groupConfigs = new HashMap<>();
+    public HashMap<Long,GroupConfig> groupCfgs = new HashMap<>();
     public HashSet<Long> blockOnlyQQ = new HashSet<>();
     public HashSet<Long> blackQQ = new HashSet<>();
     public HashSet<Long> blackGroup = new HashSet<>();

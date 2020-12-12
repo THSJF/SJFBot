@@ -1,6 +1,5 @@
 package com.meng.modules;
 
-import com.meng.Modules;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -26,7 +25,7 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
-        return Modules.AimMessage.toString();
+        return "AimMessage";
     }
 
     @Override

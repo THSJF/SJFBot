@@ -1,6 +1,6 @@
 package com.meng.modules;
 
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -66,7 +66,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.QuestionAndAnswer)) {
             return false;
         }
         if (processQa(gme)) {

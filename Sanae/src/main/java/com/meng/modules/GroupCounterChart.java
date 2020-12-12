@@ -1,6 +1,6 @@
 package com.meng.modules;
 
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -44,7 +44,7 @@ public class GroupCounterChart extends BaseModule implements IGroupMessageEvent 
 
     @Override
     public String getModuleName() {
-        return Modules.GroupCounterChart.toString();
+        return Functions.GroupCounterChart.toString();
     }
 
 	@Override
@@ -66,7 +66,7 @@ public class GroupCounterChart extends BaseModule implements IGroupMessageEvent 
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.GroupCounterChart)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();

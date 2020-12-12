@@ -1,7 +1,7 @@
 package com.meng.modules;
 
 import com.google.gson.annotations.SerializedName;
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
@@ -39,7 +39,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.DynamicWordStock)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();
@@ -176,7 +176,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public String getModuleName() {
-        return Modules.DynamicWordStock.toString();
+        return Functions.DynamicWordStock.toString();
     }
 
     public enum NodeType {

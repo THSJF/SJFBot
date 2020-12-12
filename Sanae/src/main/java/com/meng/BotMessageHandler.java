@@ -32,7 +32,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @EventHandler()
     public ListeningStatus onReceive(GroupMessageEvent event) {
         MessageManager.put(event);
-        if (!configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.GroupMessageEvent)) {
+        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.GroupMessageEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onGroupMessage(event);
@@ -42,7 +42,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(FriendMessageEvent event) {
-        if (!configManager.isReceiverEnabled(event.getSender().getId(), EventReceivers.FriendMessageEvent)) {
+        if (!configManager.isFunctionEnabled(event.getSender().getId(), Functions.FriendMessageEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onFriendMessage(event);
@@ -53,7 +53,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(MessageRecallEvent.GroupRecall event) {
-        if (!configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.MessageRecallEvent_GroupRecall)) {
+        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MessageRecallEvent_GroupRecall)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onGroupMessageRecall(event);
@@ -62,7 +62,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(BotLeaveEvent event) {
-        if (!configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.BotLeaveEvent)) {
+        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.BotLeaveEvent)) {
             return ListeningStatus.LISTENING; 
         }
         return ListeningStatus.LISTENING;
@@ -71,7 +71,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(BotMuteEvent event) {
-        if (!configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.BotMuteEvent)) {
+        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.BotMuteEvent)) {
             return ListeningStatus.LISTENING; 
         }
         long id = event.getGroup().getId();
@@ -85,7 +85,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(MemberJoinEvent event) {
-        if (!configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.MemberJoinEvent)) {
+        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MemberJoinEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onMemberJoin(event);
@@ -95,7 +95,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(MemberLeaveEvent event) {
-        if (!configManager.isReceiverEnabled(event.getGroup().getId(), EventReceivers.MemberLeaveEvent)) {
+        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MemberLeaveEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onMemberLeave(event);

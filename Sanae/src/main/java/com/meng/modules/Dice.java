@@ -17,6 +17,7 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import com.meng.Functions;
 
 /**
  * @Description: 模拟骰子
@@ -39,7 +40,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.Dice)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();

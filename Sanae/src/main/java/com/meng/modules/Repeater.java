@@ -1,6 +1,6 @@
 package com.meng.modules;
 
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         SubRepeater rp = repeaters.get(groupId);
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), this)) {
+        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.Repeater)) {
             return false;
         }
 		if (rp == null) {

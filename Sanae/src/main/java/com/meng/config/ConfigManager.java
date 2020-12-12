@@ -1,6 +1,6 @@
 package com.meng.config;
 
-import com.meng.Modules;
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.annotation.SanaeData;
 import com.meng.config.javabeans.ConfigHolder;
@@ -11,9 +11,6 @@ import com.meng.modules.BaseModule;
 import java.util.Collections;
 import java.util.Set;
 import net.mamoe.mirai.contact.Group;
-import com.meng.EventReceivers;
-import com.meng.config.javabeans.ReceiverConfig;
-import net.mamoe.mirai.event.Event;
 
 /**
  * @Description: 配置管理器
@@ -42,34 +39,11 @@ public class ConfigManager extends BaseModule {
         return this;
     }
 
-    public void setReceiverEnabled(long gid, EventReceivers er, boolean enable) {
-        ReceiverConfig rc = configHolder.receivers.get(gid);
-        if (rc == null) {
-            rc = new ReceiverConfig();
-            configHolder.receivers.put(gid, rc);
-        }
-        if (enable) {
-            rc.enabled.add(er);
-        } else {
-            rc.enabled.remove(er);
-        }
-        save();
-    }
-
-    public boolean isReceiverEnabled(long l, EventReceivers er) {
-        ReceiverConfig get = configHolder.receivers.get(l);
-        if (get == null) {
-            get = new ReceiverConfig();
-            configHolder.receivers.put(l, get);
-        } 
-        return get.enabled.contains(er);
-    }
-    
-    public void setFunctionEnabled(long gid, Modules m, boolean enable) {
-        GroupConfig get = configHolder.groupConfigs.get(gid);
+    public boolean setFunctionEnabled(long gid, Functions m, boolean enable) {
+        GroupConfig get = configHolder.groupCfgs.get(gid);
         if (get == null) {
             get = new GroupConfig();
-            configHolder.groupConfigs.put(gid, get);
+            configHolder.groupCfgs.put(gid, get);
         }
         if (enable) {
             get.enabled.add(m);
@@ -77,24 +51,21 @@ public class ConfigManager extends BaseModule {
             get.enabled.remove(m);
         }
         save();
+        return enable;
     }
 
-	public boolean isFunctionEnabled(long gid, Modules m) {
-        GroupConfig get = configHolder.groupConfigs.get(gid);
+	public boolean isFunctionEnabled(long gid, Functions m) {
+        GroupConfig get = configHolder.groupCfgs.get(gid);
         if (get == null) {
             get = new GroupConfig();
-            configHolder.groupConfigs.put(gid, get);
+            configHolder.groupCfgs.put(gid, get);
             save();
         }
         return get.enabled.contains(m);
     }
 
-    public boolean isFunctionEnabled(Group group, Modules m) {
+    public boolean isFunctionEnabled(Group group, Functions m) {
         return isFunctionEnabled(group.getId(), m);
-    }
-
-    public boolean isFunctionEnabled(Group group, BaseModule m) {
-        return isFunctionEnabled(group.getId(), Modules.get(m));
     }
 
     public PersonConfig getPersonConfig(long qq) {
@@ -318,7 +289,7 @@ public class ConfigManager extends BaseModule {
     public void addBlack(long group, long qq) {
         configHolder.blackQQ.add(qq);
         configHolder.blackGroup.add(group);
-        configHolder.groupConfigs.remove(group);
+        configHolder.groupCfgs.remove(group);
         save();
         entity.sendGroupMessage(SBot.yysGroup, "已将用户" + qq + "加入黑名单");
         entity.sendGroupMessage(SBot.yysGroup, "已将群" + group + "加入黑名单");
