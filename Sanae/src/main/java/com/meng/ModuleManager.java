@@ -488,7 +488,8 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
     public List<? extends BaseModule> getAllModules() {
         return all;
     }
-
+    
+    @SuppressWarnings("unchecked")
     public <T> T getModule(Class<T> t) {
         if (t == ModuleManager.class) {
             return (T)this;

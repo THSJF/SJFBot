@@ -65,16 +65,16 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 		// 复读状态
 		private boolean checkRepeatStatu(long groupId, long qqId, MessageChain msg) {
 			boolean b = false;
-			if (!lastStatus && entity.messageEquals(lastMsgRecieved, msg)) {
+			if (!lastStatus && SBot.messageEquals(lastMsgRecieved, msg)) {
 				b = repeatStart(groupId, qqId, msg);
 			}
-			if (lastStatus && entity.messageEquals(lastMsgRecieved, msg)) {
+			if (lastStatus && SBot.messageEquals(lastMsgRecieved, msg)) {
 				b = repeatRunning(groupId, qqId, msg);
 			}
-			if (lastStatus && !entity.messageEquals(lastMsgRecieved, msg)) {
+			if (lastStatus && !SBot.messageEquals(lastMsgRecieved, msg)) {
 				b = repeatEnd(groupId, qqId, msg);
 			}
-			lastStatus = entity.messageEquals(lastMsgRecieved, msg);
+			lastStatus = SBot.messageEquals(lastMsgRecieved, msg);
 			return b;
 		}
 

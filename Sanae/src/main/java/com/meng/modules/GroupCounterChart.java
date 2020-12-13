@@ -117,7 +117,7 @@ public class GroupCounterChart extends BaseModule implements IGroupMessageEvent 
 			djfreechart.getTitle().setFont(new Font("宋体", Font.BOLD, 20));  
 			File pic=null;
 			try {
-				pic = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
+				pic = new File(SBot.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic, 1.0f, dframe1.getChart(), 800, 480);
 			} catch (IOException e) {
                 throw new RuntimeException(e); 
@@ -152,7 +152,7 @@ public class GroupCounterChart extends BaseModule implements IGroupMessageEvent 
 			jfreechart.getTitle().setFont(new Font("宋体", Font.BOLD, 20));
 			File pic2=null;
 			try {
-				pic2 = new File(entity.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
+				pic2 = new File(SBot.appDirectory + "downloadImages/" + System.currentTimeMillis() + ".jpg");
 				ChartUtils.saveChartAsJPEG(pic2, 1.0f, frame1.getChart(), 800, 480);
 			} catch (IOException e) {
                 throw new RuntimeException(e);

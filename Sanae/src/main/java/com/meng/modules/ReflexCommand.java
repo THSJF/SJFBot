@@ -44,7 +44,7 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 					entity.sendGroupMessage(groupId, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
-				Class[] paramTypes = new Class[parseInt];
+				Class<?>[] paramTypes = new Class<?>[parseInt];
 				Object[] param = new Object[parseInt];
 				for (int i=0;i < parseInt;++i) {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
@@ -71,7 +71,7 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
         return false;
     }
 
-	private void getTypeAndValue(String typeStr, String valueStr, int arrayIndex, Class[] types, Object[] values) {
+	private void getTypeAndValue(String typeStr, String valueStr, int arrayIndex, Class<?>[] types, Object[] values) {
 		switch (typeStr) {
 			case "byte" :
 				types[arrayIndex] = byte.class;

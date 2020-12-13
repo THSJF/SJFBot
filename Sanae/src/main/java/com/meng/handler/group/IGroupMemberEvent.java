@@ -1,12 +1,13 @@
 package com.meng.handler.group;
-import net.mamoe.mirai.event.events.MemberJoinEvent;
-import net.mamoe.mirai.event.events.MemberLeaveEvent;
-import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
+
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
 import net.mamoe.mirai.event.events.MemberCardChangeEvent;
-import net.mamoe.mirai.event.events.MemberSpecialTitleChangeEvent;
-import net.mamoe.mirai.event.events.MemberPermissionChangeEvent;
+import net.mamoe.mirai.event.events.MemberJoinEvent;
+import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
+import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.event.events.MemberMuteEvent;
+import net.mamoe.mirai.event.events.MemberPermissionChangeEvent;
+import net.mamoe.mirai.event.events.MemberSpecialTitleChangeEvent;
 import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 
 /**

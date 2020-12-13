@@ -1,5 +1,6 @@
 package com.meng.modules;
 
+import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
@@ -17,7 +18,6 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import com.meng.Functions;
 
 /**
  * @Description: 模拟骰子
@@ -168,14 +168,14 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                 String[] fileName = { "blue.gif", "green.gif", "red.gif" };
                                 MessageChainBuilder ufoMsgB=new MessageChainBuilder();
                                 ThreadLocalRandom current = ThreadLocalRandom.current();
-                                ufoMsgB.add(entity.image(new File(entity.appDirectory + "ufo/" + fileName[current.nextInt(3)]), groupId));
-                                ufoMsgB.add(entity.image(new File(entity.appDirectory + "ufo/" + fileName[current.nextInt(3)]), groupId));
-                                ufoMsgB.add(entity.image(new File(entity.appDirectory + "ufo/" + fileName[current.nextInt(3)]), groupId));
+                                ufoMsgB.add(entity.image(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), groupId));
+                                ufoMsgB.add(entity.image(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), groupId));
+                                ufoMsgB.add(entity.image(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), groupId));
                                 entity.sendMessage(gme.getGroup(), ufoMsgB.asMessageChain());        
                             } else if (ufor == 8) {
-                                entity.sendMessage(gme.getGroup(), entity.image(new File(entity.appDirectory + "ufo/yellow.gif"), groupId));
+                                entity.sendMessage(gme.getGroup(), entity.image(new File(SBot.appDirectory + "ufo/yellow.gif"), groupId));
                             } else {
-                                entity.sendMessage(gme.getGroup(), entity.image(new File(entity.appDirectory + "ufo/colorful.gif"), groupId));
+                                entity.sendMessage(gme.getGroup(), entity.image(new File(SBot.appDirectory + "ufo/colorful.gif"), groupId));
                             }
                             return true;
                         case "all":

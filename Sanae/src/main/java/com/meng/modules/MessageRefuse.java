@@ -66,7 +66,7 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 		}
 		//重复次数过多
 		mtmb.lastSpeakTimeStamp = System.currentTimeMillis();
-		if (entity.messageEquals(mtmb.lastMsg, gme.getMessage())) {
+		if (SBot.messageEquals(mtmb.lastMsg, gme.getMessage())) {
 			++mtmb.repeatTime;
 		} else {
 			mtmb.repeatTime = 0;

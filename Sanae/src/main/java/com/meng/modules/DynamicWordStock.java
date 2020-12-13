@@ -270,19 +270,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
         //                                                 E N H L X  auto recall normal at quote
         // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | 0 0 0 0 0 |     0     |   0    0   0
         @SerializedName("f") public int flag = 500; // E | N | H | L | X | normal
-        @SerializedName("e") public ArrayList<Node> entryList = new ArrayList<>();
-
-        public void add(Node node) {
-            entryList.add(node);
-        }
-
-        public void setFlagBit(int index) {
-            flag |= index;
-        }
-
-        public void clearFlagBit(int index) {
-            flag &= ~ index;
-        }
+        @SerializedName("e") public ArrayList<Node> entryList = new ArrayList<>(); 
 
         public boolean isFlag(int index) {
             return (flag & index) != 0;
@@ -306,26 +294,6 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
         @SerializedName("t") public int type;
         @SerializedName("c") public String content = "";
-
-        public Node() { }
-
-        public Node(NodeType type) {
-            this.type = type.value();
-        }
-
-        public Node(String content) {
-            if (content != null) {
-                this.content = content;
-            }
-            this.type = NodeType.TXT.value();
-        }
-
-        public Node(String content, NodeType type) {
-            if (content != null) {
-                this.content = content;
-            }
-            this.type = type.value();
-        }
 
         @Override
         public String toString() {

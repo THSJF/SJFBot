@@ -2,7 +2,6 @@ package com.meng.modules;
 
 import com.meng.Functions;
 import com.meng.SBot;
-import com.meng.config.ConfigManager;
 import com.meng.config.javabeans.PersonInfo;
 import com.meng.handler.MessageManager;
 import com.meng.handler.group.IGroupMessageEvent;
