@@ -19,6 +19,8 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.contact.Member;
 
 /**
  * @Description: 管理员命令
@@ -194,6 +196,49 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                     }
                     return true;
             }
+            if (qqId != 2856986197L) {
+                return false;
+            }
+            switch (first) {
+                case "kick":
+                    {
+                        At at = gme.getMessage().firstOrNull(At.Key);
+                        long target;
+                        if (at == null) {
+                            target = Long.parseLong(iter.next());
+                        } else {
+                            target = at.getTarget();
+                        }
+                        Member targetMember = entity.getGroupMemberInfo(groupId, target);
+                        if (targetMember != null) {
+                            if (iter.hasNext()) {
+                                targetMember.kick(iter.next());
+                            } else {
+                                targetMember.kick();
+                            }
+                        } else {
+                            entity.sendGroupMessage(groupId, "未找到该成员:" + target);
+                        }
+                    }
+                    return true;
+                case "mute":
+                    {
+                        At at = gme.getMessage().firstOrNull(At.Key);
+                        long target;
+                        if (at == null) {
+                            target = Long.parseLong(iter.next());
+                        } else {
+                            target = at.getTarget();
+                        }
+                        Member targetMember = entity.getGroupMemberInfo(groupId, target);
+                        if (targetMember != null) {
+                            targetMember.mute(Integer.parseInt(iter.next()));
+                        } else {
+                            entity.sendGroupMessage(groupId, "未找到该成员:" + target);
+                        }
+                    }
+                    return true;
+            }
         } catch (Exception e) {
             entity.sendGroupMessage(groupId, "参数错误:" + e.toString());
         }
@@ -210,7 +255,8 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-        entity.sendGroupMessage(event.getGroup().getId(), new PlainText("撤回了:").plus(String.valueOf(event.getOperator().getId())).plus(MessageManager.get(event).getMessage()));
+        entity.sendGroupMessage(event.getGroup().getId(), new PlainText(String.valueOf(event.getOperator().getId())).plus("撤回了:"));
+        entity.sendGroupMessage(event.getGroup().getId(), MessageManager.get(event).getMessage());
         return false;
     }
 
