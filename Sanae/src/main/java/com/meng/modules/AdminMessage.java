@@ -80,7 +80,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                     if (list.size() == 2) {
                         StringBuilder sb = new StringBuilder("当前有:\n");
                         for (Functions function:Functions.values()) {
-                            sb.append(function.toString()).append("\n");
+                            sb.append(function.getName()).append("\n");
                         }
                         sb.setLength(sb.length() - 1);
                         entity.sendGroupMessage(gme.getGroup().getId(), sb.toString());

@@ -20,6 +20,45 @@ import org.jsoup.Jsoup;
 
 public class Network {
 
+    private static String bilibiliPost(String url, String cookie, Map<String,String> headers, Object... params) {
+        Connection connection = Jsoup.connect(url);
+        connection.userAgent(SBot.userAgent);
+        if (headers != null) {
+            connection.headers(headers);
+        }
+        if (cookie != null) {
+            connection.cookies(cookieToMap(cookie));
+        }
+        connection.ignoreContentType(true).method(Connection.Method.POST);
+        for (int i = 0;i < params.length;i += 2) {
+            connection.data((String)params[i], (String)params[i + 1]);
+        }
+        Connection.Response response = null;
+        try {
+            response = connection.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            return null;
+        }
+        if (response.statusCode() != 200) {
+            return String.valueOf(response.statusCode());
+        }
+        return response.body();
+    }
+
+    public static String bilibiliPost(String url, String cookie, Object... params) {
+        return bilibiliPost(url, cookie, null, params);
+    }
+
+    public static String bilibiliMainPost(String url, String cookie, Object... params) {
+        return bilibiliPost(url, cookie, Bilibili.mainHead, params);
+    }
+
+    public static String bilibiliLivePost(String url, String cookie, Object... params) {
+        return bilibiliPost(url, cookie, Bilibili.liveHead, params);
+    }
+
 	public static Map<String, String> cookieToMap(String value) {
 		Map<String, String> map = new HashMap<>();
 		String[] values = value.split("; ");

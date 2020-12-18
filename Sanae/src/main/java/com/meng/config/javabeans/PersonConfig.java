@@ -1,4 +1,5 @@
 package com.meng.config.javabeans;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * @author: 司徒灵羽
@@ -8,6 +9,9 @@ public class PersonConfig {
 	public static final int qa = 1 << 0;
     public static final int botOn = 1 << 1;
     private int flag = -1;
+    
+    @SerializedName("a")
+    public String bilibiliCookie;
 
     public boolean isQaAllowOther() {
         return (flag & (1 << 0)) != 0;

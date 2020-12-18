@@ -4,26 +4,36 @@ import com.google.gson.annotations.SerializedName;
 import com.meng.config.ConfigManager;
 
 public enum Functions {
-    @SerializedName("a") GroupMessageEvent,
-    @SerializedName("b") FriendMessageEvent,
-    @SerializedName("c") MessageRecallEvent_GroupRecall,
-    @SerializedName("d") BotLeaveEvent,
-    @SerializedName("e") BotMuteEvent,
-    @SerializedName("f") MemberJoinEvent,
-    @SerializedName("g") MemberLeaveEvent,
-    @SerializedName("h") Dice,
-    @SerializedName("i") DynamicWordStock,
-    @SerializedName("j") GroupCounterChart,
-    @SerializedName("k") MemberChange,
-    @SerializedName("l") Morning,
-    @SerializedName("m") NumberProcess,
-    @SerializedName("n") QuestionAndAnswer,
-    @SerializedName("o") Repeater,
-    @SerializedName("p") Report;
+    @SerializedName("a") GroupMessageEvent("群消息"),
+    @SerializedName("b") FriendMessageEvent("好友消息"),
+    @SerializedName("c") MessageRecallEvent_GroupRecall("群撤回消息"),
+    @SerializedName("d") BotLeaveEvent("bot退群"),
+    @SerializedName("e") BotMuteEvent("bot被禁言"),
+    @SerializedName("f") MemberJoinEvent("新群成员"),
+    @SerializedName("g") MemberLeaveEvent("群员退群"),
+    @SerializedName("h") Dice("骰子"),
+    @SerializedName("i") DynamicWordStock("词库"),
+    @SerializedName("j") GroupCounterChart("群统计"),
+    @SerializedName("k") BilibiliVideo("哔哩哔哩视频"),
+    @SerializedName("l") Morning("早"),
+    @SerializedName("m") NumberProcess("数字计算"),
+    @SerializedName("n") QuestionAndAnswer("问答"),
+    @SerializedName("o") Repeater("复读机"),
+    @SerializedName("p") Report("留言");
+
+    private Functions(String s){
+        this.s = s;
+    }
+
+    private String s;
+
+    public String getName(){
+        return s;
+    }
 
     public static Functions get(String s){
         for(Functions mds : values()){
-            if(mds.toString().equals(s)){
+            if(mds.getName().equals(s) || mds.toString().equals(s)){
                 return mds;
             }
         }

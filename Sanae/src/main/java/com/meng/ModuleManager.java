@@ -14,18 +14,20 @@ import com.meng.handler.group.IGroupSettingEvent;
 import com.meng.modules.AdminMessage;
 import com.meng.modules.AimMessage;
 import com.meng.modules.BaseModule;
+import com.meng.modules.BilibiliLinkParser;
+import com.meng.modules.Derecall;
 import com.meng.modules.Dice;
 import com.meng.modules.DynamicWordStock;
 import com.meng.modules.GroupCounterChart;
-import com.meng.modules.NumberProcess;
 import com.meng.modules.MemberChange;
 import com.meng.modules.MessageRefuse;
 import com.meng.modules.Morning;
-import com.meng.modules.Repeater;
-import com.meng.modules.Report;
 import com.meng.modules.MtestMsg;
+import com.meng.modules.NumberProcess;
 import com.meng.modules.QuestionAndAnswer;
 import com.meng.modules.ReflexCommand;
+import com.meng.modules.Repeater;
+import com.meng.modules.Report;
 import com.meng.modules.TimeTask;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -59,7 +61,6 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.modules.Derecall;
 
 /**
  * @Description: 模块管理器
@@ -96,6 +97,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(Repeater.class);
         load(Report.class);
 
+        load(BilibiliLinkParser.class);
         load(NumberProcess.class);
         load(Dice.class);
         load(TimeTask.class);
@@ -105,7 +107,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(DynamicWordStock.class);
         load(Morning.class);
         load(UserInfo.class);
-        load(Derecall.class,false);
+        load(Derecall.class, false);
         return this;
     }
 
@@ -490,7 +492,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
     public List<? extends BaseModule> getAllModules() {
         return all;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T getModule(Class<T> t) {
         if (t == ModuleManager.class) {
