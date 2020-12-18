@@ -3,7 +3,6 @@ package com.meng.modules;
 import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.config.javabeans.PersonInfo;
-import com.meng.handler.MessageManager;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
@@ -15,12 +14,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.contact.Member;
 
 /**
  * @Description: 管理员命令
@@ -255,8 +253,6 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessageRecall(MessageRecallEvent.GroupRecall event) {
-        entity.sendGroupMessage(event.getGroup().getId(), new PlainText(String.valueOf(event.getOperator().getId())).plus("撤回了:"));
-        entity.sendGroupMessage(event.getGroup().getId(), MessageManager.get(event).getMessage());
         return false;
     }
 

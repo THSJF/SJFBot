@@ -71,7 +71,6 @@ public class SBot extends Bot {
     public SBot(Bot b, BotConfiguration bc) {
         super(bc);
         bot = b;
-
     }
 
     public void init() {
@@ -82,7 +81,7 @@ public class SBot extends Bot {
     }
 
     public Member getGroupMemberInfo(long gid, long qq) {
-        return bot.getGroup(gid).get(qq);
+        return bot.getGroup(gid).getOrNull(qq);
     }
 
     public int sendGroupMessage(long fromGroup, Message msg) {

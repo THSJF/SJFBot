@@ -19,6 +19,7 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
 
     @Override
     public boolean onMemberJoinRequest(MemberJoinRequestEvent event) {
+        entity.sendGroupMessage(event.getGroupId(), "有人申请加群,管理员快看看吧");
         return false;
     }
 
@@ -32,6 +33,7 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
 
     @Override
     public boolean onMemberLeave(MemberLeaveEvent event) {
+        entity.sendGroupMessage(event.getGroup().getId(), event.getMember().getId() + "离开了");
         return false;
     }
 

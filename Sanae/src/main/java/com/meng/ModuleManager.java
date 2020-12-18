@@ -59,6 +59,7 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.modules.Derecall;
 
 /**
  * @Description: 模块管理器
@@ -104,6 +105,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(DynamicWordStock.class);
         load(Morning.class);
         load(UserInfo.class);
+        load(Derecall.class,false);
         return this;
     }
 

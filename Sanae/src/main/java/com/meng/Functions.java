@@ -2,13 +2,6 @@ package com.meng;
 
 import com.google.gson.annotations.SerializedName;
 import com.meng.config.ConfigManager;
-import net.mamoe.mirai.event.events.BotLeaveEvent;
-import net.mamoe.mirai.event.events.BotMuteEvent;
-import net.mamoe.mirai.event.events.MemberJoinEvent;
-import net.mamoe.mirai.event.events.MemberLeaveEvent;
-import net.mamoe.mirai.event.events.MessageRecallEvent;
-import net.mamoe.mirai.message.FriendMessageEvent;
-import net.mamoe.mirai.message.GroupMessageEvent;
 
 public enum Functions {
     @SerializedName("a") GroupMessageEvent,
