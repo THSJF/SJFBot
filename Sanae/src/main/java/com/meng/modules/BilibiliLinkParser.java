@@ -1,14 +1,16 @@
 package com.meng.modules;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
+import com.meng.sjfmd.result.UidToRoom;
 import com.meng.sjfmd.result.VideoInfo;
 import com.meng.tools.AvBvConverter;
 import com.meng.tools.Bilibili;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.FileTool;
 import com.meng.tools.Network;
-import java.io.File;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
@@ -16,13 +18,16 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 
 public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent {
 
     public static final Pattern patternAv = Pattern.compile(".{0,}[Aa][Vv](\\d{1,})\\D{0,}");
     public static final Pattern patternBv = Pattern.compile(".{0,}([Bb][Vv]1.{2}4.{1}1.{1}7.{2}).{0,}");
+    public static final Pattern patternLive = Pattern.compile(".{0,}live\\D{0,}(\\d{1,})\\D{0,}");
+    public static final Pattern patternCv = Pattern.compile(".{0,}[Cc][Vv](\\d{1,})");
+    public static final Pattern patternUid = Pattern.compile(".{0,}space\\D{0,}(\\d{1,})");
+
+
 
     public BilibiliLinkParser(SBot bot) {
         super(bot);
@@ -44,21 +49,48 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
             return false; 
         }
         String msg = event.getMessage().contentToString();
-        long avId = getAvId(msg);
-        if (avId == -1) {
-            return false;
+        long groupId = event.getGroup().getId();
+        long id;
+        id = getLiveId(msg);
+        if (id != -1) {
+            processLive(id, groupId);
+            return true;
         }
+        id = getAvId(msg);
+        if (id != -1) {
+            processVideo(id, event);
+            return true;
+        }
+        return false;
+    }
+
+    private void processLive(long id, long groupId) {
+        JsonObject liveToMainInfo = null;
+        try {
+            liveToMainInfo = new JsonParser().parse(Network.httpGet("https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=" + id)).getAsJsonObject().get("data").getAsJsonObject().get("info").getAsJsonObject();
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            return;
+        }
+        long uid = liveToMainInfo.get("uid").getAsLong();
+        String uname = liveToMainInfo.get("uname").getAsString();
+        UidToRoom utr = Bilibili.getUidToRoom(uid);
+        if (utr.data.liveStatus != 1) {
+            entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n未直播");
+        } else {
+            entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n标题:" + utr.data.title);
+        }
+        String html = Network.httpGet("https://live.bilibili.com/" + id);
+        String jsonInHtml = html.substring(html.indexOf("{\"roomInitRes\":"), html.lastIndexOf("}") + 1);
+        JsonObject data = new JsonParser().parse(jsonInHtml).getAsJsonObject().get("baseInfoRes").getAsJsonObject().get("data").getAsJsonObject();
+        entity.sendGroupMessage(groupId, "分区:" + data.get("parent_area_name").getAsString() + "-" + data.get("area_name").getAsString() + "\n标签:" + data.get("tags").getAsString());
+    }
+
+    private void processVideo(long avId, GroupMessageEvent event) {
         VideoInfo info = Bilibili.getVideoInfo(avId);
         Image image = null;
         try {
-            byte[] imgBytes = Jsoup.connect(info.data.pic).method(Connection.Method.GET).ignoreContentType(true).userAgent(SBot.userAgent).execute().bodyAsBytes();
-            File folder = new File(SBot.appDirectory + "images/bilibili/");
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-            File file = new File(SBot.appDirectory + "images/bilibili/" + info.data.aid);
-            FileTool.saveFile(file, imgBytes);
-            image = event.getGroup().uploadImage(file);
+            image = event.getGroup().uploadImage(new URL(info.data.pic));
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
         }
@@ -69,8 +101,15 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
             messageChainBuilder.add(image);
         }
         messageChainBuilder.add(info.toString());
-        entity.sendGroupMessage(event.getGroup().getId(), info.toString());
-        return false;
+        entity.sendGroupMessage(event.getGroup().getId(), messageChainBuilder.asMessageChain());
+    }
+
+    private long getLiveId(String link) {
+        Matcher matcher = patternLive.matcher(link);
+        if (matcher.find()) {
+            return Long.parseLong(matcher.group(1));
+        }
+        return -1;
     }
 
     private long getAvId(String link) {
@@ -81,6 +120,9 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         Matcher mbv = patternBv.matcher(link);  
         if (mbv.find()) {
             return AvBvConverter.getInstance().decode(mbv.group(1));
+        }
+        if (!link.contains("http://")) {
+            return -1;
         }
         String realUrl = null;
         try {
