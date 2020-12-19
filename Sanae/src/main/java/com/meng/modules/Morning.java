@@ -76,14 +76,13 @@ public class Morning extends BaseModule implements IGroupMessageEvent {
 	@Override
 	public Morning load() {
 		DataPersistenter.read(this);
-        TimeTask.TaskBean mt = new TimeTask.TaskBean(0, 0, new Runnable(){
+        entity.moduleManager.getModule(TimeTask.class).addTask(0, 0, new Runnable(){
 
                 @Override
                 public void run() {
                     getUp.clear();
                 }
             });
-        entity.moduleManager.getModule(TimeTask.class).addTask(mt);
 		return this;
 	}
 

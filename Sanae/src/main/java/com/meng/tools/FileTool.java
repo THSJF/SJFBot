@@ -75,4 +75,14 @@ public class FileTool {
 	public static byte[] readBytes(String path) {
 		return readBytes(new File(path));
 	}
+
+    public static void saveFile(File f, byte[] content) {
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(content);
+            fos.close();
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+        }
+    }
 }

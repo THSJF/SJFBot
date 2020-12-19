@@ -27,8 +27,8 @@ public class TimeTask extends BaseModule {
         super(bw);
     }
 
-    public void addTask(TaskBean tb) {
-        tasks.add(tb);
+    public void addTask(int onHour, int onMinute, Runnable r) {
+        tasks.add(new TaskBean(onHour, onMinute, r));
     }
 
     @Override
@@ -59,58 +59,58 @@ public class TimeTask extends BaseModule {
                     Calendar c = Calendar.getInstance();
                     for (TaskBean ts : tasks) {
                         if ((ts.h == -1 || ts.h == c.get(Calendar.HOUR_OF_DAY)) && (ts.min == -1 || ts.min == c.get(Calendar.MINUTE))) {
-                            ts.r.run();
+                            SJFExecutors.execute(ts.r);
                         }
                     }
                 }
             }, 0, 1, TimeUnit.MINUTES);
-        addTask(new TaskBean(23, 0, new Runnable(){
+        addTask(23, 0, new Runnable(){
 
-                        @Override
-                        public void run() {
-                            String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
-                            for (Group group : entity.getGroups()) {
-                                if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
-                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                        continue;
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    } 
+                @Override
+                public void run() {
+                    String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
+                    for (Group group : entity.getGroups()) {
+                        if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
+                            try {
+                                if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                    continue;
                                 }
-                            }
-                            entity.sleeping = true; 
+                                Thread.sleep(1000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } 
                         }
-                    }));
-        addTask(new TaskBean(6, 0, new Runnable(){
+                    }
+                    entity.sleeping = true; 
+                }
+            });
+        addTask(6, 0, new Runnable(){
 
-                        @Override
-                        public void run() {
-                            entity.sleeping = false;
-                            String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
-                            for (Group group : entity.getGroups()) {
-                                if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
-                                    if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
-                                        continue;
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    } 
+                @Override
+                public void run() {
+                    entity.sleeping = false;
+                    String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
+                    for (Group group : entity.getGroups()) {
+                        if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
+                            try {
+                                if (entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string)) < 0) {
+                                    continue;
                                 }
-                            }
+                                Thread.sleep(1000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } 
                         }
-                    }));
-        addTask(new TaskBean(0, 0, new Runnable(){
+                    }
+                }
+            });
+        addTask(0, 0, new Runnable(){
 
-                        @Override
-                        public void run() {
-                            entity.moduleManager.getModule(UserInfo.class).onNewDay();
-                        }
-                    }));
+                @Override
+                public void run() {
+                    entity.moduleManager.getModule(UserInfo.class).onNewDay();
+                }
+            });
         return this;
     }
 
@@ -123,7 +123,7 @@ public class TimeTask extends BaseModule {
         return "timetask";
     }
 
-    public static class TaskBean {
+    private static class TaskBean {
         public int h;
         public int min;
         public Runnable r;

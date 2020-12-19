@@ -6,18 +6,18 @@ import com.meng.sjfmd.result.VideoInfo;
 import com.meng.tools.AvBvConverter;
 import com.meng.tools.Bilibili;
 import com.meng.tools.ExceptionCatcher;
-import java.io.IOException;
+import com.meng.tools.FileTool;
+import com.meng.tools.Network;
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import org.jsoup.Jsoup;
 import net.mamoe.mirai.message.data.Image;
-import java.net.URL;
-import net.mamoe.mirai.utils.OverFileSizeMaxException;
-import java.net.MalformedURLException;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent {
 
@@ -51,7 +51,14 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         VideoInfo info = Bilibili.getVideoInfo(avId);
         Image image = null;
         try {
-            image = event.getGroup().uploadImage(new URL(info.data.pic));
+            byte[] imgBytes = Jsoup.connect(info.data.pic).method(Connection.Method.GET).ignoreContentType(true).userAgent(SBot.userAgent).execute().bodyAsBytes();
+            File folder = new File(SBot.appDirectory + "images/bilibili/");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            File file = new File(SBot.appDirectory + "images/bilibili/" + info.data.aid);
+            FileTool.saveFile(file, imgBytes);
+            image = event.getGroup().uploadImage(file);
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
         }
@@ -74,6 +81,20 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         Matcher mbv = patternBv.matcher(link);  
         if (mbv.find()) {
             return AvBvConverter.getInstance().decode(mbv.group(1));
+        }
+        String realUrl = null;
+        try {
+            realUrl = Network.getRealUrl(link);
+        } catch (Exception e) {
+            return -1;
+        }
+        Matcher mav2 = patternAv.matcher(realUrl);
+        if (mav2.find()) {
+            return Long.parseLong(mav2.group(1));
+        }
+        Matcher mbv2 = patternBv.matcher(realUrl);  
+        if (mbv2.find()) {
+            return AvBvConverter.getInstance().decode(mbv2.group(1));
         }
         return -1;
 	}
