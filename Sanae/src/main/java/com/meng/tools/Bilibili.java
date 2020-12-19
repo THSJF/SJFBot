@@ -79,7 +79,7 @@ public class Bilibili {
     }
 
     public static UidToRoom getUidToRoom(long uid) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=" + uid), UidToRoom.class);
+        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=" + uid, null, "https://live.bilibili.com/"), UidToRoom.class);
     }
 
     public static RoomToUid getRoomToUid(long roomId) {
