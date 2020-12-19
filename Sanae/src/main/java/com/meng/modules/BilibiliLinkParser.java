@@ -76,9 +76,11 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         String uname = liveToMainInfo.get("uname").getAsString();
         UidToRoom utr = Bilibili.getUidToRoom(uid);
         if (utr.data.liveStatus != 1) {
-            entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n未直播");
+            entity.sendGroupMessage(groupId, "主播:" + uname + "\n未直播");
+//          entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n未直播");
         } else {
-            entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n标题:" + utr.data.title);
+            entity.sendGroupMessage(groupId, "主播:" + uname + "\n标题:" + utr.data.title);    
+//          entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n标题:" + utr.data.title);
         }
         String html = Network.httpGet("https://live.bilibili.com/" + id);
         String jsonInHtml = html.substring(html.indexOf("{\"roomInitRes\":"), html.lastIndexOf("}") + 1);
@@ -121,7 +123,7 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         if (mbv.find()) {
             return AvBvConverter.getInstance().decode(mbv.group(1));
         }
-        if (!link.contains("http://")) {
+        if (!link.contains("https://b23.tv")) {
             return -1;
         }
         String realUrl = null;

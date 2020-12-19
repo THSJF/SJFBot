@@ -96,6 +96,7 @@ public class VideoInfo {
 	@Override
 	public String toString() {
 		int days = (int) ((System.currentTimeMillis() / 1000 - data.pubdate) / 86400);
-		return String.format("AV%s  %s\n标题:%s\nup:%s\n%s次播放,%s条弹幕,%s条评论,%s个硬币,%s次分享,%s人收藏,%s人赞,%s", data.stat.aid, AvBvConverter.getInstance().encode(data.stat.aid), data.title, data.owner.name, data.stat.view, data.stat.danmaku, data.stat.reply, data.stat.coin, data.stat.share, data.stat.favorite, data.stat.like, days == 0 ?"24小时内发布.": days + "天前发布，平均每天" + ((float)data.stat.view / days) + "次播放.");
+        return String.format("标题:%s\nup:%s\n%s次播放,%s条弹幕,%s条评论,%s个硬币,%s次分享,%s人收藏,%s人赞,%s", data.title, data.owner.name, data.stat.view, data.stat.danmaku, data.stat.reply, data.stat.coin, data.stat.share, data.stat.favorite, data.stat.like, days == 0 ?"24小时内发布.": days + "天前发布，平均每天" + ((float)data.stat.view / days) + "次播放.");
+//      return String.format("AV%s  %s\n标题:%s\nup:%s\n%s次播放,%s条弹幕,%s条评论,%s个硬币,%s次分享,%s人收藏,%s人赞,%s", data.stat.aid, AvBvConverter.getInstance().encode(data.stat.aid), data.title, data.owner.name, data.stat.view, data.stat.danmaku, data.stat.reply, data.stat.coin, data.stat.share, data.stat.favorite, data.stat.like, days == 0 ?"24小时内发布.": days + "天前发布，平均每天" + ((float)data.stat.view / days) + "次播放.");
 	}
 }

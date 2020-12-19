@@ -4,6 +4,7 @@ import com.meng.SBot;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -74,14 +75,10 @@ public class Network {
 	}
 
 	public static String getRealUrl(String surl) throws Exception {
-		URL url = new URL(surl);
-		URLConnection conn = url.openConnection();
-		conn.connect();
-		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-		String nurl = conn.getURL().toString();
-		in.close();
-		return nurl;
-	}
+        HttpURLConnection conn = (HttpURLConnection) new URL(surl).openConnection();
+        conn.setInstanceFollowRedirects(false);
+        return conn.getHeaderField("Location");
+   	}
 
 	public static String httpGet(String url) {
 		return httpGet(url, null, null);
