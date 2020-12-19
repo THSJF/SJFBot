@@ -18,6 +18,7 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import net.mamoe.mirai.message.data.PlainText;
 
 public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent {
 
@@ -75,17 +76,27 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         long uid = liveToMainInfo.get("uid").getAsLong();
         String uname = liveToMainInfo.get("uname").getAsString();
         UidToRoom utr = Bilibili.getUidToRoom(uid);
+        MessageChainBuilder builder = new MessageChainBuilder();
         if (utr.data.liveStatus != 1) {
-            entity.sendGroupMessage(groupId, "主播:" + uname + "\n未直播");
-//          entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n未直播");
+            builder.add("主播:");
+            builder.add(uname);
+            builder.add("\n未直播");
         } else {
-            entity.sendGroupMessage(groupId, "主播:" + uname + "\n标题:" + utr.data.title);    
-//          entity.sendGroupMessage(groupId, "房间号:" + id + "\n主播:" + uname + "\n标题:" + utr.data.title);
+            builder.add("主播:");
+            builder.add(uname);
+            builder.add("\n标题:");
+            builder.add(utr.data.title);
         }
         String html = Network.httpGet("https://live.bilibili.com/" + id);
         String jsonInHtml = html.substring(html.indexOf("{\"roomInitRes\":"), html.lastIndexOf("}") + 1);
         JsonObject data = new JsonParser().parse(jsonInHtml).getAsJsonObject().get("baseInfoRes").getAsJsonObject().get("data").getAsJsonObject();
-        entity.sendGroupMessage(groupId, "分区:" + data.get("parent_area_name").getAsString() + "-" + data.get("area_name").getAsString() + "\n标签:" + data.get("tags").getAsString());
+        builder.add("分区:");
+        builder.add(data.get("parent_area_name").getAsString());
+        builder.add("-");
+        builder.add(data.get("area_name").getAsString());
+        builder.add("\n标签:");
+        builder.add(data.get("tags").getAsString()); 
+        entity.sendGroupMessage(groupId, builder.asMessageChain());
     }
 
     private void processVideo(long avId, GroupMessageEvent event) {

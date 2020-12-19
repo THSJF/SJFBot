@@ -15,6 +15,7 @@ import com.meng.modules.AdminMessage;
 import com.meng.modules.AimMessage;
 import com.meng.modules.BaseModule;
 import com.meng.modules.BilibiliLinkParser;
+import com.meng.modules.Copper;
 import com.meng.modules.Derecall;
 import com.meng.modules.Dice;
 import com.meng.modules.DynamicWordStock;
@@ -107,6 +108,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(DynamicWordStock.class);
         load(Morning.class);
         load(UserInfo.class);
+        load(Copper.class);
         load(Derecall.class, false);
         return this;
     }
