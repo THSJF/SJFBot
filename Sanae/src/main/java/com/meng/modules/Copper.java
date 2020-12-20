@@ -4,6 +4,7 @@ import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.Tools;
 import java.io.File;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
@@ -33,7 +34,7 @@ public class Copper extends BaseModule implements IGroupMessageEvent {
         if (event.getMessage().contentToString().equals("copper")) {
             MessageChainBuilder mcb = new MessageChainBuilder();
             try {
-                mcb.add(event.getGroup().uploadImage(new File(SBot.appDirectory + "/image/r15")));
+                mcb.add(event.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + "/image/r15").listFiles())));
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
