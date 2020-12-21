@@ -11,8 +11,15 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.FlashImage;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import com.meng.handler.MessageManager;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.Message;
 
 public class Copper extends BaseModule implements IGroupMessageEvent {
+
+    private File[] imageFolder = new File(SBot.appDirectory + "/image/r15").listFiles();
+
     public Copper(SBot bot) {
         super(bot);
     }
@@ -29,18 +36,14 @@ public class Copper extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.Copper)) {
+        Group group = event.getGroup();
+        if (!entity.configManager.isFunctionEnabled(group.getId(), Functions.Copper)) {
             return false; 
         }
         if (event.getMessage().contentToString().equals("copper")) {
-            MessageChainBuilder mcb = new MessageChainBuilder();
-            try {
-                mcb.add(FlashImage.from(event.getGroup().uploadImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + "/image/r15").listFiles()))));
-            } catch (Exception e) {
-                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                return false;
-            }
-            entity.sendGroupMessage(event.getGroup().getId(), mcb.asMessageChain());
+            Image uploadImage = group.uploadImage(Tools.ArrayTool.rfa(imageFolder));
+            int id = entity.sendGroupMessage(group.getId(), entity.configManager.isFunctionEnabled(group.getId(), Functions.CopperFlash) ?FlashImage.from(uploadImage): uploadImage);
+            MessageManager.autoRecall(entity, id);
         }
         return false;
     }

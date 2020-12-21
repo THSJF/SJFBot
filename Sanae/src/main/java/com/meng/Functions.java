@@ -20,7 +20,8 @@ public enum Functions {
     @SerializedName("n") QuestionAndAnswer("问答"),
     @SerializedName("o") Repeater("复读机"),
     @SerializedName("p") Report("留言"),
-    @SerializedName("q") Copper("铜");
+    @SerializedName("q") Copper("铜"),
+    @SerializedName("r") CopperFlash("闪照铜");
 
     private Functions(String s){
         this.s = s;
