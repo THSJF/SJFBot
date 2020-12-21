@@ -19,6 +19,7 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
+import com.meng.tools.Hash;
 
 /**
  * @Description: 管理员命令
@@ -236,9 +237,12 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                         }
                     }
                     return true;
+                case "exit":
+                    gme.getGroup().quit();
+                    return true;
             }
         } catch (Exception e) {
-            entity.sendGroupMessage(groupId, "参数错误:" + e.toString());
+            entity.sendGroupMessage(groupId, "参数错误:" + e.toString().replace("java", "jvav"));
         }
         return false;
     }

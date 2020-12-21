@@ -40,34 +40,29 @@ public class FileTypeUtil {
         return stringBuilder.toString();
     }
 
-    public static String getFileType(File file) {
+    public static String getFileType(File file) throws IOException {
         String res = "";
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            byte[] b = new byte[3];
+        try(FileInputStream fis = new FileInputStream(file)) {
+            byte[] b = new byte[4];
             fis.read(b, 0, b.length);
-            String fileCode = bytesToHexString(b);
-            for (String key : fileTypeMap.keySet()) {
-                if (key.toLowerCase().startsWith(fileCode.toLowerCase()) || fileCode.toLowerCase().startsWith(key.toLowerCase())) {
-                    res = fileTypeMap.get(key);
-                    break;
-                }
-            }
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            res = getFileType(b);
+        }
+        return res;
+    }
+
+    public static String getFileType(byte[] file) {
+        String res = "";
+        String fileCode = bytesToHexString(file);
+        for (String key : fileTypeMap.keySet()) {
+            if (key.toLowerCase().startsWith(fileCode.toLowerCase()) || fileCode.toLowerCase().startsWith(key.toLowerCase())) {
+                res = fileTypeMap.get(key);
+                break;
             }
         }
         return res;
     }
 
-    public static File checkFormat(File file) {
+    public static File checkFormat(File file) throws IOException {
         File ret;
         String type = getFileType(file);
         String fullName = file.getName();
