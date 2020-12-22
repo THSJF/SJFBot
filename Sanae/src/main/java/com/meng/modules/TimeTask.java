@@ -3,13 +3,13 @@ package com.meng.modules;
 import com.meng.Functions;
 import com.meng.SBot;
 import com.meng.gameData.TouHou.UserInfo;
-import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.Tools;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import net.mamoe.mirai.contact.Group;
 
 /**
  * @author: 司徒灵羽
@@ -23,6 +23,9 @@ public class TimeTask extends BaseModule {
     private final long YYS = 1418780411L;
 
     private HashSet<TaskBean> tasks = new HashSet<>();
+
+    private String[] morning = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
+    private String[] evening = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
 
     public TimeTask(SBot bw) {
         super(bw);
@@ -67,59 +70,40 @@ public class TimeTask extends BaseModule {
             }, 0, 1, TimeUnit.MINUTES);
 
 
-        addTask(9, 22, new Runnable(){
+        addTask(23, 0, new Runnable(){
 
                 @Override
                 public void run() {
-                    String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
-                    if (entity.configManager.isFunctionEnabled(groupYuTang, Functions.GroupMessageEvent)) {
-                        try {
-                            entity.sendGroupMessage(groupYuTang, Tools.ArrayTool.rfa(string));
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-                            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                            e.printStackTrace();
-                        } 
+                    for (Group group : entity.getGroups()) {
+                        if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
+                            try {
+                                entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(evening));
+                                Thread.sleep(1000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } 
+                        }
+                    }
+                    entity.sleeping = true; 
+                }
+            });
+        addTask(6, 0, new Runnable(){
+
+                @Override
+                public void run() {
+                    entity.sleeping = false;
+                    for (Group group : entity.getGroups()) {
+                        if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
+                            try {
+                                entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(morning));
+                                Thread.sleep(1000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } 
+                        }
                     }
                 }
             });
-
-        /*     addTask(23, 0, new Runnable(){
-
-         @Override
-         public void run() {
-         String[] string = new String[]{"晚安","大家晚安","晚安....","大家晚安....","大家早点休息吧"};   
-         for (Group group : entity.getGroups()) {
-         if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
-         try {
-         entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string));
-         Thread.sleep(1000);
-         } catch (Exception e) {
-         e.printStackTrace();
-         } 
-         }
-         }
-         entity.sleeping = true; 
-         }
-         });
-         addTask(6, 0, new Runnable(){
-
-         @Override
-         public void run() {
-         entity.sleeping = false;
-         String[] string = new String[]{"早上好","早安","早","大家早上好","大家早上好啊..","Good morning!"};
-         for (Group group : entity.getGroups()) {
-         if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
-         try {
-         entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(string));
-         Thread.sleep(1000);
-         } catch (Exception e) {
-         e.printStackTrace();
-         } 
-         }
-         }
-         }
-         });*/
 
         addTask(0, 0, new Runnable(){
 

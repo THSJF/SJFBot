@@ -2,19 +2,16 @@ package com.meng.modules;
 
 import com.meng.Functions;
 import com.meng.SBot;
+import com.meng.handler.MessageManager;
 import com.meng.handler.group.IGroupMessageEvent;
-import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
 import java.io.File;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.FlashImage;
-import net.mamoe.mirai.message.data.MessageChainBuilder;
-import com.meng.handler.MessageManager;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.Message;
 
 public class Copper extends BaseModule implements IGroupMessageEvent {
 
