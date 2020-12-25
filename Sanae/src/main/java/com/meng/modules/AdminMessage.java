@@ -19,7 +19,6 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
-import com.meng.tools.Hash;
 
 /**
  * @Description: 管理员命令
@@ -240,6 +239,16 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                 case "exit":
                     gme.getGroup().quit();
                     return true;
+                case "openAll":
+                    Functions function = Functions.get(iter.next());
+                    if (function != null) {
+                        for (Group group : entity.getGroups()) {
+                            entity.configManager.setFunctionEnabled(group.getId(), function, true);
+                        }
+                        entity.sendQuote(gme, function + "已启用");
+                    } else {
+                        entity.sendQuote(gme, "无此开关");
+                    }
             }
         } catch (Exception e) {
             entity.sendGroupMessage(groupId, "参数错误:" + e.toString().replace("java", "jvav"));
