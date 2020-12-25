@@ -62,6 +62,7 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import com.meng.modules.PictureSearch;
 
 /**
  * @Description: 模块管理器
@@ -98,6 +99,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(Repeater.class);
         load(Report.class);
 
+        load(PictureSearch.class);
         load(BilibiliLinkParser.class);
         load(NumberProcess.class);
         load(Dice.class);

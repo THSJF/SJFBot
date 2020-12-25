@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
+import java.lang.reflect.Array;
 
 public class Tools {
 
@@ -49,10 +50,10 @@ public class Tools {
 		}
 	}
 
-	
+
 
 	public static class CQ {
-		
+
 		public static void findQQInAllGroup(SBot bw, long fromGroup, long fromQQ, String msg) {
 			long findqq;
 			try {
@@ -73,7 +74,7 @@ public class Tools {
 			}
 			bw.sendGroupMessage(fromGroup, stringBuilder.toString());
 		}
-        
+
 		public static HashSet<Group> findQQInAllGroup(SBot bw, long findQQ) {
 			ContactList<Group> groups = bw.getGroups();
 			HashSet<Group> hashSet = new HashSet<>();
@@ -91,6 +92,21 @@ public class Tools {
 
 	public static class ArrayTool {
 
+        public static <T> T[] mergeArrayG(T[]... arrays) {
+            int leng = 0;
+            for (T[] ta : arrays) {
+                leng += ta.length;
+            }
+            T[] newArray = (T[]) Array.newInstance(arrays[0][0].getClass(), leng);
+            int flag = 0;
+            for (T[] ta:arrays) {
+                for (int i=0;i < ta.length;++flag,++i) {
+                    newArray[flag] = ta[i];
+                }
+            }
+            return newArray;
+        }
+        
         public static TouhouCharacter[] mergeArray(TouhouCharacter[]... charas) {
             int allLen=0;
             for (TouhouCharacter[] bs:charas) {

@@ -69,7 +69,6 @@ public class TimeTask extends BaseModule {
                 }
             }, 0, 1, TimeUnit.MINUTES);
 
-
         addTask(23, 0, new Runnable(){
 
                 @Override

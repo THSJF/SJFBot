@@ -18,7 +18,6 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.message.data.PlainText;
 
 public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent {
 
@@ -90,7 +89,7 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         String html = Network.httpGet("https://live.bilibili.com/" + id);
         String jsonInHtml = html.substring(html.indexOf("{\"roomInitRes\":"), html.lastIndexOf("}") + 1);
         JsonObject data = new JsonParser().parse(jsonInHtml).getAsJsonObject().get("baseInfoRes").getAsJsonObject().get("data").getAsJsonObject();
-        builder.add("分区:");
+        builder.add("\n分区:");
         builder.add(data.get("parent_area_name").getAsString());
         builder.add("-");
         builder.add(data.get("area_name").getAsString());
