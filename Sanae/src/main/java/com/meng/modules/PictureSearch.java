@@ -47,14 +47,13 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             return false;
         }
         Image img = event.getMessage().firstOrNull(Image.Key);
-        String url = entity.queryImageUrl(img);
         String msg = event.getMessage().contentToString();
         long groupId = event.getGroup().getId();
         long qqId = event.getSender().getId();
         if (img != null && (msg.toLowerCase().startsWith("sp"))) {
             try {
-                entity.sendGroupMessage(groupId, new At(event.getSender()).plus("土豆折寿中……"));
-                SJFExecutors.execute(new SearchRunnable(event.getGroup(), event.getSender(), url));
+                entity.sendGroupMessage(groupId, new At(event.getSender()).plus("正在搜索……"));
+                SJFExecutors.execute(new SearchRunnable(event.getGroup(), event.getSender(), entity.queryImageUrl(img)));
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                 entity.sendGroupMessage(groupId, e.toString());
@@ -62,12 +61,12 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             return true;
         } else if (img == null && msg.equals("sp")) {
             ready.add(qqId);
-            entity.sendGroupMessage(groupId, new At(event.getSender()).plus("需要一张图片"));
+            entity.sendGroupMessage(groupId, new At(event.getSender()).plus("发送一张图片吧"));
             return true;
         } else if (img != null && ready.contains(qqId)) {
             try {
-                entity.sendGroupMessage(groupId, new At(event.getSender()).plus("土豆折寿中……"));
-                SJFExecutors.execute(new SearchRunnable(event.getGroup(), event.getSender(), url));
+                entity.sendGroupMessage(groupId, new At(event.getSender()).plus("正在搜索……"));
+                SJFExecutors.execute(new SearchRunnable(event.getGroup(), event.getSender(), entity.queryImageUrl(img)));
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                 entity.sendGroupMessage(groupId, e.toString());
@@ -130,6 +129,9 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                 return;
             }
             MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+            if (size > 3) {
+                size = 3;
+            }
             for (int i = 0; i < size; i++) {
                 PicResults.Result tmpr = mResults.getResults().get(i);
                 Image img = group.uploadImage(new URL(tmpr.mThumbnail));
