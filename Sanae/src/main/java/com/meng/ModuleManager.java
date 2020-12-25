@@ -25,6 +25,8 @@ import com.meng.modules.MessageRefuse;
 import com.meng.modules.Morning;
 import com.meng.modules.MtestMsg;
 import com.meng.modules.NumberProcess;
+import com.meng.modules.OCR;
+import com.meng.modules.PictureSearch;
 import com.meng.modules.QuestionAndAnswer;
 import com.meng.modules.ReflexCommand;
 import com.meng.modules.Repeater;
@@ -62,7 +64,6 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import com.meng.modules.PictureSearch;
 
 /**
  * @Description: 模块管理器
@@ -98,7 +99,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(MessageRefuse.class);
         load(Repeater.class);
         load(Report.class);
-
+        load(OCR.class);
         load(PictureSearch.class);
         load(BilibiliLinkParser.class);
         load(NumberProcess.class);

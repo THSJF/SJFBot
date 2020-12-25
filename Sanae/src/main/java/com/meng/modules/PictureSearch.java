@@ -12,7 +12,6 @@ import java.util.HashSet;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import org.jsoup.Connection;
@@ -28,11 +27,11 @@ import org.jsoup.select.NodeVisitor;
 
 public class PictureSearch extends BaseModule implements IGroupMessageEvent {
 
+    private HashSet<Long> ready = new HashSet<>();
+
     public PictureSearch(SBot sb) {
         super(sb);
     }
-
-    private HashSet<Long> ready = new HashSet<>();
 
     @Override
     public PictureSearch load() {
@@ -46,33 +45,30 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
         }
         Image img = event.getMessage().firstOrNull(Image.Key);
         String msg = event.getMessage().contentToString();
-        long groupId = event.getGroup().getId();
         long qqId = event.getSender().getId();
         if (img != null && (msg.toLowerCase().startsWith("sp"))) {
-            try {
-                entity.sendGroupMessage(groupId, new At(event.getSender()).plus("正在搜索……"));
-                SJFExecutors.execute(new SearchRunnable(event, entity.queryImageUrl(img)));
-            } catch (Exception e) {
-                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                entity.sendGroupMessage(groupId, e.toString());
-            }
+            processImage(img, event);
             return true;
         } else if (img == null && msg.equals("sp")) {
             ready.add(qqId);
-            entity.sendGroupMessage(groupId, new At(event.getSender()).plus("发送一张图片吧"));
+            entity.sendQuote(event, "发送一张图片吧");
             return true;
         } else if (img != null && ready.contains(qqId)) {
-            try {
-                entity.sendGroupMessage(groupId, new At(event.getSender()).plus("正在搜索……"));
-                SJFExecutors.execute(new SearchRunnable(event, entity.queryImageUrl(img)));
-            } catch (Exception e) {
-                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                entity.sendGroupMessage(groupId, e.toString());
-            }
+            processImage(img, event);
             ready.remove(qqId);
             return true;
         }
         return false;
+    }
+
+    private void processImage(Image img, GroupMessageEvent event) {
+        try {
+            entity.sendQuote(event, "正在搜索……");
+            SJFExecutors.execute(new SearchRunnable(event, entity.queryImageUrl(img)));
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            entity.sendQuote(event, e.toString());
+        }
     }
 
     @Override
@@ -84,7 +80,6 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
         return false;
     }
-
 
     @Override
     public String getModuleName() {
@@ -350,5 +345,4 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             }
         }
     }
-
 }

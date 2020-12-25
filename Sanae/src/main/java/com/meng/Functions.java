@@ -22,7 +22,8 @@ public enum Functions {
     @SerializedName("p") Report("留言"),
     @SerializedName("q") Copper("铜"),
     @SerializedName("r") CopperFlash("闪照铜"),
-    @SerializedName("s") PictureSearch("图片搜索");
+    @SerializedName("s") PictureSearch("图片搜索"),
+    @SerializedName("t") OCR("文字识别");
 
     private Functions(String s){
         this.s = s;
