@@ -147,10 +147,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                     messageChainBuilder.append("相似度:").append(tmpr.mSimilarity).append("\n");
                 }
             }
-            entity.sendMessage(event.getGroup(),
-                               messageChainBuilder.asMessageChain().contentToString().contains("sankakucomplex") ?
-                               messageChainBuilder.append("\n小哥哥注意身体哦").asMessageChain() :
-                               messageChainBuilder.asMessageChain());            
+            entity.sendMessage(event.getGroup(), messageChainBuilder.asMessageChain());     
         }
 
         private class PicResults {
