@@ -9,8 +9,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
@@ -53,7 +51,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
         if (img != null && (msg.toLowerCase().startsWith("sp"))) {
             try {
                 entity.sendGroupMessage(groupId, new At(event.getSender()).plus("正在搜索……"));
-                SJFExecutors.execute(new SearchRunnable(event.getGroup(), event.getSender(), entity.queryImageUrl(img)));
+                SJFExecutors.execute(new SearchRunnable(event, entity.queryImageUrl(img)));
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                 entity.sendGroupMessage(groupId, e.toString());
@@ -66,7 +64,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
         } else if (img != null && ready.contains(qqId)) {
             try {
                 entity.sendGroupMessage(groupId, new At(event.getSender()).plus("正在搜索……"));
-                SJFExecutors.execute(new SearchRunnable(event.getGroup(), event.getSender(), entity.queryImageUrl(img)));
+                SJFExecutors.execute(new SearchRunnable(event, entity.queryImageUrl(img)));
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                 entity.sendGroupMessage(groupId, e.toString());
@@ -95,14 +93,12 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
 
     private class SearchRunnable implements Runnable {
 
-        private Member member;
-        private Group group;
+        private GroupMessageEvent event;
         private String url;
         private PicResults mResults;
 
-        public SearchRunnable(Group group, Member member, String url) {
-            this.group = group;
-            this.member = member;
+        public SearchRunnable(GroupMessageEvent event, String url) {
+            this.event = event;
             this.url = url;
         }
 
@@ -112,20 +108,20 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                 check(url);
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                entity.sendMessage(group, "查找失败");
+                entity.sendQuote(event, "查找失败");
             }
         }
 
         private void check(String url) throws Exception {
             Connection.Response response = Jsoup.connect("https://saucenao.com/search.php?db=999").timeout(60000).data("url", url).method(Connection.Method.POST).execute();
             if (response.statusCode() != 200) {
-                entity.sendMessage(group, "错误:" + response.statusMessage());
+                entity.sendQuote(event, "错误:" + response.statusMessage());
                 return;
             }
             mResults = new PicResults(Jsoup.parse(response.body()));
             int size = mResults.getResults().size();
             if (size < 1) {
-                entity.sendMessage(group, "没有相似度较高的图片");
+                entity.sendQuote(event, "没有相似度较高的图片");
                 return;
             }
             MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
@@ -134,10 +130,10 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             }
             for (int i = 0; i < size; i++) {
                 PicResults.Result tmpr = mResults.getResults().get(i);
-                Image img = group.uploadImage(new URL(tmpr.mThumbnail));
+                Image img = event.getGroup().uploadImage(new URL(tmpr.mThumbnail));
                 String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
                 if (titleAndMetadata.length > 0) {
-                    messageChainBuilder.append("\n").append(titleAndMetadata[0]).append("\n");
+                    messageChainBuilder.append(titleAndMetadata[0]).append("\n");
                     if (titleAndMetadata.length == 2) {
                         tmpr.mColumns.add(0, titleAndMetadata[1]);
                     }
@@ -156,7 +152,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                     messageChainBuilder.append("相似度:").append(tmpr.mSimilarity).append("\n");
                 }
             }
-            entity.sendMessage(group,
+            entity.sendMessage(event.getGroup(),
                                messageChainBuilder.asMessageChain().contentToString().contains("sankakucomplex") ?
                                messageChainBuilder.append("\n小哥哥注意身体哦").asMessageChain() :
                                messageChainBuilder.asMessageChain());            
