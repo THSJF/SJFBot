@@ -7,10 +7,7 @@ import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
 import com.meng.tools.Base64Converter;
 import com.meng.tools.ExceptionCatcher;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -21,7 +18,6 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
@@ -32,6 +28,8 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 public class OCR extends BaseModule implements IGroupMessageEvent {
 
@@ -84,12 +82,11 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
 
     private void processImg(Image img, GroupMessageEvent event) {
         try {
-            JSONObject response = faceYoutu.GeneralOcrUrl(entity.queryImageUrl(img));
+            OcrJavaResult response = faceYoutu.GeneralOcrUrl(entity.queryImageUrl(img));
             StringBuilder sb = new StringBuilder();
-            OcrJavaBean ocrJavaBean = new Gson().fromJson(response.toString(), OcrJavaBean.class);
-            ArrayList<OcrJavaBean.Items> items = ocrJavaBean.items;
+            ArrayList<OcrJavaResult.Items> items = response.items;
             sb.append("结果:");
-            for (OcrJavaBean.Items s : items) {
+            for (OcrJavaResult.Items s : items) {
                 sb.append("\n").append(s.itemstring);
             }
             entity.sendMessage(event.getGroup(), sb.toString());
@@ -190,71 +187,28 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
             return statusText;
         }
 
-        private JSONObject SendHttpRequest(JSONObject postData, String mothod)throws IOException, JSONException {
-            StringBuffer mySign = new StringBuffer("");
-            appSign(m_appid, m_secret_id, m_secret_key, System.currentTimeMillis() / 1000 + EXPIRED_SECONDS, m_user_id, mySign);
-            System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
-            System.setProperty("sun.net.client.defaultReadTimeout", "30000");
-            URL url = new URL(m_end_point + mothod);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("user-agent", "youtu-java-sdk");
-            connection.setRequestProperty("Authorization", mySign.toString());
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.setUseCaches(false);
-            connection.setInstanceFollowRedirects(true);
-            connection.setRequestProperty("Content-Type", "text/json");
-            connection.connect();
-            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            postData.put("app_id", m_appid);
-            out.write(postData.toString().getBytes("utf-8"));
-            // out.writeBytes(postData.toString());
-            out.flush();
-            out.close();
-            byte[] b = new byte[connection.getContentLength()];
-            connection.getInputStream().read(b);
-            connection.disconnect();
-            return new JSONObject(new String(b, StandardCharsets.UTF_8));
-        }
-
-        private JSONObject SendHttpsRequest(JSONObject postData, String mothod)throws NoSuchAlgorithmException, KeyManagementException, IOException, JSONException {
+        private OcrJavaResult SendHttpsRequest(JSONObject postData, String mothod)throws NoSuchAlgorithmException, KeyManagementException, IOException, JSONException {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, new TrustManager[]{new TrustAnyTrustManager()}, new java.security.SecureRandom());
             StringBuffer mySign = new StringBuffer("");
             appSign(m_appid, m_secret_id, m_secret_key, System.currentTimeMillis() / 1000 + EXPIRED_SECONDS, m_user_id, mySign);
-            System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
-            System.setProperty("sun.net.client.defaultReadTimeout", "30000");
-            URL url = new URL(m_end_point + mothod);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setSSLSocketFactory(sc.getSocketFactory());
-            connection.setHostnameVerifier(new TrustAnyHostnameVerifier());
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("user-agent", "youtu-java-sdk");
-            connection.setRequestProperty("Authorization", mySign.toString());
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.setUseCaches(false);
-            connection.setInstanceFollowRedirects(true);
-            connection.setRequestProperty("Content-Type", "text/json");
-            connection.connect();
-            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            postData.put("app_id", m_appid);
-            out.write(postData.toString().getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            out.close();
-            byte[] b = new byte[connection.getContentLength()];
-            connection.getInputStream().read(b);
-            connection.disconnect();
-            return new JSONObject(new String(b, StandardCharsets.UTF_8));
+            Connection c = Jsoup.connect(m_end_point + mothod);
+            c.sslSocketFactory(sc.getSocketFactory())
+                .method(Connection.Method.POST)
+                .header("accept", "*/*")
+                .header("user-agent", "youtu-java-sdk")
+                .header("Authorization", mySign.toString())
+                .ignoreContentType(true)
+                .ignoreHttpErrors(true)
+                .followRedirects(true)
+                .header("Content-Type", "text/json");
+            return new Gson().fromJson(new String(c.execute().bodyAsBytes(), StandardCharsets.UTF_8), OcrJavaResult.class);
         }
 
-        private JSONObject GeneralOcrUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
+        private OcrJavaResult GeneralOcrUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
             JSONObject data = new JSONObject();
             data.put("url", imageUrl);
-            return (m_not_use_https ? SendHttpRequest(data, "ocrapi/generalocr") : SendHttpsRequest(data, "ocrapi/generalocr"));
+            return SendHttpsRequest(data, "ocrapi/generalocr");
         }
 
         private int appSign(String appId, String secret_id, String secret_key, long expired, String userid,  StringBuffer mySign) {
@@ -274,13 +228,13 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
             byte[] bin = null;
             try {
                 Mac mac = Mac.getInstance("HmacSHA1");
-                SecretKeySpec signingKey = new SecretKeySpec(secret_key.getBytes(), mac.getAlgorithm());
+                SecretKeySpec signingKey = new SecretKeySpec(secret_key.getBytes(StandardCharsets.UTF_8), mac.getAlgorithm());
                 mac.init(signingKey);
-                bin =  mac.doFinal(plain_text.getBytes());
+                bin =  mac.doFinal(plain_text.getBytes(StandardCharsets.UTF_8));
             } catch (Exception e) {}
-            byte[] all = new byte[bin.length + plain_text.getBytes().length];
+            byte[] all = new byte[bin.length + plain_text.getBytes(StandardCharsets.UTF_8).length];
             System.arraycopy(bin, 0, all, 0, bin.length);
-            System.arraycopy(plain_text.getBytes(), 0, all, bin.length, plain_text.getBytes().length);
+            System.arraycopy(plain_text.getBytes(StandardCharsets.UTF_8), 0, all, bin.length, plain_text.getBytes(StandardCharsets.UTF_8).length);
             mySign.append(new String(Base64Converter.getInstance().encode(all), StandardCharsets.UTF_8));
             return 0;
         }
@@ -290,7 +244,7 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
         }
     }
 
-    private class OcrJavaBean {
+    private class OcrJavaResult {
 
         public String session_id;
         public float angle;
