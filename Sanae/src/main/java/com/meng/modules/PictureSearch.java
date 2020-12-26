@@ -120,32 +120,27 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                 return;
             }
             MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
-            if (size > 3) {
-                size = 3;
+            PicResults.Result tmpr = mResults.getResults().get(0);
+            Image img = event.getGroup().uploadImage(new URL(tmpr.mThumbnail));
+            String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
+            if (titleAndMetadata.length > 0) {
+                messageChainBuilder.append(titleAndMetadata[0]).append("\n");
+                if (titleAndMetadata.length == 2) {
+                    tmpr.mColumns.add(0, titleAndMetadata[1]);
+                }
+                for (String string : tmpr.mColumns) {
+                    messageChainBuilder.append(string).append("\n");
+                }
             }
-            for (int i = 0; i < size; i++) {
-                PicResults.Result tmpr = mResults.getResults().get(i);
-                Image img = event.getGroup().uploadImage(new URL(tmpr.mThumbnail));
-                String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
-                if (titleAndMetadata.length > 0) {
-                    messageChainBuilder.append(titleAndMetadata[0]).append("\n");
-                    if (titleAndMetadata.length == 2) {
-                        tmpr.mColumns.add(0, titleAndMetadata[1]);
-                    }
-                    for (String string : tmpr.mColumns) {
-                        messageChainBuilder.append(string).append("\n");
-                    }
-                }
-                messageChainBuilder.append(img).append("\n");
-                if (tmpr.mExtUrls.size() == 2) {
-                    messageChainBuilder.append("图片&画师:").append(tmpr.mExtUrls.get(1)).append("\n");
-                    messageChainBuilder.append(tmpr.mExtUrls.get(0)).append("\n");
-                } else if (tmpr.mExtUrls.size() == 1) {
-                    messageChainBuilder.append("链接:").append(tmpr.mExtUrls.get(0)).append("\n");
-                }
-                if (!tmpr.mSimilarity.isEmpty()) {
-                    messageChainBuilder.append("相似度:").append(tmpr.mSimilarity).append("\n");
-                }
+            messageChainBuilder.append(img).append("\n");
+            if (tmpr.mExtUrls.size() == 2) {
+                messageChainBuilder.append("图片&画师:").append(tmpr.mExtUrls.get(1)).append("\n");
+                messageChainBuilder.append(tmpr.mExtUrls.get(0)).append("\n");
+            } else if (tmpr.mExtUrls.size() == 1) {
+                messageChainBuilder.append("链接:").append(tmpr.mExtUrls.get(0)).append("\n");
+            }
+            if (!tmpr.mSimilarity.isEmpty()) {
+                messageChainBuilder.append("相似度:").append(tmpr.mSimilarity).append("\n");
             }
             entity.sendMessage(event.getGroup(), messageChainBuilder.asMessageChain());     
         }

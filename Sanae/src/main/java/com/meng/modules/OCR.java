@@ -79,7 +79,7 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
             ready.remove(qqId);
             return true;
         }
-        return true;
+        return false;
     }
 
     private void processImg(Image img, GroupMessageEvent event) {
@@ -281,7 +281,7 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
             byte[] all = new byte[bin.length + plain_text.getBytes().length];
             System.arraycopy(bin, 0, all, 0, bin.length);
             System.arraycopy(plain_text.getBytes(), 0, all, bin.length, plain_text.getBytes().length);
-            mySign.append(Base64Converter.getInstance().encode(all));
+            mySign.append(new String(Base64Converter.getInstance().encode(all), StandardCharsets.UTF_8));
             return 0;
         }
 
