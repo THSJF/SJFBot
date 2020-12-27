@@ -64,7 +64,19 @@ public class Youtu {
             data.put("url", imageUrl);
             return new Gson().fromJson(sendHttpsRequest(data, "ocrapi/generalocr"), OcrResult.class);
         }
+        
+        public PornResult doPornWithUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
+            JSONObject data = new JSONObject();
+            data.put("url", imageUrl);
+            return new Gson().fromJson(sendHttpsRequest(data, "imageapi/imageporn"), PornResult.class);
+        }
 
+        public TagResult doTagWithUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
+            JSONObject data = new JSONObject();
+            data.put("url", imageUrl);
+            return new Gson().fromJson(sendHttpsRequest(data, "imageapi/imagetag"), TagResult.class);
+        }
+        
         private String sendHttpsRequest(JSONObject postData, String method) throws NoSuchAlgorithmException, KeyManagementException, IOException, JSONException {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, new TrustManager[]{
@@ -206,4 +218,76 @@ public class Youtu {
             }
         }
     }
+    
+    public static class TagResult{
+        public int errorcode;
+        public String errormsg;
+        public ArrayList<Tag> tags;
+
+        public class Tag{
+            public String tag_name;
+            public int tag_confidence;
+        }
+    }
+    
+    public static class PornResult{
+        public int errorcode;
+        public String errormsg;
+        public ArrayList<Tag> tags;
+        
+        public class Tag{
+            public String tag_name;
+            public int tag_confidence;
+            public float tag_confidence_f;
+        }
+    }
+/*    {
+        "errorcode": 0,
+        "errormsg": "OK",
+        "tags": [{
+            "tag_name": "normal",
+            "tag_confidence": 95,
+            "tag_confidence_f": 0.9591665863990784
+        }, {
+            "tag_name": "hot",
+            "tag_confidence": 4,
+            "tag_confidence_f": 0.04083340987563133
+        }, {
+            "tag_name": "porn",
+            "tag_confidence": 0,
+            "tag_confidence_f": 3.073516330331927e-9
+        }, {
+            "tag_name": "female-breast",
+            "tag_confidence": 100,
+            "tag_confidence_f": 1.0
+        }, {
+            "tag_name": "female-genital",
+            "tag_confidence": 0,
+            "tag_confidence_f": 0.0
+        }, {
+            "tag_name": "male-genital",
+            "tag_confidence": 0,
+            "tag_confidence_f": 0.0
+        }, {
+            "tag_name": "pubes",
+            "tag_confidence": 0,
+            "tag_confidence_f": 0.0
+        }, {
+            "tag_name": "anus",
+            "tag_confidence": 0,
+            "tag_confidence_f": 0.0
+        }, {
+            "tag_name": "sex",
+            "tag_confidence": 0,
+            "tag_confidence_f": 0.0
+        }, {
+            "tag_name": "normal_hot_porn",            #综合得分
+            "tag_confidence": 0,
+            "tag_confidence_f": 0.002473380882292986
+        }],
+        "faces": [],
+        "feas": {
+            "name": "global_pool",
+            "feature": "AAAAAAAAAAAAAAAAa/rK"
+        }*/
 }

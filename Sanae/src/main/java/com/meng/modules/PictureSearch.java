@@ -12,6 +12,7 @@ import java.util.HashSet;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.message.data.FlashImage;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import org.jsoup.Connection;
@@ -44,6 +45,12 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             return false;
         }
         Image img = event.getMessage().firstOrNull(Image.Key);
+        if (img == null) {
+            FlashImage fi = event.getMessage().firstOrNull(FlashImage.Key);
+            if (fi != null) {
+                img = fi.getImage();
+            }
+        }
         String msg = event.getMessage().contentToString();
         long qqId = event.getSender().getId();
         if (img != null && (msg.toLowerCase().startsWith("sp"))) {
