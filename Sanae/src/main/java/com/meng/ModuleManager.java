@@ -66,6 +66,7 @@ import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import com.meng.modules.Porn;
 import com.meng.modules.ImageTag;
+import com.meng.modules.TTS;
 
 /**
  * @Description: 模块管理器
@@ -106,6 +107,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(OCR.class);
         load(Porn.class);
         load(ImageTag.class);
+        load(TTS.class);
         load(PictureSearch.class);
 
 

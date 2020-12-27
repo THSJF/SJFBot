@@ -74,7 +74,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             SJFExecutors.execute(new SearchRunnable(event, entity.queryImageUrl(img)));
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            entity.sendQuote(event, e.toString());
+            entity.sendQuote(event, e.toString().replace("java", "jvav"));
         }
     }
 

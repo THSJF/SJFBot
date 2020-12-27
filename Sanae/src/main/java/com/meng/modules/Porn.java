@@ -67,12 +67,13 @@ public class Porn extends BaseModule implements IGroupMessageEvent {
             ArrayList<Youtu.PornResult.Tag> items = response.tags;
             StringBuilder sb = new StringBuilder();
             for (Youtu.PornResult.Tag tag : items) {
-                sb.append("\n").append(switchTagName(tag.tag_name)).append(":").append(tag.tag_confidence).append("%");
+                sb.append(switchTagName(tag.tag_name)).append(":").append(tag.tag_confidence).append("%\n");
             }
+            sb.setLength(sb.length() - 1);
             entity.sendQuote(event, sb.toString());
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            entity.sendQuote(event, e.toString());
+            entity.sendQuote(event, e.toString().replace("java", "jvav"));
         }
     }
 

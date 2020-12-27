@@ -25,7 +25,8 @@ public enum Functions {
     @SerializedName("s") PictureSearch("图片搜索"),
     @SerializedName("t") OCR("文字识别"),
     @SerializedName("u") Porn("色图等级评定"),
-    @SerializedName("v") ImageTag("图片标签")
+    @SerializedName("v") ImageTag("图片标签"),
+    @SerializedName("w") TTS("音频合成");
     ;
 
     private Functions(String s){

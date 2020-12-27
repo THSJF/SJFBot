@@ -67,12 +67,13 @@ public class ImageTag extends BaseModule implements IGroupMessageEvent {
             ArrayList<Youtu.TagResult.Tag> items = response.tags;
             StringBuilder sb = new StringBuilder();
             for (Youtu.TagResult.Tag tag : items) {
-                sb.append("\n").append(tag.tag_name);
+                sb.append(tag.tag_name).append("\n");
             }
+            sb.setLength(sb.length() - 1);
             entity.sendQuote(event, sb.toString());
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            entity.sendQuote(event, e.toString());
+            entity.sendQuote(event, e.toString().replace("java", "jvav"));
         }
     }
 
