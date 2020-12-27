@@ -33,7 +33,7 @@ public class Porn extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.OCR)) {
+        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.Porn)) {
             return false;
         }
         Image img = event.getMessage().firstOrNull(Image.Key);
@@ -62,20 +62,46 @@ public class Porn extends BaseModule implements IGroupMessageEvent {
 
     private void processImg(Image img, GroupMessageEvent event) {
         try {
+            entity.sendQuote(event, "正在识别……");
             Youtu.PornResult response = Youtu.getFaceYoutu().doPornWithUrl(entity.queryImageUrl(img));
             ArrayList<Youtu.PornResult.Tag> items = response.tags;
+            StringBuilder sb = new StringBuilder();
             for (Youtu.PornResult.Tag tag : items) {
-                if (tag.equals("normal_hot_porn")) {
-                    entity.sendMessage(event.getGroup(), "色情程度:" + tag.tag_confidence + "%");
-                    break;
-                }
+                sb.append("\n").append(switchTagName(tag.tag_name)).append(":").append(tag.tag_confidence).append("%");
             }
+            entity.sendQuote(event, sb.toString());
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             entity.sendQuote(event, e.toString());
         }
     }
 
+    private String switchTagName(String s) {
+        switch (s) {
+            case "normal":
+                return "普通";
+            case "hot":
+                return "性感";
+            case "porn":
+                return "色情";
+            case "female-genital":
+                return "女性阴部";
+            case "female-breast":
+                return "女性胸部";
+            case "male-genital":
+                return "男性阴部";
+            case "pubes":
+                return "阴毛";
+            case "anus":
+                return "肛门";
+            case "sex":
+                return "性行为";
+            case "normal_hot_porn":
+                return "色情综合值";
+            default:
+                return null;
+        }
+    }
     @Override
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
         return false;

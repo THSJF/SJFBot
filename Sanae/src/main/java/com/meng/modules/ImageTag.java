@@ -33,7 +33,7 @@ public class ImageTag extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.OCR)) {
+        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.ImageTag)) {
             return false;
         }
         Image img = event.getMessage().firstOrNull(Image.Key);
@@ -62,13 +62,14 @@ public class ImageTag extends BaseModule implements IGroupMessageEvent {
 
     private void processImg(Image img, GroupMessageEvent event) {
         try {
+            entity.sendQuote(event, "正在识别……");
             Youtu.TagResult response = Youtu.getFaceYoutu().doTagWithUrl(entity.queryImageUrl(img));
             ArrayList<Youtu.TagResult.Tag> items = response.tags;
-            StringBuilder sb = new StringBuilder("结果:");
+            StringBuilder sb = new StringBuilder();
             for (Youtu.TagResult.Tag tag : items) {
                 sb.append("\n").append(tag.tag_name);
             }
-            entity.sendMessage(event.getGroup(), sb.toString());
+            entity.sendQuote(event, sb.toString());
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             entity.sendQuote(event, e.toString());
