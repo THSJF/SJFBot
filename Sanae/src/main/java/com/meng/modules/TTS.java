@@ -46,6 +46,7 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
         if (contentToString.startsWith("tts")) {
             String text = contentToString.substring(4);
             processText(text, event);
+            return true;
         }
         return false;
     }

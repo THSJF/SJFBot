@@ -80,8 +80,10 @@ public class Youtu {
         public TtsResult doTtsWithUrl(String text) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
             JSONObject data = new JSONObject();
             data.put("text", text);
-            data.put("model_type", "0");
-            data.put("speed", "0");
+            data.put("model_type", 0);
+            data.put("speed", 0);
+            data.put("time_stamp",System.currentTimeMillis()/1000);
+            data.put("nonce_str","fa577ce340859f9fe");
             return new Gson().fromJson(sendHttpsRequest(data, "ttsapi/text_to_audio"), TtsResult.class);
         }
 

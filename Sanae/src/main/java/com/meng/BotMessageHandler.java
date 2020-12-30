@@ -3,8 +3,8 @@ package com.meng;
 import com.meng.config.ConfigManager;
 import com.meng.handler.MessageManager;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
-import com.meng.tools.FileTypeUtil;
 import com.meng.tools.Hash;
 import java.io.File;
 import kotlin.Unit;
@@ -56,7 +56,7 @@ public class BotMessageHandler extends SimpleListenerHost {
                             if (!folder.exists()) {
                                 folder.mkdirs();
                             }
-                            File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileTypeUtil.getFileType(fileBytes));
+                            File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
                             FileTool.saveFile(file, fileBytes);
                         } catch (Exception e) {
                             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

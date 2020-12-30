@@ -11,6 +11,7 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
 import com.meng.handler.MessageManager;
+import com.meng.tools.FileFormat;
 
 /**
  * @author: 司徒灵羽
@@ -18,6 +19,7 @@ import com.meng.handler.MessageManager;
 public class SJFMain {
 
     public static void main(String... args) {
+        FileFormat.init();
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
         AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
