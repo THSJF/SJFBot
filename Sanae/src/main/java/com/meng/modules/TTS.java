@@ -121,16 +121,16 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
         }
     }
 
-    private static class StreamGobbler extends Thread {
+    public static class StreamGobbler extends Thread {
         private InputStream is;
         private String type;
         private OutputStream os;
 
-        private StreamGobbler(InputStream is, String type) {
+        public StreamGobbler(InputStream is, String type) {
             this(is, type, null);
         }
 
-        private StreamGobbler(InputStream is, String type, OutputStream redirect) {
+        public StreamGobbler(InputStream is, String type, OutputStream redirect) {
             this.is = is;
             this.type = type;
             this.os = redirect;
