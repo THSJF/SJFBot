@@ -39,13 +39,10 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
         return false;
     }
 
-
-
     private void processText(GroupMessageEvent event) {
         try {
             File fileMp3 = new File(SBot.appDirectory + "/tts/此生无悔入东方_来世愿生幻想乡.mp3");
-            File fileAmr = new File(SBot.appDirectory + "/tts/此生无悔入东方_来世愿生幻想乡.amr");
-            PttMessage ptt = event.getGroup().uploadVoice(convert(fileMp3, fileAmr));
+            PttMessage ptt = event.getGroup().uploadVoice(new FileInputStream(fileMp3));
             if (ptt == null) {
                 entity.sendQuote(event, "生成失败");
             }
@@ -53,44 +50,6 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             entity.sendQuote(event, e.toString().replace("java", "jvav"));
-        }
-    }
-
-    public InputStream convert(File mp3, File amr) {
-        StringBuilder cmdBuilder = new StringBuilder();
-        cmdBuilder.append("ffmpeg -i ");
-        cmdBuilder.append(mp3.getAbsolutePath());
-        cmdBuilder.append(" ");
-        cmdBuilder.append(amr.getAbsolutePath());
-        //    String args = "ffmpeg -i c:\\1.jpg c:\\11.png";
-        String args = cmdBuilder.toString();
-        try { 
-            String[] cmd = new String[]{
-                "cmd.exe",
-                "/C",
-                args
-            };
-            Runtime rt = Runtime.getRuntime();
-            System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
-            Process proc = rt.exec(cmd);
-            TTS.StreamGobbler errorGobbler = new TTS.StreamGobbler(proc.getErrorStream(), "error");
-            TTS.StreamGobbler outputGobbler = new  TTS.StreamGobbler(proc.getInputStream(), "output");
-            errorGobbler.start();
-            outputGobbler.start();
-            int exitVal = proc.waitFor();
-            System.out.println("ExitValue: " + exitVal);
-            if (exitVal != 0) {
-                return null;
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), t);
-            return null;
-        }
-        try {
-            return new FileInputStream(amr);
-        } catch (FileNotFoundException e) {
-            return null;
         }
     }
 
