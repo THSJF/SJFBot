@@ -8,6 +8,8 @@ import com.meng.tools.GSON;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.PttMessage;
 
 /**
  * @Description: 管理员命令
@@ -161,7 +164,17 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent {
                     if (list.size() == 3) {
                         entity.sendGroupMessage(groupId, iter.next());
                     } else if (list.size() == 4) {
-                        entity.sendGroupMessage(Long.parseLong(iter.next()), iter.next());
+                        String next = iter.next();
+                        if (next.equals("晚上好啊老婆们")) {
+                            File fileMp3 = new File(SBot.appDirectory + "/tts/晚上好啊老婆们.wav");
+                            PttMessage ptt = gme.getGroup().uploadVoice(new FileInputStream(fileMp3));
+                            if (ptt == null) {
+                                entity.sendQuote(gme, "生成失败");
+                            }
+                            entity.sendQuote(gme, ptt);
+                        } else {
+                            entity.sendGroupMessage(Long.parseLong(iter.next()), next);
+                        }
                     }
                     return true;
                 case "groupTitle":

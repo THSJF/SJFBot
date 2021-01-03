@@ -1,24 +1,18 @@
 package com.meng.modules;
 
-
-/**
- * @author: 司徒灵羽
- **/
 import com.meng.SBot;
 import com.meng.handler.group.IGroupMessageEvent;
-import com.meng.tools.Base64Converter;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.FileTool;
-import com.meng.tools.Hash;
-import com.meng.tools.Youtu;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.PttMessage;
+
+/**
+ * @author: 司徒灵羽
+ **/
 
 public class MtestMsg extends BaseModule implements IGroupMessageEvent {
 
@@ -67,5 +61,4 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
     public BaseModule load() {
         return this;
     }
-
 }
