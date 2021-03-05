@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -65,6 +69,27 @@ public class Youtu {
             return new Gson().fromJson(sendHttpsRequest(data, "ocrapi/generalocr"), OcrResult.class);
         }
 
+        public OcrResult doOcrWithFile(String image_path)throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
+            JSONObject data = new JSONObject();
+            StringBuffer image_data = new StringBuffer("");
+            GetBase64FromFile(image_path, image_data);
+            data.put("image", image_data);
+            return new Gson().fromJson(sendHttpsRequest(data, "ocrapi/generalocr"), OcrResult.class);
+        }
+
+        private void GetBase64FromFile(String filePath, StringBuffer base64) throws IOException {
+            File imageFile = new File(filePath);
+            if (imageFile.exists()) {
+                InputStream in = new FileInputStream(imageFile);
+                byte data[] = new byte[(int) imageFile.length()];
+                in.read(data);
+                in.close();
+                base64.append(new String(Base64Converter.getInstance().encode(data)));
+            } else {
+                throw new FileNotFoundException(filePath + " not exist");
+            }
+        }
+
         public PornResult doPornWithUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
             JSONObject data = new JSONObject();
             data.put("url", imageUrl);
@@ -82,8 +107,8 @@ public class Youtu {
             data.put("text", text);
             data.put("model_type", 0);
             data.put("speed", 0);
-            data.put("time_stamp",System.currentTimeMillis()/1000);
-            data.put("nonce_str","fa577ce340859f9fe");
+            data.put("time_stamp", System.currentTimeMillis() / 1000);
+            data.put("nonce_str", "fa577ce340859f9fe");
             return new Gson().fromJson(sendHttpsRequest(data, "ttsapi/text_to_audio"), TtsResult.class);
         }
 

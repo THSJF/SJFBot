@@ -67,6 +67,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 import com.meng.modules.Porn;
 import com.meng.modules.ImageTag;
 import com.meng.modules.TTS;
+import com.meng.modules.EuropeDogs;
 
 /**
  * @Description: 模块管理器
@@ -98,6 +99,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent, IFriendEve
         load(MtestMsg.class);
         load(AdminMessage.class);
 
+        load(EuropeDogs.class);
         load(GroupCounterChart.class);
         load(MessageRefuse.class);
         load(Repeater.class);

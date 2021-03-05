@@ -58,6 +58,7 @@ public class BotMessageHandler extends SimpleListenerHost {
                             }
                             File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
                             FileTool.saveFile(file, fileBytes);
+                            SJFMain.lastImageFile = file;
                         } catch (Exception e) {
                             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                         }

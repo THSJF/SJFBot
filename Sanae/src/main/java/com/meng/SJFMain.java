@@ -18,6 +18,8 @@ import com.meng.tools.FileFormat;
  **/
 public class SJFMain {
 
+    public static File lastImageFile;
+    
     public static void main(String... args) {
         FileFormat.init();
         BotConfiguration config = new BotConfiguration();
