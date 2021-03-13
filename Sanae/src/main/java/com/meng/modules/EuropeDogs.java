@@ -90,8 +90,8 @@ public class EuropeDogs extends BaseModule implements IGroupMessageEvent {
                 sb.append("\n").append(s.itemstring);
             }
             System.out.println(sb.toString());
-            if (items.size() == 3 && items.get(0).equals("极品") && items.get(2).equals("角色卡")) {
-                entity.sendMessage(event.getGroup(), items.get(1) + ",去你大爷的欧洲狗");
+            if (items.size() == 3 && items.get(0).itemstring.equals("极品") && items.get(2).itemstring.equals("角色卡")) {
+                entity.sendMessage(event.getGroup(), items.get(1).itemstring + ",去你大爷的欧洲狗");
             }
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
@@ -100,7 +100,7 @@ public class EuropeDogs extends BaseModule implements IGroupMessageEvent {
             tmp.delete();   
         }
     }
-    
+
     @Override
     public boolean onGroupMemberNudge(MemberNudgedEvent event) {
         return false;

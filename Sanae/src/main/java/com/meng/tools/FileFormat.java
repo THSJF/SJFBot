@@ -137,5 +137,10 @@ public class FileFormat {
             this(magic, extendName);
             this.describe = describe;
         }
+
+        @Override
+        public String toString() {
+            return extendName;
+        }
     }
 }
