@@ -1,6 +1,5 @@
 package com.meng.tools;
 
-import com.meng.SBot;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+
+import com.meng.modules.qq.SBot;
 
 /**
  * @author 司徒灵羽

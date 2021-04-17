@@ -1,17 +1,14 @@
 package com.meng.gameData.TouHou;
 
 import com.google.gson.annotations.SerializedName;
-import com.meng.SBot;
-import com.meng.annotation.SanaeData;
 import com.meng.config.DataPersistenter;
-import com.meng.handler.group.IGroupMessageEvent;
-import com.meng.modules.BaseModule;
+import com.meng.config.SanaeData;
+import com.meng.modules.qq.SBot;
+import com.meng.modules.qq.modules.BaseModule;
 import java.util.HashMap;
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.event.events.MemberNudgedEvent;
-import net.mamoe.mirai.event.events.MessageRecallEvent;
-import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class UserInfo extends BaseModule {
 

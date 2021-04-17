@@ -1,8 +1,9 @@
 package com.meng.tools;
 
-import com.meng.SBot;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.TouhouCharacter;
+import com.meng.modules.qq.SBot;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

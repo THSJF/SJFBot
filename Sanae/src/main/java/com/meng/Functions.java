@@ -1,7 +1,7 @@
 package com.meng;
 
 import com.google.gson.annotations.SerializedName;
-import com.meng.config.ConfigManager;
+import com.meng.config.qq.ConfigManager;
 
 public enum Functions {
     @SerializedName("a") GroupMessageEvent("群消息"),
