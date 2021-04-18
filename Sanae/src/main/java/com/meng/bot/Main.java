@@ -16,8 +16,6 @@ import net.mamoe.mirai.utils.BotConfiguration;
 
 public class Main {
 
-    public static File lastImageFile;
-
     public static void main(String... args) {
         FileFormat.init();
         BotConfiguration config = new BotConfiguration();

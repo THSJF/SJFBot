@@ -2,7 +2,6 @@ package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
 import com.meng.modules.qq.SBot;
-import com.meng.modules.qq.SJFMain;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileFormat;
@@ -55,8 +54,7 @@ public class EuropeDogs extends BaseModule implements IGroupMessageEvent {
                 }
                 File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
                 FileTool.saveFile(file, fileBytes);
-                SJFMain.lastImageFile = file;
-                BufferedImage bfi = ImageIO.read(SJFMain.lastImageFile);
+                BufferedImage bfi = ImageIO.read(file);
                 float h = bfi.getHeight(null);
                 float w = bfi.getWidth(null);
                 float s = w / h;

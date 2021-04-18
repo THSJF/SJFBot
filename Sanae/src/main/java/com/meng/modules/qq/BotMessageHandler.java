@@ -26,6 +26,7 @@ import net.mamoe.mirai.message.data.Image;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import com.meng.bot.Main;
 
 public class BotMessageHandler extends SimpleListenerHost {
 
@@ -53,7 +54,6 @@ public class BotMessageHandler extends SimpleListenerHost {
             }
             File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
             FileTool.saveFile(file, fileBytes);
-            SJFMain.lastImageFile = file;
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
         }
