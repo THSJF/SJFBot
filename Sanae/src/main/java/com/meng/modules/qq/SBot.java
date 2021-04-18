@@ -105,29 +105,29 @@ public class SBot implements Bot {
         return Mirai.getInstance().queryImageUrl(bot, image);
     }
 
-    public Image toImage(File f, Contact c) {
-        return ExternalResource.Companion.uploadAsImage(f, c);
+    public Image toImage(File file, Contact contact) {
+        return ExternalResource.Companion.uploadAsImage(file, contact);
     }
 
-    public Image toImage(URL u, Contact c) {
+    public Image toImage(URL url, Contact contact) {
         try {
-            return ExternalResource.Companion.uploadAsImage(u.openStream(), c);
+            return ExternalResource.Companion.uploadAsImage(url.openStream(), contact);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Image toImage(InputStream i, Contact c) {
-        return ExternalResource.Companion.uploadAsImage(i, c);
+    public Image toImage(InputStream inputStream, Contact contact) {
+        return ExternalResource.Companion.uploadAsImage(inputStream, contact);
     }
 
-    public Voice toVoice(File f, Contact c) {
-        return ExternalResource.Companion.uploadAsVoice(ExternalResource.create(f), c);
+    public Voice toVoice(File file, Contact contact) {
+        return ExternalResource.Companion.uploadAsVoice(ExternalResource.Companion.create(file), contact);
     }
 
-    public Voice toVoice(InputStream i, Contact c) {
+    public Voice toVoice(InputStream inputStream, Contact contact) {
         try {
-            return ExternalResource.Companion.uploadAsVoice(ExternalResource.create(i), c);
+            return ExternalResource.Companion.uploadAsVoice(ExternalResource.Companion.create(inputStream), contact);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

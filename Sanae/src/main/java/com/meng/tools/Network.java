@@ -15,6 +15,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
 import com.meng.modules.qq.SBot;
+import com.meng.modules.bilibili.BilibiliBotMain;
 
 /**
  * @author 司徒灵羽
@@ -54,11 +55,11 @@ public class Network {
     }
 
     public static String bilibiliMainPost(String url, String cookie, Object... params) {
-        return bilibiliPost(url, cookie, Bilibili.mainHead, params);
+        return bilibiliPost(url, cookie, BilibiliBotMain.mainHead, params);
     }
 
     public static String bilibiliLivePost(String url, String cookie, Object... params) {
-        return bilibiliPost(url, cookie, Bilibili.liveHead, params);
+        return bilibiliPost(url, cookie, BilibiliBotMain.liveHead, params);
     }
 
 	public static Map<String, String> cookieToMap(String value) {
