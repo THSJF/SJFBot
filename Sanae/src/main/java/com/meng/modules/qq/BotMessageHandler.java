@@ -44,7 +44,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     public ListeningStatus onReceive(final GroupMessageEvent event) {
         MessageManager.put(event);
         FlashImage fi = event.getMessage().get(FlashImage.Key);
-        String url = Image.queryUrl(fi.getImage());
+        String url = sb.getUrl(fi.getImage());
         try {
             byte[] fileBytes = Jsoup.connect(url).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
             File folder = new File(SBot.appDirectory + "/image/flashImage/");

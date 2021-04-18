@@ -17,7 +17,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.utils.ExternalResource;
 
 /**
  * @author: 司徒灵羽
@@ -112,7 +111,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 sb.append("\n");
             }
             if (qaNow.q.contains("(image)")) {
-                sb.append(qaNow.q.replace("(image)", ExternalResource.uploadAsImage(new File(imagePath + qaNow.getId() + ".jpg"), gme.getGroup()).serializeToMiraiCode()));
+                sb.append(qaNow.q.replace("(image)", entity.toImage(new File(imagePath + qaNow.getId() + ".jpg"), gme.getGroup()).serializeToMiraiCode()));
             } else {
                 sb.append(qaNow.q);
             }

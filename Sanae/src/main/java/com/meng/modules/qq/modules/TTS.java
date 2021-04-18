@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Voice;
-import net.mamoe.mirai.utils.ExternalResource;
 
 public class TTS extends BaseModule implements IGroupMessageEvent {
 
@@ -62,7 +61,7 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
             FileTool.saveFile(fileMp3, mp3);
             File fileAmr = new File(SBot.appDirectory + "/tts/" + calculate + ".amr");
 
-            Voice ptt = ExternalResource.uploadAsVoice(ExternalResource.create(convert(fileMp3, fileAmr),"amr"),event.getGroup());
+            Voice ptt = entity.toVoice(convert(fileMp3, fileAmr), event.getGroup());
             if (ptt == null) {
                 entity.sendQuote(event, "生成失败");
             }

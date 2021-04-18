@@ -23,7 +23,6 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
-import net.mamoe.mirai.utils.ExternalResource;
 
 public class PictureSearch extends BaseModule implements IGroupMessageEvent {
 
@@ -70,7 +69,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
     private void processImage(Image img, GroupMessageEvent event) {
         try {
             entity.sendQuote(event, "正在搜索……");
-            SJFExecutors.execute(new SearchRunnable(event, Image.queryUrl(img)));
+            SJFExecutors.execute(new SearchRunnable(event, entity.getUrl(img)));
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             entity.sendQuote(event, e.toString().replace("java", "jvav"));
@@ -117,7 +116,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             }
             MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
             PicResults.Result tmpr = mResults.getResults().get(0);
-            Image img = ExternalResource.uploadAsImage(new URL(tmpr.mThumbnail).openStream(),event.getGroup());
+            Image img = entity.toImage(new URL(tmpr.mThumbnail).openStream(),event.getGroup());
             String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
             if (titleAndMetadata.length > 0) {
                 messageChainBuilder.append(titleAndMetadata[0]).append("\n");

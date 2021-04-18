@@ -16,7 +16,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.utils.ExternalResource;
 
 /**
  * @Description: 模拟骰子
@@ -167,14 +166,14 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                 String[] fileName = { "blue.gif", "green.gif", "red.gif" };
                                 MessageChainBuilder ufoMsgB=new MessageChainBuilder();
                                 ThreadLocalRandom current = ThreadLocalRandom.current();
-                                ufoMsgB.add(ExternalResource.uploadAsImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
-                                ufoMsgB.add(ExternalResource.uploadAsImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
-                                ufoMsgB.add(ExternalResource.uploadAsImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
+                                ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
+                                ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
+                                ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
                                 entity.sendMessage(gme.getGroup(), ufoMsgB.asMessageChain());        
                             } else if (ufor == 8) {
-                                entity.sendMessage(gme.getGroup(), ExternalResource.uploadAsImage(new File(SBot.appDirectory + "ufo/yellow.gif"), gme.getGroup()));
+                                entity.sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/yellow.gif"), gme.getGroup()));
                             } else {
-                                entity.sendMessage(gme.getGroup(), ExternalResource.uploadAsImage(new File(SBot.appDirectory + "ufo/colorful.gif"), gme.getGroup()));
+                                entity.sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/colorful.gif"), gme.getGroup()));
                             }
                             return true;
                         case "all":

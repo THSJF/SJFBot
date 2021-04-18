@@ -60,7 +60,7 @@ public class OCR extends BaseModule implements IGroupMessageEvent {
 
     private void processImg(Image img, GroupMessageEvent event) {
         try {
-            Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithUrl(Image.queryUrl(img));
+            Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithUrl(entity.getUrl(img));
             StringBuilder sb = new StringBuilder();
             ArrayList<Youtu.OcrResult.Items> items = response.items;
             sb.append("结果:");

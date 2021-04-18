@@ -47,7 +47,7 @@ public class EuropeDogs extends BaseModule implements IGroupMessageEvent {
         }
         if (img != null) {
             try {
-                String url = Image.queryUrl(img);
+                String url = entity.getUrl(img);
                 byte[] fileBytes = Jsoup.connect(url).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
                 File folder = new File(SBot.appDirectory + "/image/Europe/");
                 if (!folder.exists()) {

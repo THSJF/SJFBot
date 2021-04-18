@@ -61,7 +61,7 @@ public class ImageTag extends BaseModule implements IGroupMessageEvent {
     private void processImg(Image img, GroupMessageEvent event) {
         try {
             entity.sendQuote(event, "正在识别……");
-            Youtu.TagResult response = Youtu.getFaceYoutu().doTagWithUrl(Image.queryUrl(img));
+            Youtu.TagResult response = Youtu.getFaceYoutu().doTagWithUrl(entity.getUrl(img));
             ArrayList<Youtu.TagResult.Tag> items = response.tags;
             StringBuilder sb = new StringBuilder();
             for (Youtu.TagResult.Tag tag : items) {

@@ -8,20 +8,23 @@ import com.meng.config.qq.ConfigManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
-import kotlin.jvm.functions.Function1;
 import kotlin.sequences.Sequence;
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.contact.OtherClient;
 import net.mamoe.mirai.contact.Stranger;
 import net.mamoe.mirai.event.EventChannel;
@@ -35,13 +38,12 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
+import net.mamoe.mirai.message.data.SingleMessage;
+import net.mamoe.mirai.message.data.Voice;
 import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.MiraiLogger;
-import net.mamoe.mirai.message.MessageReceipt;
-import net.mamoe.mirai.contact.NormalMember;
-import net.mamoe.mirai.message.data.SingleMessage;
 
 /**
  * @author: 司徒灵羽
@@ -72,29 +74,24 @@ public class SBot implements Bot {
         bot = b;
     }
 
-    @Override
     public static List<Bot> getInstances() {
-        return Bot.getInstances();
+        return Bot.Companion.getInstances();
     }
 
-    @Override
     public static Sequence<Bot> getInstancesSequence() {
-        return Bot.getInstancesSequence();
+        return Bot.Companion.getInstancesSequence();
     }
 
-    @Override
     public static Bot getInstance(long qq) throws NoSuchElementException {
-        return Bot.getInstance(qq);
+        return Bot.Companion.getInstance(qq);
     }
 
-    @Override
     public static Bot getInstanceOrNull(long qq) {
-        return Bot.getInstanceOrNull(qq);
+        return Bot.Companion.getInstanceOrNull(qq);
     }
 
-    @Override
     public static Bot findInstance(long qq) {
-        return Bot.findInstance(qq);
+        return Bot.Companion.findInstance(qq);
     }
 
     public void init() {
@@ -102,6 +99,38 @@ public class SBot implements Bot {
         moduleManager.load();
         configManager = new ConfigManager(this);
         configManager.load();
+    }
+
+    public String getUrl(Image image) {
+        return Mirai.getInstance().queryImageUrl(bot, image);
+    }
+
+    public Image toImage(File f, Contact c) {
+        return ExternalResource.Companion.uploadAsImage(f, c);
+    }
+
+    public Image toImage(URL u, Contact c) {
+        try {
+            return ExternalResource.Companion.uploadAsImage(u.openStream(), c);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Image toImage(InputStream i, Contact c) {
+        return ExternalResource.Companion.uploadAsImage(i, c);
+    }
+
+    public Voice toVoice(File f, Contact c) {
+        return ExternalResource.Companion.uploadAsVoice(ExternalResource.create(f), c);
+    }
+
+    public Voice toVoice(InputStream i, Contact c) {
+        try {
+            return ExternalResource.Companion.uploadAsVoice(ExternalResource.create(i), c);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -167,10 +196,6 @@ public class SBot implements Bot {
             }
         }
         return false;
-    }
-
-    public Image image(File f, Contact target) {
-        return ExternalResource.uploadAsImage(f, target);
     }
 
     public long getAt(MessageChain msg) {

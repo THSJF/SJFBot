@@ -14,11 +14,8 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.event.events.MessageRecallEvent;
-import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.utils.ExternalResource;
 
 public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent {
 
@@ -103,7 +100,7 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
         VideoInfo info = Bilibili.getVideoInfo(avId);
         Image image = null;
         try {
-            image = event.getGroup().uploadImage(ExternalResource.create(new URL(info.data.pic).openStream()));
+            image = entity.toImage(new URL(info.data.pic), event.getGroup());
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
         }

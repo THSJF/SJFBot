@@ -22,8 +22,7 @@ import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.message.data.PttMessage;
-import net.mamoe.mirai.utils.ExternalResource;
+import net.mamoe.mirai.message.data.Voice;
 
 /**
  * @Description: 管理员命令
@@ -169,10 +168,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         String next = iter.next();
                         if (next.equals("晚上好啊老婆们")) {
                             File fileMp3 = new File(SBot.appDirectory + "/tts/晚上好啊老婆们.wav");
-                            PttMessage ptt = gme.getGroup().uploadVoice(ExternalResource.create(new FileInputStream(fileMp3)));
-                            if (ptt == null) {
-                                entity.sendQuote(gme, "生成失败");
-                            }
+                            Voice ptt = entity.toVoice(new FileInputStream(fileMp3), gme.getGroup());
                             entity.sendQuote(gme, ptt);
                         } else {
                             entity.sendGroupMessage(Long.parseLong(iter.next()), next);

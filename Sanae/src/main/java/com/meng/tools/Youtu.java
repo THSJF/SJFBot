@@ -1,6 +1,7 @@
 package com.meng.tools;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -26,8 +27,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Youtu {
 
@@ -63,17 +62,17 @@ public class Youtu {
             m_user_id = user_id;
         }
 
-        public OcrResult doOcrWithUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
-            JSONObject data = new JSONObject();
-            data.put("url", imageUrl);
+        public OcrResult doOcrWithUrl(String imageUrl) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            JsonObject data = new JsonObject();
+            data.addProperty("url", imageUrl);
             return new Gson().fromJson(sendHttpsRequest(data, "ocrapi/generalocr"), OcrResult.class);
         }
 
-        public OcrResult doOcrWithFile(String image_path)throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
-            JSONObject data = new JSONObject();
+        public OcrResult doOcrWithFile(String image_path)throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            JsonObject data = new JsonObject();
             StringBuffer image_data = new StringBuffer("");
             GetBase64FromFile(image_path, image_data);
-            data.put("image", image_data);
+            data.addProperty("image", image_data.toString());
             return new Gson().fromJson(sendHttpsRequest(data, "ocrapi/generalocr"), OcrResult.class);
         }
 
@@ -90,29 +89,29 @@ public class Youtu {
             }
         }
 
-        public PornResult doPornWithUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
-            JSONObject data = new JSONObject();
-            data.put("url", imageUrl);
+        public PornResult doPornWithUrl(String imageUrl) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            JsonObject data = new JsonObject();
+            data.addProperty("url", imageUrl);
             return new Gson().fromJson(sendHttpsRequest(data, "imageapi/imageporn"), PornResult.class);
         }
 
-        public TagResult doTagWithUrl(String imageUrl) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
-            JSONObject data = new JSONObject();
-            data.put("url", imageUrl);
+        public TagResult doTagWithUrl(String imageUrl) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            JsonObject data = new JsonObject();
+            data.addProperty("url", imageUrl);
             return new Gson().fromJson(sendHttpsRequest(data, "imageapi/imagetag"), TagResult.class);
         }
 
-        public TtsResult doTtsWithUrl(String text) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException {
-            JSONObject data = new JSONObject();
-            data.put("text", text);
-            data.put("model_type", 0);
-            data.put("speed", 0);
-            data.put("time_stamp", System.currentTimeMillis() / 1000);
-            data.put("nonce_str", "fa577ce340859f9fe");
+        public TtsResult doTtsWithUrl(String text) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            JsonObject data = new JsonObject();
+            data.addProperty("text", text);
+            data.addProperty("model_type", 0);
+            data.addProperty("speed", 0);
+            data.addProperty("time_stamp", System.currentTimeMillis() / 1000);
+            data.addProperty("nonce_str", "fa577ce340859f9fe");
             return new Gson().fromJson(sendHttpsRequest(data, "ttsapi/text_to_audio"), TtsResult.class);
         }
 
-        private String sendHttpsRequest(JSONObject postData, String method) throws NoSuchAlgorithmException, KeyManagementException, IOException, JSONException {
+        private String sendHttpsRequest(JsonObject postData, String method) throws NoSuchAlgorithmException, KeyManagementException, IOException {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, new TrustManager[]{
                         new X509TrustManager(){
@@ -154,7 +153,7 @@ public class Youtu {
             connection.setRequestProperty("Content-Type", "text/json");
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            postData.put("app_id", m_appid);
+            postData.addProperty("app_id", m_appid);
             out.write(postData.toString().getBytes(StandardCharsets.UTF_8));
             out.flush();
             out.close();

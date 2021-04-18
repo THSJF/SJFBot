@@ -18,12 +18,9 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.event.events.MessageRecallEvent;
-import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.QuoteReply;
-import net.mamoe.mirai.utils.ExternalResource;
 
 /**
  * @author: 司徒灵羽
@@ -73,7 +70,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 break;
                             case IMG:
                                 try { 
-                                    mcb.add(ExternalResource.uploadAsImage(new File(SBot.appDirectory + node.content),gme.getGroup()));
+                                    mcb.add(entity.toImage(new File(SBot.appDirectory + node.content), gme.getGroup()));
                                 } catch (Exception e) {
                                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                                 }
@@ -120,7 +117,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 mcb.add(String.valueOf(entity.moduleManager.getModule(Dice.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
                                 break;
                             case IMG_FOLDER:
-                                mcb.add(ExternalResource.uploadAsImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.content).listFiles()),gme.getGroup()));
+                                mcb.add(entity.toImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.content).listFiles()), gme.getGroup()));
                                 break;
                         }    
                     } catch (Exception e) {

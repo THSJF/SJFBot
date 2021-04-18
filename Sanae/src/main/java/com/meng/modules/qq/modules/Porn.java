@@ -61,7 +61,7 @@ public class Porn extends BaseModule implements IGroupMessageEvent {
     private void processImg(Image img, GroupMessageEvent event) {
         try {
             entity.sendQuote(event, "正在识别……");
-            Youtu.PornResult response = Youtu.getFaceYoutu().doPornWithUrl(Image.queryUrl(img));
+            Youtu.PornResult response = Youtu.getFaceYoutu().doPornWithUrl(entity.getUrl(img));
             ArrayList<Youtu.PornResult.Tag> items = response.tags;
             StringBuilder sb = new StringBuilder();
             for (Youtu.PornResult.Tag tag : items) {

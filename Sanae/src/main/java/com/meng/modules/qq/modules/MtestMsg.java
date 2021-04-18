@@ -6,7 +6,6 @@ import com.meng.tools.ExceptionCatcher;
 import java.io.File;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Voice;
-import net.mamoe.mirai.utils.ExternalResource;
 
 /**
  * @author: 司徒灵羽
@@ -34,7 +33,7 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
     private void processText(GroupMessageEvent event) {
         try {
             File fileMp3 = new File(SBot.appDirectory + "/tts/此生无悔入东方_来世愿生幻想乡.mp3");
-            Voice ptt = ExternalResource.uploadAsVoice(ExternalResource.create(fileMp3, "mp3"), event.getGroup());
+            Voice ptt = entity.toVoice(fileMp3, event.getGroup());
             if (ptt == null) {
                 entity.sendQuote(event, "生成失败");
             }
