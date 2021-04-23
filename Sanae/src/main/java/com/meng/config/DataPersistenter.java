@@ -3,7 +3,7 @@ package com.meng.config;
 import com.meng.modules.qq.modules.BaseModule;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
@@ -18,7 +18,7 @@ public class DataPersistenter {
 
 	}
 
-	public static boolean save(BaseModule module) {
+	public static boolean save(Object module) {
         Class<?> moduleClass = module.getClass();
         //Field[] fields = classObj.getFields();        //只能获取public
         Field[] fields = moduleClass.getDeclaredFields();  //public和private
@@ -28,7 +28,7 @@ public class DataPersistenter {
                 SanaeData annotationField = field.getAnnotation(SanaeData.class);
                 try {
                     FileOutputStream fos = new FileOutputStream(new File("C://Program Files/sanae_data/persistent/" + annotationField.value()));
-                    fos.write(GSON.toJson(field.get(module)).getBytes(StandardCharsets.UTF_8));
+                    fos.write(JsonHelper.toJson(field.get(module)).getBytes(StandardCharsets.UTF_8));
                     fos.close();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -38,7 +38,7 @@ public class DataPersistenter {
         return true;   
 	}
 
-	public static boolean read(BaseModule module) {
+	public static boolean read(Object module) {
         Class<?> moduleClass = module.getClass();
         //Field[] fields = classObj.getFields();        //只能获取public
         Field[] fields = moduleClass.getDeclaredFields();  //public和private
@@ -56,7 +56,7 @@ public class DataPersistenter {
                     if (json == null || json.equals("null")) {  
                         field.set(module, field.get(module).getClass().newInstance());
                     } else {
-                        field.set(module, GSON.fromJson(json, field.getGenericType()));
+                        field.set(module, JsonHelper.fromJson(json, field.getGenericType()));
                     }
                 } catch (Exception e) { 
                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

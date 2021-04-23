@@ -1,11 +1,11 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
-import com.meng.config.javabeans.PersonInfo;
+import com.meng.config.Person;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.qq.handler.group.INudge;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
@@ -23,6 +23,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Voice;
+import com.meng.config.ConfigManager;
 
 /**
  * @Description: 管理员命令
@@ -41,10 +42,11 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
+        ConfigManager configManager = ConfigManager.getInstance();
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-        if (!entity.configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
+        if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
             return false;
 		}
         if (msg.charAt(0) != '.') {
@@ -64,12 +66,12 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     if (iter.hasNext()) {
                         wel = iter.next();
                     }
-                    entity.configManager.setWelcome(groupId, wel);
-                    entity.configManager.save();
+                    configManager.setWelcome(groupId, wel);
+                    configManager.save();
                     entity.sendGroupMessage(groupId, "已设置为:" + wel);
                     return true;
             }
-            if (!entity.configManager.isMaster(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 1) {
+            if (!configManager.isMaster(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 1) {
                 return false;
             }
             switch (first) {
@@ -91,14 +93,14 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     } else if (list.size() == 3) {
                         Functions function = Functions.get(iter.next());
                         if (function != null) {
-                            entity.sendQuote(gme, (function.change(entity.configManager, groupId) ?"已启用" : "已停用") + function.toString());
+                            entity.sendQuote(gme, (function.change(configManager, groupId) ?"已启用" : "已停用") + function.toString());
                         } else {
                             entity.sendQuote(gme, "无此开关");
                         }
                     }
                     return true;
             }
-            if (!entity.configManager.isMaster(qqId)) {
+            if (!configManager.isMaster(qqId)) {
                 return false;
             }
             switch (first) {
@@ -107,7 +109,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     HashSet<Group> hs = new HashSet<>();
                     Collection<Group> glist = entity.getGroups();
                     for (Group g:glist) {
-                        if (!entity.configManager.isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
+                        if (!configManager.isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
                             continue;
                         }
                         entity.sendGroupMessage(g.getId(), broadcast);
@@ -132,22 +134,22 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     return true;
                 case "findConfig":
                     String name = iter.next();
-                    HashSet<PersonInfo> hashSet = new HashSet<>();
-                    for (PersonInfo personInfo : entity.configManager.getPersonInfo()) {
+                    HashSet<Person> hashSet = new HashSet<>();
+                    for (Person personInfo : configManager.getPerson()) {
                         if (personInfo.name.contains(name)) {
                             hashSet.add(personInfo);
                         }
-                        if (personInfo.qq != 0 && String.valueOf(personInfo.qq).contains(name)) {
+                        if (personInfo.qq.size() != 0 && personInfo.qq.toString().contains(name)) {
                             hashSet.add(personInfo);
                         }
                         if (personInfo.bid != 0 && String.valueOf(personInfo.bid).contains(name)) {
                             hashSet.add(personInfo);
                         }
-                        if (personInfo.bliveRoom != 0 && String.valueOf(personInfo.bliveRoom).contains(name)) {
+                        if (personInfo.roomID != 0 && String.valueOf(personInfo.roomID).contains(name)) {
                             hashSet.add(personInfo);
                         }
                     }
-                    entity.sendGroupMessage(groupId, GSON.toJson(hashSet)); 
+                    entity.sendGroupMessage(groupId, JsonHelper.toJson(hashSet)); 
                     return true;
                 case "thread":
                     String s = "taskCount：" + SJFExecutors.getTaskCount() + "\n" +
@@ -180,27 +182,25 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     return true;
                 case "block":
                     {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("屏蔽列表添加:");
+                        StringBuilder sb = new StringBuilder("屏蔽列表添加:");
                         String nextqq;
                         while ((nextqq = iter.next()) != null) {
-                            entity.configManager.addBlackQQ(Long.parseLong(nextqq));   
+                            configManager.addBlackQQ(Long.parseLong(nextqq));   
                             sb.append(nextqq).append(" ");
-                            entity.configManager.save();
+                            configManager.save();
                         }
                         entity.sendGroupMessage(groupId, sb.toString());
                     }
                     return true;
                 case "black":
                     { 
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("屏蔽列表添加:");
+                        StringBuilder sb = new StringBuilder("屏蔽列表添加:");
                         String nextqq;
                         while ((nextqq = iter.next()) != null) {
-                            entity.configManager.addBlackQQ(Long.parseLong(nextqq));   
+                            configManager.addBlackQQ(Long.parseLong(nextqq));   
                             sb.append(nextqq).append(" ");
                         }
-                        entity.configManager.save();
+                        configManager.save();
                         entity.sendGroupMessage(groupId, sb.toString());
                     }
                     return true;
@@ -254,7 +254,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     Functions function = Functions.get(iter.next());
                     if (function != null) {
                         for (Group group : entity.getGroups()) {
-                            entity.configManager.setFunctionEnabled(group.getId(), function, true);
+                            configManager.setFunctionEnabled(group.getId(), function, true);
                         }
                         entity.sendQuote(gme, function + "已启用");
                     } else {

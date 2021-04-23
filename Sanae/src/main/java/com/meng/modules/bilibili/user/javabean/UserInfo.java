@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.user.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 
 public class UserInfo {
     public int code;
@@ -44,6 +44,6 @@ public class UserInfo {
 	
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

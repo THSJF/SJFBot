@@ -13,6 +13,7 @@ import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.FlashImage;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.utils.ExternalResource;
+import com.meng.config.ConfigManager;
 
 public class Copper extends BaseModule implements IGroupMessageEvent {
 
@@ -35,12 +36,12 @@ public class Copper extends BaseModule implements IGroupMessageEvent {
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
         Group group = event.getGroup();
-        if (!entity.configManager.isFunctionEnabled(group.getId(), Functions.Copper)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.Copper)) {
             return false; 
         }
         if (event.getMessage().contentToString().equals("copper")) {
             Image uploadImage = entity.toImage(Tools.ArrayTool.rfa(imageFolder), event.getGroup());
-            int[] id = entity.sendGroupMessage(group.getId(), entity.configManager.isFunctionEnabled(group.getId(), Functions.CopperFlash) ?FlashImage.from(uploadImage): uploadImage);
+            int[] id = entity.sendGroupMessage(group.getId(), ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.CopperFlash) ?FlashImage.from(uploadImage): uploadImage);
             MessageManager.autoRecall(entity, id);
         }
         return false;

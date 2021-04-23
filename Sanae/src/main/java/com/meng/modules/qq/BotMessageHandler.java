@@ -1,7 +1,7 @@
 package com.meng.modules.qq;
 
 import com.meng.Functions;
-import com.meng.config.qq.ConfigManager;
+import com.meng.config.ConfigManager;
 import com.meng.modules.qq.handler.MessageManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileFormat;
@@ -22,21 +22,18 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.FlashImage;
-import net.mamoe.mirai.message.data.Image;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import com.meng.bot.Main;
 
 public class BotMessageHandler extends SimpleListenerHost {
 
     private SBot sb;
     private ModuleManager moduleManager;
-    private ConfigManager configManager;
+
     public BotMessageHandler(SBot sb) {
         this.sb = sb;
         moduleManager = sb.moduleManager;
-        configManager = sb.configManager;
     }
 
     //群消息
@@ -45,17 +42,19 @@ public class BotMessageHandler extends SimpleListenerHost {
     public ListeningStatus onReceive(final GroupMessageEvent event) {
         MessageManager.put(event);
         FlashImage fi = event.getMessage().get(FlashImage.Key);
-        String url = sb.getUrl(fi.getImage());
-        try {
-            byte[] fileBytes = Jsoup.connect(url).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
-            File folder = new File(SBot.appDirectory + "/image/flashImage/");
-            if (!folder.exists()) {
-                folder.mkdirs();
+        if (fi != null) {
+            String url = sb.getUrl(fi.getImage());
+            try {
+                byte[] fileBytes = Jsoup.connect(url).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
+                File folder = new File(SBot.appDirectory + "/image/flashImage/");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
+                FileTool.saveFile(file, fileBytes);
+            } catch (Exception e) {
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
-            File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
-            FileTool.saveFile(file, fileBytes);
-        } catch (Exception e) {
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
         }
         moduleManager.onGroupMessage(event);
         return ListeningStatus.LISTENING;
@@ -64,7 +63,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(FriendMessageEvent event) {
-        if (!configManager.isFunctionEnabled(event.getSender().getId(), Functions.FriendMessageEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getSender().getId(), Functions.FriendMessageEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onFriendMessage(event);
@@ -75,7 +74,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(MessageRecallEvent.GroupRecall event) {
-        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MessageRecallEvent_GroupRecall)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.MessageRecallEvent_GroupRecall)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onGroupRecall(event);
@@ -84,7 +83,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(BotLeaveEvent event) {
-        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.BotLeaveEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.BotLeaveEvent)) {
             return ListeningStatus.LISTENING; 
         }
         return ListeningStatus.LISTENING;
@@ -93,12 +92,12 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(BotMuteEvent event) {
-        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.BotMuteEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.BotMuteEvent)) {
             return ListeningStatus.LISTENING; 
         }
         long id = event.getGroup().getId();
         long id2 = event.getOperator().getId();
-        configManager.addBlack(id, id2);
+        ConfigManager.getInstance().addBlack(id, id2);
         event.getGroup().quit();
         sb.sendGroupMessage(SBot.yysGroup, String.format("在群%d中被%d禁言", id, id2));
         return ListeningStatus.LISTENING;
@@ -107,7 +106,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(MemberJoinEvent event) {
-        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MemberJoinEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.MemberJoinEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onMemberJoin(event);
@@ -117,7 +116,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(MemberLeaveEvent event) {
-        if (!configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MemberLeaveEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.MemberLeaveEvent)) {
             return ListeningStatus.LISTENING; 
         }
         moduleManager.onMemberLeave(event);
@@ -127,7 +126,7 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onReceive(BotInvitedJoinGroupRequestEvent event) {
-        if (configManager.isBlackQQ(event.getInvitorId()) || configManager.isBlackGroup(event.getGroupId())) {
+        if (ConfigManager.getInstance().isBlackQQ(event.getInvitorId()) || ConfigManager.getInstance().isBlackGroup(event.getGroupId())) {
             event.ignore();
         } else {
             event.accept();    

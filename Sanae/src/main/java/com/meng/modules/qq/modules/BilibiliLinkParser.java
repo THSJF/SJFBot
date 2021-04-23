@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import com.meng.config.ConfigManager;
 
 public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent {
 
@@ -29,7 +30,7 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.BilibiliVideo)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.BilibiliVideo)) {
             return false; 
         }
         BilibiliPair pair = parser.parse(event.getMessage().contentToString());

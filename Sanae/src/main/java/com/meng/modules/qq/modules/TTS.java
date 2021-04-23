@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
+import com.meng.config.ConfigManager;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.Base64Converter;
@@ -38,7 +39,7 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.TTS)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.TTS)) {
             return false;
         }
         String contentToString = event.getMessage().contentToString();

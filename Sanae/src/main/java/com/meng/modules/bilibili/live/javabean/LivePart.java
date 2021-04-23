@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.live.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import java.util.List;
 
 public class LivePart {
@@ -31,6 +31,6 @@ public class LivePart {
 
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

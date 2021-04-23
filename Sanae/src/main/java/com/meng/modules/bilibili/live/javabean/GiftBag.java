@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.live.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import java.util.List;
 
 public class GiftBag {
@@ -38,7 +38,7 @@ public class GiftBag {
 
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 
 	public int getStripCount() {

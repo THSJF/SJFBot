@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
+import com.meng.config.ConfigManager;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.TextLexer;
@@ -20,7 +21,7 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.NumberProcess)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.NumberProcess)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();

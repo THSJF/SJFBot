@@ -1,7 +1,7 @@
 package com.meng;
 
 import com.google.gson.annotations.SerializedName;
-import com.meng.config.qq.ConfigManager;
+import com.meng.config.ConfigManager;
 
 public enum Functions {
     @SerializedName("a") GroupMessageEvent("群消息"),
@@ -27,7 +27,8 @@ public enum Functions {
     @SerializedName("u") Porn("色图等级评定"),
     @SerializedName("v") ImageTag("图片标签"),
     @SerializedName("w") TTS("音频合成"),
-    @SerializedName("x") EuropeDogs("欧洲狗识别")
+    @SerializedName("x") EuropeDogs("欧洲狗识别"),
+    @SerializedName("y") ImageProcess("图片处理")
     ;
 
     private Functions(String s){

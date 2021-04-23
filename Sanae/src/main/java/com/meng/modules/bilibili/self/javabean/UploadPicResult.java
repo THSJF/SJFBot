@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.self.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 
 public class UploadPicResult {
 	public int img_width;
@@ -10,6 +10,6 @@ public class UploadPicResult {
 	
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

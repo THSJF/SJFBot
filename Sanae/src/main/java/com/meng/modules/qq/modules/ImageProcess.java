@@ -1,14 +1,23 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
+import com.meng.config.ConfigManager;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileFormat;
+import com.meng.tools.FileTool;
+import com.meng.tools.Hash;
 import com.meng.tools.SJFExecutors;
+import com.meng.tools.Youtu;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
+import javax.imageio.ImageIO;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.FlashImage;
 import net.mamoe.mirai.message.data.Image;
@@ -24,24 +33,18 @@ import org.jsoup.select.Elements;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
 
-public class PictureSearch extends BaseModule implements IGroupMessageEvent {
+public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
-    private HashSet<Long> ready = new HashSet<>();
+    private Set<Long> ready = new HashSet<>();
 
-    public PictureSearch(SBot sb) {
-        super(sb);
-    }
-
-    @Override
-    public PictureSearch load() {
-        return this;
+    public ImageProcess(SBot entity) {
+        super(entity);
     }
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup(), Functions.PictureSearch)) {
-            return false;
-        }
+        String msg = event.getMessage().contentToString().toLowerCase();
+        long qqId = event.getSender().getId();
         Image img = event.getMessage().get(Image.Key);
         if (img == null) {
             FlashImage fi = event.getMessage().get(FlashImage.Key);
@@ -49,24 +52,188 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                 img = fi.getImage();
             }
         }
-        String msg = event.getMessage().contentToString();
-        long qqId = event.getSender().getId();
-        if (img != null && (msg.toLowerCase().startsWith("sp"))) {
-            processImage(img, event);
-            return true;
-        } else if (img == null && msg.equals("sp")) {
-            ready.add(qqId);
-            entity.sendQuote(event, "发送一张图片吧");
-            return true;
-        } else if (img != null && ready.contains(qqId)) {
-            processImage(img, event);
-            ready.remove(qqId);
-            return true;
+        ConfigManager configManager = ConfigManager.getInstance();
+        if (configManager.isFunctionEnabled(event.getGroup(), Functions.PictureSearch)) {
+            if (img != null && msg.startsWith("sp")) {
+                runPictureSearch(img, event);
+                return true;
+            } else if (img == null && msg.equals("sp")) {
+                ready.add(qqId);
+                entity.sendQuote(event, "发送一张图片吧");
+                return true;
+            } else if (img != null && ready.contains(qqId)) {
+                runPictureSearch(img, event);
+                ready.remove(qqId);
+                return true;
+            }
+        }
+        if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.EuropeDogs) && img != null) {
+            try {
+                byte[] fileBytes = Jsoup.connect(entity.getUrl(img)).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
+                File folder = new File(SBot.appDirectory + "/image/Europe/");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
+                FileTool.saveFile(file, fileBytes);
+                BufferedImage bfi = ImageIO.read(file);
+                float h = bfi.getHeight(null);
+                float w = bfi.getWidth(null);
+                float s = w / h;
+                if (s > 1.7f) {
+                    runSeekDog(bfi.getSubimage(0, 0, (int)(w / 2), (int)h), event);
+                }
+                file.delete();
+            } catch (Exception e) {
+                //     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            }
+        }
+        if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.ImageTag)) {
+            if (img != null && (msg.startsWith("tag"))) {
+                getImageTag(img, event);
+                return true;
+            } else if (img == null && msg.equals("tag")) {
+                ready.add(qqId);
+                entity.sendQuote(event, "发送一张图片吧");
+                return true;
+            } else if (img != null && ready.contains(qqId)) {
+                getImageTag(img, event);
+                ready.remove(qqId);
+                return true;
+            }
+        }
+        if (ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.OCR)) {
+            if (img != null && (msg.toLowerCase().startsWith("ocr"))) {
+                getOcrResult(img, event);
+                return true;
+            } else if (img == null && msg.equals("ocr")) {
+                ready.add(qqId);
+                entity.sendQuote(event, "发送一张图片吧");
+                return true;
+            } else if (img != null && ready.contains(qqId)) {
+                getOcrResult(img, event);
+                ready.remove(qqId);
+                return true;
+            }
+        } 
+        if (ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.Porn)) {
+            if (img != null && (msg.toLowerCase().startsWith("porn"))) {
+                getPornValue(img, event);
+                return true;
+            } else if (img == null && msg.equals("porn")) {
+                ready.add(qqId);
+                entity.sendQuote(event, "发送一张图片吧");
+                return true;
+            } else if (img != null && ready.contains(qqId)) {
+                getPornValue(img, event);
+                ready.remove(qqId);
+                return true;
+            }
         }
         return false;
     }
 
-    private void processImage(Image img, GroupMessageEvent event) {
+    private void getPornValue(Image img, GroupMessageEvent event) {
+        try {
+            entity.sendQuote(event, "正在识别……");
+            Youtu.PornResult response = Youtu.getFaceYoutu().doPornWithUrl(entity.getUrl(img));
+            ArrayList<Youtu.PornResult.Tag> items = response.tags;
+            StringBuilder sb = new StringBuilder();
+            for (Youtu.PornResult.Tag tag : items) {
+                sb.append(switchTagName(tag.tag_name)).append(":").append(tag.tag_confidence).append("%\n");
+            }
+            sb.setLength(sb.length() - 1);
+            entity.sendQuote(event, sb.toString());
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            entity.sendQuote(event, e.toString().replace("java", "jvav"));
+        }
+    }
+
+    private String switchTagName(String s) {
+        switch (s) {
+            case "normal":
+                return "普通";
+            case "hot":
+                return "性感";
+            case "porn":
+                return "色情";
+            case "female-genital":
+                return "女性阴部";
+            case "female-breast":
+                return "女性胸部";
+            case "male-genital":
+                return "男性阴部";
+            case "pubes":
+                return "阴毛";
+            case "anus":
+                return "肛门";
+            case "sex":
+                return "性行为";
+            case "normal_hot_porn":
+                return "色情综合值";
+            default:
+                return null;
+        }
+    }
+
+    private void getOcrResult(Image img, GroupMessageEvent event) {
+        try {
+            Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithUrl(entity.getUrl(img));
+            StringBuilder sb = new StringBuilder();
+            ArrayList<Youtu.OcrResult.Items> items = response.items;
+            sb.append("结果:");
+            for (Youtu.OcrResult.Items s : items) {
+                sb.append("\n").append(s.itemstring);
+            }
+            entity.sendMessage(event.getGroup(), sb.toString());
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            entity.sendQuote(event, e.toString());
+        }
+    }
+
+    private void getImageTag(Image img, GroupMessageEvent event) {
+        try {
+            entity.sendQuote(event, "正在识别……");
+            Youtu.TagResult response = Youtu.getFaceYoutu().doTagWithUrl(entity.getUrl(img));
+            ArrayList<Youtu.TagResult.Tag> items = response.tags;
+            StringBuilder sb = new StringBuilder();
+            for (Youtu.TagResult.Tag tag : items) {
+                sb.append(tag.tag_name).append("\n");
+            }
+            sb.setLength(sb.length() - 1);
+            entity.sendQuote(event, sb.toString());
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            entity.sendQuote(event, e.toString().replace("java", "jvav"));
+        }
+    }
+
+    private void runSeekDog(BufferedImage img, GroupMessageEvent event) {
+        File tmp = new File(SBot.appDirectory + "/image/Europe/" + System.currentTimeMillis() + ".jpg");
+        try {  
+            ImageIO.write(img, "jpg", tmp);
+            StringBuilder sb = new StringBuilder();
+            Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithFile(tmp.getAbsolutePath());
+            ArrayList<Youtu.OcrResult.Items> items = response.items;
+            sb.append("Europe结果:");
+            for (Youtu.OcrResult.Items s : items) {
+                sb.append("\n").append(s.itemstring);
+            }
+            System.out.println(sb.toString());
+            if (items.size() == 3 && items.get(0).itemstring.equals("极品") && (items.get(2).itemstring.equals("角色卡") || items.get(2).itemstring.equals("圣痕") || items.get(2).itemstring.equals("武器"))) {
+                entity.sendMessage(event.getGroup(), items.get(1).itemstring + ",去你大爷的欧洲狗");
+            }
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            entity.sendQuote(event, e.toString());
+        } finally {
+            tmp.delete();   
+        }
+    }
+
+    private void runPictureSearch(Image img, GroupMessageEvent event) {
         try {
             entity.sendQuote(event, "正在搜索……");
             SJFExecutors.execute(new SearchRunnable(event, entity.getUrl(img)));
@@ -77,8 +244,13 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
+    public ImageProcess load() {
+        return this;
+    }
+
+    @Override
     public String getModuleName() {
-        return getClass().getName();
+        return "imageProcess";
     }
 
     private class SearchRunnable implements Runnable {
@@ -116,7 +288,7 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
             }
             MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
             PicResults.Result tmpr = mResults.getResults().get(0);
-            Image img = entity.toImage(new URL(tmpr.mThumbnail).openStream(),event.getGroup());
+            Image img = entity.toImage(new URL(tmpr.mThumbnail).openStream(), event.getGroup());
             String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
             if (titleAndMetadata.length > 0) {
                 messageChainBuilder.append(titleAndMetadata[0]).append("\n");
@@ -331,5 +503,5 @@ public class PictureSearch extends BaseModule implements IGroupMessageEvent {
                 return mAccum.toString();
             }
         }
-    }
+    } 
 }

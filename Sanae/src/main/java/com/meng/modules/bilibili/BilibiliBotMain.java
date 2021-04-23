@@ -3,6 +3,9 @@ package com.meng.modules.bilibili;
 import com.meng.tools.Network;
 import java.util.HashMap;
 import java.util.Map;
+import com.meng.tools.SJFExecutors;
+import java.util.concurrent.TimeUnit;
+import com.meng.modules.bilibili.live.LiveListener;
 
 public class BilibiliBotMain {
     
@@ -32,6 +35,6 @@ public class BilibiliBotMain {
     }
     
     public static void main(String... args) {
-        
+        SJFExecutors.executeWithFixedDelay(new LiveListener(),0,30,TimeUnit.SECONDS);
     }
 }

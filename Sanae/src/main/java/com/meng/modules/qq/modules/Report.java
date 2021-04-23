@@ -1,5 +1,6 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
@@ -32,7 +33,7 @@ public class Report extends BaseModule implements IGroupMessageEvent {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-		if (entity.configManager.isMaster(qqId)) {
+		if (ConfigManager.getInstance().isMaster(qqId)) {
 			if (msg.equals("-留言查看")) {
 				ReportBean rb = getReport();
 				entity.sendGroupMessage(groupId, rb == null ?"无留言": rb.toString());

@@ -7,7 +7,7 @@ import com.meng.modules.bilibili.self.javabean.FollowingLiving;
 import com.meng.modules.bilibili.self.javabean.MyInfo;
 import com.meng.modules.bilibili.self.javabean.UploadPicResult;
 import com.meng.modules.qq.SBot;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,11 +41,11 @@ public class SelfApi {
     }
 
     public static FollowingLiving getFollowingLiving(String cookie, int page, int pageSize) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/relation/v1/feed/feed_list?page=" + page + "&pagesize=" + pageSize, cookie), FollowingLiving.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/relation/v1/feed/feed_list?page=" + page + "&pagesize=" + pageSize, cookie), FollowingLiving.class);
     }
 
     public static MyInfo getMyInfo(String cookie) {
-        return GSON.fromJson(Network.httpGet("http://api.bilibili.com/x/space/myinfo?jsonp=jsonp", cookie), MyInfo.class);
+        return JsonHelper.fromJson(Network.httpGet("http://api.bilibili.com/x/space/myinfo?jsonp=jsonp", cookie), MyInfo.class);
     }
 
     public static String sendDynamic(String content, String cookie) {
@@ -73,9 +73,9 @@ public class SelfApi {
                     return null;
                 }
             }
-            String result = Network.bilibiliPost("https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/create_draw", cookie, "biz", 3, "category", 3, "type", 0, "pictures", GSON.toJson(bset), "title", "", "tags", "", "description", "", "content", content, "setting", "{\"copy_forbidden\":0,\"cachedTime\":0}", "from", "create.dynamic.web", "extension", "{\"from\":{\"emoji_type\":1}}", "at_uids", "", "at_control", "[]", "csrf_token", getCsrf(cookie));
+            String result = Network.bilibiliPost("https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/create_draw", cookie, "biz", 3, "category", 3, "type", 0, "pictures", JsonHelper.toJson(bset), "title", "", "tags", "", "description", "", "content", content, "setting", "{\"copy_forbidden\":0,\"cachedTime\":0}", "from", "create.dynamic.web", "extension", "{\"from\":{\"emoji_type\":1}}", "at_uids", "", "at_control", "[]", "csrf_token", getCsrf(cookie));
             pics.clear();
-            return GSON.fromJson(result, DynamicWithPictureResult.class);
+            return JsonHelper.fromJson(result, DynamicWithPictureResult.class);
         } catch (Exception e) {
             return null;
         }

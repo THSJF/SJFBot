@@ -5,7 +5,7 @@ import com.meng.modules.qq.handler.MessageManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.SJFExecutors;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ public class QqBotMain {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
 
-        AccountInfo info = GSON.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
+        AccountInfo info = JsonHelper.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
         final SBot sb = new SBot(BotFactory.INSTANCE.newBot(info.account, info.password, config));
         ExceptionCatcher.getInstance().init();
         sb.init();

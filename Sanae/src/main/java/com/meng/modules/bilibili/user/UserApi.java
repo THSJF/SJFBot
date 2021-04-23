@@ -2,28 +2,29 @@ package com.meng.modules.bilibili.user;
 
 import com.google.gson.JsonParser;
 import com.meng.modules.bilibili.self.javabean.Relation;
-import com.meng.modules.bilibili.user.javabean.UidToRoom;
+import com.meng.modules.bilibili.user.javabean.RoomInfoByUid;
 import com.meng.modules.bilibili.user.javabean.Upstat;
 import com.meng.modules.bilibili.user.javabean.UserInfo;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 import java.util.Random;
 
 import static com.meng.modules.bilibili.BilibiliBotMain.getCsrf;
 import static com.meng.modules.bilibili.BilibiliBotMain.REFERER;
+import com.meng.modules.bilibili.user.javabean.DynamicList;
 
 public class UserApi {
-    
-    public static UidToRoom getUidToRoom(long uid) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=" + uid, null, "https://live.bilibili.com/"), UidToRoom.class);
+
+    public static RoomInfoByUid getUidToRoom(long uid) {
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=" + uid, null, "https://live.bilibili.com/"), RoomInfoByUid.class);
     }
 
     public static Relation getRelation(long uid) {
-        return GSON.fromJson(Network.httpGet("https://api.bilibili.com/x/relation/stat?vmid=" + uid + "&jsonp=jsonp"), Relation.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.bilibili.com/x/relation/stat?vmid=" + uid + "&jsonp=jsonp"), Relation.class);
     }
 
     public static Upstat getUpstat(long uid) {
-        return GSON.fromJson(Network.httpGet("https://api.bilibili.com/x/space/upstat?mid=" + uid + "&jsonp=jsonp"), Upstat.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.bilibili.com/x/space/upstat?mid=" + uid + "&jsonp=jsonp"), Upstat.class);
     }
 
     public static String getFollowing(String cookie, long uid, int page, int pageSize) {
@@ -31,11 +32,11 @@ public class UserApi {
     }
 
     public static UserInfo getUserInfo(long id, String cookie) {
-        return GSON.fromJson(Network.httpGet("https://api.bilibili.com/x/space/acc/info?mid=" + id + "&jsonp=jsonp", cookie), UserInfo.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.bilibili.com/x/space/acc/info?mid=" + id + "&jsonp=jsonp", cookie), UserInfo.class);
     }
 
-    public static String getUserDynamicList(long uid, int offsetDynamicID) {
-        return Network.httpGet("https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?offset_dynamic_id=" + offsetDynamicID  + "&host_uid=" + uid);
+    public static DynamicList getUserDynamicList(long uid, int offsetDynamicID) {
+        return JsonHelper.fromJson(Network.httpGet("https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?offset_dynamic_id=" + offsetDynamicID  + "&host_uid=" + uid), DynamicList.class);
     }
 
     public static String followUser(String cookie, long UID) {

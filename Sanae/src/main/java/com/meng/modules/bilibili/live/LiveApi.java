@@ -8,7 +8,7 @@ import com.meng.modules.bilibili.live.javabean.RoomInfo;
 import com.meng.modules.bilibili.live.javabean.RoomToUid;
 import com.meng.modules.bilibili.live.javabean.StartLive;
 import com.meng.modules.bilibili.live.javabean.StopLive;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 import java.util.Random;
 
@@ -18,28 +18,28 @@ import static com.meng.modules.bilibili.BilibiliBotMain.REFERER;
 public class LiveApi {
 
     public static RoomToUid getRoomToUid(long roomId) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=" + roomId), RoomToUid.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=" + roomId), RoomToUid.class);
     }
 
     public static LivePart getLivePart() {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/room/v1/Area/getList"), LivePart.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/room/v1/Area/getList"), LivePart.class);
     }
 
     public static RoomInfo getRoomInfo(long roomId) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id=" + roomId), RoomInfo.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id=" + roomId), RoomInfo.class);
     }
 
     public static Medals getMedal(String cookie) {
-        Medals mb = GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/i/api/medal?page=1&pagesize=10", cookie), Medals.class);
+        Medals mb = JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/i/api/medal?page=1&pagesize=10", cookie), Medals.class);
         for (int i = mb.data.pageinfo.curPage + 1;i <= mb.data.pageinfo.totalpages;++i) {
-            Medals tm = GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/i/api/medal?page=" + i + "&pagesize=10", cookie), Medals.class);
+            Medals tm = JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/i/api/medal?page=" + i + "&pagesize=10", cookie), Medals.class);
             mb.data.fansMedalList.addAll(tm.data.fansMedalList);
         }
         return mb;
     }
 
     public static GiftBag getGiftBag(String cookie) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/gift/bag_list?t=" + System.currentTimeMillis(), cookie), GiftBag.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/gift/bag_list?t=" + System.currentTimeMillis(), cookie), GiftBag.class);
     }
 
     public static String getMedalRank(String cookie, long uid, long roomId) {
@@ -52,12 +52,12 @@ public class LiveApi {
             System.out.println("没有发现这个分区，已自动选择\"单机-其他分区\"");
         }
         String csrf = getCsrf(cookie);
-        return GSON.fromJson(Network.bilibiliLivePost("https://api.live.bilibili.com/room/v1/Room/startLive", cookie, "Referer", "https://link.bilibili.com/p/center/index", "room_id", roomID, "platform", "pc", "area_v2", partID, "csrf_token", csrf, "csrf", csrf), StartLive.class);
+        return JsonHelper.fromJson(Network.bilibiliLivePost("https://api.live.bilibili.com/room/v1/Room/startLive", cookie, "Referer", "https://link.bilibili.com/p/center/index", "room_id", roomID, "platform", "pc", "area_v2", partID, "csrf_token", csrf, "csrf", csrf), StartLive.class);
     }
 
     public static StopLive stopLive(int roomID, String cookie) {
         String csrf = getCsrf(cookie);
-        return GSON.fromJson(Network.bilibiliLivePost("https://api.live.bilibili.com/room/v1/Room/stopLive", cookie, "Referer", "https://link.bilibili.com/p/center/index", "room_id", roomID, "csrf_token", csrf, "csrf", csrf), StopLive.class);
+        return JsonHelper.fromJson(Network.bilibiliLivePost("https://api.live.bilibili.com/room/v1/Room/stopLive", cookie, "Referer", "https://link.bilibili.com/p/center/index", "room_id", roomID, "csrf_token", csrf, "csrf", csrf), StopLive.class);
     }
 
     public static String renameLive(int roomID, String newName, String cookie) {
@@ -66,7 +66,7 @@ public class LiveApi {
     }
 
     public static LiveStream getLiveStream(long roomid, String cookie) {
-        return GSON.fromJson(Network.httpGet("https://api.live.bilibili.com/live_stream/v1/StreamList/get_stream_by_roomId?room_id=" + roomid, cookie, "https://link.bilibili.com/p/center/index"), LiveStream.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.live.bilibili.com/live_stream/v1/StreamList/get_stream_by_roomId?room_id=" + roomid, cookie, "https://link.bilibili.com/p/center/index"), LiveStream.class);
     }
 
     public static String sendLiveSign(String cookie) {

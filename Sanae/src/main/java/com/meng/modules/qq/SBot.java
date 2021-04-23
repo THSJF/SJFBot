@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.meng.Functions;
-import com.meng.config.qq.ConfigManager;
+import com.meng.config.ConfigManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
 import java.io.File;
@@ -60,8 +60,7 @@ public class SBot implements Bot {
     private Bot bot;
 
     public ModuleManager moduleManager;
-    public ConfigManager configManager;
-
+    
     public boolean sleeping = false;
 
     static{
@@ -97,8 +96,6 @@ public class SBot implements Bot {
     public void init() {
         moduleManager = new ModuleManager(this);
         moduleManager.load();
-        configManager = new ConfigManager(this);
-        configManager.load();
     }
 
     public String getUrl(Image image) {
@@ -143,7 +140,7 @@ public class SBot implements Bot {
     }
 
     public int[] sendGroupMessage(long fromGroup, Message msg) {
-        if (sleeping || !configManager.isFunctionEnabled(fromGroup, Functions.GroupMessageEvent)) {
+        if (sleeping || !ConfigManager.getInstance().isFunctionEnabled(fromGroup, Functions.GroupMessageEvent)) {
             return new int[]{-1};
         }
         return bot.getGroup(fromGroup).sendMessage(msg).getSource().getIds();

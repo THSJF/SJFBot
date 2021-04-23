@@ -1,8 +1,8 @@
 package com.meng.modules.qq;
 
 import com.meng.Functions;
-import com.meng.config.qq.ConfigManager;
-import com.meng.config.qq.PersonConfig;
+import com.meng.config.ConfigManager;
+import com.meng.config.Person;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.friend.IFriendChangeEvent;
@@ -12,7 +12,9 @@ import com.meng.modules.qq.handler.group.IGroupBotEvent;
 import com.meng.modules.qq.handler.group.IGroupEvent;
 import com.meng.modules.qq.handler.group.IGroupMemberEvent;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.modules.qq.handler.group.IGroupRecall;
 import com.meng.modules.qq.handler.group.IGroupSettingEvent;
+import com.meng.modules.qq.handler.group.INudge;
 import com.meng.modules.qq.modules.AdminMessage;
 import com.meng.modules.qq.modules.AimMessage;
 import com.meng.modules.qq.modules.BaseModule;
@@ -21,15 +23,11 @@ import com.meng.modules.qq.modules.Copper;
 import com.meng.modules.qq.modules.Derecall;
 import com.meng.modules.qq.modules.Dice;
 import com.meng.modules.qq.modules.DynamicWordStock;
-import com.meng.modules.qq.modules.EuropeDogs;
-import com.meng.modules.qq.modules.ImageTag;
+import com.meng.modules.qq.modules.ImageProcess;
 import com.meng.modules.qq.modules.MemberChange;
 import com.meng.modules.qq.modules.MessageRefuse;
 import com.meng.modules.qq.modules.MtestMsg;
 import com.meng.modules.qq.modules.NumberProcess;
-import com.meng.modules.qq.modules.OCR;
-import com.meng.modules.qq.modules.PictureSearch;
-import com.meng.modules.qq.modules.Porn;
 import com.meng.modules.qq.modules.QuestionAndAnswer;
 import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
@@ -68,8 +66,6 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import com.meng.modules.qq.handler.group.INudge;
-import com.meng.modules.qq.handler.group.IGroupRecall;
 
 /**
  * @Description: 模块管理器
@@ -103,18 +99,18 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         load(MtestMsg.class);
         load(AdminMessage.class);
 
-        load(EuropeDogs.class);
+        //  load(EuropeDogs.class);
         //   load(GroupCounterChart.class);
         load(MessageRefuse.class);
         load(Repeater.class);
         load(Report.class);
 
 
-        load(OCR.class);
-        load(Porn.class);
-        load(ImageTag.class);
+    //    load(OCR.class);
+   //     load(Porn.class);
+        //   load(ImageTag.class);
         load(TTS.class);
-        load(PictureSearch.class);
+        load(ImageProcess.class);
 
 
         load(BilibiliLinkParser.class);
@@ -199,7 +195,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
 //        }
         String msg = gme.getMessage().contentToString();
         if (msg.startsWith(".bot")) {
-            ConfigManager cm = entity.configManager;
+            ConfigManager cm = ConfigManager.getInstance();
             if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {
                 if (msg.equals(".bot on")) {
                     cm.setFunctionEnabled(groupId, Functions.GroupMessageEvent, true);
@@ -214,21 +210,21 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
                 } 
             } else {
                 if (msg.equals(".bot on")) {
-                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
+                    Person pc = cm.getPersonFromQQ(qqId);
                     pc.setBotOn(true);
                     entity.sendQuote(gme, "已启用对你的响应");
                     return true;
                 } else if (msg.equals(".bot off")) {
-                    PersonConfig pc = entity.configManager.getPersonConfig(qqId);
+                    Person pc = cm.getPersonFromQQ(qqId);
                     pc.setBotOn(false);
                     entity.sendQuote(gme, "已停用对你的响应");
                     return true;
                 }
-                entity.configManager.save(); 
+                cm.save(); 
                 return true;
             }  
         }
-        if (!entity.configManager.isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
             return false; 
         }
         for (IGroupMessageEvent m : groupMsgHandlers) {
@@ -241,7 +237,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
 
     @Override
     public boolean onNudge(NudgeEvent event) {
-        if (!entity.configManager.isFunctionEnabled(event.getSubject().getId(), Functions.GroupMessageEvent)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getSubject().getId(), Functions.GroupMessageEvent)) {
             return false; 
         }
         for (INudge m : nudgeHanderlers) {
@@ -254,7 +250,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
 
     @Override
     public boolean onGroupRecall(MessageRecallEvent.GroupRecall event) {
-        if (!entity.configManager.isFunctionEnabled(event.getGroup().getId(), Functions.MessageRecallEvent_GroupRecall)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.MessageRecallEvent_GroupRecall)) {
             return false; 
         }
         for (IGroupRecall m : groupRecallHandler) {
@@ -522,16 +518,10 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
 
     @SuppressWarnings("unchecked")
     public <T> T getModule(Class<T> t) {
-        if (t == ModuleManager.class) {
-            return (T)this;
-        }
-        if (t == ConfigManager.class) {
-            return (T)entity.configManager;
-        }
         if (t == SBot.class) {
             return (T)entity;
         }
-        for (Object m :all) {
+        for (Object m : all) {
             if (m.getClass() == t) {
                 return (T)m;
             }

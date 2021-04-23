@@ -1,8 +1,8 @@
 package com.meng.modules.bilibili.user.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 
-public class UidToRoom {
+public class RoomInfoByUid {
 	public int code;
     public String msg;
     public String message;
@@ -22,6 +22,6 @@ public class UidToRoom {
 	
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

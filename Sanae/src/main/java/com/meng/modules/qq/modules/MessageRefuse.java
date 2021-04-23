@@ -1,13 +1,12 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.config.ConfigManager;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.SJFExecutors;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.event.events.MessageRecallEvent;
-import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
 
@@ -40,10 +39,11 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
-        if (entity.configManager.isBlackQQ(qqId)) {
+        ConfigManager ci = ConfigManager.getInstance();
+        if (ci.isBlackQQ(qqId)) {
 
         }
-        if (entity.configManager.isBlockQQ(qqId) || entity.configManager.isBlockWord(gme.getMessage().contentToString())) {
+        if (ci.isBlockQQ(qqId) || ci.isBlockWord(gme.getMessage().contentToString())) {
             return true;
         }
 		FireWallBean mtmb = msgMap.get(qqId);

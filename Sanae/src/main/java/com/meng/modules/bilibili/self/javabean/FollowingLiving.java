@@ -1,5 +1,5 @@
 package com.meng.modules.bilibili.self.javabean;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import java.util.ArrayList;
 
 public class FollowingLiving {
@@ -50,6 +50,6 @@ public class FollowingLiving {
 
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

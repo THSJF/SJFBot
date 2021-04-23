@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.user.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 
 public class Upstat {
 	public int code;
@@ -23,6 +23,6 @@ public class Upstat {
 
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

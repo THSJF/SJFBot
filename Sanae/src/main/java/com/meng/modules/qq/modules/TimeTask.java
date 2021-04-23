@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
+import com.meng.config.ConfigManager;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.SBot;
 import com.meng.tools.SJFExecutors;
@@ -75,7 +76,7 @@ public class TimeTask extends BaseModule {
                 @Override
                 public void run() {
                     for (Group group : entity.getGroups()) {
-                        if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
+                        if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {
                                 entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(evening));
                                 Thread.sleep(1000);
@@ -93,7 +94,7 @@ public class TimeTask extends BaseModule {
                 public void run() {
                     entity.sleeping = false;
                     for (Group group : entity.getGroups()) {
-                        if (entity.configManager.isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
+                        if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {
                                 entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(morning));
                                 Thread.sleep(1000);

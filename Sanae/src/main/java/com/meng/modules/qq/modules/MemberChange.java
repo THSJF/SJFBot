@@ -11,6 +11,7 @@ import net.mamoe.mirai.event.events.MemberMuteEvent;
 import net.mamoe.mirai.event.events.MemberPermissionChangeEvent;
 import net.mamoe.mirai.event.events.MemberSpecialTitleChangeEvent;
 import net.mamoe.mirai.event.events.MemberUnmuteEvent;
+import com.meng.config.ConfigManager;
 
 /**
  * @author: 司徒灵羽
@@ -26,7 +27,7 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
     @Override
     public boolean onMemberJoin(MemberJoinEvent event) {
         long groupId = event.getGroup().getId();
-        String welc = entity.configManager.getWelcome(groupId);
+        String welc = ConfigManager.getInstance().getWelcome(groupId);
         entity.sendGroupMessage(groupId, welc == null ?"欢迎新人": welc);
         return false;
     }

@@ -2,7 +2,7 @@ package com.meng.modules.bilibili.video;
 
 import com.meng.modules.bilibili.video.javabean.VideoInfo;
 import com.meng.modules.bilibili.video.javabean.VideoReply;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 
 import static com.meng.modules.bilibili.BilibiliBotMain.getCsrf;
@@ -11,15 +11,15 @@ import static com.meng.modules.bilibili.BilibiliBotMain.REFERER;
 public class VideoApi {
     
     public static VideoInfo getVideoInfo(long aid) {
-        return GSON.fromJson(Network.httpGet("http://api.bilibili.com/x/web-interface/view?aid=" + aid) , VideoInfo.class);
+        return JsonHelper.fromJson(Network.httpGet("http://api.bilibili.com/x/web-interface/view?aid=" + aid) , VideoInfo.class);
     }
 
     public static VideoReply getVideoJudge(long aid) {
-        return GSON.fromJson(Network.httpGet("https://api.bilibili.com/x/v2/reply?jsonp=jsonp&pn=1&type=1&sort=1&oid=" + aid), VideoReply.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.bilibili.com/x/v2/reply?jsonp=jsonp&pn=1&type=1&sort=1&oid=" + aid), VideoReply.class);
     }
 
     public static VideoReply getVideoJudge(long aid, long root) {
-        return GSON.fromJson(Network.httpGet("https://api.bilibili.com/x/v2/reply/reply?jsonp=jsonp&pn=1&type=1&sort=1&oid=" + aid + "&ps=10&root=" + root + "&_=" + System.currentTimeMillis()), VideoReply.class);
+        return JsonHelper.fromJson(Network.httpGet("https://api.bilibili.com/x/v2/reply/reply?jsonp=jsonp&pn=1&type=1&sort=1&oid=" + aid + "&ps=10&root=" + root + "&_=" + System.currentTimeMillis()), VideoReply.class);
     }
 
     public static String sendAvCoin(int count, long AID, String cookie) {

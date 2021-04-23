@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
+import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.SpellCard;
@@ -54,7 +55,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.QuestionAndAnswer)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.QuestionAndAnswer)) {
             return false;
         }
         if (processQa(gme)) {

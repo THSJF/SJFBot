@@ -7,6 +7,7 @@ import java.util.HashMap;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
+import com.meng.config.ConfigManager;
 
 /**
  * @Description: 复读机
@@ -29,7 +30,7 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         SubRepeater rp = repeaters.get(groupId);
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.Repeater)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.Repeater)) {
             return false;
         }
 		if (rp == null) {

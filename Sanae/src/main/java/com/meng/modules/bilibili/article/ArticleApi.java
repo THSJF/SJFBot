@@ -1,7 +1,7 @@
 package com.meng.modules.bilibili.article;
 
 import com.meng.modules.bilibili.article.javabean.CvInfo;
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 
 import static com.meng.modules.bilibili.BilibiliBotMain.getCsrf;
@@ -10,7 +10,7 @@ import static com.meng.modules.bilibili.BilibiliBotMain.REFERER;
 public class ArticleApi {
     
     public static CvInfo getCvInfo(long cvId) {
-        return GSON.fromJson(Network.httpGet("http://api.bilibili.com/x/article/viewinfo?id=" + cvId + "&mobi_app=pc&jsonp=jsonp"), CvInfo.class);
+        return JsonHelper.fromJson(Network.httpGet("http://api.bilibili.com/x/article/viewinfo?id=" + cvId + "&mobi_app=pc&jsonp=jsonp"), CvInfo.class);
     } 
 
     public static String sendArticalJudge(long cvId, String msg, String cookie) {

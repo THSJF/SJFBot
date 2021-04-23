@@ -22,10 +22,18 @@ public class SJFExecutors {
 		scheduledExecutorService.scheduleWithFixedDelay(runnable, wait, delay, time);
 	}
 
+    public static void executeWithFixedDelay(Runnable runnable, long delay, TimeUnit time) {
+        scheduledExecutorService.scheduleWithFixedDelay(runnable, 0, delay, time);
+	}
+    
 	public static void executeAtFixedRate(Runnable runnable, long wait, long rate, TimeUnit time) {
 		scheduledExecutorService.scheduleAtFixedRate(runnable, wait, rate, time);
 	}
 
+    public static void executeAtFixedRate(Runnable runnable, long rate, TimeUnit time) {
+        scheduledExecutorService.scheduleAtFixedRate(runnable, 0, rate, time);
+	}
+    
 	public static void execute(Runnable runnable) {
 		threadPool.execute(runnable);
 	}

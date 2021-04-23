@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.live.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 
 public class DanmakuBean {
 	/*	1.29800, 为弹幕播放起始时间 （在视频中出现的时间，单位是秒）
@@ -27,6 +27,6 @@ public class DanmakuBean {
 	
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

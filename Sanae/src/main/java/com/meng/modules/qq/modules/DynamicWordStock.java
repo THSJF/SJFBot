@@ -2,6 +2,7 @@ package com.meng.modules.qq.modules;
 
 import com.google.gson.annotations.SerializedName;
 import com.meng.Functions;
+import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
@@ -37,7 +38,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if (!entity.configManager.isFunctionEnabled(gme.getGroup(), Functions.DynamicWordStock)) {
+        if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.DynamicWordStock)) {
             return false;
         }
         String msg = gme.getMessage().contentToString();

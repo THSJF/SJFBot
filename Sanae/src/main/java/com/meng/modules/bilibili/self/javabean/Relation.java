@@ -1,6 +1,6 @@
 package com.meng.modules.bilibili.self.javabean;
 
-import com.meng.tools.GSON;
+import com.meng.tools.JsonHelper;
 
 	public class Relation {
 	public int code;
@@ -18,6 +18,6 @@ import com.meng.tools.GSON;
 	
 	@Override
 	public String toString() {
-		return GSON.toJson(this);
+		return JsonHelper.toJson(this);
 	}
 }

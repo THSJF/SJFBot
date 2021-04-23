@@ -7,6 +7,5 @@
 <classpathentry kind="output" path="target/classes"/>
 <classpathentry kind="lib" path="libs/gson-2.8.5.jar"/>
 <classpathentry kind="lib" path="libs/jsoup-1.11.3.jar"/>
-<classpathentry kind="lib" path="libs/mirai-core-android-2.6.1.jar"/>
 <classpathentry kind="lib" path="libs/mirai-core-all-2.6.1-all.jar"/>
 </classpath>
