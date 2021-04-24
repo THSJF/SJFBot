@@ -2,7 +2,7 @@ package com.meng.modules.bilibili.article.javabean;
 
 import java.util.*;
 
-public class CvInfo {
+public class ArticleInfo {
 	public int code;
 	public String message;
 	public int ttl;

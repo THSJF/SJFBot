@@ -8,6 +8,8 @@ import com.meng.tools.AvBvConverter;
 import com.meng.tools.Network;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.meng.modules.bilibili.article.javabean.ArticleInfo;
+import com.meng.modules.bilibili.article.ArticleApi;
 
 public class LinkAnalyzer {
 
@@ -29,6 +31,10 @@ public class LinkAnalyzer {
         if (id != -1) {
             return getVideoInfo(id);
         }
+        id = getCvId(text);
+        if(id != -1){
+            return getArticleInfo(id);
+        }
         return null;
     }
 
@@ -41,6 +47,11 @@ public class LinkAnalyzer {
         VideoInfo info = VideoApi.getVideoInfo(aid);
         return new BilibiliPair(info.toString(), info.data.pic);
     }
+    
+    public BilibiliPair getArticleInfo(long aid) {
+        ArticleInfo info = ArticleApi.getArticleInfo(aid);
+        return new BilibiliPair(info.toString(), info.data.origin_image_urls.get(0));
+    }
 
     private long getLiveId(String link) {
         Matcher matcher = patternLive.matcher(link);
@@ -49,7 +60,7 @@ public class LinkAnalyzer {
         }
         return -1;
     }
-
+    
     private long getAvId(String link) {
         Matcher mav = patternAv.matcher(link);
         if (mav.find()) {
@@ -75,6 +86,14 @@ public class LinkAnalyzer {
         Matcher mbv2 = patternBv.matcher(realUrl);  
         if (mbv2.find()) {
             return AvBvConverter.getInstance().decode(mbv2.group(1));
+        }
+        return -1;
+    }
+    
+    private long getCvId(String link) {
+        Matcher matcher = patternCv.matcher(link);
+        if (matcher.find()) {
+            return Long.parseLong(matcher.group(1));
         }
         return -1;
     }

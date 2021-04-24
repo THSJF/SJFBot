@@ -23,6 +23,7 @@ public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent
             return true;
         } else if (ready.contains(qq)) {
             entity.sendMessage(event.getGroup(), event.getMessage().serializeToMiraiCode());
+            ready.remove(qq);
             return true;
         } else if (msg.startsWith("tcode ")) {
             entity.sendMessage(event.getGroup(), MiraiCode.deserializeMiraiCode(event.getMessage().get(1).toString().substring(6)));

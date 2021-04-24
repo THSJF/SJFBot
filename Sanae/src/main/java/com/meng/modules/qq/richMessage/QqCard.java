@@ -10,7 +10,7 @@ public class QqCard {
     public String app = "com.tencent.miniapp";
     public String desc = "";
     public String view = "notification";
-    public String ver = "9.9.6.1";
+    public String ver = "0.0.0.1";
     public String prompt;//外面看
     public Meta meta = new Meta();
 
@@ -67,7 +67,7 @@ public class QqCard {
     }
 
     public String toMiraiCode() {
-        return  "[mirai:app:" + JsonHelper.toJson(this).replace(":", "\\:").replace("[", "\\[").replace("]", "\\]").replace(",", "\\,") + "]";
+        return  "[mirai:app:" + JsonHelper.toJson(this).replace(":", "\\:").replace("[", "\\[").replace("]", "\\]").replace(",", "\\,").replace("u003d", "=").replace("u0026", "&") + "]";
     }
 
     public Message toMiraiMessage() {

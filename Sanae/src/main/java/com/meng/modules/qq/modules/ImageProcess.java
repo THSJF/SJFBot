@@ -53,7 +53,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             }
         }
         ConfigManager configManager = ConfigManager.getInstance();
-        if (configManager.isFunctionEnabled(event.getGroup(), Functions.PictureSearch) && ready.get(qqId) == TYPE.Search) {
+        if (configManager.isFunctionEnabled(event.getGroup(), Functions.PictureSearch) && (ready.get(qqId) == TYPE.Search || ready.get(qqId) == null)) {
             if (img != null && msg.startsWith("sp")) {
                 runPictureSearch(img, event);
                 return true;
@@ -61,7 +61,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 ready.put(qqId, TYPE.Search);
                 entity.sendQuote(event, "发送一张图片吧");
                 return true;
-            } else if (img != null && ready.contains(qqId)) {
+            } else if (img != null && ready.containsKey(qqId)) {
                 runPictureSearch(img, event);
                 return true;
             }
@@ -83,7 +83,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 //     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
         }
-        if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.ImageTag) && (ready.get(qqId) == TYPE.Tag ||ready.get(qqId) == null)) {
+        if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.ImageTag) && (ready.get(qqId) == TYPE.Tag || ready.get(qqId) == null)) {
             if (img != null && (msg.startsWith("tag"))) {
                 getImageTag(img, event);
                 return true;
@@ -91,12 +91,12 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 ready.put(qqId, TYPE.Tag);
                 entity.sendQuote(event, "发送一张图片吧");
                 return true;
-            } else if (img != null && ready.contains(qqId)) {
+            } else if (img != null && ready.containsKey(qqId)) {
                 getImageTag(img, event);
                 return true;
             }
         }
-        if (ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.OCR) && (ready.get(qqId) == TYPE.Ocr ||ready.get(qqId) == null)) {
+        if (ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.OCR) && (ready.get(qqId) == TYPE.Ocr || ready.get(qqId) == null)) {
             if (img != null && (msg.toLowerCase().startsWith("ocr"))) {
                 getOcrResult(img, event);
                 return true;
@@ -104,12 +104,12 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 ready.put(qqId, TYPE.Ocr);
                 entity.sendQuote(event, "发送一张图片吧");
                 return true;
-            } else if (img != null && ready.contains(qqId)) {
+            } else if (img != null && ready.containsKey(qqId)) {
                 getOcrResult(img, event);
                 return true;
             }
         } 
-        if (ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.Porn) && (ready.get(qqId) == TYPE.Porn ||ready.get(qqId) == null)) {
+        if (ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.Porn) && (ready.get(qqId) == TYPE.Porn || ready.get(qqId) == null)) {
             if (img != null && (msg.toLowerCase().startsWith("porn"))) {
                 getPornValue(img, event);
                 return true;
@@ -117,7 +117,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 ready.put(qqId, TYPE.Porn);
                 entity.sendQuote(event, "发送一张图片吧");
                 return true;
-            } else if (img != null && ready.contains(qqId)) {
+            } else if (img != null && ready.containsKey(qqId)) {
                 getPornValue(img, event);
                 return true;
             }
