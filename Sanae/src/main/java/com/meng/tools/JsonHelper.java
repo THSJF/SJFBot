@@ -23,6 +23,10 @@ public class JsonHelper {
 	}
 
 	public static String toJson(Object obj) {
-		return Network.formatJson(gson.toJson(obj));
+		return gson.toJson(obj);
 	}
+    
+    public static String toFormatedJson(Object obj){
+        return Network.formatJson(gson.toJson(obj));
+    }
 }

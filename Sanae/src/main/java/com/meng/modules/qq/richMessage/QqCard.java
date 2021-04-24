@@ -67,7 +67,7 @@ public class QqCard {
     }
 
     public String toMiraiCode() {
-        return  "[mirai: app:" + JsonHelper.toJson(this).replace(":", "\\:").replace("[", "\\[").replace("]", "\\]").replace(",", "\\,") + "]";
+        return  "[mirai:app:" + JsonHelper.toJson(this).replace(":", "\\:").replace("[", "\\[").replace("]", "\\]").replace(",", "\\,") + "]";
     }
 
     public Message toMiraiMessage() {

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import net.mamoe.mirai.contact.Group;
+import com.meng.modules.qq.SBot;
 
 public class ConfigManager {
 
@@ -18,16 +19,16 @@ public class ConfigManager {
     private ConfigHolder configHolder = new ConfigHolder();
 
     private static ConfigManager instance;
-    
-    public static ConfigManager getInstance(){
+
+    public static ConfigManager getInstance() {
         return instance;
     }
-    
+
     public ConfigHolder getConfigHolder() {
         return configHolder;
     }
 
-    public static void init(){
+    public static void init() {
         instance = new ConfigManager();
         DataPersistenter.read(instance);
     }
@@ -257,7 +258,7 @@ public class ConfigManager {
         if (nick == null) {
             Person pi = getPersonFromQQ(qq);
             if (pi == null) {
-                return null;
+                return SBot.instance.getGroupMemberInfo(group, qq).getNick();
             } else {
                 return pi.name.get(0);
             }
@@ -277,7 +278,7 @@ public class ConfigManager {
     public boolean save() {
         return DataPersistenter.save(this);
     }
-    
+
     private static class ConfigHolder {
 
         public HashMap<Long,GroupConfig> groupCfgs = new HashMap<>();

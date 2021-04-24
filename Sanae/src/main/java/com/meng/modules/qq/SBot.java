@@ -58,6 +58,8 @@ public class SBot implements Bot {
     public static Gson gson;
 
     private Bot bot;
+    
+    public static SBot instance;
 
     public ModuleManager moduleManager;
     
@@ -71,6 +73,7 @@ public class SBot implements Bot {
 
     public SBot(Bot b) {
         bot = b;
+        instance = this;
     }
 
     public static List<Bot> getInstances() {
