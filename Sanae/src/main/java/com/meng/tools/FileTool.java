@@ -76,9 +76,13 @@ public class FileTool {
 		return readBytes(new File(path));
 	}
 
-    public static void saveFile(File f, byte[] content) {
+    public static void saveFile(File file, byte[] content) {
         try {
-            FileOutputStream fos = new FileOutputStream(f);
+            File parent = file.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
             fos.write(content);
             fos.close();
         } catch (Exception e) {

@@ -69,7 +69,7 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
             entity.sendQuote(event, ptt);
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            entity.sendQuote(event, e.toString().replace("java", "jvav"));
+            entity.sendQuote(event, e.toString());
         }
     }
 

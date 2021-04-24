@@ -173,7 +173,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                             Voice ptt = entity.toVoice(new FileInputStream(fileMp3), gme.getGroup());
                             entity.sendQuote(gme, ptt);
                         } else {
-                            entity.sendGroupMessage(Long.parseLong(iter.next()), next);
+                            entity.sendGroupMessage(Long.parseLong(next), iter.next());
                         }
                     }
                     return true;
@@ -262,7 +262,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     }
             }
         } catch (Exception e) {
-            entity.sendGroupMessage(groupId, "参数错误:" + e.toString().replace("java", "jvav"));
+            entity.sendGroupMessage(groupId, "参数错误:" + e.toString());
         }
         return false;
     }
