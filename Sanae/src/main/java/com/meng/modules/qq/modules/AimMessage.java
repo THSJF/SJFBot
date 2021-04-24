@@ -2,14 +2,13 @@ package com.meng.modules.qq.modules;
 
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
+import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.event.events.MessageRecallEvent;
-import net.mamoe.mirai.event.events.NudgeEvent;
 
 /**
  * @author: 司徒灵羽

@@ -2,6 +2,7 @@ package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
 import com.meng.config.ConfigManager;
+import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.TextLexer;

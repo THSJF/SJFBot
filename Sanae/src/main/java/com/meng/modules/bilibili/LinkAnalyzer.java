@@ -1,20 +1,15 @@
 package com.meng.modules.bilibili;
 
-import com.meng.Functions;
 import com.meng.modules.bilibili.live.LiveApi;
 import com.meng.modules.bilibili.live.javabean.RoomInfo;
 import com.meng.modules.bilibili.video.VideoApi;
 import com.meng.modules.bilibili.video.javabean.VideoInfo;
-import com.meng.modules.qq.SBot;
-import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import com.meng.modules.qq.modules.BaseModule;
 import com.meng.tools.AvBvConverter;
 import com.meng.tools.Network;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.mamoe.mirai.event.events.GroupMessageEvent;
 
-public class BilibiliLinkParser {
+public class LinkAnalyzer {
 
     public static final Pattern patternAv = Pattern.compile(".{0,}[Aa][Vv](\\d{1,})\\D{0,}");
     public static final Pattern patternBv = Pattern.compile(".{0,}([Bb][Vv]1.{2}4.{1}1.{1}7.{2}).{0,}");

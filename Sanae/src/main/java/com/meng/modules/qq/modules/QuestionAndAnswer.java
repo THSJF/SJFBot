@@ -18,6 +18,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
+import com.meng.modules.qq.BaseModule;
 
 /**
  * @author: 司徒灵羽

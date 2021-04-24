@@ -1,6 +1,5 @@
 package com.meng.config;
 
-import com.meng.modules.qq.modules.BaseModule;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import com.meng.tools.JsonHelper;

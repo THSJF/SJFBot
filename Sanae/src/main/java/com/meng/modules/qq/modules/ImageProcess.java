@@ -2,6 +2,7 @@ package com.meng.modules.qq.modules;
 
 import com.meng.Functions;
 import com.meng.config.ConfigManager;
+import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
@@ -15,8 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.FlashImage;
@@ -32,7 +32,6 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 

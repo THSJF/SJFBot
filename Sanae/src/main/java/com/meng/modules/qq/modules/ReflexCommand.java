@@ -1,5 +1,6 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import java.lang.reflect.Method;

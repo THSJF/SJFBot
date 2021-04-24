@@ -1,5 +1,7 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.config.ConfigManager;
+import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMemberEvent;
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
@@ -11,7 +13,6 @@ import net.mamoe.mirai.event.events.MemberMuteEvent;
 import net.mamoe.mirai.event.events.MemberPermissionChangeEvent;
 import net.mamoe.mirai.event.events.MemberSpecialTitleChangeEvent;
 import net.mamoe.mirai.event.events.MemberUnmuteEvent;
-import com.meng.config.ConfigManager;
 
 /**
  * @author: 司徒灵羽

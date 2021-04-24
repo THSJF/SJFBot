@@ -17,7 +17,6 @@ import com.meng.modules.qq.handler.group.IGroupSettingEvent;
 import com.meng.modules.qq.handler.group.INudge;
 import com.meng.modules.qq.modules.AdminMessage;
 import com.meng.modules.qq.modules.AimMessage;
-import com.meng.modules.qq.modules.BaseModule;
 import com.meng.modules.qq.modules.BilibiliLinkParser;
 import com.meng.modules.qq.modules.Copper;
 import com.meng.modules.qq.modules.Derecall;
@@ -66,6 +65,7 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import com.meng.modules.qq.modules.MiraiCodeSerialize;
 
 /**
  * @Description: 模块管理器
@@ -105,7 +105,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         load(Repeater.class);
         load(Report.class);
 
-
+        load(MiraiCodeSerialize.class);
     //    load(OCR.class);
    //     load(Porn.class);
         //   load(ImageTag.class);

@@ -127,21 +127,21 @@ public class ConfigManager {
     }
 
     public void addPerson(Person pi) {
-        configHolder.personInfos.add(pi);
+        configHolder.person.add(pi);
         save();
     }
 
     public Set<Person> getPerson() {
-        return Collections.unmodifiableSet(configHolder.personInfos);
+        return Collections.unmodifiableSet(configHolder.person);
     }
 
     public void removePerson(Person pi) {
-        configHolder.personInfos.remove(pi);
+        configHolder.person.remove(pi);
         save();
     }
 
     public Person getPersonFromQQ(long qq) {
-        for (Person pi : configHolder.personInfos) {
+        for (Person pi : configHolder.person) {
             if (pi.qq.equals(qq)) {
                 return pi;
             }
@@ -150,7 +150,7 @@ public class ConfigManager {
     }
 
     public Person getPersonFromName(String name) {
-        for (Person pi : configHolder.personInfos) {
+        for (Person pi : configHolder.person) {
             if (pi.name.equals(name)) {
                 return pi;
             }
@@ -159,7 +159,7 @@ public class ConfigManager {
     }
 
     public Person getPersonFromBid(long bid) {
-        for (Person pi : configHolder.personInfos) {
+        for (Person pi : configHolder.person) {
             if (pi.bid == bid) {
                 return pi;
             }
@@ -168,7 +168,7 @@ public class ConfigManager {
     }
 
     public Person getPersonFromLiveId(long lid) {
-        for (Person pi : configHolder.personInfos) {
+        for (Person pi : configHolder.person) {
             if (pi.bLiveRoom == lid) {
                 return pi;
             }
@@ -285,7 +285,7 @@ public class ConfigManager {
         public HashSet<Long> blackQQ = new HashSet<>();
         public HashSet<Long> blackGroup = new HashSet<>();
         public HashSet<String> blockWord = new HashSet<>();
-        public HashSet<Person> personInfo = new HashSet<>();
+        public HashSet<Person> person = new HashSet<>();
         public HashSet<Long> owner = new HashSet<>();
         public HashSet<Long> masters = new HashSet<>();
         public HashSet<Long> admins = new HashSet<>();
