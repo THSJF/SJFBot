@@ -6,6 +6,9 @@ import com.meng.tools.ExceptionCatcher;
 import java.io.File;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Voice;
+import net.mamoe.mirai.message.code.MiraiCode;
+import com.meng.modules.qq.QqBotMain;
+import com.meng.gameData.TouHou.THDataHolder;
 
 /**
  * @author: 司徒灵羽
@@ -26,7 +29,10 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
     public boolean onGroupMessage(GroupMessageEvent gme) {
         if (gme.getMessage().contentToString().equals("mcode")) {
           //  processText(gme);
-            entity.sendQuote(gme,"[mirai:app:{\"app\":\"com.tencent.miniapp\",\"desc\":\"\",\"view\":\"notification\",\"ver\":\"0.0.0.1\",\"prompt\":\"蓝的今日人品\",\"meta\":{\"notification\":{\"appInfo\":{\"appName\":\"蓝的今日人品\",\"appType\":4,\"appid\":1109659848,\"iconUrl\":\"http:\\/\\/q1.qlogo.cn\\/g?b=qq&nk=2856986197&s=640\"},\"data\":[{\"title\":\"今日人品\",\"value\":\"99.61%\"},{\"title\":\"今日适宜\",\"value\":\"东方绀珠传\"}],\"title\":\"\",\"emphasis_keyword\":\"今日人品\"}}}]  ");
+            entity.sendMessage(gme.getGroup(),
+                               MiraiCode.deserializeMiraiCode(String.format(
+                               "[mirai:app:{\"app\"\\:\"com.tencent.miniapp\"\\,\"desc\"\\:\"\"\\,\"view\"\\:\"notification\"\\,\"ver\"\\:\"0.0.0.1\"\\,\"prompt\"\\:\"蓝的今日人品\"\\,\"meta\"\\:{\"notification\"\\:{\"appInfo\"\\:{\"appName\"\\:\"蓝的今日人品\"\\,\"appType\"\\:4\\,\"appid\"\\:1109659848\\,\"iconUrl\"\\:\"http\\:\\\\/\\\\/q1.qlogo.cn\\\\/g?b=qq&nk=2856986197&s=640\"}\\,\"data\"\\:\\[{\"title\"\\:\"今日人品\"\\,\"value\"\\:\"99.61%\"}\\,{\"title\"\\:\"今日适宜\"\\,\"value\"\\:\"东方绀珠传\"}\\]\\,\"title\"\\:\"\"\\,\"emphasis_keyword\"\\:\"今日人品\"}}}]",
+                                                                  gme.getSender().getNick(),gme.getSender().getNick(),gme.getSender().getId(),THDataHolder.hashRandomFloat(gme.getSender().getId()),THDataHolder.hashRandomSpell(gme.getSender().getId()).name)));
         }
         return false;
     }

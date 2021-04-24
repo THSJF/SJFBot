@@ -33,15 +33,15 @@ public class THDataHolder {
     public String[] pl09 = {"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
     public String[] plDiff = {"easy", "normal", "hard", "lunatic"};
 
-    public SpellCard[][] spells;
-    public String[] neta = {"红lnb", "红lnm", "妖lnm", "妖lnn", "永lnm", "风lnm","风lnn","殿lnm", "船lnm", "船lnn","庙lnm","城lnm","绀lnm","璋lnn"};
-    public String[][] music;
-    public TouhouCharacter[][] name;
-    public String[] wayToGoodEnd = { "红魔乡normal", "妖妖梦easy", "永夜抄6B", "风神录normal", "地灵殿normal", "星莲船normal", "神灵庙normal", "辉针城灵梦B", "辉针城魔理沙B", "辉针城咲夜B", "绀珠传no miss","天空璋extra","鬼形兽normal" };
+    public static SpellCard[][] spells;
+    public static String[] neta = {"红lnb", "红lnm", "妖lnm", "妖lnn", "永lnm", "风lnm","风lnn","殿lnm", "船lnm", "船lnn","庙lnm","城lnm","绀lnm","璋lnn"};
+    public static String[][] music;
+    public static TouhouCharacter[][] name;
+    public static String[] wayToGoodEnd = { "红魔乡normal", "妖妖梦easy", "永夜抄6B", "风神录normal", "地灵殿normal", "星莲船normal", "神灵庙normal", "辉针城灵梦B", "辉针城魔理沙B", "辉针城咲夜B", "绀珠传no miss","天空璋extra","鬼形兽normal" };
 
-    private int spellCount = 0;
-    private int charaCount = 0;
-    private int musicCount = 0;
+    private static int spellCount = 0;
+    private static int charaCount = 0;
+    private static int musicCount = 0;
 
     public SpellCard getSpellFromDiff(int diffFlag) {
         SpellCard splc;
@@ -397,7 +397,7 @@ public class THDataHolder {
         return scs[r.nextInt(spells.length)];
     }
 
-    public SpellCard hashRandomSpell(long fromQQ) {
+    public static SpellCard hashRandomSpell(long fromQQ) {
         if (spellCount == 0) {
             for (SpellCard[] scs:spells) {
                 spellCount += scs.length; 
@@ -415,7 +415,7 @@ public class THDataHolder {
         return null;
     }
 
-    public TouhouCharacter hashRandomCharacter(long fromQQ) {
+    public static TouhouCharacter hashRandomCharacter(long fromQQ) {
         if (charaCount == 0) {
             for (TouhouCharacter[] scs:name) {
                 charaCount += scs.length; 
@@ -433,7 +433,7 @@ public class THDataHolder {
         return null;
     }
 
-    public String hashRandomMusic(long fromQQ) {
+    public static String hashRandomMusic(long fromQQ) {
         if (musicCount == 0) {
             for (String[] scs:music) {
                 musicCount += scs.length; 
@@ -451,25 +451,25 @@ public class THDataHolder {
         return null;
     }
 
-    public int hashRandomInt(long fromQQ) {
+    public static int hashRandomInt(long fromQQ) {
         String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
         return Integer.parseInt(md5.substring(26), 16);
     }
 
-    public int hashRandomInt(long fromQQ, int bound) {
+    public static int hashRandomInt(long fromQQ, int bound) {
         return hashRandomInt(fromQQ) % bound;
     }
 
-    public float hashRandomFloat(long fromQQ) {
+    public static float hashRandomFloat(long fromQQ) {
         String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
         return new Random(Integer.parseInt(md5.substring(26), 16)).nextFloat();
     }
 
-    public String hashRandomString(long fromQQ, String[] arr) {
+    public static String hashRandomString(long fromQQ, String[] arr) {
         return arr[hashRandomInt(fromQQ) % arr.length];
     }
 
-    public int hashRandom(long fromQQ, String spellName) {
+    public static int hashRandom(long fromQQ, String spellName) {
         String md5 = Hash.getMd5Instance().calculate(spellName + fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000));
         return Integer.parseInt(md5.substring(26), 16);
     }

@@ -12,19 +12,19 @@ public class LiveListener implements Runnable {
     public void run() {
         try {
             for (Person personInfo : ConfigManager.getInstance().getPerson()) {
-                if (personInfo.roomID == -1) {
+                if (personInfo.bLiveRoom == -1) {
                     continue;
                 }
-                if (personInfo.roomID == 0 && personInfo.bid != 0) {
+                if (personInfo.bLiveRoom == 0 && personInfo.bid != 0) {
                     RoomInfoByUid sjb = UserApi.getUidToRoom(personInfo.bid);
                     if (sjb.data.roomid == 0) {
-                        personInfo.roomID = -1;
+                        personInfo.bLiveRoom = -1;
                         ConfigManager.getInstance().save();
                         continue;
                     }
-                    personInfo.roomID = sjb.data.roomid;
+                    personInfo.bLiveRoom = sjb.data.roomid;
                     ConfigManager.getInstance().save();
-                    System.out.println("检测到用户" + personInfo.name + "(" + personInfo.bid + ")的直播间" + personInfo.roomID);
+                    System.out.println("检测到用户" + personInfo.name + "(" + personInfo.bid + ")的直播间" + personInfo.bLiveRoom);
                 }
                 RoomInfoByUid sjb = UserApi.getUidToRoom(personInfo.bid);
                 boolean living = sjb.data.liveStatus == 1;
@@ -42,7 +42,7 @@ public class LiveListener implements Runnable {
 //                    }
                 Person livePerson = ConfigManager.getInstance().getPersonFromBid(personInfo.bid);
                 livePerson.liveUrl = sjb.data.url;
-                livePerson.roomID = sjb.data.roomid;
+                livePerson.bLiveRoom = sjb.data.roomid;
                 if (livePerson.needTip) {
                     if (!livePerson.lastStatus && living) {
                         onStart(personInfo);

@@ -169,7 +169,7 @@ public class ConfigManager {
 
     public Person getPersonFromLiveId(long lid) {
         for (Person pi : configHolder.personInfos) {
-            if (pi.roomID == lid) {
+            if (pi.bLiveRoom == lid) {
                 return pi;
             }
         }
@@ -285,7 +285,7 @@ public class ConfigManager {
         public HashSet<Long> blackQQ = new HashSet<>();
         public HashSet<Long> blackGroup = new HashSet<>();
         public HashSet<String> blockWord = new HashSet<>();
-        public HashSet<Person> personInfos = new HashSet<>();
+        public HashSet<Person> personInfo = new HashSet<>();
         public HashSet<Long> owner = new HashSet<>();
         public HashSet<Long> masters = new HashSet<>();
         public HashSet<Long> admins = new HashSet<>();

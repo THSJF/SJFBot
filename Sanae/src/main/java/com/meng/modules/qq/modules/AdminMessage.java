@@ -145,7 +145,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (personInfo.bid != 0 && String.valueOf(personInfo.bid).contains(name)) {
                             hashSet.add(personInfo);
                         }
-                        if (personInfo.roomID != 0 && String.valueOf(personInfo.roomID).contains(name)) {
+                        if (personInfo.bLiveRoom != 0 && String.valueOf(personInfo.bLiveRoom).contains(name)) {
                             hashSet.add(personInfo);
                         }
                     }

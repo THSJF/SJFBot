@@ -11,7 +11,7 @@ public class Person {
     public ArrayList<String> name = new ArrayList<>();
     public ArrayList<Long> qq = new ArrayList<>();
     public int bid = 0;
-    public int roomID = 0;
+    public int bLiveRoom = 0;
 
     public transient String liveUrl = "";
     public transient boolean lastStatus = false;
@@ -62,6 +62,6 @@ public class Person {
             return false;
         }
         Person p = (Person) obj;
-        return qq.equals(p.qq) && bid == p.bid && roomID == p.roomID && name.equals(p.name);
+        return qq.equals(p.qq) && bid == p.bid && bLiveRoom == p.bLiveRoom && name.equals(p.name);
     } 
 }
