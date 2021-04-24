@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.message.code.MiraiCode;
 
 /**
  * @author: 司徒灵羽
@@ -43,10 +44,10 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
                 MessageWait mw = iter.next();
                 if (mw.qq == qqId) {
                     if (mw.group == -1) {
-                        entity.sendGroupMessage(groupId, mw.content);
+                        entity.sendGroupMessage(groupId,MiraiCode.deserializeMiraiCode(mw.content));
                         iter.remove();
                     } else if (mw.group == groupId) {
-                        entity.sendGroupMessage(groupId, mw.content);
+                        entity.sendGroupMessage(groupId, MiraiCode.deserializeMiraiCode(mw.content));
                         iter.remove();
                     }
                 }
@@ -56,9 +57,9 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
         if (mw != null) {
             if (mw.qq == qqId) {
                 if (mw.group == -1) {
-                    entity.sendGroupMessage(groupId, mw.content);
+                    entity.sendGroupMessage(groupId, MiraiCode.deserializeMiraiCode(mw.content));
                 } else if (mw.group == groupId) {
-                    entity.sendGroupMessage(groupId, mw.content);
+                    entity.sendGroupMessage(groupId, MiraiCode.deserializeMiraiCode(mw.content));
                 }
             }
         }

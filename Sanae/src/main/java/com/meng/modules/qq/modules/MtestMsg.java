@@ -28,11 +28,11 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         if (gme.getMessage().contentToString().equals("mcode")) {
-          //  processText(gme);
+            //  processText(gme);
             entity.sendMessage(gme.getGroup(),
                                MiraiCode.deserializeMiraiCode(String.format(
-                               "[mirai:app:{\"app\"\\:\"com.tencent.miniapp\"\\,\"desc\"\\:\"\"\\,\"view\"\\:\"notification\"\\,\"ver\"\\:\"0.0.0.1\"\\,\"prompt\"\\:\"%s的今日人品\"\\,\"meta\"\\:{\"notification\"\\:{\"appInfo\"\\:{\"appName\"\\:\"%s的今日人品\"\\,\"appType\"\\:4\\,\"appid\"\\:1109659848\\,\"iconUrl\"\\:\"http\\:\\\\/\\\\/q1.qlogo.cn\\\\/g?b=qq&nk=%s&s=640\"}\\,\"data\"\\:\\[{\"title\"\\:\"今日人品\"\\,\"value\"\\:\"%.2f%\"}\\,{\"title\"\\:\"今日适宜\"\\,\"value\"\\:\"%s\"}\\]\\,\"title\"\\:\"\"\\,\"emphasis_keyword\"\\:\"今日人品\"}}}]",
-                                                                  gme.getSender().getNick(),gme.getSender().getNick(),gme.getSender().getId(),THDataHolder.hashRandomFloat(gme.getSender().getId()),THDataHolder.hashRandomSpell(gme.getSender().getId()).name)));
+                                                                  "[mirai:app:{\"app\"\\:\"com.tencent.miniapp\"\\,\"desc\"\\:\"\"\\,\"view\"\\:\"notification\"\\,\"ver\"\\:\"0.0.0.1\"\\,\"prompt\"\\:\"%s的今日人品\"\\,\"meta\"\\:{\"notification\"\\:{\"appInfo\"\\:{\"appName\"\\:\"%s的今日人品\"\\,\"appType\"\\:4\\,\"appid\"\\:1109659848\\,\"iconUrl\"\\:\"http\\:\\\\/\\\\/q1.qlogo.cn\\\\/g?b=qq&nk=%s&s=640\"}\\,\"data\"\\:\\[{\"title\"\\:\"今日人品\"\\,\"value\"\\:\"%s\"}\\,{\"title\"\\:\"今日适宜\"\\,\"value\"\\:\"%s\"}\\]\\,\"title\"\\:\"\"\\,\"emphasis_keyword\"\\:\"今日人品\"}}}]",
+                                                                  gme.getSender().getNick(), gme.getSender().getNick(), gme.getSender().getId(), "99.61%", THDataHolder.hashRandomSpell(gme.getSender().getId()).name)));
         }
         return false;
     }

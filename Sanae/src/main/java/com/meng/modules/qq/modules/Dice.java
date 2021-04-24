@@ -18,6 +18,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import com.meng.modules.qq.richMessage.QqCard;
 
 /**
  * @Description: 模拟骰子
@@ -116,7 +117,8 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     } else {
                         fpro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
                     }
-                    entity.sendMessage(gme.getGroup(), String.format("%s今天会在%.2f%%处疮痍", pname, fpro));
+                    QqCard card = new QqCard(pname + "今天的疮痍位置", qqId , "游戏进度", String.format("%.2f%%", fpro));
+                    entity.sendMessage(gme.getGroup(), card.toMiraiMessage());
                     return true;
                 case "roll":
                     switch (iter.next()) {
@@ -233,5 +235,5 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
     @Override
     public String getModuleName() {
         return "dice";
-    }
+    } 
 }
