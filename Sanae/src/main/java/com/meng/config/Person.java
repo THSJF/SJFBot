@@ -8,7 +8,7 @@ public class Person {
     public static final int qa = 1 << 0;
     public static final int botOn = 1 << 1;
 
-    public ArrayList<String> name = new ArrayList<>();
+    public String name;
     public ArrayList<Long> qq = new ArrayList<>();
     public int bid = 0;
     public int bLiveRoom = 0;

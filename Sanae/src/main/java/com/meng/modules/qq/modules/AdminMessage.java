@@ -69,7 +69,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     }
                     configManager.setWelcome(groupId, wel);
                     configManager.save();
-                    entity.sendGroupMessage(groupId, "已设置为:" + wel);
+                    sendGroupMessage(groupId, "已设置为:" + wel);
                     return true;
             }
             if (!configManager.isMaster(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 1) {
@@ -90,13 +90,13 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                             sb.append(function.getName()).append("\n");
                         }
                         sb.setLength(sb.length() - 1);
-                        entity.sendGroupMessage(gme.getGroup().getId(), sb.toString());
+                        sendGroupMessage(gme.getGroup().getId(), sb.toString());
                     } else if (list.size() == 3) {
                         Functions function = Functions.get(iter.next());
                         if (function != null) {
-                            entity.sendQuote(gme, (function.change(configManager, groupId) ?"已启用" : "已停用") + function.toString());
+                            sendQuote(gme, (function.change(configManager, groupId) ?"已启用" : "已停用") + function.toString());
                         } else {
-                            entity.sendQuote(gme, "无此开关");
+                            sendQuote(gme, "无此开关");
                         }
                     }
                     return true;
@@ -113,7 +113,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (!configManager.isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
                             continue;
                         }
-                        entity.sendGroupMessage(g.getId(), broadcast);
+                        sendGroupMessage(g.getId(), broadcast);
                         hs.add(g);
                         try {
                             Thread.sleep(200);
@@ -123,15 +123,15 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     for (Group g:hs) {
                         result.append("\n").append(g.getId()).append(":").append(g.getName());
                     }
-                    entity.sendGroupMessage(groupId, result.toString());
+                    sendGroupMessage(groupId, result.toString());
                     return true;
                 case "stop":
-                    entity.sendQuote(gme, "disabled");
+                    sendQuote(gme, "disabled");
                     entity.sleeping = true;
                     return true;
                 case "start":
                     entity.sleeping = false;
-                    entity.sendQuote(gme, "enabled");
+                    sendQuote(gme, "enabled");
                     return true;
                 case "findConfig":
                     String name = iter.next();
@@ -150,7 +150,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                             hashSet.add(personInfo);
                         }
                     }
-                    entity.sendGroupMessage(groupId, JsonHelper.toJson(hashSet)); 
+                    sendGroupMessage(groupId, JsonHelper.toJson(hashSet)); 
                     return true;
                 case "thread":
                     String s = "taskCount：" + SJFExecutors.getTaskCount() + "\n" +
@@ -158,23 +158,23 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         "largestPoolSize：" + SJFExecutors.getLargestPoolSize() + "\n" +
                         "poolSize：" + SJFExecutors.getPoolSize() + "\n" +
                         "activeCount：" + SJFExecutors.getActiveCount();
-                    entity.sendGroupMessage(groupId, s);
+                    sendGroupMessage(groupId, s);
                     return true;
                 case "gc":
                     System.gc();
-                    entity.sendGroupMessage(groupId, "gc start");
+                    sendGroupMessage(groupId, "gc start");
                     return true;
                 case "send":
                     if (list.size() == 3) {
-                        entity.sendGroupMessage(groupId, iter.next());
+                        sendGroupMessage(groupId, iter.next());
                     } else if (list.size() == 4) {
                         String next = iter.next();
                         if (next.equals("晚上好啊老婆们")) {
                             File fileMp3 = new File(SBot.appDirectory + "/tts/晚上好啊老婆们.wav");
                             Voice ptt = entity.toVoice(new FileInputStream(fileMp3), gme.getGroup());
-                            entity.sendQuote(gme, ptt);
+                            sendQuote(gme, ptt);
                         } else {
-                            entity.sendGroupMessage(Long.parseLong(next), iter.next());
+                            sendGroupMessage(Long.parseLong(next), iter.next());
                         }
                     }
                     return true;
@@ -190,7 +190,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                             sb.append(nextqq).append(" ");
                             configManager.save();
                         }
-                        entity.sendGroupMessage(groupId, sb.toString());
+                        sendGroupMessage(groupId, sb.toString());
                     }
                     return true;
                 case "black":
@@ -202,7 +202,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                             sb.append(nextqq).append(" ");
                         }
                         configManager.save();
-                        entity.sendGroupMessage(groupId, sb.toString());
+                        sendGroupMessage(groupId, sb.toString());
                     }
                     return true;
             }
@@ -227,7 +227,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                                 targetMember.kick("");
                             }
                         } else {
-                            entity.sendGroupMessage(groupId, "未找到该成员:" + target);
+                            sendGroupMessage(groupId, "未找到该成员:" + target);
                         }
                     }
                     return true;
@@ -244,7 +244,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (targetMember != null) {
                             targetMember.mute(Integer.parseInt(iter.next()));
                         } else {
-                            entity.sendGroupMessage(groupId, "未找到该成员:" + target);
+                            sendGroupMessage(groupId, "未找到该成员:" + target);
                         }
                     }
                     return true;
@@ -257,13 +257,13 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         for (Group group : entity.getGroups()) {
                             configManager.setFunctionEnabled(group.getId(), function, true);
                         }
-                        entity.sendQuote(gme, function + "已启用");
+                        sendQuote(gme, function + "已启用");
                     } else {
-                        entity.sendQuote(gme, "无此开关");
+                        sendQuote(gme, "无此开关");
                     }
             }
         } catch (Exception e) {
-            entity.sendGroupMessage(groupId, "参数错误:" + e.toString());
+            sendGroupMessage(groupId, "参数错误:" + e.toString());
         }
         return false;
     }
@@ -271,7 +271,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
     @Override
     public boolean onNudge(NudgeEvent event) {
         if (ThreadLocalRandom.current().nextBoolean()) {
-            entity.sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
+            sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
         }
         return false;
     }

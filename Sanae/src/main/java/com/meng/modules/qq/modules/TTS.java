@@ -54,7 +54,7 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
 
     private void processText(String text, GroupMessageEvent event) {
         try {
-            entity.sendQuote(event, "正在生成……");
+            sendQuote(event, "正在生成……");
             Youtu.TtsResult response = Youtu.getFaceYoutu().doTtsWithUrl(text);
             String base64voice = response.voice;
             byte[] mp3 = Base64Converter.getInstance().decode(base64voice);
@@ -65,12 +65,12 @@ public class TTS extends BaseModule implements IGroupMessageEvent {
 
             Voice ptt = entity.toVoice(convert(fileMp3, fileAmr), event.getGroup());
             if (ptt == null) {
-                entity.sendQuote(event, "生成失败");
+                sendQuote(event, "生成失败");
             }
-            entity.sendQuote(event, ptt);
+            sendMessage(event, ptt);
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            entity.sendQuote(event, e.toString());
+            sendQuote(event, e.toString());
         }
     }
 

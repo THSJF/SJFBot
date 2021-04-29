@@ -19,7 +19,6 @@ public class UserInfo extends BaseModule {
         super(sb);
     }
 
-
     @Override
     public UserInfo load() {
         DataPersistenter.read(this);
@@ -31,13 +30,18 @@ public class UserInfo extends BaseModule {
         return "userdata";
     }
 
-    public void addFaith(long qq, int v) {
-        values.get(qq).faith += v;
+    public boolean addFaith(long qq, int v) {
+        UserData ud = values.get(qq);
+        if (ud == null) {
+            return false;
+        }
+        ud.faith += v;
         save();
+        return true;
     }
-    
-    public UserData getUserData(GroupMessageEvent event){
-        return getUserData(event.getGroup(),event.getSender());
+
+    public UserData getUserData(GroupMessageEvent event) {
+        return getUserData(event.getGroup(), event.getSender());
     }
 
     public UserData getUserData(Group group, Member user) {

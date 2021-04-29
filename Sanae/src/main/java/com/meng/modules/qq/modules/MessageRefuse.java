@@ -61,7 +61,7 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 		if (mtmb.timeSubLowTimes > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sendGroupMessage(groupId,  "你说话真快");
+				sendGroupMessage(groupId,  "你说话真快");
 			}
 			return true;
 		}
@@ -75,7 +75,7 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 		if (mtmb.repeatTime > 5) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sendGroupMessage(groupId,  "怎么又是这句话");
+				sendGroupMessage(groupId,  "怎么又是这句话");
 			}
 			mtmb.lastMsg = gme.getMessage();
 			return true;
@@ -86,7 +86,7 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 		if (mtmb.lastSeconedMsgs > 4) {
 			if (!mtmb.tiped) {
 				mtmb.tiped = true;
-				entity.sendGroupMessage(groupId,  "你真稳");
+				sendGroupMessage(groupId,  "你真稳");
 			}
 			return true;
 		}

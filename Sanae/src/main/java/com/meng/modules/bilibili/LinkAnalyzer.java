@@ -1,15 +1,16 @@
 package com.meng.modules.bilibili;
 
+import com.meng.modules.bilibili.article.ArticleApi;
+import com.meng.modules.bilibili.article.javabean.ArticleInfo;
 import com.meng.modules.bilibili.live.LiveApi;
 import com.meng.modules.bilibili.live.javabean.RoomInfo;
 import com.meng.modules.bilibili.video.VideoApi;
 import com.meng.modules.bilibili.video.javabean.VideoInfo;
 import com.meng.tools.AvBvConverter;
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Network;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.meng.modules.bilibili.article.javabean.ArticleInfo;
-import com.meng.modules.bilibili.article.ArticleApi;
 
 public class LinkAnalyzer {
 
@@ -22,6 +23,26 @@ public class LinkAnalyzer {
     public static final Pattern patternUid = Pattern.compile(".{0,}space\\D{0,}(\\d{1,})");
 
     public BilibiliPair parse(String text) {
+        BilibiliPair bp = getInfo(text);
+        if (bp != null) {
+            return bp;
+        }
+        if (!text.contains("https://b23.tv")) {
+            return null;
+        }
+        try {
+            String realUrl = Network.getRealUrl(text);
+            if (realUrl == null) {
+                return null;
+            }
+            return getInfo(realUrl);
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+        }
+        return null;
+    }
+
+    private BilibiliPair getInfo(String text) {
         long id;
         id = getLiveId(text);
         if (id != -1) {
@@ -32,23 +53,23 @@ public class LinkAnalyzer {
             return getVideoInfo(id);
         }
         id = getCvId(text);
-        if(id != -1){
+        if (id != -1) {
             return getArticleInfo(id);
         }
         return null;
     }
 
-    public BilibiliPair getLiveInfo(long id) {
+    private BilibiliPair getLiveInfo(long id) {
         RoomInfo roomInfo = LiveApi.getRoomInfo(id);
         return new BilibiliPair(roomInfo.toString(), roomInfo.data.room_info.keyframe);
     }
 
-    public BilibiliPair getVideoInfo(long aid) {
+    private BilibiliPair getVideoInfo(long aid) {
         VideoInfo info = VideoApi.getVideoInfo(aid);
         return new BilibiliPair(info.toString(), info.data.pic);
     }
-    
-    public BilibiliPair getArticleInfo(long aid) {
+
+    private BilibiliPair getArticleInfo(long aid) {
         ArticleInfo info = ArticleApi.getArticleInfo(aid);
         return new BilibiliPair(info.toString(), info.data.origin_image_urls.get(0));
     }
@@ -60,7 +81,7 @@ public class LinkAnalyzer {
         }
         return -1;
     }
-    
+
     private long getAvId(String link) {
         Matcher mav = patternAv.matcher(link);
         if (mav.find()) {
@@ -70,26 +91,9 @@ public class LinkAnalyzer {
         if (mbv.find()) {
             return AvBvConverter.getInstance().decode(mbv.group(1));
         }
-        if (!link.contains("https://b23.tv")) {
-            return -1;
-        }
-        String realUrl = null;
-        try {
-            realUrl = Network.getRealUrl(link);
-        } catch (Exception e) {
-            return -1;
-        }
-        Matcher mav2 = patternAv.matcher(realUrl);
-        if (mav2.find()) {
-            return Long.parseLong(mav2.group(1));
-        }
-        Matcher mbv2 = patternBv.matcher(realUrl);  
-        if (mbv2.find()) {
-            return AvBvConverter.getInstance().decode(mbv2.group(1));
-        }
         return -1;
     }
-    
+
     private long getCvId(String link) {
         Matcher matcher = patternCv.matcher(link);
         if (matcher.find()) {

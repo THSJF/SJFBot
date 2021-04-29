@@ -21,15 +21,17 @@ public class ConfigManager {
     private static ConfigManager instance;
 
     public static ConfigManager getInstance() {
-        return instance;
+        if (instance != null) {
+            return instance;
+        }
+        return instance = new ConfigManager();
     }
 
     public ConfigHolder getConfigHolder() {
         return configHolder;
     }
 
-    public static void init() {
-        instance = new ConfigManager();
+    public void init() {
         DataPersistenter.read(instance);
     }
 
@@ -260,7 +262,7 @@ public class ConfigManager {
             if (pi == null) {
                 return SBot.instance.getGroupMemberInfo(group, qq).getNick();
             } else {
-                return pi.name.get(0);
+                return pi.name;
             }
         }
         return nick == null ? String.valueOf(qq) : nick;

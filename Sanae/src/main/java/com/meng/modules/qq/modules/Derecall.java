@@ -32,8 +32,8 @@ public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRec
 
     @Override
     public boolean onGroupRecall(MessageRecallEvent.GroupRecall event) {
-        entity.sendGroupMessage(event.getGroup().getId(), new PlainText(String.valueOf(event.getOperator().getId())).plus("撤回了:"));
-        entity.sendGroupMessage(event.getGroup().getId(), MessageManager.get(event).getMessage());
+        sendGroupMessage(event.getGroup().getId(), new PlainText(String.valueOf(event.getOperator().getId())).plus("撤回了:"));
+        sendGroupMessage(event.getGroup().getId(), MessageManager.get(event).getMessage());
         return false;
     }
 

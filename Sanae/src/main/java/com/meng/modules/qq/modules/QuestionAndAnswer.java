@@ -6,6 +6,7 @@ import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.UserInfo;
+import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import java.io.File;
@@ -18,7 +19,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import com.meng.modules.qq.BaseModule;
 
 /**
  * @author: 司徒灵羽
@@ -69,12 +69,15 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     }
 
     private boolean processQa(GroupMessageEvent gme) {
-        long groupId = gme.getGroup().getId();
-        String msg = gme.getMessage().contentToString();
         long qqId = gme.getSender().getId();
         QABean qaLast = onGoingQA.get(qqId);
+        if (qaLast != null && qaLast.fromQar) {
+            return false;
+        }
+        long groupId = gme.getGroup().getId();
+        String msg = gme.getMessage().contentToString();
         if (qaLast != null && msg.equalsIgnoreCase("-qa")) {
-            entity.sendQuote(gme, "你还没有回答");
+            sendQuote(gme, "你还没有回答");
             return true;
         }
         if (qaLast != null) {
@@ -88,14 +91,14 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 }
             }
             if (qaLast.getTrueAns().containsAll(userAnss) && qaLast.getTrueAns().size() == userAnss.size()) {
-                entity.sendQuote(gme, "回答正确");
+                sendQuote(gme, "回答正确");
                 qaLast.incTrueTimes();
-                UserInfo module = entity.moduleManager.getModule(UserInfo.class);
-                module.getUserData(gme).qaRight++;
-                module.save();
+                UserInfo info = entity.moduleManager.getModule(UserInfo.class);
+                info.getUserData(gme).qaRight++;
+                info.save();
                 save();
             } else {
-                entity.sendQuote(gme, "回答错误");
+                sendQuote(gme, "回答错误");
             }
             onGoingQA.remove(qqId);
             return true;
@@ -132,7 +135,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             if (qaNow.getTrueAns().size() > 1) {
                 sb.append(",本题有多个选项");
             }
-            entity.sendQuote(gme, MiraiCode.deserializeMiraiCode(sb.toString()));
+            sendQuote(gme, MiraiCode.deserializeMiraiCode(sb.toString()));
             return true;
         }
         return false;
@@ -143,7 +146,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         long qqId = gme.getSender().getId();
         QABean onGoing = onGoingQA.get(qqId);
         if (onGoing != null && msg.equalsIgnoreCase("-qar")) {
-            entity.sendQuote(gme, "你还没有回答");
+            sendQuote(gme, "你还没有回答");
             return true;
         }
         if (onGoing != null) {
@@ -154,9 +157,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 //if not number,answer will never true
             }
             if (onGoing.getTrueAns().contains(userAnser)) {
-                entity.sendQuote(gme, "回答正确");
+                sendQuote(gme, "回答正确");
             } else {
-                entity.sendQuote(gme, "回答错误");
+                sendQuote(gme, "回答错误");
             }
             onGoingQA.remove(qqId);
             return true;
@@ -175,7 +178,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             }
             sb.append("回答序号即可");
             onGoingQA.put(qqId, qar);
-            entity.sendQuote(gme, sb.toString());
+            sendQuote(gme, sb.toString());
             return true;
         }
         return false;
@@ -186,6 +189,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         SpellCard spellCard = entity.moduleManager.getModule(Dice.class).thData.getSpellFromDiff(diff);
         SpellCard[] sps = entity.moduleManager.getModule(Dice.class).thData.getSpellFromNotDiff(3, diff);
         QABean qa = new QABean();
+        qa.fromQar = true;
         qa.a.add(spellCard.name);
         for (SpellCard spc:sps) {
             qa.a.add(spc.name);
@@ -266,6 +270,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         public String r;
         private int showTimes;
         private int trueTimes;
+        private transient boolean fromQar;
 
         public void incShowTimes() {
             ++showTimes;

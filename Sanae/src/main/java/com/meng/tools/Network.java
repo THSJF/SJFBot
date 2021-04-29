@@ -82,6 +82,38 @@ public class Network {
         return conn.getHeaderField("Location");
    	}
 
+    public static byte[] httpGetRaw(String url) {
+        return httpGetRaw(url, null, null);
+    }
+
+    public static byte[] httpGetRaw(String url, String cookie) {
+        return httpGetRaw(url, cookie, null);
+    }
+
+    public static byte[] httpGetRaw(String url, String cookie, String refer) {
+        Connection.Response response = null;
+        Connection connection;
+        try {
+            connection = Jsoup.connect(url);
+            if (cookie != null) {
+                connection.cookies(cookieToMap(cookie));
+            }
+            if (refer != null) {
+                connection.referrer(refer);
+            }
+            connection.userAgent(SBot.userAgent);
+            connection.ignoreContentType(true).method(Connection.Method.GET);
+            response = connection.execute();
+            if (response.statusCode() != 200) {
+                System.out.println(String.valueOf(response.statusCode()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response.bodyAsBytes();
+	}
+    
+    
 	public static String httpGet(String url) {
 		return httpGet(url, null, null);
 	}

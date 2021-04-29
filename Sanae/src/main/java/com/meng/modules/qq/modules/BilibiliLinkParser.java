@@ -45,7 +45,7 @@ public class BilibiliLinkParser extends BaseModule implements IGroupMessageEvent
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
             builder.add(pair.text);
-            entity.sendMessage(event.getGroup(), builder.asMessageChain());
+            sendMessage(event.getGroup(), builder.asMessageChain());
         }
         return false;
     }

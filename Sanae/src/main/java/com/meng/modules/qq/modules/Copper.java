@@ -39,7 +39,7 @@ public class Copper extends BaseModule implements IGroupMessageEvent {
         }
         if (event.getMessage().contentToString().equals("copper")) {
             Image uploadImage = entity.toImage(Tools.ArrayTool.rfa(imageFolder), event.getGroup());
-            int[] id = entity.sendGroupMessage(group.getId(), ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.CopperFlash) ?FlashImage.from(uploadImage): uploadImage);
+            int[] id = sendGroupMessage(group.getId(), ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.CopperFlash) ?FlashImage.from(uploadImage): uploadImage);
             MessageManager.autoRecall(entity, id);
         }
         return false;

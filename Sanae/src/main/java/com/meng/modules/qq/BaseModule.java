@@ -21,10 +21,22 @@ public abstract class BaseModule {
         entity = bw;
     }
 
-    public final void save(){
+    public final void save() {
         DataPersistenter.save(this);  
     }
+
+    public int[] sendMessage(GroupMessageEvent event, Message msg) {
+        return sendMessage(event.getGroup(), msg);
+    }
+
+    public int[] sendMessage(GroupMessageEvent event, String msg) {
+        return sendMessage(event.getGroup(), msg);
+    }
     
+    public int[] sendGroupMessage(long fromGroup, Message msg) {
+        return entity.sendGroupMessage(fromGroup, msg);
+    }
+
     public int[] sendGroupMessage(long fromGroup, String msg) {
         return entity.sendGroupMessage(fromGroup, new PlainText(msg));
     }

@@ -19,14 +19,14 @@ public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent
         long qq = event.getSender().getId();
         if (msg.equalsIgnoreCase("rcode")) {
             ready.add(qq);
-            entity.sendQuote(event, "等待中……");
+            sendQuote(event, "等待中……");
             return true;
         } else if (ready.contains(qq)) {
-            entity.sendMessage(event.getGroup(), event.getMessage().serializeToMiraiCode());
+            sendMessage(event.getGroup(), event.getMessage().serializeToMiraiCode());
             ready.remove(qq);
             return true;
         } else if (msg.startsWith("tcode ")) {
-            entity.sendMessage(event.getGroup(), MiraiCode.deserializeMiraiCode(event.getMessage().get(1).toString().substring(6)));
+            sendMessage(event.getGroup(), MiraiCode.deserializeMiraiCode(event.getMessage().get(1).toString().substring(6)));
             return true;
         }
         return false;

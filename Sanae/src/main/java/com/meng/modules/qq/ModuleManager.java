@@ -66,6 +66,7 @@ import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import com.meng.modules.qq.modules.MiraiCodeSerialize;
+import com.meng.modules.qq.modules.FantasyZone;
 
 /**
  * @Description: 模块管理器
@@ -111,7 +112,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         //   load(ImageTag.class);
         load(TTS.class);
         load(ImageProcess.class);
-
+        load(FantasyZone.class);
 
         load(BilibiliLinkParser.class);
         load(NumberProcess.class);

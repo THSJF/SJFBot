@@ -40,7 +40,7 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 				Object module = entity.moduleManager.getModule(target);
 				if (module == null) {
 					module = target.newInstance();
-					entity.sendGroupMessage(groupId, "新模块:" + target.getName());
+					sendGroupMessage(groupId, "新模块:" + target.getName());
 				}
 				int parseInt = Integer.parseInt(args[3]);
 				Class<?>[] paramTypes = new Class<?>[parseInt];
@@ -49,11 +49,11 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 					getTypeAndValue(args[4 + i], args[4 + parseInt + i], i, paramTypes, param);
 				}
 				Method m = target.getMethod(args[2], paramTypes);
-				entity.sendGroupMessage(groupId, "运行结果:\n" + m.invoke(module, param));
+				sendGroupMessage(groupId, "运行结果:\n" + m.invoke(module, param));
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				entity.sendGroupMessage(groupId, e.toString());
+				sendGroupMessage(groupId, e.toString());
 				return true;
 			}
 		}

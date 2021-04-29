@@ -127,7 +127,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                         ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                     }
                 }
-                int[] id = entity.sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
+                int[] id = sendGroupMessage(gme.getGroup().getId(), mcb.asMessageChain());
                 if (entry.isFlag(Entry.AUTO_RECALL)) {
                     MessageManager.autoRecall(entity, id);  
                 }

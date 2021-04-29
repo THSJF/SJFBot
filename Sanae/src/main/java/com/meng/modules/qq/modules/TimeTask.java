@@ -50,12 +50,12 @@ public class TimeTask extends BaseModule {
                     Calendar c = Calendar.getInstance();
                     if (getTipHour(c)) {
                         if (c.getActualMaximum(Calendar.DAY_OF_MONTH) == c.get(Calendar.DATE)) {
-                            entity.sendGroupMessage(groupDNFmoDao, "最后一天莉，，，看看冒险团商店");
-                            entity.sendGroupMessage(groupXueXi, "最后一天莉，，，看看冒险团商店");
+                            sendGroupMessage(groupDNFmoDao, "最后一天莉，，，看看冒险团商店");
+                            sendGroupMessage(groupXueXi, "最后一天莉，，，看看冒险团商店");
                         }
                         if (c.get(Calendar.DAY_OF_WEEK) == 4) {
-                            entity.sendGroupMessage(groupDNFmoDao, "星期三莉，，，看看成长胶囊");
-                            entity.sendGroupMessage(groupXueXi, "星期三莉，，，看看成长胶囊");
+                            sendGroupMessage(groupDNFmoDao, "星期三莉，，，看看成长胶囊");
+                            sendGroupMessage(groupXueXi, "星期三莉，，，看看成长胶囊");
                         }
                     }
                 }
@@ -80,7 +80,7 @@ public class TimeTask extends BaseModule {
                     for (Group group : entity.getGroups()) {
                         if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {
-                                entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(evening));
+                                sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(evening));
                                 Thread.sleep(1000);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -98,7 +98,7 @@ public class TimeTask extends BaseModule {
                     for (Group group : entity.getGroups()) {
                         if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {
-                                entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(morning));
+                                sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(morning));
                                 Thread.sleep(1000);
                             } catch (Exception e) {
                                 e.printStackTrace();

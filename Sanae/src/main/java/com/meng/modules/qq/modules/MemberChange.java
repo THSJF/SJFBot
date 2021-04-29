@@ -21,7 +21,7 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
 
     @Override
     public boolean onMemberJoinRequest(MemberJoinRequestEvent event) {
-        entity.sendGroupMessage(event.getGroupId(), "有人申请加群,管理员快看看吧");
+        sendGroupMessage(event.getGroupId(), "有人申请加群,管理员快看看吧");
         return false;
     }
 
@@ -29,13 +29,13 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
     public boolean onMemberJoin(MemberJoinEvent event) {
         long groupId = event.getGroup().getId();
         String welc = ConfigManager.getInstance().getWelcome(groupId);
-        entity.sendGroupMessage(groupId, welc == null ?"欢迎新人": welc);
+        sendGroupMessage(groupId, welc == null ?"欢迎新人": welc);
         return false;
     }
 
     @Override
     public boolean onMemberLeave(MemberLeaveEvent event) {
-        entity.sendGroupMessage(event.getGroup().getId(), event.getMember().getId() + "离开了");
+        sendGroupMessage(event.getGroup().getId(), event.getMember().getId() + "离开了");
         return false;
     }
 

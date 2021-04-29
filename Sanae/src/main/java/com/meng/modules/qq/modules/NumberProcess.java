@@ -36,7 +36,7 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
             try {
                 String firstArg = iter.next();
                 if (firstArg.equals("~")) {
-                    entity.sendGroupMessage(groupId, "result:" + (~Integer.parseInt(iter.next()))); 
+                    sendGroupMessage(groupId, "result:" + (~Integer.parseInt(iter.next()))); 
                     return true;
                 }
                 int a1 = Integer.parseInt(firstArg);
@@ -78,9 +78,9 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
                         resu = "result:" + (a1 & a2);
                         break;
                 }
-                entity.sendGroupMessage(groupId, resu);
+                sendGroupMessage(groupId, resu);
             } catch (Exception e) {
-                entity.sendGroupMessage(groupId, e.toString());
+                sendGroupMessage(groupId, e.toString());
             }
             return true;
         }

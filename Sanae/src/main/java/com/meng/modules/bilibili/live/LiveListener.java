@@ -1,12 +1,33 @@
 package com.meng.modules.bilibili.live;
 
+import com.meng.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.config.Person;
+import com.meng.config.qq.GroupConfig;
 import com.meng.modules.bilibili.user.UserApi;
 import com.meng.modules.bilibili.user.javabean.RoomInfoByUid;
+import com.meng.modules.qq.BaseModule;
+import com.meng.modules.qq.SBot;
+import java.util.Map;
+import java.util.Set;
 import java.util.HashSet;
 
 public class LiveListener implements Runnable {
+
+    private Set<OnStatusChangeListener> listeners = new HashSet<>();
+    private static LiveListener instance;
+    public static LiveListener getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        return instance = new LiveListener();
+    }
+
+    private LiveListener() {}
+
+    public void addListener(OnStatusChangeListener listener) {
+        listeners.add(listener);
+    }
 
     @Override
     public void run() {
@@ -61,11 +82,19 @@ public class LiveListener implements Runnable {
     }
 
     private void onStart(Person personInfo) {
-        
+        for (OnStatusChangeListener listener : listeners) {
+            listener.onStart(personInfo);
+        }
     }
 
     private void onStop(Person personInfo) {
-        
+        for (OnStatusChangeListener listener : listeners) {
+            listener.onStop(personInfo);
+        }
     }
 
+    public interface OnStatusChangeListener {
+        public void onStart(Person person);
+        public void onStop(Person person);
+    }
 }

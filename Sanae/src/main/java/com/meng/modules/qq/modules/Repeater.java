@@ -77,7 +77,7 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 		}
 
 		private boolean repeatStart(long groupId,  long qqId,  MessageChain msg) {
-			entity.sendGroupMessage(groupId, msg);
+			sendGroupMessage(groupId, msg);
 			return true;
 		}
 	}

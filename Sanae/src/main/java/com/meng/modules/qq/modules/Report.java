@@ -38,7 +38,7 @@ public class Report extends BaseModule implements IGroupMessageEvent {
 		if (ConfigManager.getInstance().isMaster(qqId)) {
 			if (msg.equals("-留言查看")) {
 				ReportBean rb = getReport();
-				entity.sendGroupMessage(groupId, rb == null ?"无留言": rb.toString());
+				sendGroupMessage(groupId, rb == null ?"无留言": rb.toString());
 				return true;
 			}
 			if (msg.startsWith("-留言查看 t ")) {
@@ -50,12 +50,12 @@ public class Report extends BaseModule implements IGroupMessageEvent {
 				} else {
 					entity.moduleManager.getModule(AimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,获得5信仰奖励,附加消息:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("t") + 1)));
 				}
-				entity.sendGroupMessage(groupId, "处理成功");
+				sendGroupMessage(groupId, "处理成功");
 				return true;
 			}
 			if (msg.startsWith("-留言查看 f ")) {
 				ReportBean rb = removeReport();
-				entity.sendGroupMessage(groupId, "处理成功");
+				sendGroupMessage(groupId, "处理成功");
 				entity.moduleManager.getModule(AimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理:%s", rb.qq, TimeFormater.getTime(rb.time), rb.content, msg.substring(msg.indexOf("f") + 1)));
 				return true;
 			}
@@ -67,13 +67,13 @@ public class Report extends BaseModule implements IGroupMessageEvent {
 					entity.moduleManager.getModule(AimMessage.class).addTip(rb.qq, String.format("%d在%s的留言「%s」已经处理,开发者认为目前还不是处理此留言的时候", rb.qq, TimeFormater.getTime(rb.time), rb.content));
 				}
 				reportToLast();
-				entity.sendGroupMessage(groupId, "处理成功");
+				sendGroupMessage(groupId, "处理成功");
 				return true;
 			}
 		} 
 		if (msg.startsWith("-留言 ")) {
 			addReport(groupId, qqId, msg.substring(4));
-			entity.sendGroupMessage(groupId, "留言成功");
+			sendGroupMessage(groupId, "留言成功");
 			return true;
 		}
 		return false;

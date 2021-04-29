@@ -13,9 +13,9 @@ public enum Functions {
     @SerializedName("g") MemberLeaveEvent("群员退群"),
     @SerializedName("h") Dice("骰子"),
     @SerializedName("i") DynamicWordStock("词库"),
-    @SerializedName("j") GroupCounterChart("群统计"),
-    @SerializedName("k") BilibiliVideo("哔哩哔哩视频"),
-    @SerializedName("l") Morning("早"),
+  //  @SerializedName("j") GroupCounterChart("群统计"),
+    @SerializedName("k") BilibiliVideo("哔哩哔哩"),
+  //  @SerializedName("l") Morning("早"),
     @SerializedName("m") NumberProcess("数字计算"),
     @SerializedName("n") QuestionAndAnswer("问答"),
     @SerializedName("o") Repeater("复读机"),
@@ -28,7 +28,9 @@ public enum Functions {
     @SerializedName("v") ImageTag("图片标签"),
     @SerializedName("w") TTS("音频合成"),
     @SerializedName("x") EuropeDogs("欧洲狗识别"),
-    @SerializedName("y") ImageProcess("图片处理")
+    @SerializedName("y") ImageProcess("图片处理"),
+    @SerializedName("z") BilibiliTip("哔哩哔哩提示"),
+    @SerializedName("aa") FantasyZone("FantasyZone")
     ;
 
     private Functions(String s){

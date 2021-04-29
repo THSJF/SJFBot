@@ -8,6 +8,7 @@ import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.modules.qq.richMessage.QqCard;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Hash;
 import com.meng.tools.TextLexer;
@@ -18,7 +19,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import com.meng.modules.qq.richMessage.QqCard;
 
 /**
  * @Description: 模拟骰子
@@ -47,7 +47,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
         }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            entity.sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", configManager.getNickName(groupId, qqId), THDataHolder.hashRandomSpell(qqId).name));
+            sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", configManager.getNickName(groupId, qqId), THDataHolder.hashRandomSpell(qqId).name));
             return true;
         }
 		if (msg.charAt(0) != '.') {
@@ -68,43 +68,43 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     if (userInfo.onSign(gme.getGroup(), gme.getSender())) {
                         UserInfo.UserData gu = userInfo.getUserData(gme);
                         String result = String.format("签到成功,获得%d(基础:10,连续签到:%d)信仰", 10 + gu.continuousSignedDays, gu.continuousSignedDays);
-                        entity.sendMessage(gme.getGroup(), result);
+                        sendMessage(gme.getGroup(), result);
                     } else {
-                        entity.sendMessage(gme.getGroup(), "你今天已经签到过啦");
+                        sendMessage(gme.getGroup(), "你今天已经签到过啦");
                     }
                     break;
                 case "info":
-                    entity.sendMessage(gme.getGroup(), String.format("累计签到%d天,连续签到%d天,信仰:%d,答题%d道,正确率%.2f%%", userData.signedDays, userData.continuousSignedDays, userData.faith, userData.qaCount, (((float)userData.qaRight) / userData.qaCount) * 100));
+                    sendMessage(gme.getGroup(), String.format("累计签到%d天,连续签到%d天,信仰:%d,答题%d道,正确率%.2f%%", userData.signedDays, userData.continuousSignedDays, userData.faith, userData.qaCount, (((float)userData.qaRight) / userData.qaCount) * 100));
                     break;
                 case "r":
-                    entity.sendMessage(gme.getGroup(), String.format("%s投掷%s:D100 = %d", configManager.getNickName(groupId, qqId), iter.hasNext() ?iter.next(): "", random.nextInt(100)));
+                    sendMessage(gme.getGroup(), String.format("%s投掷%s:D100 = %d", configManager.getNickName(groupId, qqId), iter.hasNext() ?iter.next(): "", random.nextInt(100)));
                     return true;
                 case "ra":
                     String ras = iter.next();
-                    entity.sendMessage(gme.getGroup(), String.format("%s进行检定:D100 = %d/%s", configManager.getNickName(groupId, qqId), random.nextInt(Integer.parseInt(ras)), ras));
+                    sendMessage(gme.getGroup(), String.format("%s进行检定:D100 = %d/%s", configManager.getNickName(groupId, qqId), random.nextInt(Integer.parseInt(ras)), ras));
                     return true;
                 case "li":
-                    entity.sendMessage(gme.getGroup(), String.format("%s的疯狂发作-总结症状:\n1D10=%d\n症状: 狂躁：调查员患上一个新的狂躁症，在1D10=%d小时后恢复理智。在这次疯狂发作中，调查员将完全沉浸于其新的狂躁症状。这是否会被其他人理解（apparent to other people）则取决于守秘人和此调查员。\n1D100=%d\n具体狂躁症: 臆想症（Nosomania）：妄想自己正在被某种臆想出的疾病折磨。(KP也可以自行从狂躁症状表中选择其他症状)", configManager.getNickName(groupId, qqId), random.nextInt(11), random.nextInt(11), random.nextInt(101)));
+                    sendMessage(gme.getGroup(), String.format("%s的疯狂发作-总结症状:\n1D10=%d\n症状: 狂躁：调查员患上一个新的狂躁症，在1D10=%d小时后恢复理智。在这次疯狂发作中，调查员将完全沉浸于其新的狂躁症状。这是否会被其他人理解（apparent to other people）则取决于守秘人和此调查员。\n1D100=%d\n具体狂躁症: 臆想症（Nosomania）：妄想自己正在被某种臆想出的疾病折磨。(KP也可以自行从狂躁症状表中选择其他症状)", configManager.getNickName(groupId, qqId), random.nextInt(11), random.nextInt(11), random.nextInt(101)));
                     return true;
                 case "ti":
-                    entity.sendMessage(gme.getGroup(), String.format("%s的疯狂发作-临时症状:\n1D10=%d\n症状: 逃避行为：调查员会用任何的手段试图逃离现在所处的位置，状态持续1D10=%d轮。", configManager.getNickName(groupId, qqId), random.nextInt(11), random.nextInt(11)));
+                    sendMessage(gme.getGroup(), String.format("%s的疯狂发作-临时症状:\n1D10=%d\n症状: 逃避行为：调查员会用任何的手段试图逃离现在所处的位置，状态持续1D10=%d轮。", configManager.getNickName(groupId, qqId), random.nextInt(11), random.nextInt(11)));
                     return true;
                 case "rd":
-                    entity.sendMessage(gme.getGroup(), String.format("由于%s %s骰出了: D100=%d", iter.next(), configManager.getNickName(groupId, qqId), random.nextInt(101)));
+                    sendMessage(gme.getGroup(), String.format("由于%s %s骰出了: D100=%d", iter.next(), configManager.getNickName(groupId, qqId), random.nextInt(101)));
                     return true;
                 case "nn":
                     if (!iter.hasNext()) {
                         configManager.setNickName(qqId, null);
-                        entity.sendMessage(gme.getGroup(), "我以后会用你的QQ昵称称呼你");
+                        sendMessage(gme.getGroup(), "我以后会用你的QQ昵称称呼你");
                         return true;
                     }
                     String name = iter.next();
                     if (name.length() > 30) {
-                        entity.sendMessage(gme.getGroup(), "太长了,记不住");
+                        sendMessage(gme.getGroup(), "太长了,记不住");
                         return true;
                     }
                     configManager.setNickName(qqId, name);
-                    entity.sendMessage(gme.getGroup(), "我以后会称呼你为" + name);
+                    sendMessage(gme.getGroup(), "我以后会称呼你为" + name);
                     return true;
                 case "jrrp":
                     float fpro = 0f;
@@ -118,14 +118,14 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                         fpro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
                     }
                     QqCard card = new QqCard(pname + "今天的疮痍位置", qqId , "游戏进度", String.format("%.2f%%", fpro));
-                    entity.sendMessage(gme.getGroup(), card.toMiraiMessage());
+                    sendMessage(gme.getGroup(), card.toMiraiMessage());
                     return true;
                 case "roll":
                     switch (iter.next()) {
                         case "plane":
                         case "pl":
                         case "player":
-                            entity.sendMessage(gme.getGroup(), thData.randomPlane(iter.next()));
+                            sendMessage(gme.getGroup(), thData.randomPlane(iter.next()));
                             return true;
                     }
                     return true;
@@ -134,36 +134,36 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     switch (drawcmd) {
                         case "spell":
                             if (list.size() == 3) {
-                                entity.sendMessage(gme.getGroup(), thData.randomSpell().name);
+                                sendMessage(gme.getGroup(), thData.randomSpell().name);
                             } else if (list.size() == 4) {
                                 String spellName = iter.next();
                                 SpellCard sc = thData.getSpellCard(spellName);
                                 if (sc == null) {
-                                    entity.sendMessage(gme.getGroup(), "没有找到这张符卡");
+                                    sendMessage(gme.getGroup(), "没有找到这张符卡");
                                     return true;
                                 }
                                 float allPro = ((float)(THDataHolder.hashRandom(qqId, sc.name) % 10001)) / 100;
-                                entity.sendMessage(gme.getGroup(), "你今天" + sc.name + "的收率是" + allPro + "%");
+                                sendMessage(gme.getGroup(), "你今天" + sc.name + "的收率是" + allPro + "%");
                             }
                             return true;
                         case "neta":
-                            entity.sendMessage(gme.getGroup(), String.format("%s今天宜打%s", pname, THDataHolder.hashRandomString(qqId, thData.neta)));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜打%s", pname, THDataHolder.hashRandomString(qqId, thData.neta)));
                             return true;
                         case "music":
-                            entity.sendMessage(gme.getGroup(), String.format("%s今天宜听%s", pname, THDataHolder.hashRandomMusic(qqId)));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜听%s", pname, THDataHolder.hashRandomMusic(qqId)));
                             return true;
                         case "grandma":
                             if (Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
-                                entity.sendMessage(gme.getGroup(), String.format("%s今天宜认八云紫当奶奶", pname));
+                                sendMessage(gme.getGroup(), String.format("%s今天宜认八云紫当奶奶", pname));
                                 return true;
                             }
-                            entity.sendMessage(gme.getGroup(), String.format("%s今天宜认%s当奶奶", pname, THDataHolder.hashRandomCharacter(qqId).charaName));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜认%s当奶奶", pname, THDataHolder.hashRandomCharacter(qqId).charaName));
                             return true;
                         case "game":
                             String s = thData.randomGame(pname, qqId, true);
                             s += ",";
                             s += thData.randomGame(pname, qqId + 1, false);
-                            entity.sendMessage(gme.getGroup(), s);
+                            sendMessage(gme.getGroup(), s);
                             return true;
                         case "ufo":
                             int ufor = random.nextInt(10);
@@ -174,11 +174,11 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                 ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
                                 ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
                                 ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
-                                entity.sendMessage(gme.getGroup(), ufoMsgB.asMessageChain());        
+                                sendMessage(gme.getGroup(), ufoMsgB.asMessageChain());        
                             } else if (ufor == 8) {
-                                entity.sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/yellow.gif"), gme.getGroup()));
+                                sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/yellow.gif"), gme.getGroup()));
                             } else {
-                                entity.sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/colorful.gif"), gme.getGroup()));
+                                sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/colorful.gif"), gme.getGroup()));
                             }
                             return true;
                         case "all":
@@ -207,27 +207,27 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                 allPro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
                             }
                             allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
-                            entity.sendMessage(gme.getGroup(), allStr);
+                            sendMessage(gme.getGroup(), allStr);
                             return true;            
                         default:
-                            entity.sendMessage(gme.getGroup(), "可用.draw help查看帮助");
+                            sendMessage(gme.getGroup(), "可用.draw help查看帮助");
                     }
                     return true;
                 case "spellInfo":
                     SpellCard sc = thData.getSpellCard(iter.next());
                     if (sc == null) {
-                        entity.sendQuote(gme, "没有找到这张符卡");
+                        sendQuote(gme, "没有找到这张符卡");
                         return true;
                     }
-                    entity.sendQuote(gme, thData.getSpellCardPs(sc));
+                    sendQuote(gme, thData.getSpellCardPs(sc));
                     return true;
                 case "charaInfo":
-                    entity.sendQuote(gme, thData.getCharaNick(iter.next()));
+                    sendQuote(gme, thData.getCharaNick(iter.next()));
                     return true;
             }
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            entity.sendMessage(gme.getGroup(), "参数错误:" + e.toString());
+            sendMessage(gme.getGroup(), "参数错误:" + e.toString());
         }
         return false;
 	}
