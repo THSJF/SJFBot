@@ -41,7 +41,7 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
                     @Override
                     public void run() {
                         Fantasy fts = FantasyZoneApi.getPicture();
-                        File imageFile = new File(SBot.appDirectory + "/fantasy" + fts.id + ".jpg");
+                        File imageFile = new File(SBot.appDirectory + "/fantasy/" + fts.id + ".jpg");
                         FileTool.saveFile(imageFile, Network.httpGetRaw(fts.url));
                         Image img = entity.toImage(imageFile, event.getGroup());
                         MessageChainBuilder builder = new MessageChainBuilder();

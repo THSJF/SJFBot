@@ -2,7 +2,6 @@ package com.meng.modules.qq;
 
 import com.meng.Functions;
 import com.meng.config.ConfigManager;
-import com.meng.config.Person;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.friend.IFriendChangeEvent;
@@ -22,9 +21,11 @@ import com.meng.modules.qq.modules.Copper;
 import com.meng.modules.qq.modules.Derecall;
 import com.meng.modules.qq.modules.Dice;
 import com.meng.modules.qq.modules.DynamicWordStock;
+import com.meng.modules.qq.modules.FantasyZone;
 import com.meng.modules.qq.modules.ImageProcess;
 import com.meng.modules.qq.modules.MemberChange;
 import com.meng.modules.qq.modules.MessageRefuse;
+import com.meng.modules.qq.modules.MiraiCodeSerialize;
 import com.meng.modules.qq.modules.MtestMsg;
 import com.meng.modules.qq.modules.NumberProcess;
 import com.meng.modules.qq.modules.QuestionAndAnswer;
@@ -65,8 +66,8 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import com.meng.modules.qq.modules.MiraiCodeSerialize;
-import com.meng.modules.qq.modules.FantasyZone;
+import com.meng.modules.qq.modules.PersonalConfig;
+import com.meng.modules.qq.modules.MessageSaver;
 
 /**
  * @Description: 模块管理器
@@ -97,9 +98,10 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
 
     public ModuleManager load() {
         load(ReflexCommand.class);
+        load(MessageSaver.class);
         load(MtestMsg.class);
         load(AdminMessage.class);
-
+        load(PersonalConfig.class);
         //  load(EuropeDogs.class);
         //   load(GroupCounterChart.class);
         load(MessageRefuse.class);
@@ -107,8 +109,8 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         load(Report.class);
 
         load(MiraiCodeSerialize.class);
-    //    load(OCR.class);
-   //     load(Porn.class);
+        //    load(OCR.class);
+        //     load(Porn.class);
         //   load(ImageTag.class);
         load(TTS.class);
         load(ImageProcess.class);
@@ -209,21 +211,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
                     cm.save();
                     return true;
                 } 
-            } else {
-                if (msg.equals(".bot on")) {
-                    Person pc = cm.getPersonFromQQ(qqId);
-                    pc.setBotOn(true);
-                    entity.sendQuote(gme, "已启用对你的响应");
-                    return true;
-                } else if (msg.equals(".bot off")) {
-                    Person pc = cm.getPersonFromQQ(qqId);
-                    pc.setBotOn(false);
-                    entity.sendQuote(gme, "已停用对你的响应");
-                    return true;
-                }
-                cm.save(); 
-                return true;
-            }  
+            }
         }
         if (!ConfigManager.getInstance().isFunctionEnabled(groupId, Functions.GroupMessageEvent)) {
             return false; 

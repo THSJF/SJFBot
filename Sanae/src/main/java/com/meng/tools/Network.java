@@ -102,7 +102,7 @@ public class Network {
                 connection.referrer(refer);
             }
             connection.userAgent(SBot.userAgent);
-            connection.ignoreContentType(true).method(Connection.Method.GET);
+            connection.maxBodySize(1024 * 1024 * 10).ignoreContentType(true).method(Connection.Method.GET);
             response = connection.execute();
             if (response.statusCode() != 200) {
                 System.out.println(String.valueOf(response.statusCode()));
@@ -112,8 +112,8 @@ public class Network {
         }
         return response.bodyAsBytes();
 	}
-    
-    
+
+
 	public static String httpGet(String url) {
 		return httpGet(url, null, null);
 	}
@@ -134,7 +134,7 @@ public class Network {
 				connection.referrer(refer);
 			}
 			connection.userAgent(SBot.userAgent);
-			connection.ignoreContentType(true).method(Connection.Method.GET);
+			connection.maxBodySize(1024 * 1024 * 10).ignoreContentType(true).method(Connection.Method.GET);
 			response = connection.execute();
 			if (response.statusCode() != 200) {
 				System.out.println(String.valueOf(response.statusCode()));

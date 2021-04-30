@@ -15,7 +15,7 @@ import net.mamoe.mirai.utils.BotConfiguration;
 public class QqBotMain {
     private static QqBotMain instance;
     public SBot sbot;
-    
+
     public static QqBotMain getInstance() {
         if (instance != null) {
             return instance;
@@ -26,7 +26,7 @@ public class QqBotMain {
     public void init() {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo("C://Program Files/sanae_data/deviceInfo.json");
-
+        config.noNetworkLog();
         AccountInfo info = JsonHelper.fromJson(FileTool.readString(new File("C://Program Files/sjf.json")), AccountInfo.class);
         sbot = new SBot(BotFactory.INSTANCE.newBot(info.account, info.password, config));
         ExceptionCatcher.getInstance().init();

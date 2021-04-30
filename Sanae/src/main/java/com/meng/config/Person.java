@@ -7,6 +7,7 @@ public class Person {
 
     public static final int qa = 1 << 0;
     public static final int botOn = 1 << 1;
+    public static final int jrrpStyle = 1 << 2;
 
     public String name;
     public ArrayList<Long> qq = new ArrayList<>();
@@ -22,7 +23,7 @@ public class Person {
     private int flag = -1;
 
     public boolean isQaAllowOther() {
-        return (flag & (1 << 0)) != 0;
+        return (flag & qa) != 0;
     }
 
     public void setQaAllowOther(boolean b) {
@@ -41,7 +42,19 @@ public class Person {
         if (b) {
             flag |= botOn;
         } else {
-            flag &= ~qa;
+            flag &= ~botOn;
+        }
+    }
+    
+    public boolean isJrrpNewStyle() {
+        return (flag & jrrpStyle) != 0;
+    }
+
+    public void setJrrpNewStyle(boolean b) {
+        if (b) {
+            flag |= jrrpStyle;
+        } else {
+            flag &= ~jrrpStyle;
         }
     }
 

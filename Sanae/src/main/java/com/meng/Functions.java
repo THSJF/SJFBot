@@ -30,7 +30,8 @@ public enum Functions {
     @SerializedName("x") EuropeDogs("欧洲狗识别"),
     @SerializedName("y") ImageProcess("图片处理"),
     @SerializedName("z") BilibiliTip("哔哩哔哩提示"),
-    @SerializedName("aa") FantasyZone("FantasyZone")
+    @SerializedName("aa") FantasyZone("FantasyZone"),
+    @SerializedName("ab") PersonalConfig("个人设置")
     ;
 
     private Functions(String s){

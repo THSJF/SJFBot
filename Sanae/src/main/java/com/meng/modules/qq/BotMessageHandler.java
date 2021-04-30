@@ -41,21 +41,6 @@ public class BotMessageHandler extends SimpleListenerHost {
     @EventHandler()
     public ListeningStatus onReceive(final GroupMessageEvent event) {
         MessageManager.put(event);
-        FlashImage fi = event.getMessage().get(FlashImage.Key);
-        if (fi != null) {
-            String url = sb.getUrl(fi.getImage());
-            try {
-                byte[] fileBytes = Jsoup.connect(url).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
-                File folder = new File(SBot.appDirectory + "/image/flashImage/");
-                if (!folder.exists()) {
-                    folder.mkdirs();
-                }
-                File file = new File(folder.getAbsolutePath() + "/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
-                FileTool.saveFile(file, fileBytes);
-            } catch (Exception e) {
-                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            }
-        }
         moduleManager.onGroupMessage(event);
         return ListeningStatus.LISTENING;
     }

@@ -281,7 +281,7 @@ public class ConfigManager {
         return DataPersistenter.save(this);
     }
 
-    private static class ConfigHolder {
+    public static class ConfigHolder {
 
         public HashMap<Long,GroupConfig> groupCfgs = new HashMap<>();
         public HashSet<Long> blockOnlyQQ = new HashSet<>();

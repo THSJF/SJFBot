@@ -47,7 +47,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-        if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() > 0) {
+        if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() < 1) {
             return false;
 		}
         if (msg.charAt(0) != '.') {
