@@ -4,12 +4,12 @@ import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.MessageManager;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import com.meng.modules.qq.handler.group.IGroupRecall;
+import com.meng.modules.qq.handler.group.IGroupRecallEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.data.PlainText;
 
-public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRecall {
+public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRecallEvent {
 
     public Derecall(SBot bot) {
         super(bot);

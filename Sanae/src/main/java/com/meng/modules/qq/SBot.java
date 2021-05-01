@@ -44,6 +44,12 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.MiraiLogger;
+import net.mamoe.mirai.utils.RemoteFile;
+import kotlinx.coroutines.channels.SendChannel;
+import net.mamoe.mirai.utils.RemoteFile.ProgressionCallback;
+import kotlinx.coroutines.selects.SelectClause2;
+import kotlin.jvm.functions.Function1;
+import net.mamoe.mirai.message.data.FileMessage;
 
 /**
  * @author: 司徒灵羽
@@ -58,11 +64,11 @@ public class SBot implements Bot {
     public static Gson gson;
 
     private Bot bot;
-    
+
     public static SBot instance;
 
     public ModuleManager moduleManager;
-    
+
     public boolean sleeping = false;
 
     static{
@@ -133,6 +139,13 @@ public class SBot implements Bot {
         }
     }
 
+    public FileMessage toGroupFile(Group group, File file) {
+        return toGroupFile(group, file, "/" + file.getName());
+    }
+
+    public FileMessage toGroupFile(Group group, File file, String path) {
+        return ExternalResource.Companion.uploadAsFile(ExternalResource.Companion.create(file), group, path);
+    }
     @Override
     public void join() {
         bot.join();

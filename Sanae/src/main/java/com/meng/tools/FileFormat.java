@@ -107,8 +107,8 @@ public class FileFormat {
 
         add("4D 5A 90 00", "exe", "maybe dll");
 
-        add("64 65 78 0A 30 33 35", "dex");
-        add("CA FE BA BE", "class");
+        add("64 65 78 0A 30 33 35", "Android dex file");
+        add("CA FE BA BE", "Java class file");
         add("53 43 50 54", "ecl");
         add("08 00 00 00", "anm");
 
@@ -123,7 +123,7 @@ public class FileFormat {
         return bs;
     }
 
-    private static class Content {
+    public static class Content {
         public byte[] magic;
         public String extendName;
         public String describe;

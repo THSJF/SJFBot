@@ -235,15 +235,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         return qa;
     }
 
-    public void addQA(QABean qa) {
-        qa.setId(qaList.size());
+    public void addQuestion(long qq, QABean qa) {
         qaList.add(qa);
-        save();
-    }
-
-    public void setQA(QABean qa) {
-        qaList.set(qa.getId(), qa);
-        save();
+        onGoingQA.put(qq, qa);
     }
 
     public int getQaCount() {
@@ -268,9 +262,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         public ArrayList<String> a = new ArrayList<>();
         private int t;//trueAns
         public String r;
-        private int showTimes;
-        private int trueTimes;
-        private transient boolean fromQar;
+        public int showTimes;
+        public int trueTimes;
+        public transient boolean fromQar;
 
         public void incShowTimes() {
             ++showTimes;

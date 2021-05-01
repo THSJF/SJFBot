@@ -11,9 +11,9 @@ import com.meng.modules.qq.handler.group.IGroupBotEvent;
 import com.meng.modules.qq.handler.group.IGroupEvent;
 import com.meng.modules.qq.handler.group.IGroupMemberEvent;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import com.meng.modules.qq.handler.group.IGroupRecall;
+import com.meng.modules.qq.handler.group.IGroupRecallEvent;
 import com.meng.modules.qq.handler.group.IGroupSettingEvent;
-import com.meng.modules.qq.handler.group.INudge;
+import com.meng.modules.qq.handler.group.INudgeEvent;
 import com.meng.modules.qq.modules.AdminMessage;
 import com.meng.modules.qq.modules.AimMessage;
 import com.meng.modules.qq.modules.BilibiliCmdParser;
@@ -35,6 +35,7 @@ import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
 import com.meng.modules.qq.modules.Report;
 import com.meng.modules.qq.modules.TTS;
+import com.meng.modules.qq.modules.ThsssReplayAnalyzer;
 import com.meng.modules.qq.modules.TimeTask;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -74,14 +75,14 @@ import net.mamoe.mirai.event.events.NudgeEvent;
  * @author: 司徒灵羽
  **/
 
-public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGroupRecall, IFriendEvent {
+public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent, IGroupRecallEvent, IFriendEvent {
 
     private List<IGroupBotEvent> groupBotHandlers = new ArrayList<>();
     private List<IGroupMessageEvent> groupMsgHandlers = new ArrayList<>();
     private List<IGroupSettingEvent> groupSettingsHandlers = new ArrayList<>();
     private List<IGroupMemberEvent> groupMemberHandlers = new ArrayList<>();
-    private List<INudge> nudgeHanderlers = new ArrayList<>();
-    private List<IGroupRecall> groupRecallHandler = new ArrayList<>();
+    private List<INudgeEvent> nudgeHanderlers = new ArrayList<>();
+    private List<IGroupRecallEvent> groupRecallHandler = new ArrayList<>();
     private List<IFriendMessageEvent> friendMsgHandlers = new ArrayList<>();
     private List<IFriendChangeEvent> friendChangeHandlers = new ArrayList<>();
 
@@ -102,20 +103,17 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         load(MtestMsg.class);
         load(AdminMessage.class);
         load(PersonalConfig.class);
-        //  load(EuropeDogs.class);
-        //   load(GroupCounterChart.class);
+        //  load(MusicRecongnition.class);
+
         load(MessageRefuse.class);
         load(Repeater.class);
         load(Report.class);
 
         load(MiraiCodeSerialize.class);
-        //    load(OCR.class);
-        //     load(Porn.class);
-        //   load(ImageTag.class);
         load(TTS.class);
         load(ImageProcess.class);
         load(FantasyZone.class);
-
+        load(ThsssReplayAnalyzer.class);
         load(BilibiliCmdParser.class);
         load(NumberProcess.class);
         load(Dice.class);
@@ -124,7 +122,6 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         load(MemberChange.class, false);
         load(QuestionAndAnswer.class);
         load(DynamicWordStock.class);
-        // load(Morning.class);
         load(UserInfo.class);
         load(Copper.class);
         load(Derecall.class, false);
@@ -175,11 +172,11 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         if (module instanceof IGroupMemberEvent) {
             groupMemberHandlers.add((IGroupMemberEvent)module);
         }
-        if (module instanceof INudge) {
-            nudgeHanderlers.add((INudge)module);
+        if (module instanceof INudgeEvent) {
+            nudgeHanderlers.add((INudgeEvent)module);
         }
-        if (module instanceof IGroupRecall) {
-            groupRecallHandler.add((IGroupRecall)module);
+        if (module instanceof IGroupRecallEvent) {
+            groupRecallHandler.add((IGroupRecallEvent)module);
         }
         if (module instanceof IFriendMessageEvent) {
             friendMsgHandlers.add((IFriendMessageEvent)module);
@@ -229,7 +226,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         if (!ConfigManager.getInstance().isFunctionEnabled(event.getSubject().getId(), Functions.GroupMessageEvent)) {
             return false; 
         }
-        for (INudge m : nudgeHanderlers) {
+        for (INudgeEvent m : nudgeHanderlers) {
             if (m.onNudge(event)) {
                 return true;
             }
@@ -242,7 +239,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.MessageRecallEvent_GroupRecall)) {
             return false; 
         }
-        for (IGroupRecall m : groupRecallHandler) {
+        for (IGroupRecallEvent m : groupRecallHandler) {
             if (m.onGroupRecall(event)) {
                 return true;
             }

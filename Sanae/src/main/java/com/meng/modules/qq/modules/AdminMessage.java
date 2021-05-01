@@ -6,7 +6,7 @@ import com.meng.config.Person;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import com.meng.modules.qq.handler.group.INudge;
+import com.meng.modules.qq.handler.group.INudgeEvent;
 import com.meng.tools.JsonHelper;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TextLexer;
@@ -30,7 +30,7 @@ import net.mamoe.mirai.message.data.Voice;
  * @Description: 管理员命令
  * @author: 司徒灵羽
  **/
-public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INudge {
+public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INudgeEvent {
 
     public AdminMessage(SBot bw) {
         super(bw);

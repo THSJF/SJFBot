@@ -1,0 +1,94 @@
+package com.meng.modules.touhou.zun.music;
+
+import com.meng.tools.FileTool;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+
+public class FmtFile {
+
+    private int position = 0;
+    private byte[] fileByte;
+    public MusicInfo[] musicInfos;
+    public String[] names;
+
+    public FmtFile(File file) {
+        if (!file.exists()) {
+            throw new RuntimeException("file not found:" + file.getAbsolutePath());
+        }
+        fileByte = FileTool.readBytes(file);
+        musicInfos = new MusicInfo[(int) (file.length() / 52)];
+        names = new String[musicInfos.length];
+        for (int i = 0; i < musicInfos.length; ++i) {
+            MusicInfo musicInfo = new MusicInfo();
+            musicInfo.name = readName();
+            musicInfo.start = readInt();
+            musicInfo.unknown1 = readInt();
+            musicInfo.repeatStart = readInt();
+            musicInfo.length = readInt();
+            musicInfo.format = readShort();
+            musicInfo.channels = readShort();
+            musicInfo.rate = readInt();
+            musicInfo.avgBytesPerSec = readInt();
+            musicInfo.blockAlign = readShort();
+            musicInfo.bitsPerSample = readShort();
+            musicInfo.cbSize = readShort();
+            musicInfo.pad = readShort();
+            names[i] = musicInfo.name;
+            musicInfos[i] = musicInfo;
+        }
+    }
+
+    private short readShort() {
+        return (short) (fileByte[position++] & 0xff | (fileByte[position++] & 0xff) << 8);
+    }
+
+    private int readInt() {
+        return (fileByte[position++] & 0xff) | (fileByte[position++] & 0xff) << 8 | (fileByte[position++] & 0xff) << 16 | (fileByte[position++] & 0xff) << 24;
+    }
+
+    private String readName() {
+        int tpos = position;
+        while (fileByte[position] != 0) {
+            position++;
+        }
+        String name = new String(fileByte, tpos, position, StandardCharsets.UTF_8);
+        position = tpos + 16;
+        return name;
+    }
+
+    public class MusicInfo {
+        public String name;
+        public int start;
+        public int unknown1;
+        public int repeatStart;
+        public int length;
+        public short format;
+        public short channels;
+        public int rate;
+        public int avgBytesPerSec;
+        public short blockAlign;
+        public short bitsPerSample;
+        public short cbSize;
+        public short pad;
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(name).append(" ");
+            sb.append(start).append(" ");
+            sb.append(unknown1).append(" ");
+            sb.append(repeatStart).append(" ");
+            sb.append(length).append(" ");
+            sb.append(format).append(" ");
+            sb.append(channels).append(" ");
+            sb.append(rate).append(" ");
+            sb.append(avgBytesPerSec).append(" ");
+            sb.append(blockAlign).append(" ");
+            sb.append(bitsPerSample).append(" ");
+            sb.append(cbSize).append(" ");
+            sb.append(pad).append(" ");
+            return sb.toString();
+        }
+        //    public int beanSize = 52;
+	}
+}
