@@ -1,16 +1,11 @@
 package com.meng.modules.bilibili.live;
 
-import com.meng.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.config.Person;
-import com.meng.config.qq.GroupConfig;
 import com.meng.modules.bilibili.user.UserApi;
 import com.meng.modules.bilibili.user.javabean.RoomInfoByUid;
-import com.meng.modules.qq.BaseModule;
-import com.meng.modules.qq.SBot;
-import java.util.Map;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 public class LiveListener implements Runnable {
 

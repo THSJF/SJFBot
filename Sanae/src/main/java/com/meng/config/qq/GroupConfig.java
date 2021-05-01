@@ -1,6 +1,6 @@
 package com.meng.config.qq;
 
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import java.util.EnumSet;
 
 /**

@@ -10,7 +10,7 @@ public class Person {
     public static final int jrrpStyle = 1 << 2;
 
     public String name;
-    public ArrayList<Long> qq = new ArrayList<>();
+    public long qq;
     public int bid = 0;
     public int bLiveRoom = 0;
 
@@ -45,7 +45,7 @@ public class Person {
             flag &= ~botOn;
         }
     }
-    
+
     public boolean isJrrpNewStyle() {
         return (flag & jrrpStyle) != 0;
     }
@@ -75,6 +75,6 @@ public class Person {
             return false;
         }
         Person p = (Person) obj;
-        return qq.equals(p.qq) && bid == p.bid && bLiveRoom == p.bLiveRoom && name.equals(p.name);
+        return qq == p.qq && bid == p.bid && bLiveRoom == p.bLiveRoom && name.equals(p.name);
     } 
 }

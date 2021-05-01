@@ -1,13 +1,8 @@
 package com.meng.modules.qq;
 
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.modules.qq.handler.MessageManager;
-import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.FileFormat;
-import com.meng.tools.FileTool;
-import com.meng.tools.Hash;
-import java.io.File;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -21,10 +16,7 @@ import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import net.mamoe.mirai.message.data.FlashImage;
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 
 public class BotMessageHandler extends SimpleListenerHost {
 

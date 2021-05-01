@@ -1,6 +1,6 @@
 package com.meng.modules.qq;
 
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.SBot;
@@ -25,9 +25,11 @@ import com.meng.modules.qq.modules.FantasyZone;
 import com.meng.modules.qq.modules.ImageProcess;
 import com.meng.modules.qq.modules.MemberChange;
 import com.meng.modules.qq.modules.MessageRefuse;
+import com.meng.modules.qq.modules.MessageSaver;
 import com.meng.modules.qq.modules.MiraiCodeSerialize;
 import com.meng.modules.qq.modules.MtestMsg;
 import com.meng.modules.qq.modules.NumberProcess;
+import com.meng.modules.qq.modules.PersonalConfig;
 import com.meng.modules.qq.modules.QuestionAndAnswer;
 import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
@@ -66,8 +68,6 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import com.meng.modules.qq.modules.PersonalConfig;
-import com.meng.modules.qq.modules.MessageSaver;
 
 /**
  * @Description: 模块管理器

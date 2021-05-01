@@ -3,7 +3,7 @@ package com.meng.modules.qq;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;

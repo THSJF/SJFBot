@@ -1,6 +1,6 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.modules.fantasyZone.FantasyZoneApi;
 import com.meng.modules.fantasyZone.javabean.Fantasy;

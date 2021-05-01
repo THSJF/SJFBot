@@ -4,14 +4,14 @@ package com.meng.config;
  * @Description: 配置管理器
  * @author: 司徒灵羽
  **/
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.qq.GroupConfig;
+import com.meng.modules.qq.SBot;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import net.mamoe.mirai.contact.Group;
-import com.meng.modules.qq.SBot;
 
 public class ConfigManager {
 
@@ -145,7 +145,7 @@ public class ConfigManager {
 
     public Person getPersonFromQQ(long qq) {
         for (Person pi : configHolder.person) {
-            if (pi.qq.equals(qq)) {
+            if (pi.qq == qq) {
                 return pi;
             }
         }

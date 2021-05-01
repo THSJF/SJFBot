@@ -1,6 +1,6 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -63,23 +63,23 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 return true;
             }
         }
-        if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.EuropeDogs) && img != null) {
-            try {
-                byte[] fileBytes = Jsoup.connect(entity.getUrl(img)).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
-                File file = new File(SBot.appDirectory + "/image/Europe/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
-                FileTool.saveFile(file, fileBytes);
-                BufferedImage bfi = ImageIO.read(file);
-                float h = bfi.getHeight(null);
-                float w = bfi.getWidth(null);
-                float s = w / h;
-                if (s > 1.7f) {
-                    runSeekDog(bfi.getSubimage(0, 0, (int)(w / 2), (int)h), event);
-                }
-                file.delete();
-            } catch (Exception e) {
-                //     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            }
-        }
+//        if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.EuropeDogs) && img != null) {
+//            try {
+//                byte[] fileBytes = Jsoup.connect(entity.getUrl(img)).ignoreContentType(true).method(Connection.Method.GET).execute().bodyAsBytes();
+//                File file = new File(SBot.appDirectory + "/image/Europe/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
+//                FileTool.saveFile(file, fileBytes);
+//                BufferedImage bfi = ImageIO.read(file);
+//                float h = bfi.getHeight(null);
+//                float w = bfi.getWidth(null);
+//                float s = w / h;
+//                if (s > 1.7f) {
+//                    runSeekDog(bfi.getSubimage(0, 0, (int)(w / 2), (int)h), event);
+//                }
+//                file.delete();
+//            } catch (Exception e) {
+//                //     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+//            }
+//        }
         if (configManager.isFunctionEnabled(event.getGroup().getId(), Functions.ImageTag) && (ready.get(qqId) == TYPE.Tag || ready.get(qqId) == null)) {
             if (img != null && (msg.startsWith("tag"))) {
                 getImageTag(img, event);

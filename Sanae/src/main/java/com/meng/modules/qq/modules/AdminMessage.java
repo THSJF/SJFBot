@@ -1,6 +1,6 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.config.Person;
 import com.meng.modules.qq.BaseModule;
@@ -140,7 +140,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (personInfo.name.contains(name)) {
                             hashSet.add(personInfo);
                         }
-                        if (personInfo.qq.size() != 0 && personInfo.qq.toString().contains(name)) {
+                        if (personInfo.qq != 0 && Long.toString(personInfo.qq).contains(name)) {
                             hashSet.add(personInfo);
                         }
                         if (personInfo.bid != 0 && String.valueOf(personInfo.bid).contains(name)) {

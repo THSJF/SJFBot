@@ -1,7 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.google.gson.annotations.SerializedName;
-import com.meng.Functions;
+import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
