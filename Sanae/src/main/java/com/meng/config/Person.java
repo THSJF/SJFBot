@@ -2,6 +2,7 @@ package com.meng.config;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import com.meng.tools.JsonHelper;
 
 public class Person {
 
@@ -76,5 +77,10 @@ public class Person {
         }
         Person p = (Person) obj;
         return qq == p.qq && bid == p.bid && bLiveRoom == p.bLiveRoom && name.equals(p.name);
+    }
+
+    @Override
+    public String toString() {
+        return JsonHelper.toJson(this);
     } 
 }

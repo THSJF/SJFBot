@@ -47,7 +47,12 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
         }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", configManager.getNickName(groupId, qqId), THDataHolder.hashRandomSpell(qqId).name));
+            if (configManager.getPersonFromQQ(qqId).isJrrpNewStyle()) {
+                QqCard card = new QqCard(configManager.getNickName(groupId, qqId) + "今天的疮痍符卡", qqId , "符卡", THDataHolder.hashRandomSpell(qqId).name);
+                sendMessage(gme.getGroup(), card.toMiraiMessage());
+            } else {
+                sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", configManager.getNickName(groupId, qqId), THDataHolder.hashRandomSpell(qqId).name));
+            }
             return true;
         }
 		if (msg.charAt(0) != '.') {
@@ -117,8 +122,12 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     } else {
                         fpro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
                     }
-                    QqCard card = new QqCard(pname + "今天的疮痍位置", qqId , "游戏进度", String.format("%.2f%%", fpro));
-                    sendMessage(gme.getGroup(), card.toMiraiMessage());
+                    if (configManager.getPersonFromQQ(qqId).isJrrpNewStyle()) {
+                        QqCard card = new QqCard(pname + "今天的疮痍位置", qqId , "游戏进度", String.format("%.2f%%", fpro));
+                        sendMessage(gme.getGroup(), card.toMiraiMessage());
+                    } else {
+                        sendMessage(gme.getGroup(), String.format("%s今天会在%.2f%%处疮痍", configManager.getNickName(groupId, qqId), fpro));
+                    }
                     return true;
                 case "roll":
                     switch (iter.next()) {

@@ -8,4 +8,9 @@ import java.util.EnumSet;
  **/
 public class GroupConfig {
     public EnumSet<Functions> enabled = EnumSet.allOf(Functions.class);
+
+    {
+        enabled.remove(Functions.BilibiliTip);
+        enabled.remove(Functions.EuropeDogs);
+    }
 }

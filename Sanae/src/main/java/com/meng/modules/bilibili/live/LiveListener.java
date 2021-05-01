@@ -28,7 +28,7 @@ public class LiveListener implements Runnable {
     public void run() {
         try {
             for (Person personInfo : ConfigManager.getInstance().getPerson()) {
-                if (personInfo.bLiveRoom == -1) {
+                if (personInfo.bid == 0 || personInfo.bLiveRoom == -1) {
                     continue;
                 }
                 if (personInfo.bLiveRoom == 0 && personInfo.bid != 0) {
