@@ -16,7 +16,7 @@ import com.meng.modules.qq.handler.group.IGroupSettingEvent;
 import com.meng.modules.qq.handler.group.INudge;
 import com.meng.modules.qq.modules.AdminMessage;
 import com.meng.modules.qq.modules.AimMessage;
-import com.meng.modules.qq.modules.BilibiliLinkParser;
+import com.meng.modules.qq.modules.BilibiliCmdParser;
 import com.meng.modules.qq.modules.Copper;
 import com.meng.modules.qq.modules.Derecall;
 import com.meng.modules.qq.modules.Dice;
@@ -116,7 +116,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudge, IGr
         load(ImageProcess.class);
         load(FantasyZone.class);
 
-        load(BilibiliLinkParser.class);
+        load(BilibiliCmdParser.class);
         load(NumberProcess.class);
         load(Dice.class);
         load(TimeTask.class);

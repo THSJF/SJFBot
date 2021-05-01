@@ -24,6 +24,16 @@ public class LiveListener implements Runnable {
         listeners.add(listener);
     }
 
+    public String getLiving() {
+        StringBuilder builder = new StringBuilder();
+        for (Person person : ConfigManager.getInstance().getPerson()) {
+            if (person.lastStatus) {
+                builder.append(person.name).append(":房间").append(person.bLiveRoom);
+            }
+        }
+        return builder.toString();
+    }
+
     @Override
     public void run() {
         try {

@@ -39,7 +39,7 @@ public class PersonalConfig extends BaseModule implements IGroupMessageEvent {
                 entity.sendQuote(event, "已停用对你的响应");
                 cm.save();
                 break;
-            case ".switch jrrp":
+            case ".version jrrp":
                 pc.setJrrpNewStyle(pc.isJrrpNewStyle() ? false: true);
                 sendQuote(event, "已切换风格");
                 cm.save();

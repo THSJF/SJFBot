@@ -31,6 +31,7 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        ex.printStackTrace();
         saveCrashInfo2File(ex);
     }
 
