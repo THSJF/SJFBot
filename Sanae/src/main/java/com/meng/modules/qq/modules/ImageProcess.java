@@ -2,15 +2,15 @@ package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
+import com.meng.modules.imageFactory.ImageFactory;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.sauceNao.SauceNaoApi;
 import com.meng.modules.sauceNao.javabean.SauceNaoResult;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
-import com.meng.tools.Hash;
+import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.Youtu;
 import java.awt.image.BufferedImage;
@@ -20,12 +20,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
+import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.FlashImage;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
@@ -43,6 +42,27 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         }
         String msg = event.getMessage().contentToString().toLowerCase();
         long qqId = event.getSender().getId();
+        long at = entity.getAt(event.getMessage());
+        if (msg.contains("神触") && at != -1) {
+            NormalMember nm = event.getGroup().get(at);
+            File avatar = new File(SBot.appDirectory + "avatar/" + System.currentTimeMillis() + ".jpg");
+            byte[] fileBytes = Network.httpGetRaw(nm.getAvatarUrl());
+            FileTool.saveFile(avatar, fileBytes);
+            Image img = entity.toImage(ImageFactory.getInstance().generateShenChu(avatar), event.getGroup());
+            sendQuote(event, img);
+            avatar.delete();
+            return true;
+        }
+        if (msg.contains("精神支柱") && at != -1) {
+            NormalMember nm = event.getGroup().get(at);
+            File avatar = new File(SBot.appDirectory + "avatar/" + System.currentTimeMillis() + ".jpg");
+            byte[] fileBytes = Network.httpGetRaw(nm.getAvatarUrl());
+            FileTool.saveFile(avatar, fileBytes);
+            Image img = entity.toImage(ImageFactory.getInstance().generateJingShenZhiZhu(avatar), event.getGroup());
+            sendQuote(event, img);
+            avatar.delete();
+            return true;
+        }
         Image img = event.getMessage().get(Image.Key);
         if (img == null) {
             FlashImage fi = event.getMessage().get(FlashImage.Key);

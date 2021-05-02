@@ -138,7 +138,7 @@ public class SBot implements Bot {
             throw new RuntimeException(e);
         }
     }
-    
+
     public FileMessage toGroupFile(Group group, byte[] file, String path) {
         return ExternalResource.Companion.uploadAsFile(ExternalResource.Companion.create(file), group, path);
     }
@@ -215,8 +215,13 @@ public class SBot implements Bot {
         return false;
     }
 
-    public long getAt(MessageChain msg) {
-        return ((At)msg.get(At.Key)).getTarget();
+    public long getAt(MessageChain msgc) {
+        for (Message msg : msgc) {
+            if (msg instanceof At) {
+                return ((At)msg).getTarget();
+            }
+        }
+        return -1;
     }
 
     public List<Long> getAts(MessageChain msg) {
