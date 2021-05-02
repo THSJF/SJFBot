@@ -18,6 +18,9 @@ public class ConfigManager {
     @SanaeData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
 
+    private Person emptyPerson = new Person(){
+        {setJrrpNewStyle(false);}
+    };
     private static ConfigManager instance;
 
     public static ConfigManager getInstance() {
@@ -149,7 +152,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return null;
+        return emptyPerson;
     }
 
     public Person getPersonFromName(String name) {
@@ -158,7 +161,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return null;
+        return emptyPerson;
     }
 
     public Person getPersonFromBid(long bid) {
@@ -167,7 +170,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return null;
+        return emptyPerson;
     }
 
     public Person getPersonFromLiveId(long lid) {
@@ -176,7 +179,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return null;
+        return emptyPerson;
     }
 
     public void setWelcome(long fromGroup, String content) {
