@@ -72,7 +72,8 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
 
     private File createMusicCut(int musicNum, int needSeconeds, long group,  long qq) {
         File[] games = new File(musicFolder).listFiles();
-        int game = new Random().nextInt(games.length);
+        Random random = new Random();
+        int game = random.nextInt(games.length);
         File fmtFile = new File(musicFolder + games[game].getName() + "/thbgm.fmt");
         FmtFile thfmt = new FmtFile(fmtFile);
         FmtFile.MusicInfo muiscInfo = thfmt.musicInfos[musicNum];
@@ -85,30 +86,8 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         resultFile = convert(resultFile, new File(SBot.appDirectory + "/touhou/musicCut/" + System.currentTimeMillis() + 1 + ".wav"));
         QuestionAndAnswer.QABean bean = new QuestionAndAnswer.QABean();
         bean.fromQar = true;
-        bean.setTrueAns(0);
-        switch (games[game].getName()) {
-            case "th10":
-                bean.a.add(TH10GameData.musicName[musicNum]);
-                break;
-            case "th11":
-                bean.a.add(TH11GameData.musicName[musicNum]);
-                break;
-            case "th12":
-                bean.a.add(TH12GameData.musicName[musicNum]);
-                break;
-            case "th14":
-                bean.a.add(TH14GameData.musicName[musicNum]);
-                break;
-            case "th15":
-                bean.a.add(TH15GameData.musicName[musicNum]);
-                break;
-            case "th16":
-                bean.a.add(TH16GameData.musicName[musicNum]);
-                break;
-        }
         for (int i = 0;i < 3 ;++i) {
             while (true) {
-                Random random = new Random();
                 String[] musics = THDataHolder.music[random.nextInt(THDataHolder.music.length)];
                 String musicName = musics[random.nextInt(musics.length)];
                 if (!bean.a.contains(musicName)) {
@@ -117,8 +96,28 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
                 }
             }
 		}
-        bean.setTrueAns(0);
-        bean.shuffleAnswer();
+        int trueAnswer = random.nextInt(4);
+        bean.setTrueAns(trueAnswer);
+        switch (games[game].getName()) {
+            case "th10":
+                bean.a.add(trueAnswer, TH10GameData.musicName[musicNum]);
+                break;
+            case "th11":
+                bean.a.add(trueAnswer, TH11GameData.musicName[musicNum]);
+                break;
+            case "th12":
+                bean.a.add(trueAnswer, TH12GameData.musicName[musicNum]);
+                break;
+            case "th14":
+                bean.a.add(trueAnswer, TH14GameData.musicName[musicNum]);
+                break;
+            case "th15":
+                bean.a.add(trueAnswer, TH15GameData.musicName[musicNum]);
+                break;
+            case "th16":
+                bean.a.add(trueAnswer, TH16GameData.musicName[musicNum]);
+                break;
+        }
         entity.moduleManager.getModule(QuestionAndAnswer.class).addQuestion(qq, bean);
         StringBuilder sb = new StringBuilder();
         int i = 0;
