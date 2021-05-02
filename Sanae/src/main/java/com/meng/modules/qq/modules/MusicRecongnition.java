@@ -11,9 +11,10 @@ import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.touhou.zun.music.FmtFile;
 import com.meng.modules.touhou.zun.music.WavHeader;
+import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileTool;
 import com.meng.tools.Tools;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.util.Random;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
@@ -30,7 +31,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
     public boolean onGroupMessage(GroupMessageEvent event) {
         String msg = event.getMessage().contentToString();
         long group = event.getGroup().getId();
-        long qq = event.getGroup().getId();
+        long qq = event.getSender().getId();
         if (msg.equals("原曲认知")) {
             File musicFragment = createMusicCut(new Random().nextInt(16), 10, group, qq);
             sendGroupMessage(group, entity.toVoice(musicFragment, event.getGroup())); 
@@ -73,26 +74,15 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         File[] games = new File(musicFolder).listFiles();
         int game = new Random().nextInt(games.length);
         File fmtFile = new File(musicFolder + games[game].getName() + "/thbgm.fmt");
-        File resultFile = null;
         FmtFile thfmt = new FmtFile(fmtFile);
         FmtFile.MusicInfo muiscInfo = thfmt.musicInfos[musicNum];
         byte[] music = new byte[needSeconeds * muiscInfo.bitsPerSample * muiscInfo.channels * muiscInfo.rate / 8];
         readFile(music, getStartBytes(musicNum, thfmt, needSeconeds), games[game].getName());
         WavHeader wavHeader = new WavHeader();
-        byte[] finalFile = Tools.ArrayTool.mergeArray(wavHeader.getWavHeader(musicNum, thfmt, needSeconeds), music);
-        final String newFileName = SBot.appDirectory+"/touhou/musicCut/" + System.currentTimeMillis() + ".wav";
-        try {
-            resultFile = new File(newFileName);
-            if (resultFile.exists()) {
-                resultFile.delete();
-            }
-            FileOutputStream fom = new FileOutputStream(resultFile);
-            fom.write(finalFile, 0, finalFile.length);
-            fom.flush();
-            fom.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        byte[] finalFileBytes = Tools.ArrayTool.mergeArray(wavHeader.getWavHeader(musicNum, thfmt, needSeconeds), music);
+        File resultFile = new File(SBot.appDirectory + "/touhou/musicCut/" + System.currentTimeMillis() + ".wav");
+        FileTool.saveFile(resultFile, finalFileBytes);
+        resultFile = convert(resultFile, new File(SBot.appDirectory + "/touhou/musicCut/" + System.currentTimeMillis() + 1 + ".wav"));
         QuestionAndAnswer.QABean bean = new QuestionAndAnswer.QABean();
         bean.fromQar = true;
         bean.setTrueAns(0);
@@ -165,4 +155,39 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         }
         return questionStartBytes;
 	}
+
+    public File convert(File input, File output) {
+        StringBuilder cmdBuilder = new StringBuilder();
+        cmdBuilder.append("ffmpeg ");
+        cmdBuilder.append("-ac 2 -ar 22040 -ab 128 ");
+        cmdBuilder.append("-i ");
+        cmdBuilder.append(input.getAbsolutePath());
+        cmdBuilder.append(" ");
+        cmdBuilder.append(output.getAbsolutePath());
+        //    String args = "ffmpeg -i c:\\1.jpg c:\\11.png";
+        String args = cmdBuilder.toString();
+        try { 
+            String[] cmd = new String[]{
+                "cmd.exe",
+                "/C",
+                args
+            };
+            Runtime rt = Runtime.getRuntime();
+            System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
+            Process proc = rt.exec(cmd);
+            TTS.StreamGobbler errorGobbler = new TTS.StreamGobbler(proc.getErrorStream(), "error");
+            TTS.StreamGobbler outputGobbler = new TTS.StreamGobbler(proc.getInputStream(), "output");
+            errorGobbler.start();
+            outputGobbler.start();
+            int exitVal = proc.waitFor();
+            System.out.println("ExitValue: " + exitVal);
+            if (exitVal != 0) {
+                throw new RuntimeException("exit value:" + exitVal);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), t);
+        }
+        return output;
+    }
 }
