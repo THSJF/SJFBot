@@ -1,7 +1,6 @@
 package com.meng.modules.touhou.thsss.replay;
 
 public class KeyDataItem {
-    private StringBuilder builder = new StringBuilder();
     public boolean arrowUp = false;
     public boolean arrowDown = false;
     public boolean arrowLeft = false;
@@ -14,7 +13,7 @@ public class KeyDataItem {
 
     @Override
     public String toString() {
-        builder.setLength(0);
+        StringBuilder builder = new StringBuilder();
         if (arrowUp && arrowLeft) {
             builder.append("↖");
         } else if (arrowUp && arrowRight) {
@@ -49,7 +48,7 @@ public class KeyDataItem {
         return builder.toString();
     }
 
-    public void Hex2Key(int keyValue) {
+    public void hex2Key(int keyValue) {
         keyValue >>= 7;
         key_Ctrl = keyValue % 2 == 1;
         keyValue >>= 1;

@@ -138,6 +138,10 @@ public class SBot implements Bot {
             throw new RuntimeException(e);
         }
     }
+    
+    public FileMessage toGroupFile(Group group, byte[] file, String path) {
+        return ExternalResource.Companion.uploadAsFile(ExternalResource.Companion.create(file), group, path);
+    }
 
     public FileMessage toGroupFile(Group group, File file) {
         return toGroupFile(group, file, "/" + file.getName());

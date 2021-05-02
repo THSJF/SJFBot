@@ -20,8 +20,8 @@ public enum Functions {
     @SerializedName("n") QuestionAndAnswer("问答"),
     @SerializedName("o") Repeater("复读机"),
     @SerializedName("p") Report("留言"),
-    @SerializedName("q") Copper("铜"),
-    @SerializedName("r") CopperFlash("闪照铜"),
+    //@SerializedName("q") Copper("铜"),
+    //@SerializedName("r") CopperFlash("闪照"),
     @SerializedName("s") PictureSearch("图片搜索"),
     @SerializedName("t") OCR("文字识别"),
     @SerializedName("u") Porn("色图等级评定"),
@@ -31,7 +31,8 @@ public enum Functions {
     @SerializedName("y") ImageProcess("图片处理"),
     @SerializedName("z") BilibiliTip("哔哩哔哩提示"),
     @SerializedName("aa") FantasyZone("FantasyZone"),
-    @SerializedName("ab") PersonalConfig("个人设置")
+    @SerializedName("ab") PersonalConfig("个人设置"),
+    @SerializedName("ac") FileAnalyzer("文件分析")
     ;
 
     private Functions(String s){

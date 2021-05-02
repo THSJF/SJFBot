@@ -17,17 +17,18 @@ import com.meng.modules.qq.handler.group.INudgeEvent;
 import com.meng.modules.qq.modules.AdminMessage;
 import com.meng.modules.qq.modules.AimMessage;
 import com.meng.modules.qq.modules.BilibiliCmdParser;
-import com.meng.modules.qq.modules.Copper;
 import com.meng.modules.qq.modules.Derecall;
 import com.meng.modules.qq.modules.Dice;
 import com.meng.modules.qq.modules.DynamicWordStock;
 import com.meng.modules.qq.modules.FantasyZone;
+import com.meng.modules.qq.modules.FileAnalyzer;
 import com.meng.modules.qq.modules.ImageProcess;
 import com.meng.modules.qq.modules.MemberChange;
 import com.meng.modules.qq.modules.MessageRefuse;
 import com.meng.modules.qq.modules.MessageSaver;
 import com.meng.modules.qq.modules.MiraiCodeSerialize;
 import com.meng.modules.qq.modules.MtestMsg;
+import com.meng.modules.qq.modules.MusicRecongnition;
 import com.meng.modules.qq.modules.NumberProcess;
 import com.meng.modules.qq.modules.PersonalConfig;
 import com.meng.modules.qq.modules.QuestionAndAnswer;
@@ -35,7 +36,6 @@ import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
 import com.meng.modules.qq.modules.Report;
 import com.meng.modules.qq.modules.TTS;
-import com.meng.modules.qq.modules.ThsssReplayAnalyzer;
 import com.meng.modules.qq.modules.TimeTask;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -103,7 +103,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(MtestMsg.class);
         load(AdminMessage.class);
         load(PersonalConfig.class);
-        //  load(MusicRecongnition.class);
+        load(MusicRecongnition.class);
 
         load(MessageRefuse.class);
         load(Repeater.class);
@@ -113,7 +113,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(TTS.class);
         load(ImageProcess.class);
         load(FantasyZone.class);
-        load(ThsssReplayAnalyzer.class);
+        load(FileAnalyzer.class);
         load(BilibiliCmdParser.class);
         load(NumberProcess.class);
         load(Dice.class);
@@ -123,7 +123,6 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(QuestionAndAnswer.class);
         load(DynamicWordStock.class);
         load(UserInfo.class);
-        load(Copper.class);
         load(Derecall.class, false);
         return this;
     }

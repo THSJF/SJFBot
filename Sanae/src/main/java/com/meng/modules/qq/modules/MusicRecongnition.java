@@ -80,7 +80,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         readFile(music, getStartBytes(musicNum, thfmt, needSeconeds), games[game].getName());
         WavHeader wavHeader = new WavHeader();
         byte[] finalFile = Tools.ArrayTool.mergeArray(wavHeader.getWavHeader(musicNum, thfmt, needSeconeds), music);
-        final String newFileName = "C://Users/Administrator/Desktop/酷Q Pro/data/record/" + System.currentTimeMillis() + ".wav";
+        final String newFileName = SBot.appDirectory+"/touhou/musicCut/" + System.currentTimeMillis() + ".wav";
         try {
             resultFile = new File(newFileName);
             if (resultFile.exists()) {

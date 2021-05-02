@@ -12,8 +12,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import com.meng.modules.bilibili.BilibiliBotMain;
-import com.meng.modules.bilibili.live.LiveListener;
 
 public class BilibiliCmdParser extends BaseModule implements IGroupMessageEvent {
 
@@ -39,10 +37,10 @@ public class BilibiliCmdParser extends BaseModule implements IGroupMessageEvent 
             return false; 
         }
         String string = event.getMessage().contentToString();
-        if (string.equals(".live")) {
-            LiveListener listener = LiveListener.getInstance();
-            sendMessage(event, listener.getLiving());
-        }
+//        if (string.equals(".live")) {
+//            LiveListener listener = LiveListener.getInstance();
+//            sendMessage(event, listener.getLiving());
+//        }
         BilibiliPair pair = parser.parse(string);
         if (pair != null) {
             MessageChainBuilder builder = new MessageChainBuilder();

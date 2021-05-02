@@ -10,7 +10,7 @@ public enum DifficultLevel {
 
     private int value = -1;
 
-    public DifficultLevel(int v){
+    private DifficultLevel(int v){
         value = v;
     }
 

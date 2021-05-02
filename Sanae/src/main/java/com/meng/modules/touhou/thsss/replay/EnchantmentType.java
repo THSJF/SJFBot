@@ -6,10 +6,10 @@ public enum EnchantmentType {
     Blue(2),
     Green(3);
 
-    private int value=-1;
+    private int value = -1;
 
-    public EnchantmentType(int v){
-        value=v;
+    private EnchantmentType(int v){
+        value = v;
     }
 
     public static EnchantmentType valueOf(int i){
