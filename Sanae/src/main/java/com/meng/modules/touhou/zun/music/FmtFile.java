@@ -47,13 +47,12 @@ public class FmtFile {
     }
 
     private String readName() {
-        int tpos = position;
-        while (fileByte[position] != 0) {
-            position++;
+        byte[] ba = new byte[16];
+        for (int i = 0; i < ba.length; ++i) {
+            ba[i] = fileByte[position++];
         }
-        String name = new String(fileByte, tpos, position, StandardCharsets.UTF_8);
-        position = tpos + 16;
-        return name;
+        String string = new String(ba, StandardCharsets.UTF_8);
+        return string.substring(0, string.indexOf(0));
     }
 
     public class MusicInfo {

@@ -7,7 +7,7 @@ import com.meng.modules.bilibili.user.javabean.RoomInfoByUid;
 import java.util.HashSet;
 import java.util.Set;
 
-//public class LiveListener implements Runnable {
+public class LiveListener implements Runnable {
 //
 //    private Set<OnStatusChangeListener> listeners = new HashSet<>();
 //    private static LiveListener instance;
@@ -34,8 +34,8 @@ import java.util.Set;
 //        return builder.toString();
 //    }
 //
-//    @Override
-//    public void run() {
+    @Override
+    public void run() {
 //        try {
 //            for (Person personInfo : ConfigManager.getInstance().getPerson()) {
 //                if (personInfo.bid == 0 || personInfo.bLiveRoom == -1) {
@@ -72,7 +72,7 @@ import java.util.Set;
 //            System.out.println("直播监视出了问题：");
 //            e.printStackTrace();
 //        }
-//    }
+    }
 //
 //    private void onStart(Person personInfo) {
 //        for (OnStatusChangeListener listener : listeners) {
@@ -90,4 +90,4 @@ import java.util.Set;
 //        public void onStart(Person person);
 //        public void onStop(Person person);
 //    }
-//}
+}

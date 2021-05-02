@@ -28,7 +28,7 @@ public class ThsssReplayAnalyzer {
     public static String analyze(ThsssReplay replay){
         StringBuilder builder = new StringBuilder();
         builder.append(replay.info.toString());
-        builder.append("s:shoot f:focus b:bomb c:ctrl");
+        builder.append("s:shoot f:focus b:bomb c:ctrl\n");
         KeyDataItem keyclass = new KeyDataItem();
         for (int i = 0;i < replay.info.myPlaneData.size();++i) {
             builder.append("stage ").append((i + 1)).append("\n");
