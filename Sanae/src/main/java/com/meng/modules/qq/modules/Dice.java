@@ -47,7 +47,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
         }
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
-            if (configManager.getPersonFromQQ(qqId).isJrrpNewStyle()) {
+            if (configManager.getPersonConfig(qqId).isJrrpNewStyle()) {
                 QqCard card = new QqCard(configManager.getNickName(groupId, qqId) + "今天的疮痍符卡", qqId , "符卡", THDataHolder.hashRandomSpell(qqId).name);
                 sendMessage(gme.getGroup(), card.toMiraiMessage());
             } else {
@@ -122,7 +122,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     } else {
                         fpro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
                     }
-                    if (configManager.getPersonFromQQ(qqId).isJrrpNewStyle()) {
+                    if (configManager.getPersonConfig(qqId).isJrrpNewStyle()) {
                         QqCard card = new QqCard(pname + "今天的疮痍位置", qqId , "游戏进度", String.format("%.2f%%", fpro));
                         sendMessage(gme.getGroup(), card.toMiraiMessage());
                     } else {

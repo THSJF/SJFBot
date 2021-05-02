@@ -12,15 +12,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import net.mamoe.mirai.contact.Group;
+import com.meng.config.Person.Config;
 
 public class ConfigManager {
 
     @SanaeData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
 
-    private Person emptyPerson = new Person(){
-        {setJrrpNewStyle(false);}
-    };
     private static ConfigManager instance;
 
     public static ConfigManager getInstance() {
@@ -146,13 +144,23 @@ public class ConfigManager {
         save();
     }
 
+    public Person.Config getPersonConfig(long qq) {
+        Person.Config get = configHolder.personConfig.get(qq);
+        if (get == null) {
+            get = new Person.Config();
+            configHolder.personConfig.put(qq, get);
+        }
+        save();
+        return get;
+    }
+
     public Person getPersonFromQQ(long qq) {
         for (Person pi : configHolder.person) {
             if (pi.qq == qq) {
                 return pi;
             }
         }
-        return emptyPerson;
+        return null;
     }
 
     public Person getPersonFromName(String name) {
@@ -161,7 +169,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return emptyPerson;
+        return null;
     }
 
     public Person getPersonFromBid(long bid) {
@@ -170,7 +178,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return emptyPerson;
+        return null;
     }
 
     public Person getPersonFromLiveId(long lid) {
@@ -179,7 +187,7 @@ public class ConfigManager {
                 return pi;
             }
         }
-        return emptyPerson;
+        return null;
     }
 
     public void setWelcome(long fromGroup, String content) {
@@ -292,6 +300,7 @@ public class ConfigManager {
         public HashSet<Long> blackGroup = new HashSet<>();
         public HashSet<String> blockWord = new HashSet<>();
         public HashSet<Person> person = new HashSet<>();
+        public HashMap<Long,Person.Config> personConfig = new HashMap<>();
         public HashSet<Long> owner = new HashSet<>();
         public HashSet<Long> masters = new HashSet<>();
         public HashSet<Long> admins = new HashSet<>();

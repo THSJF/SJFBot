@@ -27,7 +27,7 @@ public class PersonalConfig extends BaseModule implements IGroupMessageEvent {
         long qq = event.getSender().getId();
         String msg = event.getMessage().contentToString();
         ConfigManager cm = ConfigManager.getInstance();
-        Person pc = cm.getPersonFromQQ(qq);
+        Person.Config pc = cm.getPersonConfig(qq);
         switch (msg) {
             case ".bot on":
                 pc.setBotOn(true);
