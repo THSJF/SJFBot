@@ -1,7 +1,9 @@
 package com.meng.modules.qq.modules;
 
+import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
+import com.meng.modules.imageFactory.AnimatedGifDecoder;
 import com.meng.modules.imageFactory.ImageFactory;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -9,12 +11,15 @@ import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.sauceNao.SauceNaoApi;
 import com.meng.modules.sauceNao.javabean.SauceNaoResult;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
 import com.meng.tools.Network;
-import com.meng.tools.SJFExecutors;
 import com.meng.tools.Youtu;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -176,7 +181,12 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             }
             if (img != null && msg.startsWith("灰度图")) {
                 try {
-                    runGenerateGray(bimg, event);
+                    String format = FileFormat.getFileType(imageFile).extendName;
+                    if ("gif".equals(format)) {
+                        runGenerateGrayGif(imageFile, event);
+                    } else {
+                        runGenerateGray(bimg, event);
+                    }
                 } catch (IOException e) {
                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                 }
@@ -188,7 +198,12 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 return true;
             } else if (img != null && ready.containsKey(qqId)) {
                 try {
-                    runGenerateGray(bimg, event);
+                    String format = FileFormat.getFileType(imageFile).extendName;
+                    if ("gif".equals(format)) {
+                        runGenerateGrayGif(imageFile, event);
+                    } else {
+                        runGenerateGray(bimg, event);
+                    }
                 } catch (IOException e) {
                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                 }
@@ -366,6 +381,29 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         Image im = entity.toImage(tmp, event.getGroup());
         sendQuote(event, im);
         tmp.delete();
+    }
+    
+    private void runGenerateGrayGif(File imageFile, GroupMessageEvent event) throws FileNotFoundException {
+        AnimatedGifDecoder gifDecoder = new AnimatedGifDecoder();
+        FileInputStream fis = new FileInputStream(imageFile);
+        int statusCode = gifDecoder.read(fis);
+        if (statusCode != 0) {
+            return;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        AnimatedGifEncoder localAnimatedGifEncoder = new AnimatedGifEncoder();
+        localAnimatedGifEncoder.start(baos);//start
+        localAnimatedGifEncoder.setRepeat(0);//设置生成gif的开始播放时间。0为立即开始播放
+        for (int i = 0; i < gifDecoder.getFrameCount(); i++) {
+            localAnimatedGifEncoder.setDelay(gifDecoder.getDelay(i));
+            localAnimatedGifEncoder.addFrame(ImageFactory.getInstance().generateGray(gifDecoder.getFrame(i)));
+        }
+        localAnimatedGifEncoder.finish();
+        File gifFile = new File(SBot.appDirectory + "image/gif/" + System.currentTimeMillis() + ".gif");
+        FileTool.saveFile(gifFile, baos.toByteArray());
+        Image resultImage = entity.toImage(gifFile, event.getGroup());
+        sendQuote(event, resultImage);
+        imageFile.delete();
     }
 
     private void getUrl(final Image img, final GroupMessageEvent event) {
