@@ -2,10 +2,10 @@ package com.meng.tools;
 
 import com.meng.modules.qq.SBot;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,7 +13,6 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     private static ExceptionCatcher mInstance;
-	private String fileName;
 
     private ExceptionCatcher() {
 	}
@@ -49,17 +48,8 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
         String result = writer.toString();
         sb.append(result);
         try {
-            long timestamp = System.currentTimeMillis();
-            String time = format.format(new Date());
-			fileName = "crash-" + time + "-" + timestamp + ".log";
-			String path = SBot.appDirectory + "/crash/";
-			File dir = new File(path);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			FileOutputStream fos = new FileOutputStream(path + fileName);
-			fos.write(sb.toString().replace("java", "jvav").getBytes());
-			fos.close();
+			String fileName =SBot.appDirectory + "/crash/crash-" + format.format(new Date()) + "-" + System.currentTimeMillis() + ".log";
+            FileTool.saveFile(new File(fileName), sb.toString().replace("java", "jvav").getBytes(StandardCharsets.UTF_8));
             return fileName;
 		} catch (Exception e) {
             e.printStackTrace();

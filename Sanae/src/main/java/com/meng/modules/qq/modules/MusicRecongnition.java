@@ -1,4 +1,5 @@
 package com.meng.modules.qq.modules;
+
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.zun.TH10GameData;
 import com.meng.gameData.TouHou.zun.TH11GameData;
@@ -6,12 +7,12 @@ import com.meng.gameData.TouHou.zun.TH12GameData;
 import com.meng.gameData.TouHou.zun.TH14GameData;
 import com.meng.gameData.TouHou.zun.TH15GameData;
 import com.meng.gameData.TouHou.zun.TH16GameData;
+import com.meng.modules.ffmpeg.Ffmpeg;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.touhou.zun.music.FmtFile;
 import com.meng.modules.touhou.zun.music.WavHeader;
-import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import com.meng.tools.Tools;
 import java.io.File;
@@ -157,36 +158,13 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
 	}
 
     public File convert(File input, File output) {
-        StringBuilder cmdBuilder = new StringBuilder();
-        cmdBuilder.append("ffmpeg -i \"");
-        cmdBuilder.append(input.getAbsolutePath());
-        cmdBuilder.append("\" -ac 2 -ar 22040 -ab 64 \"");
-        cmdBuilder.append(output.getAbsolutePath());
-        cmdBuilder.append("\"");
-        //    String args = "ffmpeg -i c:\\1.jpg c:\\11.png";
-        String args = cmdBuilder.toString();
-        try { 
-            String[] cmd = new String[]{
-                "cmd.exe",
-                "/C",
-                args
-            };
-            Runtime rt = Runtime.getRuntime();
-            System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
-            Process proc = rt.exec(cmd);
-            TTS.StreamGobbler errorGobbler = new TTS.StreamGobbler(proc.getErrorStream(), "error");
-            TTS.StreamGobbler outputGobbler = new TTS.StreamGobbler(proc.getInputStream(), "output");
-            errorGobbler.start();
-            outputGobbler.start();
-            int exitVal = proc.waitFor();
-            System.out.println("ExitValue: " + exitVal);
-            if (exitVal != 0) {
-                throw new RuntimeException("exit value:" + exitVal);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), t);
+        Ffmpeg.AudioCommandBuilder cmd = new Ffmpeg.AudioCommandBuilder(input, output);
+        cmd.coverExistFile().author("SJF").comment("from 2un");
+        cmd.bitrate(64).freq(22050).channels(2);
+        if (Ffmpeg.execute(cmd)) {
+            return output;
+        } else {
+            return null;
         }
-        return output;
     }
 }
