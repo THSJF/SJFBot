@@ -33,7 +33,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         long group = event.getGroup().getId();
         long qq = event.getSender().getId();
         if (msg.equals("原曲认知")) {
-            File musicFragment = createMusicCut(new Random().nextInt(16), 10, group, qq);
+            File musicFragment = createMusicCut(new Random().nextInt(16), 3, group, qq);
             sendGroupMessage(group, entity.toVoice(musicFragment, event.getGroup())); 
             return true;
         }
@@ -56,6 +56,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
                     sendGroupMessage(group, entity.toVoice(createMusicCut(new Random().nextInt(16), 1, group, qq), event.getGroup()));
                     break;      
             }
+            return true;
 		}
         return false;
     }
@@ -157,12 +158,11 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
 
     public File convert(File input, File output) {
         StringBuilder cmdBuilder = new StringBuilder();
-        cmdBuilder.append("ffmpeg ");
-        cmdBuilder.append("-ac 2 -ar 22040 -ab 128 ");
-        cmdBuilder.append("-i ");
+        cmdBuilder.append("ffmpeg -i \"");
         cmdBuilder.append(input.getAbsolutePath());
-        cmdBuilder.append(" ");
+        cmdBuilder.append("\" -ac 2 -ar 22040 -ab 64 \"");
         cmdBuilder.append(output.getAbsolutePath());
+        cmdBuilder.append("\"");
         //    String args = "ffmpeg -i c:\\1.jpg c:\\11.png";
         String args = cmdBuilder.toString();
         try { 

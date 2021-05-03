@@ -45,7 +45,13 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         long at = entity.getAt(event.getMessage());
         if (msg.contains("神触") && at != -1) {
             NormalMember nm = event.getGroup().get(at);
-            File avatar = new File(SBot.appDirectory + "avatar/" + System.currentTimeMillis() + ".jpg");
+            File avatar;
+            try {
+                avatar = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/avatar/" + System.currentTimeMillis() + ".jpg"));
+            } catch (IOException e) {
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                return false;
+            }
             byte[] fileBytes = Network.httpGetRaw(nm.getAvatarUrl());
             FileTool.saveFile(avatar, fileBytes);
             Image img = entity.toImage(ImageFactory.getInstance().generateShenChu(avatar), event.getGroup());
@@ -55,7 +61,12 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         }
         if (msg.contains("精神支柱") && at != -1) {
             NormalMember nm = event.getGroup().get(at);
-            File avatar = new File(SBot.appDirectory + "avatar/" + System.currentTimeMillis() + ".jpg");
+            File avatar;
+            try {
+                avatar = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/avatar/" + System.currentTimeMillis() + ".jpg"));
+            } catch (IOException e) {
+                return false;
+            }
             byte[] fileBytes = Network.httpGetRaw(nm.getAvatarUrl());
             FileTool.saveFile(avatar, fileBytes);
             Image img = entity.toImage(ImageFactory.getInstance().generateJingShenZhiZhu(avatar), event.getGroup());

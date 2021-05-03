@@ -76,6 +76,21 @@ public class FileTool {
 		return readBytes(new File(path));
 	}
 
+    public static File createFile(String path) throws IOException {
+        return createFile(new File(path));
+    }
+
+    public static File createFile(File file) throws IOException {
+        File parent = file.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        return file;
+    }
+
     public static void saveFile(File file, byte[] content) {
         try {
             File parent = file.getParentFile();

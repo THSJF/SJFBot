@@ -11,6 +11,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import com.meng.modules.qq.SBot;
 import java.awt.Image;
+import com.meng.tools.FileTool;
 
 public class ImageFactory {
 
@@ -25,7 +26,7 @@ public class ImageFactory {
     
     public File generateJingShenZhiZhu(File file) {
         try {
-            File retFile = new File(SBot.appDirectory + "jingshenzhizhu/" + System.currentTimeMillis() + ".jpg");
+            File retFile = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/jingshenzhizhu/" + System.currentTimeMillis() + ".png"));
             BufferedImage src = ImageIO.read(file);
             BufferedImage des1 = scaleImage(rotateImage(src, 346), 190);
             Image im = ImageIO.read(new File(SBot.appDirectory + "/baseImage/精神支柱.png"));
@@ -41,7 +42,7 @@ public class ImageFactory {
 
     public File generateShenChu(File file) {
         try {
-            File retFile = new File(SBot.appDirectory + "shenchu/" + System.currentTimeMillis() + ".jpg");
+            File retFile = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/shenchu/" + System.currentTimeMillis() + ".png"));
             BufferedImage src = ImageIO.read(file);
             BufferedImage des1 = new BufferedImage(228, 228, BufferedImage.TYPE_INT_ARGB);
             des1.getGraphics().drawImage(src, 0, 0, 228, 228, null);
