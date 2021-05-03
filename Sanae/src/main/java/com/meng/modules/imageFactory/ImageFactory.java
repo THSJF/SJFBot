@@ -18,12 +18,45 @@ public class ImageFactory {
     private static ImageFactory instance;
 
     public static ImageFactory getInstance() {
-        if(instance == null){
+        if (instance == null) {
             instance = new ImageFactory();
         }
         return instance;
     }
-    
+
+    public BufferedImage generateGray(BufferedImage img) {
+        for (int i = 0;i < img.getWidth();i++) {
+            for (int j =0;j < img.getHeight();j++) {
+                int col = img.getRGB(i, j);
+                int alpha = col & 0xFF000000;
+                int R = (col & 0x00FF0000) >> 16;
+                int G = (col & 0x0000FF00) >> 8;
+                int B = (col & 0x000000FF);
+                //  int Y = (int)(R * 0.299 + G * 0.587 + B * 0.114);
+                int Y = ((66 * R + 129 * G + 25 * B + 128) >> 8) + 16;
+                int newColor = alpha | (Y << 16) | (Y << 8) | Y;
+                img.setRGB(i, j, newColor);
+            }
+        }
+        return img;
+    }
+
+    public float[] RGBToYUV(int R, int G, int B) {
+        return new float[]{
+            0.299f * R + 0.587f * G + 0.114f * B,
+            -0.147f * R - 0.289f * G + 0.436f * B,
+            0.615f * R - 0.515f * G - 0.100f * B
+        };
+    }
+
+    public int[] YUVToRGB(float Y, float U, float V) {
+        return new int[]{
+            ((int)(Y + 1.14f * V)),
+            ((int)(Y - 0.39f * U - 0.58f * V)),
+            ((int)(Y + 2.03f * U))
+        };
+    }
+
     public File generateJingShenZhiZhu(File file) {
         try {
             File retFile = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/jingshenzhizhu/" + System.currentTimeMillis() + ".png"));

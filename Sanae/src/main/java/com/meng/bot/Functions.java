@@ -32,7 +32,8 @@ public enum Functions {
     @SerializedName("z") BilibiliTip("哔哩哔哩提示"),
     @SerializedName("aa") FantasyZone("FantasyZone"),
     @SerializedName("ab") PersonalConfig("个人设置"),
-    @SerializedName("ac") FileAnalyzer("文件分析")
+    @SerializedName("ac") FileAnalyzer("文件分析"),
+    @SerializedName("ad") GrayImage("灰度图")
     ;
 
     private Functions(String s){

@@ -155,14 +155,47 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 getUrl(img, event);
                 return true;
             } else if (img == null && msg.equals("url")) {
-                ready.put(qqId, TYPE.Porn);
+                ready.put(qqId, TYPE.Url);
                 sendQuote(event, "发送一张图片吧");
                 return true;
             } else if (img != null && ready.containsKey(qqId)) {
                 getUrl(img, event);
                 return true;
             }
-        } 
+        }
+        if (configManager.isFunctionEnabled(event.getGroup(), Functions.GrayImage) && (ready.get(qqId) == TYPE.Gray || ready.get(qqId) == null)) {
+            File imageFile = new File(SBot.appDirectory + "image/" + System.currentTimeMillis() + ".jpg");
+            byte[] fileBytes = Network.httpGetRaw(entity.getUrl(img));
+            FileTool.saveFile(imageFile, fileBytes);
+            BufferedImage bimg = null;
+            try {
+                bimg = ImageIO.read(imageFile);
+            } catch (IOException e) {
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                return false;
+            }
+            if (img != null && msg.startsWith("灰度图")) {
+                try {
+                    runGenerateGray(bimg, event);
+                } catch (IOException e) {
+                    ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                }
+                imageFile.delete();
+                return true;
+            } else if (img == null && msg.equals("灰度图")) {
+                ready.put(qqId, TYPE.Gray);
+                sendQuote(event, "发送一张图片吧");
+                return true;
+            } else if (img != null && ready.containsKey(qqId)) {
+                try {
+                    runGenerateGray(bimg, event);
+                } catch (IOException e) {
+                    ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                }
+                imageFile.delete();
+                return true;
+            }
+        }
         return false;
     }
 
@@ -171,31 +204,26 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         Tag,
         Ocr,
         Porn,
-        Url
+        Url,
+        Gray
         }
 
     private void getPornValue(final Image img, final GroupMessageEvent event) {
-        SJFExecutors.execute(new Runnable(){
-
-                @Override
-                public void run() {
-                    ready.remove(event.getSender().getId());
-                    sendQuote(event, "正在识别……");
-                    try {
-                        Youtu.PornResult response = Youtu.getFaceYoutu().doPornWithUrl(entity.getUrl(img));
-                        ArrayList<Youtu.PornResult.Tag> items = response.tags;
-                        StringBuilder sb = new StringBuilder();
-                        for (Youtu.PornResult.Tag tag : items) {
-                            sb.append(switchTagName(tag.tag_name)).append(":").append(tag.tag_confidence).append("%\n");
-                        }
-                        sb.setLength(sb.length() - 1);
-                        sendQuote(event, sb.toString());
-                    } catch (Exception e) {
-                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                        sendQuote(event, e.toString());
-                    }
-                }
-            });
+        ready.remove(event.getSender().getId());
+        sendQuote(event, "正在识别……");
+        try {
+            Youtu.PornResult response = Youtu.getFaceYoutu().doPornWithUrl(entity.getUrl(img));
+            ArrayList<Youtu.PornResult.Tag> items = response.tags;
+            StringBuilder sb = new StringBuilder();
+            for (Youtu.PornResult.Tag tag : items) {
+                sb.append(switchTagName(tag.tag_name)).append(":").append(tag.tag_confidence).append("%\n");
+            }
+            sb.setLength(sb.length() - 1);
+            sendQuote(event, sb.toString());
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            sendQuote(event, e.toString());
+        }
     }
 
     private String switchTagName(String s) {
@@ -225,139 +253,125 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         }
     }
 
-    private void getOcrResult(final Image img, final GroupMessageEvent event) {
-        SJFExecutors.execute(new Runnable(){
-
-                @Override
-                public void run() {
-                    ready.remove(event.getSender().getId());
-                    sendQuote(event, "正在识别……");
-                    try {
-                        Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithUrl(entity.getUrl(img));
-                        StringBuilder sb = new StringBuilder();
-                        ArrayList<Youtu.OcrResult.Items> items = response.items;
-                        sb.append("结果:");
-                        for (Youtu.OcrResult.Items s : items) {
-                            sb.append("\n").append(s.itemstring);
-                        }
-                        sendMessage(event.getGroup(), sb.toString());
-                    } catch (Exception e) {
-                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                        sendQuote(event, e.toString());
-                    }
-                }
-            });
+    private void getOcrResult(Image img, GroupMessageEvent event) {
+        ready.remove(event.getSender().getId());
+        sendQuote(event, "正在识别……");
+        try {
+            Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithUrl(entity.getUrl(img));
+            StringBuilder sb = new StringBuilder();
+            ArrayList<Youtu.OcrResult.Items> items = response.items;
+            sb.append("结果:");
+            for (Youtu.OcrResult.Items s : items) {
+                sb.append("\n").append(s.itemstring);
+            }
+            sendMessage(event.getGroup(), sb.toString());
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            sendQuote(event, e.toString());
+        }
     }
 
-    private void getImageTag(final Image img, final GroupMessageEvent event) {
-        SJFExecutors.execute(new Runnable(){
-
-                @Override
-                public void run() {
-                    ready.remove(event.getSender().getId());
-                    sendQuote(event, "正在识别……");
-                    try {
-                        Youtu.TagResult response = Youtu.getFaceYoutu().doTagWithUrl(entity.getUrl(img));
-                        ArrayList<Youtu.TagResult.Tag> items = response.tags;
-                        StringBuilder sb = new StringBuilder();
-                        for (Youtu.TagResult.Tag tag : items) {
-                            sb.append(tag.tag_name).append("\n");
-                        }
-                        sb.setLength(sb.length() - 1);
-                        sendQuote(event, sb.toString());
-                    } catch (Exception e) {
-                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                        sendQuote(event, e.toString());
-                    }
-                }
-            });
+    private void getImageTag(Image img, GroupMessageEvent event) {
+        ready.remove(event.getSender().getId());
+        sendQuote(event, "正在识别……");
+        try {
+            Youtu.TagResult response = Youtu.getFaceYoutu().doTagWithUrl(entity.getUrl(img));
+            ArrayList<Youtu.TagResult.Tag> items = response.tags;
+            StringBuilder sb = new StringBuilder();
+            for (Youtu.TagResult.Tag tag : items) {
+                sb.append(tag.tag_name).append("\n");
+            }
+            sb.setLength(sb.length() - 1);
+            sendQuote(event, sb.toString());
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            sendQuote(event, e.toString());
+        }
     }
 
-    private void runSeekDog(final BufferedImage img, final GroupMessageEvent event) {
-        SJFExecutors.execute(new Runnable(){
+//    private void runSeekDog(final BufferedImage img, final GroupMessageEvent event) {
+//        SJFExecutors.execute(new Runnable(){
+//
+//                @Override
+//                public void run() {
+//                    File tmp = new File(SBot.appDirectory + "/image/Europe/" + System.currentTimeMillis() + ".jpg");
+//                    try {  
+//                        ImageIO.write(img, "jpg", tmp);
+//                        StringBuilder sb = new StringBuilder();
+//                        Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithFile(tmp.getAbsolutePath());
+//                        ArrayList<Youtu.OcrResult.Items> items = response.items;
+//                        sb.append("Europe结果:");
+//                        for (Youtu.OcrResult.Items s : items) {
+//                            sb.append("\n").append(s.itemstring);
+//                        }
+//                        System.out.println(sb.toString());
+//                        if (items.size() == 3 && items.get(0).itemstring.equals("极品") && (items.get(2).itemstring.equals("角色卡") || items.get(2).itemstring.equals("圣痕") || items.get(2).itemstring.equals("武器"))) {
+//                            sendMessage(event.getGroup(), items.get(1).itemstring + ",去你大爷的欧洲狗");
+//                        }
+//                    } catch (Exception e) {
+//                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+//                        sendQuote(event, e.toString());
+//                    } finally {
+//                        tmp.delete();   
+//                    }
+//                }
+//            });
+//    }
 
-                @Override
-                public void run() {
-                    File tmp = new File(SBot.appDirectory + "/image/Europe/" + System.currentTimeMillis() + ".jpg");
-                    try {  
-                        ImageIO.write(img, "jpg", tmp);
-                        StringBuilder sb = new StringBuilder();
-                        Youtu.OcrResult response = Youtu.getFaceYoutu().doOcrWithFile(tmp.getAbsolutePath());
-                        ArrayList<Youtu.OcrResult.Items> items = response.items;
-                        sb.append("Europe结果:");
-                        for (Youtu.OcrResult.Items s : items) {
-                            sb.append("\n").append(s.itemstring);
-                        }
-                        System.out.println(sb.toString());
-                        if (items.size() == 3 && items.get(0).itemstring.equals("极品") && (items.get(2).itemstring.equals("角色卡") || items.get(2).itemstring.equals("圣痕") || items.get(2).itemstring.equals("武器"))) {
-                            sendMessage(event.getGroup(), items.get(1).itemstring + ",去你大爷的欧洲狗");
-                        }
-                    } catch (Exception e) {
-                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                        sendQuote(event, e.toString());
-                    } finally {
-                        tmp.delete();   
-                    }
-                }
-            });
-    }
-
-    private void runPictureSearch(final Image img, final GroupMessageEvent event) {
+    private void runPictureSearch(Image simg, GroupMessageEvent event) {
         ready.remove(event.getSender().getId());
         sendQuote(event, "正在搜索……");
-        SJFExecutors.execute(new Runnable(){
-
-                @Override
-                public void run() {
-                    try {
-                        SauceNaoResult mResults = SauceNaoApi.getSauce(entity.getUrl(img));
-                        int size = mResults.getResults().size();
-                        if (size < 1) {
-                            sendQuote(event, "没有相似度较高的图片");
-                            return;
-                        }
-                        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
-                        SauceNaoResult.Result tmpr = mResults.getResults().get(0);
-                        Image img = entity.toImage(new URL(tmpr.mThumbnail), event.getGroup());
-                        String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
-                        if (titleAndMetadata.length > 0) {
-                            messageChainBuilder.append(titleAndMetadata[0]).append("\n");
-                            if (titleAndMetadata.length == 2) {
-                                tmpr.mColumns.add(0, titleAndMetadata[1]);
-                            }
-                            for (String string : tmpr.mColumns) {
-                                messageChainBuilder.append(string).append("\n");
-                            }
-                        }
-                        messageChainBuilder.append(img).append("\n");
-                        if (tmpr.mExtUrls.size() == 2) {
-                            messageChainBuilder.append("图片&画师:").append(tmpr.mExtUrls.get(1)).append("\n");
-                            messageChainBuilder.append(tmpr.mExtUrls.get(0)).append("\n");
-                        } else if (tmpr.mExtUrls.size() == 1) {
-                            messageChainBuilder.append("链接:").append(tmpr.mExtUrls.get(0)).append("\n");
-                        }
-                        if (!tmpr.mSimilarity.isEmpty()) {
-                            messageChainBuilder.append("相似度:").append(tmpr.mSimilarity).append("\n");
-                        }
-                        sendMessage(event.getGroup(), messageChainBuilder.asMessageChain());     
-                    } catch (IOException e) {
-                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-                        sendMessage(event, "搜索出错");
-                    }
+        try {
+            SauceNaoResult mResults = SauceNaoApi.getSauce(entity.getUrl(simg));
+            int size = mResults.getResults().size();
+            if (size < 1) {
+                sendQuote(event, "没有相似度较高的图片");
+                return;
+            }
+            MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+            SauceNaoResult.Result tmpr = mResults.getResults().get(0);
+            Image img = entity.toImage(new URL(tmpr.mThumbnail), event.getGroup());
+            String[] titleAndMetadata = tmpr.mTitle.split("\n", 2);
+            if (titleAndMetadata.length > 0) {
+                messageChainBuilder.append(titleAndMetadata[0]).append("\n");
+                if (titleAndMetadata.length == 2) {
+                    tmpr.mColumns.add(0, titleAndMetadata[1]);
                 }
-            });
+                for (String string : tmpr.mColumns) {
+                    messageChainBuilder.append(string).append("\n");
+                }
+            }
+            messageChainBuilder.append(img).append("\n");
+            if (tmpr.mExtUrls.size() == 2) {
+                messageChainBuilder.append("图片&画师:").append(tmpr.mExtUrls.get(1)).append("\n");
+                messageChainBuilder.append(tmpr.mExtUrls.get(0)).append("\n");
+            } else if (tmpr.mExtUrls.size() == 1) {
+                messageChainBuilder.append("链接:").append(tmpr.mExtUrls.get(0)).append("\n");
+            }
+            if (!tmpr.mSimilarity.isEmpty()) {
+                messageChainBuilder.append("相似度:").append(tmpr.mSimilarity).append("\n");
+            }
+            sendMessage(event.getGroup(), messageChainBuilder.asMessageChain());     
+        } catch (IOException e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            sendMessage(event, "搜索出错");
+        }
+    }
+
+    public void runGenerateGray(BufferedImage image, GroupMessageEvent event) throws IOException {
+        BufferedImage grayImage = ImageFactory.getInstance().generateGray(image);
+        File tmp = new File(SBot.appDirectory + "image/gray/" + System.currentTimeMillis() + ".jpg");
+        FileTool.createFile(tmp);
+        ImageIO.write(grayImage, "jpg", tmp);
+        Image im = entity.toImage(tmp, event.getGroup());
+        sendQuote(event, im);
+        tmp.delete();
     }
 
     private void getUrl(final Image img, final GroupMessageEvent event) {
-        SJFExecutors.execute(new Runnable(){
-
-                @Override
-                public void run() {
-                    ready.remove(event.getSender().getId());
-                    sendQuote(event, "正在识别……");
-                    sendMessage(event, entity.getUrl(img));
-                }
-            });
+        ready.remove(event.getSender().getId());
+        sendQuote(event, "正在识别……");
+        sendMessage(event, entity.getUrl(img));
     }
 
     @Override
