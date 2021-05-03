@@ -6,10 +6,9 @@ import java.io.File;
 
 public class Ffmpeg {
 
-    public static boolean execute(CommandBuilder builder) {
-        String args = builder.toString();
+    public static boolean execute(String command) {
         try { 
-            String[] cmd = { "cmd.exe", "/C", args };
+            String[] cmd = { "cmd.exe", "/C", command };
             System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
             Process proc = Runtime.getRuntime().exec(cmd);
             StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "error");
@@ -35,8 +34,8 @@ public class Ffmpeg {
 //        -ac channels 设置通道 缺省为1
 //        -an 不使能音频纪录
 //        -acodec codec 使用codec编解码
-        public AudioCommandBuilder(File input, File output) {
-            super(input, output);
+        public AudioCommandBuilder(File input) {
+            super(input);
         }
 
         public AudioCommandBuilder bitrate(int kbps) {
@@ -62,10 +61,10 @@ public class Ffmpeg {
         public AudioCommandBuilder code(String coder) {
             builder.append(" -acodec ").append(coder);
             return this;
-        } 
+        }
     }
 
-    private static abstract class CommandBuilder {
+    public static class CommandBuilder {
         protected StringBuilder builder = new StringBuilder("ffmpeg");
 //        -L license
 //        -h 帮助
@@ -85,8 +84,8 @@ public class Ffmpeg {
 //        -itsoffset offset 设置以秒为基准的时间偏移，该选项影响所有后面的输入文件。该偏移被加到输入文件的时戳，
 //        定义一个正偏移意味着相应的流被延迟了 offset秒。 [-]hh:mm:ss[.xxx]的格式也支持
 
-        public CommandBuilder(File input, File output) {
-            builder.append(" -i \"").append(input).append("\" \"").append(output).append("\"");
+        public CommandBuilder(File input) {
+            builder.append(" -i \"").append(input).append("\"");
         }
 
         public CommandBuilder coverExistFile() {
@@ -127,6 +126,11 @@ public class Ffmpeg {
         public CommandBuilder itsoffset(float seconds) {
             builder.append(" -itsoffset ").append(String.format("%.2f", seconds));
             return this;
+        }
+        
+        public String build(File output){
+            builder.append(" \"").append(output).append("\"");
+            return builder.toString();
         }
     }
 
