@@ -16,6 +16,7 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.FileMessage;
 import net.mamoe.mirai.utils.RemoteFile;
+import com.meng.modules.touhou.zun.replay.ReplayDecoder;
 
 public class FileAnalyzer extends BaseModule implements IGroupMessageEvent {
     public FileAnalyzer(SBot bot) {
@@ -55,6 +56,11 @@ public class FileAnalyzer extends BaseModule implements IGroupMessageEvent {
                 ThsssReplay rpy = new ThsssReplay(touhouReplay);
                 sendMessage(group, rpy.toString());
                 sendMessage(group, entity.toGroupFile(group, ThsssReplayAnalyzer.analyze(rpy).toString().getBytes(StandardCharsets.UTF_8), "/thsss_replay_keys.txt"));
+            }else{
+                ReplayDecoder.ReplayEntry rr = new ReplayDecoder.ReplayEntry();
+                rr.FullPath = touhouReplay.getAbsolutePath();
+                ReplayDecoder.ReadFile(rr);
+                sendMessage(group,rr.toString());
             }
         } catch (IOException e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

@@ -373,7 +373,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         FileTool.createFile(tmp);
         ImageIO.write(grayImage, "jpg", tmp);
         Image im = entity.toImage(tmp, event.getGroup());
-        sendQuote(event, im);
+        sendMessage(event, im);
         tmp.delete();
     }
 
@@ -397,7 +397,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         File gifFile = new File(SBot.appDirectory + "image/gif/" + System.currentTimeMillis() + ".gif");
         FileTool.saveFile(gifFile, baos.toByteArray());
         Image resultImage = entity.toImage(gifFile, event.getGroup());
-        sendQuote(event, resultImage);
+        sendMessage(event, resultImage);
         imageFile.delete();
     }
 

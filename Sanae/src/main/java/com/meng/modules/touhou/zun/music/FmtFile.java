@@ -9,7 +9,6 @@ public class FmtFile {
     private int position = 0;
     private byte[] fileByte;
     public MusicInfo[] musicInfos;
-    public String[] names;
 
     public FmtFile(File file) {
         if (!file.exists()) {
@@ -17,7 +16,6 @@ public class FmtFile {
         }
         fileByte = FileTool.readBytes(file);
         musicInfos = new MusicInfo[(int) (file.length() / 52)];
-        names = new String[musicInfos.length];
         for (int i = 0; i < musicInfos.length; ++i) {
             MusicInfo musicInfo = new MusicInfo();
             musicInfo.name = readName();
@@ -33,7 +31,6 @@ public class FmtFile {
             musicInfo.bitsPerSample = readShort();
             musicInfo.cbSize = readShort();
             musicInfo.pad = readShort();
-            names[i] = musicInfo.name;
             musicInfos[i] = musicInfo;
         }
     }

@@ -54,6 +54,14 @@ public abstract class BitConverter {
 		return toInt(data, 0);
 	}
 
+    public long toUInt(byte[] data, int pos) {
+        return 0xFFFFFFFFL & toInt(data, pos);
+    }
+
+    public long toUInt(byte[] data) {
+        return 0xFFFFFFFFL & toInt(data, 0);
+    }
+
 	public abstract long toLong(byte[] data, int pos);
 
 	public long toLong(byte[] data) {
