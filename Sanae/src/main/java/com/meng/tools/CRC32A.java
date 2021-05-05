@@ -29,12 +29,12 @@ public class CRC32A {
 		}
 	}
 
-	public long calculate(byte[] data) {
-		int start=0xffffffff;
+	public String calculate(byte[] data) {
+		int start = 0xffffffff;
 		for (int i=0;i < data.length;i++) {
 			start = (start << 8) ^ (table[((start >> 24) & 0xff) ^ data[i]]);
 		}
 		start = ~start;
-		return (((start & 0xff) << 24) + ((start & 0xff00) << 8) + ((start & 0xff0000) >>> 8) + ((start & 0xff000000) >>> 24)) & 0xFFFFFFFFL;
+		return Long.toHexString((((start & 0xff) << 24) + ((start & 0xff00) << 8) + ((start & 0xff0000) >>> 8) + ((start & 0xff000000) >>> 24)) & 0xFFFFFFFFL).toUpperCase();
 	}
 }

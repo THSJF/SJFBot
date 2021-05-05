@@ -7,12 +7,17 @@ import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.qq.handler.group.INudgeEvent;
+import com.meng.tools.CRC32A;
+import com.meng.tools.FileTool;
+import com.meng.tools.Hash;
 import com.meng.tools.JsonHelper;
+import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -176,6 +181,27 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         } else {
                             sendGroupMessage(Long.parseLong(next), iter.next());
                         }
+                    }
+                    return true;
+                case "tts":
+                    if (list.size() == 3) {
+                        String ttsText = iter.next();
+                        File voiceFile = new File(SBot.appDirectory + "tts/" + CRC32A.getInstance().calculate(ttsText.getBytes(StandardCharsets.UTF_8)) + "-" + Hash.getMd5Instance().calculate(ttsText.getBytes(StandardCharsets.UTF_8)) + ".mp3");
+                        if (!voiceFile.exists()) {
+                            byte[] voice = Network.httpGetRaw(Network.httpGet("http://lkaa.top/API/yuyin/api.php?msg=" + ttsText + "&type=text"));
+                            FileTool.saveFile(voiceFile, voice);             
+                        }
+                        sendGroupMessage(groupId, entity.toVoice(voiceFile, gme.getGroup()));
+                    } else if (list.size() == 4) {
+                        String groupIdStr = iter.next();
+                        String ttsText = iter.next();
+                        byte[] ttsBytes = ttsText.getBytes(StandardCharsets.UTF_8);
+                        File voiceFile = new File(SBot.appDirectory + "tts/" + CRC32A.getInstance().calculate(ttsBytes) + "-" + Hash.getMd5Instance().calculate(ttsBytes) + ".mp3");
+                        if (!voiceFile.exists()) {
+                            byte[] voice = Network.httpGetRaw(Network.httpGet("http://lkaa.top/API/yuyin/api.php?msg=" + ttsText + "&type=text"));
+                            FileTool.saveFile(voiceFile, voice);             
+                        }
+                        sendGroupMessage(Long.parseLong(groupIdStr), entity.toVoice(voiceFile, gme.getGroup()));
                     }
                     return true;
                 case "groupTitle":
