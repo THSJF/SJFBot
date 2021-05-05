@@ -1,32 +1,8 @@
 package com.meng.modules.ffmpeg;
 
-import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.StreamGobbler;
 import java.io.File;
 
 public class Ffmpeg {
-
-    public static boolean execute(String command) {
-        try { 
-            String[] cmd = { "cmd.exe", "/C", command };
-            System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
-            Process proc = Runtime.getRuntime().exec(cmd);
-            StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "error");
-            StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), "output");
-            errorGobbler.start();
-            outputGobbler.start();
-            int exitVal = proc.waitFor();
-            System.out.println("ExitValue: " + exitVal);
-            if (exitVal != 0) {
-                return false;
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), t);
-            return false;
-        }
-        return true;
-    }
 
     public static class AudioCommandBuilder extends CommandBuilder {
 //        -ab bitrate 设置音频码率
