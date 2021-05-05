@@ -1,6 +1,5 @@
 package com.meng.modules.bilibili.video.javabean;
 
-import com.meng.tools.AvBvConverter;
 import java.util.ArrayList;
 
 public class VideoInfo {

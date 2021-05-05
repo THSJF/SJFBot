@@ -1,8 +1,9 @@
-package com.meng.tools;
+package com.meng.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import com.meng.tools.Base64Converter;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;

@@ -8,6 +8,7 @@ import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.qq.handler.group.INudgeEvent;
 import com.meng.tools.CRC32A;
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import com.meng.tools.Hash;
 import com.meng.tools.JsonHelper;
@@ -30,6 +31,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Voice;
+import com.meng.modules.Lkaa;
 
 /**
  * @Description: 管理员命令
@@ -52,9 +54,6 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
         String msg = gme.getMessage().contentToString();
-        if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() < 1) {
-            return false;
-		}
         if (msg.charAt(0) != '.') {
             return false;
         }
@@ -63,6 +62,21 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         iter.next();//.
         try {
             String first = iter.next();
+            switch (first) {
+                case "tts":
+                    if (list.size() == 3) {
+                        sendGroupMessage(groupId, entity.toVoice(Lkaa.generalVoice(iter.next()), gme.getGroup()));
+                    } else if (list.size() == 4) {
+                        sendGroupMessage(Long.parseLong(iter.next()), entity.toVoice(Lkaa.generalVoice(iter.next()), gme.getGroup()));
+                    }  
+                    return true;
+                case "translate":
+                    sendGroupMessage(groupId, Lkaa.generalTranslate(iter.next()));
+                    return true;
+            }
+            if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() < 1) {
+                return false;
+            }
             switch (first) {
                 case "findGroup":
                     Tools.CQ.findQQInAllGroup(entity, groupId, qqId, iter.next());
@@ -183,27 +197,6 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         }
                     }
                     return true;
-                case "tts":
-                    if (list.size() == 3) {
-                        String ttsText = iter.next();
-                        File voiceFile = new File(SBot.appDirectory + "tts/" + CRC32A.getInstance().calculate(ttsText.getBytes(StandardCharsets.UTF_8)) + "-" + Hash.getMd5Instance().calculate(ttsText.getBytes(StandardCharsets.UTF_8)) + ".mp3");
-                        if (!voiceFile.exists()) {
-                            byte[] voice = Network.httpGetRaw(Network.httpGet("http://lkaa.top/API/yuyin/api.php?msg=" + ttsText + "&type=text"));
-                            FileTool.saveFile(voiceFile, voice);             
-                        }
-                        sendGroupMessage(groupId, entity.toVoice(voiceFile, gme.getGroup()));
-                    } else if (list.size() == 4) {
-                        String groupIdStr = iter.next();
-                        String ttsText = iter.next();
-                        byte[] ttsBytes = ttsText.getBytes(StandardCharsets.UTF_8);
-                        File voiceFile = new File(SBot.appDirectory + "tts/" + CRC32A.getInstance().calculate(ttsBytes) + "-" + Hash.getMd5Instance().calculate(ttsBytes) + ".mp3");
-                        if (!voiceFile.exists()) {
-                            byte[] voice = Network.httpGetRaw(Network.httpGet("http://lkaa.top/API/yuyin/api.php?msg=" + ttsText + "&type=text"));
-                            FileTool.saveFile(voiceFile, voice);             
-                        }
-                        sendGroupMessage(Long.parseLong(groupIdStr), entity.toVoice(voiceFile, gme.getGroup()));
-                    }
-                    return true;
                 case "groupTitle":
                     entity.setGroupSpecialTitle(groupId, Long.parseLong(iter.next()), iter.next());
                     return true;
@@ -289,6 +282,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     }
             }
         } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             sendGroupMessage(groupId, "参数错误:" + e.toString());
         }
         return false;

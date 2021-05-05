@@ -15,15 +15,12 @@ public class BinaryFile {
         converter = BitConverter.getInstanceLittleEndian();
     }
 
-    public void Close() {
-    }
-
     public enum SeekOrigin {
         Current,
         Begin
         }
 
-    public void Seek(long l, SeekOrigin origin) {
+    public void seek(long l, SeekOrigin origin) {
         if (origin == SeekOrigin.Current) {
             position += l;
         } else if (origin == SeekOrigin.Begin) {
@@ -63,7 +60,7 @@ public class BinaryFile {
         return 0xFFFFFFFFL & readInt();
     }
 
-    public byte ReadByte() {
+    public byte readByte() {
         if (position == file.length) {
             return -1;
         }

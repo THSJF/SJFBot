@@ -1,17 +1,13 @@
-package com.meng.modules.imageFactory;
+package com.meng.modules;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import javax.imageio.ImageIO;
 import com.meng.modules.qq.SBot;
-import java.awt.Image;
 import com.meng.tools.FileTool;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class ImageFactory {
 

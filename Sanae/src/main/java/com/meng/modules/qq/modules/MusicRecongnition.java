@@ -7,7 +7,8 @@ import com.meng.gameData.TouHou.zun.TH12GameData;
 import com.meng.gameData.TouHou.zun.TH14GameData;
 import com.meng.gameData.TouHou.zun.TH15GameData;
 import com.meng.gameData.TouHou.zun.TH16GameData;
-import com.meng.modules.ffmpeg.Ffmpeg;
+import com.meng.modules.CmdExecuter;
+import com.meng.modules.Ffmpeg;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -19,7 +20,6 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Random;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import com.meng.modules.windows.CmdExecuter;
 
 public class MusicRecongnition extends BaseModule implements IGroupMessageEvent {
 

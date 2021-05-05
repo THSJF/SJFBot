@@ -1,4 +1,4 @@
-package com.meng.modules.ffmpeg;
+package com.meng.modules;
 
 import java.io.File;
 
@@ -103,7 +103,7 @@ public class Ffmpeg {
             builder.append(" -itsoffset ").append(String.format("%.2f", seconds));
             return this;
         }
-        
+
         public String build(File output){
             builder.append(" \"").append(output).append("\"");
             return builder.toString();

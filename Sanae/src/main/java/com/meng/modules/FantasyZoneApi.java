@@ -1,13 +1,14 @@
-package com.meng.modules.fantasyZone;
-import com.meng.modules.fantasyZone.javabean.Fantasy;
-import org.jsoup.Jsoup;
+package com.meng.modules;
+
 import com.meng.tools.JsonHelper;
-import org.jsoup.Connection;
 import java.io.IOException;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 /*
  url:https://api.fantasyzone.cc/#/tu?id=httpsapifantasyzonecctu
  */
+
 public class FantasyZoneApi {
     public static Fantasy getPicture() {
         return getPicture("pixiv", "json", 0);
@@ -38,5 +39,11 @@ public class FantasyZoneApi {
             apiReturn = JsonHelper.fromJson(response.body(), Fantasy.class);
         }
         return apiReturn;
+    }
+
+    public static class Fantasy {
+        public int id;
+        public int code;
+        public String url;
     }
 }

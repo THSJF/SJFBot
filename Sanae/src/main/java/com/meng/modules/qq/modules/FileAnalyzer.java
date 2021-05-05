@@ -56,10 +56,10 @@ public class FileAnalyzer extends BaseModule implements IGroupMessageEvent {
                 ThsssReplay rpy = new ThsssReplay(touhouReplay);
                 sendMessage(group, rpy.toString());
                 sendMessage(group, entity.toGroupFile(group, ThsssReplayAnalyzer.analyze(rpy).toString().getBytes(StandardCharsets.UTF_8), "/thsss_replay_keys.txt"));
-            }else{
+            } else {
                 ReplayDecoder.ReplayEntry rr = new ReplayDecoder.ReplayEntry();
-                rr.FullPath = touhouReplay.getAbsolutePath();
-                ReplayDecoder.ReadFile(rr);
+                rr.fullPath = touhouReplay.getAbsolutePath();
+                new ReplayDecoder().readFile(rr);
                 sendMessage(group,rr.toString());
             }
         } catch (IOException e) {
