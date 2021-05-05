@@ -157,6 +157,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 //if not number,answer will never true
             }
             if (onGoing.getTrueAns().contains(userAnser)) {
+                UserInfo module = entity.moduleManager.getModule(UserInfo.class);
+                module.getUserData(gme).qaRight++;
+                module.save();
                 sendQuote(gme, "回答正确");
             } else {
                 sendQuote(gme, "回答错误");
@@ -177,6 +180,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 sb.append(i++).append(": ").append(s).append("\n");
             }
             sb.append("回答序号即可");
+            UserInfo module = entity.moduleManager.getModule(UserInfo.class);
+            module.getUserData(gme).qaCount++;
+            module.save();
             onGoingQA.put(qqId, qar);
             sendQuote(gme, sb.toString());
             return true;

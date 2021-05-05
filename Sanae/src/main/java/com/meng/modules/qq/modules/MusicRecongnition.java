@@ -161,7 +161,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
     public File convert(File input, File output) {
         Ffmpeg.AudioCommandBuilder builder = new Ffmpeg.AudioCommandBuilder(input);
         //    builder.coverExistFile().author("SJF").comment("from 2un");
-        builder.bitrate(64).freq(22050).channels(2);
+        builder.bitrate(64).freq(22050).channels(1);
         if (CmdExecuter.execute(builder.build(output))) {
             return output;
         } else {
