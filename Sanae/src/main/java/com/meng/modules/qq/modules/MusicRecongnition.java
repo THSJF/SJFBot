@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.gameData.TouHou.THDataHolder;
+import com.meng.gameData.TouHou.UserInfo;
 import com.meng.gameData.TouHou.zun.TH10GameData;
 import com.meng.gameData.TouHou.zun.TH11GameData;
 import com.meng.gameData.TouHou.zun.TH12GameData;
@@ -37,6 +38,9 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         if (msg.equals("原曲认知")) {
             File musicFragment = createMusicCut(new Random().nextInt(16), 3, group, qq);
             sendGroupMessage(group, entity.toVoice(musicFragment, event.getGroup())); 
+            UserInfo module = entity.moduleManager.getModule(UserInfo.class);
+            module.getUserData(event).qaCount++;
+            module.save();
             return true;
         }
         if (msg.startsWith("原曲认知 ")) {

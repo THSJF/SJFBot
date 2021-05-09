@@ -19,6 +19,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import com.meng.gameData.TouHou.TouhouCharacter;
 import com.meng.gameData.TouHou.THDataHolder;
+import com.meng.modules.touhou.THGameData;
+import com.meng.modules.touhou.THMusic;
+import com.meng.modules.touhou.THSpell;
+import com.meng.modules.touhou.THCharacter;
 
 public class Lkaa {
     public static File generalVoice(String text) {
@@ -31,44 +35,54 @@ public class Lkaa {
     }
 
     public static String generalTranslate(String text) {
-        if (text.equals(TH06GameData.gameNameCN) || text.equals(TH06GameData.gameNameAbbr)) {
-            return TH06GameData.gameName;
-        }
-        if (text.equals(TH07GameData.gameNameCN) || text.equals(TH07GameData.gameNameAbbr)) {
-            return TH07GameData.gameName;
-        }
-        if (text.equals(TH08GameData.gameNameCN) || text.equals(TH08GameData.gameNameAbbr)) {
-            return TH08GameData.gameName;
-        }
-        if (text.equals(TH10GameData.gameNameCN) || text.equals(TH10GameData.gameNameAbbr)) {
-            return TH10GameData.gameName;
-        }
-        if (text.equals(TH11GameData.gameNameCN) || text.equals(TH11GameData.gameNameAbbr)) {
-            return TH11GameData.gameName;
-        }
-        if (text.equals(TH12GameData.gameNameCN) || text.equals(TH12GameData.gameNameAbbr)) {
-            return TH12GameData.gameName;
-        }
-        if (text.equals(TH13GameData.gameNameCN) || text.equals(TH13GameData.gameNameAbbr)) {
-            return TH13GameData.gameName;
-        }
-        if (text.equals(TH14GameData.gameNameCN) || text.equals(TH14GameData.gameNameAbbr)) {
-            return TH14GameData.gameName;
-        }
-        if (text.equals(TH15GameData.gameNameCN) || text.equals(TH15GameData.gameNameAbbr)) {
-            return TH15GameData.gameName;
-        }
-        if (text.equals(TH16GameData.gameNameCN) || text.equals(TH16GameData.gameNameAbbr)) {
-            return TH16GameData.gameName;
-        }
-        if (text.equals(TH17GameData.gameNameCN) || text.equals(TH17GameData.gameNameAbbr)) {
-            return TH17GameData.gameName;
-        }
-        for (TouhouCharacter[] tcs : THDataHolder.name) {
-            for (TouhouCharacter tc : tcs) {
-                if (text.equals(tc.nick)) {
-                    return tc.charaName;
+        THGameData[] thGameData = THGameData.getThGameData();
+        for (THGameData game : thGameData) {
+            if (text.equals(game.getNameCN())) {
+                return game.getNameEng(); 
+            }
+            if (text.equals(game.getNameEng())) {
+                return game.getNameCN(); 
+            }
+            if (text.equals(game.getNameAbbr())) {
+                return game.getNameFull(); 
+            }
+            for (THMusic mu : game.getMusics()) {
+                String muCN = mu.getNameCN();
+                String muEng = mu.getNameEng();
+                if (muCN == null || muEng == null) {
+                    continue;
                 }
+                if (text.equals(muCN)) {
+                    return muEng;
+                }
+                if (text.equals(muEng)) {
+                    return muCN;
+                }
+            }
+            for(THSpell spell : game.getSpellCards()){
+                if(text.equals(spell.cnName)){
+                    return spell.jpName;
+                }
+                if(text.equals(spell.jpName)){
+                    return spell.cnName;
+                }
+                for(String nick : spell.nick){
+                    if(text.equals(nick)){
+                        return spell.jpName;
+                    }
+                }
+            }
+            StringBuilder nickBuilder = new StringBuilder();
+            for(THCharacter chara : game.getCharacters()){
+                if(text.equals(chara.name)){
+                    nickBuilder.append(chara.nick).append(" ");
+                }
+                if(text.equals(chara.nick)){
+                    return chara.name;
+                }
+            }
+            if(nickBuilder.length()>0){
+                return nickBuilder.toString();
             }
         }
         return Network.httpGet("http://lkaa.top/API/qqfy/api.php?msg=" + text + "&type=male");
