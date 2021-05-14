@@ -6,42 +6,42 @@ public class SJFRandom extends Random {
     private static Random instance = new SJFRandom();
 
     public static long nextInRange(long min, long max) {
-        return nextLong(max - min) + min;
+        return randomLong(max - min) + min;
     }
 
-    public static long nextLong(long bound) {
+    public static long randomLong(long bound) {
         return instance.nextLong() % bound;
     }
 
-    public static long nextLong() {
+    public static long randomLong() {
         return instance.nextLong();
     }
 
-    public static double nextDouble() {
+    public static double randomDouble() {
         return instance.nextDouble();
     }
 
-    public static double nextGaussian() {
+    public static double randomGaussian() {
         return instance.nextGaussian();
     }
 
-    public static float nextFloat() {
+    public static float randomFloat() {
         return instance.nextFloat();
     }
 
-    public static boolean nextBoolean() {
+    public static boolean randomBoolean() {
         return instance.nextBoolean();
     }
 
-    public static void nextBytes(byte[] bytes) {
+    public static void randomBytes(byte[] bytes) {
         instance.nextBytes(bytes);
     }
 
-    public static int nextInt() {
+    public static int randomInt() {
         return instance.nextInt();
     }
 
-    public static int nextInt(int bound) {
+    public static int randomInt(int bound) {
         return instance.nextInt(bound);
     }
 

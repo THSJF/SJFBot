@@ -32,6 +32,7 @@ import net.mamoe.mirai.event.events.BotEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.action.BotNudge;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.FileMessage;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -44,12 +45,6 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.MiraiLogger;
-import net.mamoe.mirai.utils.RemoteFile;
-import kotlinx.coroutines.channels.SendChannel;
-import net.mamoe.mirai.utils.RemoteFile.ProgressionCallback;
-import kotlinx.coroutines.selects.SelectClause2;
-import kotlin.jvm.functions.Function1;
-import net.mamoe.mirai.message.data.FileMessage;
 
 /**
  * @author: 司徒灵羽

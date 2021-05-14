@@ -193,7 +193,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     }
 
     private QABean createQA() {
-        int diff = 1 << SJFRandom.nextInt(9);
+        int diff = 1 << SJFRandom.randomInt(9);
         THSpell tHSpell = THGameDataManager.getSpellFromDiff(diff);
         THSpell[] sps = THGameDataManager.getSpellFromNotDiff(3, diff);
         QABean qa = new QABean();

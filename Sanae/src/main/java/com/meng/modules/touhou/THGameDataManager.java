@@ -258,7 +258,7 @@ public class THGameDataManager {
     }
 
     public static String randomGame(String pname, long fromQQ, boolean goodAt) {
-        int gameNo = SJFRandom.nextInt(17) + 2;
+        int gameNo = SJFRandom.randomInt(17) + 2;
         String gameName = null;
         String charaName = null;
         switch (gameNo) {
