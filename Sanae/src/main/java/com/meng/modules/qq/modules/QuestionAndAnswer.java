@@ -4,11 +4,12 @@ import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
-import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.modules.touhou.THSpell;
+import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
+import com.meng.modules.touhou.THGameDataManager;
 
 /**
  * @author: 司徒灵羽
@@ -191,49 +193,49 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     }
 
     private QABean createQA() {
-        int diff = 1 << ThreadLocalRandom.current().nextInt(9);
-        SpellCard spellCard = entity.moduleManager.getModule(Dice.class).thData.getSpellFromDiff(diff);
-        SpellCard[] sps = entity.moduleManager.getModule(Dice.class).thData.getSpellFromNotDiff(3, diff);
+        int diff = 1 << SJFRandom.nextInt(9);
+        THSpell tHSpell = THGameDataManager.getSpellFromDiff(diff);
+        THSpell[] sps = THGameDataManager.getSpellFromNotDiff(3, diff);
         QABean qa = new QABean();
         qa.fromQar = true;
-        qa.a.add(spellCard.name);
-        for (SpellCard spc:sps) {
-            qa.a.add(spc.name);
+        qa.a.add(tHSpell.cnName);
+        for (THSpell spc:sps) {
+            qa.a.add(spc.cnName);
         }
         qa.setTrueAns(0);
         qa.shuffleAnswer();
         StringBuilder sb = new StringBuilder();
         sb.append("以下符卡在");
         switch (diff) {
-            case SpellCard.Easy:
+            case THSpell.Easy:
                 sb.append("easy难度");
                 break;
-            case SpellCard.Normal:
+            case THSpell.Normal:
                 sb.append("normal难度");
                 break;
-            case SpellCard.Hard:
+            case THSpell.Hard:
                 sb.append("hard难度");
                 break;
-            case SpellCard.Lunatic:
+            case THSpell.Lunatic:
                 sb.append("lunatic难度");
                 break;
-            case SpellCard.Overdrive:
+            case THSpell.Overdrive:
                 sb.append("overdrive难度");
                 break;
-            case SpellCard.LastSpell:
+            case THSpell.LastSpell:
                 sb.append("last spell");
                 break;
-            case SpellCard.LastWord:
+            case THSpell.LastWord:
                 sb.append("lastword");
                 break;
-            case SpellCard.Extra:
+            case THSpell.Extra:
                 sb.append("extra关卡");
                 break;
-            case SpellCard.Phantasm:
+            case THSpell.Phantasm:
                 sb.append("phamtasm关卡");
                 break;
             default:
-                System.out.println(spellCard.name);
+                System.out.println(tHSpell.cnName);
                 System.out.println(diff);
         }
         sb.append("中出现的是:\n");

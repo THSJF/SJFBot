@@ -1,18 +1,18 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.UserInfo;
-import com.meng.gameData.TouHou.zun.TH10GameData;
-import com.meng.gameData.TouHou.zun.TH11GameData;
-import com.meng.gameData.TouHou.zun.TH12GameData;
-import com.meng.gameData.TouHou.zun.TH14GameData;
-import com.meng.gameData.TouHou.zun.TH15GameData;
-import com.meng.gameData.TouHou.zun.TH16GameData;
 import com.meng.modules.CmdExecuter;
 import com.meng.modules.Ffmpeg;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.modules.touhou.THGameDataManager;
+import com.meng.modules.touhou.gameData.TH10Data;
+import com.meng.modules.touhou.gameData.TH11Data;
+import com.meng.modules.touhou.gameData.TH12Data;
+import com.meng.modules.touhou.gameData.TH14Data;
+import com.meng.modules.touhou.gameData.TH15Data;
+import com.meng.modules.touhou.gameData.TH16Data;
 import com.meng.modules.touhou.zun.music.FmtFile;
 import com.meng.modules.touhou.zun.music.WavHeader;
 import com.meng.tools.FileTool;
@@ -95,8 +95,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         bean.fromQar = true;
         for (int i = 0;i < 3 ;++i) {
             while (true) {
-                String[] musics = THDataHolder.music[random.nextInt(THDataHolder.music.length)];
-                String musicName = musics[random.nextInt(musics.length)];
+                String musicName = THGameDataManager.randomMusic().name;
                 if (!bean.a.contains(musicName)) {
                     bean.a.add(musicName);
                     break;
@@ -107,22 +106,22 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         bean.setTrueAns(trueAnswer);
         switch (games[game].getName()) {
             case "th10":
-                bean.a.add(trueAnswer, TH10GameData.musicName[musicNum]);
+                bean.a.add(trueAnswer, TH10Data.getInstance().getMusics()[musicNum].name);
                 break;
             case "th11":
-                bean.a.add(trueAnswer, TH11GameData.musicName[musicNum]);
+                bean.a.add(trueAnswer, TH11Data.getInstance().getMusics()[musicNum].name);
                 break;
             case "th12":
-                bean.a.add(trueAnswer, TH12GameData.musicName[musicNum]);
+                bean.a.add(trueAnswer, TH12Data.getInstance().getMusics()[musicNum].name);
                 break;
             case "th14":
-                bean.a.add(trueAnswer, TH14GameData.musicName[musicNum]);
+                bean.a.add(trueAnswer, TH14Data.getInstance().getMusics()[musicNum].name);
                 break;
             case "th15":
-                bean.a.add(trueAnswer, TH15GameData.musicName[musicNum]);
+                bean.a.add(trueAnswer, TH15Data.getInstance().getMusics()[musicNum].name);
                 break;
             case "th16":
-                bean.a.add(trueAnswer, TH16GameData.musicName[musicNum]);
+                bean.a.add(trueAnswer, TH16Data.getInstance().getMusics()[musicNum].name);
                 break;
         }
         entity.moduleManager.getModule(QuestionAndAnswer.class).addQuestion(qq, bean);

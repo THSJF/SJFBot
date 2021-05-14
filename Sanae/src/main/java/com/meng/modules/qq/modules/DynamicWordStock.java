@@ -10,8 +10,8 @@ import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.MessageManager;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import com.meng.modules.qq.modules.Dice;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.SJFRandom;
 import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
@@ -110,14 +110,14 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 try {
                                     hi = Integer.parseInt(node.content);  
                                 } catch (NumberFormatException ignore) {} 
-                                mcb.add(String.valueOf(entity.moduleManager.getModule(Dice.class).thData.hashRandomInt(gme.getSender().getId(), hi)));
+                                mcb.add(String.valueOf(SJFRandom.hashSelectInt(gme.getSender().getId(), hi)));
                                 break;
                             case HASH_RAN_FLOAT:
                                 float rscale = 1f;
                                 try {
                                     rscale = Float.parseFloat(node.content);
                                 } catch (NumberFormatException ignore) {}
-                                mcb.add(String.valueOf(entity.moduleManager.getModule(Dice.class).thData.hashRandomFloat(gme.getSender().getId()) * rscale));
+                                mcb.add(String.valueOf(SJFRandom.hashSelectFloat(gme.getSender().getId(), rscale)));
                                 break;
                             case IMG_FOLDER:
                                 mcb.add(entity.toImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.content).listFiles()), gme.getGroup()));

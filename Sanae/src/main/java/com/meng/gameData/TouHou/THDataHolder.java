@@ -15,549 +15,58 @@ import java.util.concurrent.ThreadLocalRandom;
  **/
 public class THDataHolder {
 
-	private HashMap<String,String> THSpellInfoMap = new HashMap<>();
-
-    public String[] pl01 = {"别打砖块了，来飞机"};
-    public String[] pl02 = {"范围重视型", "高灵击伤害 平衡型", "威力重视型"};
-    public String[] pl03 = {"博丽灵梦", "魅魔", "雾雨魔理沙", "爱莲", "小兔姬", "卡娜·安娜贝拉尔", "朝仓理香子", "北白河千百合", "冈崎梦美"};
-    public String[] pl04 = {"博丽灵梦 诱导", "博丽灵梦 大范围", "雾雨魔理沙 激光", "雾雨魔理沙 高速射击"};
-    public String[] pl05 = {"博丽灵梦", "雾雨魔理沙", "魅魔", "幽香"};
-    public String[] pl09 = {"博丽灵梦", "雾雨魔理沙", "十六夜咲夜", "魂魄妖梦", "铃仙·优昙华院·因幡", "琪露诺", "莉莉卡·普莉兹姆利巴", "梅露兰·普莉兹姆利巴", "露娜萨·普莉兹姆利巴", "米斯蒂娅·萝蕾拉", "因幡帝", "射命丸文", "梅蒂欣·梅兰可莉", "风见幽香", "小野冢小町", "四季映姬·亚玛萨那度"};
-    public String[] plDiff = {"easy", "normal", "hard", "lunatic"};
-
-    public static THSpell[][] spells;
-    public static String[] neta = {"红lnb", "红lnm", "妖lnm", "妖lnn", "永lnm", "风lnm","风lnn","殿lnm", "船lnm", "船lnn","庙lnm","城lnm","绀lnm","璋lnn"};
-    public static String[][] music;
-    public static THCharacter[][] name;
-    
-    public static String[] wayToGoodEnd = { "红魔乡normal", "妖妖梦easy", "永夜抄6B", "风神录normal", "地灵殿normal", "星莲船normal", "神灵庙normal", "辉针城灵梦B", "辉针城魔理沙B", "辉针城咲夜B", "绀珠传no miss","天空璋extra","鬼形兽normal" };
-
-    private static int spellCount = 0;
-    private static int charaCount = 0;
-    private static int musicCount = 0;
-
-    public THSpell getSpellFromDiff(int diffFlag) {
-              THGameData[] gameData = THGameData.getThGameData();
-        Random random = ThreadLocalRandom.current();
-        THSpell splc = null;
-        while (true) {
-            THSpell[] spellss = THGameData.getThGameData()[random.nextInt(gameData.length)].getTHSpells();
-                    splc = spellss[random.nextInt(spellss.length)];
-            if ((splc.difficult & diffFlag) != 0) {
-                return splc;
-            }
-        }
-    }
-
-    public THSpell[] getSpellFromNotDiff(int count, int diffFlag) {
-        THSpell[] spshs = new THSpell[count];
-        Random random = ThreadLocalRandom.current();
-        for (int i = 0;i < count;++i) {
-            THSpell splc;
-            while (true) {
-                THSpell[] spellss = spells[random.nextInt(spells.length)];
-                splc = spellss[random.nextInt(spellss.length)];
-                if ((splc.difficult & diffFlag) == 0) {
-                    spshs[i] = splc;
-                    splc = null;
-                    break;
-                }
-            }
-        }
-        return spshs;
-    }
-
-	public String getTHSpellPs(THSpell sc) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(sc.cnName).append("(").append(sc.jpName).append(")").append("是").append(sc.master);
-		if (sc.difficult != THSpell.LastSpell && sc.difficult != THSpell.LastWord) {
-			sb.append("在");
-			if ((sc.difficult & THSpell.Easy) == THSpell.Easy) {
-				sb.append(" easy");
-			}
-			if ((sc.difficult & THSpell.Normal) == THSpell.Normal) {
-				sb.append(" normal");
-			}
-			if ((sc.difficult & THSpell.Hard) == THSpell.Hard) {
-				sb.append(" hard");
-			}
-			if ((sc.difficult & THSpell.Lunatic) == THSpell.Lunatic) {
-				sb.append(" lunatic");
-			}
-			if (sc.difficult == THSpell.Extra) {
-				sb.append(" extra");
-			}
-			if (sc.difficult == THSpell.Phantasm) {
-				sb.append(" phantasm");
-			}
-			if (sc.difficult == THSpell.Overdrive) {
-				sb.append(" overdrive");
-			}
-			sb.append("难度下的符卡");
-		} else {
-			if (sc.difficult == THSpell.LastSpell) {
-				sb.append("的lastspell");
-			} else if (sc.difficult == THSpell.LastWord) {
-				sb.append("的lastword");
-			}
-		}
-		sb.append("\n附加:\n");
-		sb.append(THSpellInfoMap.get(sc.cnName));
-		return sb.toString();
-	}
-
-	public String getCharaNick(String charaName) {
-		String fullName = null;
-        start:
-		for (THCharacter[] sss:name) {
-            for (THCharacter s:sss) {
-                if (s.name.contains(charaName)) {
-                    fullName = s.name;
-                    break start;
-                }
-            }
-		}
-		if (fullName == null) {
-			return "该角色信息未填坑";
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append(fullName).append("有以下称号:\n");
-		for (THCharacter[] thcs:name) {
-            for (THCharacter thc:thcs) {
-                if (thc.name.equals(fullName)) {
-                    if (thc.nick.equals("该角色信息未填坑")) {
-                        continue;
-                    }
-                    sb.append(thc.nick).append("(").append(thc.game).append(")\n"); 
-                }
-			}
-		}
-		if (sb.toString().equals(fullName + "有以下称号:\n")) {
-			return "该角色信息未填坑";
-		}
-		sb.setLength(sb.length() - 1);
-		return sb.toString();
-	}
-
-	public THSpell getTHSpell(String spellName) {
-		for (THSpell[] scs:spells) {
-            for (THSpell sc :scs) {
-                if (sc.cnName.contains(spellName)) {
-                    return sc;
-                }
-            }
-        }
-		return null;
-	}
-
-	public THSpell getTHSpell(String spellName, int diff) {
-		for (THSpell[] scs:spells) {
-            for (THSpell sc:scs) {
-                if (sc.cnName.contains(spellName) && sc.difficult == diff) {
-                    return sc;
-                }
-            }
-		}
-		return null;
-	}
-
-	public HashSet<THSpell> getCharaTHSpell(String name) {
-		HashSet<THSpell> hscs = new HashSet<>();
-		for (THSpell[] scs:spells) {
-            for (THSpell sc :scs) {
-                if (sc.master.equals(name)) {
-                    hscs.add(sc);
-                }
-            }
-		}
-		return hscs;
-	}
-
-	public HashSet<THSpell> getCharaTHSpell(String name, int diff) {
-		HashSet<THSpell> hscs = new HashSet<>();
-		for (THSpell[] scs:spells) {
-            for (THSpell sc :scs) {
-                if (sc.master.equals(name) && sc.difficult == diff) {
-                    hscs.add(sc);
-                }
-            }
-		}
-		return hscs;
-	}
-
-	public HashSet<THSpell> getCharaTHSpell(String name, String... spellExcept) {
-		HashSet<THSpell> hscs = new HashSet<>();
-		for (THSpell[] scs:spells) {
-            for (THSpell sc :scs) {
-                if (sc.master.equals(name)) {
-                    for (String necx:spellExcept) {
-                        if (!sc.cnName.equals(necx)) {
-                            hscs.add(sc);
-                        }
-                    }
-                }
-			}
-		}
-		return hscs;
-	}
-
-    public String randomPlane(String game) {
-        switch (game) {
-            case "东方灵异传":
-            case "th1":
-            case "th01":
-                return Tools.ArrayTool.rfa(pl01);
-            case "东方封魔录":
-            case "th2":
-            case "th02":
-                return Tools.ArrayTool.rfa(pl02);
-            case "东方梦时空":
-            case "th3":
-            case "th03":
-                return Tools.ArrayTool.rfa(pl03);
-            case "东方幻想乡":
-            case "th4":
-            case "th04":
-                return Tools.ArrayTool.rfa(pl04);
-            case "东方怪绮谈":
-            case "th5":
-            case "th05":
-                return Tools.ArrayTool.rfa(pl05);
-            case "东方红魔乡":
-            case "th6":
-            case "th06":
-            case "tEoSD":
-                return Tools.ArrayTool.rfa(TH06GameData.players);
-            case "东方妖妖梦":
-            case "th7":
-            case "th07":
-            case "PCB":
-                return Tools.ArrayTool.rfa(TH07GameData.players);
-            case "东方永夜抄":
-            case "th8":
-            case "th08":
-            case "IN":
-                return Tools.ArrayTool.rfa(TH08GameData.players);
-            case "东方花映冢":
-            case "th9":
-            case "th09":
-            case "PoFV":
-                return Tools.ArrayTool.rfa(pl09);
-            case "东方风神录":
-            case "th10":
-            case "MoF":
-                return Tools.ArrayTool.rfa(TH10GameData.players);
-            case "东方地灵殿":
-            case "th11":
-                return Tools.ArrayTool.rfa(TH11GameData.players);
-            case "东方星莲船":
-            case "th12":
-            case "UFO":
-                return Tools.ArrayTool.rfa(TH12GameData.players);
-            case "东方神灵庙":
-            case "th13":
-            case "TD":
-                return Tools.ArrayTool.rfa(TH13GameData.players);
-            case "东方辉针城":
-            case "th14":
-            case "DDC":
-                return Tools.ArrayTool.rfa(TH14GameData.players) + " " + Tools.ArrayTool.rfa(TH14GameData.playerSub);
-            case "东方绀珠传":
-            case "th15":
-            case "LoLK":
-                return Tools.ArrayTool.rfa(TH15GameData.players);
-            case "东方天空璋":
-            case "th16":
-            case "HSiFS":
-                return Tools.ArrayTool.rfa(TH16GameData.players) + " " + Tools.ArrayTool.rfa(TH16GameData.playerSub);
-            case "东方鬼形兽":
-            case "th17":
-            case "WBaWC":
-                return Tools.ArrayTool.rfa(TH17GameData.players) + "+" + Tools.ArrayTool.rfa(TH17GameData.playerSub);
-            case "东方文花帖":
-            case "th9.5":
-            case "StB":
-                //       case "东方文花帖DS":
-                //       case "th12.5":
-                //       case "DS":
-            case "妖精大战争":
-            case "th12.8":
-            case "弹幕天邪鬼":
-            case "th14.3":
-            case "ISC":
-            case "秘封噩梦日记":
-            case "th16.5":
-            case "VD":
-                return "就一个飞机你roll你🐴呢";
-            default:
-                return "只有2un飞机游戏";
-        }
-    }
-
-    public String randomGame(String pname, long fromQQ, boolean goodAt) {
-        int gameNo = hashRandomInt(fromQQ) % 16 + 2;
-        String gameName = null;
-        String charaName = null;
-        switch (gameNo) {
-            case 2:
-                gameName = "封魔录";
-                charaName = hashRandomString(fromQQ + 2, pl02);
-                break;
-            case 3:
-                gameName = "梦时空";
-                charaName = hashRandomString(fromQQ + 2, pl03);
-                break;
-            case 4:
-                gameName = "幻想乡";
-                charaName = hashRandomString(fromQQ + 2, pl04);
-                break;
-            case 5:
-                gameName = "怪绮谈";
-                charaName = hashRandomString(fromQQ + 2, pl05);
-                break;
-            case 6:
-                gameName = "红魔乡";
-                charaName = hashRandomString(fromQQ + 2, TH06GameData.players);
-                break;
-            case 7:
-                gameName = "妖妖梦";
-                charaName = hashRandomString(fromQQ + 2, TH07GameData.players);
-                break;
-            case 8:
-                gameName = "永夜抄";
-                charaName = hashRandomString(fromQQ + 2, TH08GameData.players);
-                break;
-            case 9:
-                gameName = "花映冢";
-                charaName = hashRandomString(fromQQ + 2, pl09);
-                break;
-            case 10:
-                gameName = "风神录";
-                charaName = hashRandomString(fromQQ + 2, TH10GameData.players);
-                break;
-            case 11:
-                gameName = "地灵殿";
-                charaName = hashRandomString(fromQQ + 2, TH11GameData.players);
-                break;
-            case 12:
-                gameName = "星莲船";
-                charaName = hashRandomString(fromQQ + 2, TH12GameData.players);
-                break;
-            case 13:
-                gameName = "神灵庙";
-                charaName = hashRandomString(fromQQ + 2, TH13GameData.players);
-                break;
-            case 14:
-                gameName = "辉针城";
-                charaName = hashRandomString(fromQQ + 2, TH14GameData.players);
-                if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, hashRandomString(fromQQ + 1, TH14GameData.playerSub), gameName);
-                } else {
-                    return String.format("忌用%s-%s打%s", charaName, hashRandomString(fromQQ + 1, TH14GameData.playerSub), gameName);
-                }
-            case 15:
-                gameName = "绀珠传";
-                charaName = hashRandomString(fromQQ + 2, TH15GameData.players);
-                break;
-            case 16:
-                gameName = "天空璋";
-                charaName = hashRandomString(fromQQ + 2, TH16GameData.players);
-                if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, hashRandomString(fromQQ + 1, TH16GameData.playerSub), gameName);
-                } else {
-                    return String.format("忌用%s-%s打%s", charaName, hashRandomString(fromQQ + 1, TH16GameData.playerSub), gameName);
-                }
-            case 17:
-                gameName = "鬼形兽";
-                charaName = hashRandomString(fromQQ + 2, TH17GameData.players);
-                if (goodAt) {
-                    return String.format("%s今天宜用%s-%s打%s", pname, charaName, hashRandomString(fromQQ + 1, TH17GameData.playerSub), gameName);
-                } else {
-                    return String.format("忌用%s-%s打%s", charaName, hashRandomString(fromQQ + 1, TH17GameData.playerSub), gameName);
-                }
-            default:
-                return "";
-        }
-        if (goodAt) {
-            return String.format("%s今天宜用%s打%s", pname, charaName, gameName);
-        } else {
-            return String.format("忌用%s打%s", charaName, gameName);
-        }
-    }
-
-    public THSpell randomSpell() {
-        Random r = ThreadLocalRandom.current();
-        THSpell[] scs = spells[r.nextInt(spells.length)];
-        return scs[r.nextInt(spells.length)];
-    }
-
-    public static THSpell hashRandomSpell(long fromQQ) {
-        if (spellCount == 0) {
-            for (THSpell[] scs:spells) {
-                spellCount += scs.length; 
-            }
-        }
-        int num = hashRandomInt(fromQQ) % spellCount;
-        int tmp = 0;
-        for (THSpell[] scs:spells) {
-            for (THSpell sc:scs) {
-                if (++tmp == num) {
-                    return sc;
-                }  
-            }
-        }
-        return null;
-    }
-
-    public static THCharacter hashRandomCharacter(long fromQQ) {
-        if (charaCount == 0) {
-            for (THCharacter[] scs:name) {
-                charaCount += scs.length; 
-            }
-        }
-        int num = hashRandomInt(fromQQ) % charaCount;
-        int tmp = 0;
-        for (THCharacter[] scs:name) {
-            for (THCharacter sc:scs) {
-                if (++tmp == num) {
-                    return sc;
-                }  
-            }
-        }
-        return null;
-    }
-
-    public static String hashRandomMusic(long fromQQ) {
-        if (musicCount == 0) {
-            for (String[] scs:music) {
-                musicCount += scs.length; 
-            }
-        }
-        int num = hashRandomInt(fromQQ) % musicCount;
-        int tmp = 0;
-        for (String[] scs:music) {
-            for (String sc:scs) {
-                if (++tmp == num) {
-                    return sc;
-                }  
-            }
-        }
-        return null;
-    }
-
-    public static int hashRandomInt(long fromQQ) {
-        String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
-        return Integer.parseInt(md5.substring(26), 16);
-    }
-
-    public static int hashRandomInt(long fromQQ, int bound) {
-        return hashRandomInt(fromQQ) % bound;
-    }
-
-    public static float hashRandomFloat(long fromQQ) {
-        String md5 = Hash.getMd5Instance().calculate(String.valueOf(fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000)));
-        return new Random(Integer.parseInt(md5.substring(26), 16)).nextFloat();
-    }
-
-    public static String hashRandomString(long fromQQ, String[] arr) {
-        return arr[hashRandomInt(fromQQ) % arr.length];
-    }
-
-    public static int hashRandom(long fromQQ, String spellName) {
-        String md5 = Hash.getMd5Instance().calculate(spellName + fromQQ + System.currentTimeMillis() / (24 * 60 * 60 * 1000));
-        return Integer.parseInt(md5.substring(26), 16);
-    }
-
-    {
-        spells = new THSpell[][] {
-            TH06GameData.THSpells,
-            TH07GameData.THSpells,
-            TH08GameData.THSpells,
-            TH10GameData.THSpells,
-            TH11GameData.THSpells,
-            TH12GameData.THSpells,
-            TH13GameData.THSpells,
-            TH14GameData.THSpells,
-            TH15GameData.THSpells,
-            TH16GameData.THSpells,
-            TH17GameData.THSpells
-        };
-        music = new String[][]{
-            {"bad apple"}, //th4
-            TH06GameData.musicName,
-            TH07GameData.musicName,
-            TH08GameData.musicName,
-            TH10GameData.musicName,
-            TH11GameData.musicName,
-            TH12GameData.musicName,
-            TH13GameData.musicName,
-            TH14GameData.musicName,
-            TH15GameData.musicName,
-            TH16GameData.musicName,
-            TH17GameData.musicName};
-        name = new THCharacter[][]{
-            //th2
-            new THCharacter[]{ 
-                new THCharacter("里香", "东方封魔录"),
-                new THCharacter("明罗", "东方封魔录"),
-                new THCharacter("魅魔", "东方封魔录"),
-                //th3
-                new THCharacter("爱莲", "东方梦时空"),
-                new THCharacter("小兔姬", "东方梦时空"),
-                new THCharacter("卡娜·安娜贝拉尔", "东方梦时空"),
-                new THCharacter("朝仓理香子", "东方梦时空"),
-                new THCharacter("北白河千百合", "东方梦时空"),
-                new THCharacter("冈崎梦美", "东方梦时空"),
-                //th4
-                new THCharacter("奥莲姬", "东方幻想乡"),
-                new THCharacter("胡桃", "东方幻想乡"),
-                new THCharacter("艾丽", "东方幻想乡"),
-                new THCharacter("梦月", "东方幻想乡"),
-                new THCharacter("幻月", "东方幻想乡"),
-                //th5
-                new THCharacter("萨拉", "东方怪绮谈"),
-                new THCharacter("露易兹", "东方怪绮谈"),
-                new THCharacter("爱丽丝", "东方怪绮谈"),
-                new THCharacter("雪", "东方怪绮谈"),
-                new THCharacter("舞", "东方怪绮谈"),
-                new THCharacter("梦子", "东方怪绮谈"),
-                new THCharacter("神绮", "东方怪绮谈")
-            },
-            TH06GameData.charaName,
-            TH07GameData.charaName,
-            TH08GameData.charaName, 
-            new THCharacter[]{
-                //th9
-                new THCharacter("梅蒂欣·梅兰可莉", "东方花映冢"),
-                new THCharacter("风见幽香", "东方花映冢"),
-                new THCharacter("小野冢小町", "东方花映冢"),
-                new THCharacter("四季映姬", "东方花映冢")},
-            TH10GameData.charaName,
-            TH11GameData.charaName,
-            TH12GameData.charaName,
-            new THCharacter[]{
-                //th12.8
-                new THCharacter("桑尼·米尔克", "妖精大战争"),
-                new THCharacter("露娜·切露德", "妖精大战争"),
-                new THCharacter("斯塔·萨菲雅", "妖精大战争")
-            },
-            TH13GameData.charaName,
-            new THCharacter[]{
-                //th13.5
-                new THCharacter("秦心", "东方心绮楼")
-            },
-            TH14GameData.charaName,
-            new THCharacter[]{
-                //th14.5
-                new THCharacter("宇佐见堇子", "东方深秘录")},
-            TH15GameData.charaName,
-            new THCharacter[]{
-                //th15.5
-                new THCharacter("依神紫苑", "东方凭依华"),
-                new THCharacter("依神女苑", "东方凭依华")},
-            TH16GameData.charaName,
-            TH17GameData.charaName
-        };
+//                name = new THCharacter[][]{
+//            //th2
+//            new THCharacter[]{ 
+//                new THCharacter("里香", "东方封魔录"),
+//                new THCharacter("明罗", "东方封魔录"),
+//                new THCharacter("魅魔", "东方封魔录"),
+//                //th3
+//                new THCharacter("爱莲", "东方梦时空"),
+//                new THCharacter("小兔姬", "东方梦时空"),
+//                new THCharacter("卡娜·安娜贝拉尔", "东方梦时空"),
+//                new THCharacter("朝仓理香子", "东方梦时空"),
+//                new THCharacter("北白河千百合", "东方梦时空"),
+//                new THCharacter("冈崎梦美", "东方梦时空"),
+//                //th4
+//                new THCharacter("奥莲姬", "东方幻想乡"),
+//                new THCharacter("胡桃", "东方幻想乡"),
+//                new THCharacter("艾丽", "东方幻想乡"),
+//                new THCharacter("梦月", "东方幻想乡"),
+//                new THCharacter("幻月", "东方幻想乡"),
+//                //th5
+//                new THCharacter("萨拉", "东方怪绮谈"),
+//                new THCharacter("露易兹", "东方怪绮谈"),
+//                new THCharacter("爱丽丝", "东方怪绮谈"),
+//                new THCharacter("雪", "东方怪绮谈"),
+//                new THCharacter("舞", "东方怪绮谈"),
+//                new THCharacter("梦子", "东方怪绮谈"),
+//                new THCharacter("神绮", "东方怪绮谈")
+//            },
+//                        new THCharacter[]{
+//                //th9
+//                new THCharacter("梅蒂欣·梅兰可莉", "东方花映冢"),
+//                new THCharacter("风见幽香", "东方花映冢"),
+//                new THCharacter("小野冢小町", "东方花映冢"),
+//                new THCharacter("四季映姬", "东方花映冢")},
+//                        new THCharacter[]{
+//                //th12.8
+//                new THCharacter("桑尼·米尔克", "妖精大战争"),
+//                new THCharacter("露娜·切露德", "妖精大战争"),
+//                new THCharacter("斯塔·萨菲雅", "妖精大战争")
+//            },
+//                       new THCharacter[]{
+//                //th13.5
+//                new THCharacter("秦心", "东方心绮楼")
+//            },
+//                        new THCharacter[]{
+//                //th14.5
+//                new THCharacter("宇佐见堇子", "东方深秘录")},
+//                        new THCharacter[]{
+//                //th15.5
+//                new THCharacter("依神紫苑", "东方凭依华"),
+//                new THCharacter("依神女苑", "东方凭依华")},
+//                    };
         /*	THSpellInfoMap.put("月符「月光」","未填坑");
          THSpellInfoMap.put("夜符「夜雀」","未填坑");
          THSpellInfoMap.put("暗符「境界线」","未填坑");
@@ -885,10 +394,10 @@ public class THDataHolder {
          THSpellInfoMap.put("神秘「葛泉清水」","未填坑");
          THSpellInfoMap.put("神秘「大和茅环」","未填坑");
          THSpellInfoMap.put("天流「天水奇迹」","未填坑");
-         THSpellInfoMap.put("天龙「雨之源泉」","未填坑");*/
+         THSpellInfoMap.put("天龙「雨之源泉」","未填坑");
 		THSpellInfoMap.put("「信仰之山」", "麻将山上麻将飞,麻将山下残机堆");
 		THSpellInfoMap.put("「风神之神德」", "麻将山上麻将飞,麻将山下残机堆");
-		/*THSpellInfoMap.put("神符「如水眼之美丽源泉」","未填坑");
+		THSpellInfoMap.put("神符「如水眼之美丽源泉」","未填坑");
          THSpellInfoMap.put("神符「结于杉木之古缘」","未填坑");
          THSpellInfoMap.put("神符「神所踏足之御神渡」","未填坑");
          THSpellInfoMap.put("开宴「二拜二拍一拜」","未填坑");
@@ -1183,7 +692,7 @@ public class THDataHolder {
          THSpellInfoMap.put("兔符「浆果浆果团子」","未填坑");
          THSpellInfoMap.put("兔符「团子影响力」","未填坑");
          THSpellInfoMap.put("月见「九月的满月」","未填坑");
-         THSpellInfoMap.put("月见酒「月狂的九月」","未填坑");*/
+         THSpellInfoMap.put("月见酒「月狂的九月」","未填坑");
 		THSpellInfoMap.put("梦符「绯红色的噩梦」", "东 方 跟 着 转");
 		THSpellInfoMap.put("梦符「绯红色的压迫噩梦」", "东 方 跟 着 转");
 		THSpellInfoMap.put("梦符「蔚蓝色的愁梦」", "东 方 跟 着 转");
@@ -1191,9 +700,9 @@ public class THDataHolder {
 		THSpellInfoMap.put("梦符「愁永远之梦」", "东 方 跟 着 转");
 		THSpellInfoMap.put("梦符「刈安色的迷梦」", "东 方 跟 着 转");
 		THSpellInfoMap.put("梦符「刈安色的错综迷梦」", "东 方 跟 着 转");
-        /*	THSpellInfoMap.put("梦符「捕梦网」","未填坑");
+        	THSpellInfoMap.put("梦符「捕梦网」","未填坑");
          THSpellInfoMap.put("梦符「苍蓝色的捕梦网」","未填坑");
-         THSpellInfoMap.put("梦符「梦我梦中」","未填坑");*/
+         THSpellInfoMap.put("梦符「梦我梦中」","未填坑");
 		THSpellInfoMap.put("月符「绀色的狂梦」", "简单(?)的自机相关");
 		THSpellInfoMap.put("玉符「乌合之咒」", "简单(?)的狙");
 		THSpellInfoMap.put("玉符「乌合的逆咒」", "简单(?)的狙");
@@ -1209,7 +718,7 @@ public class THDataHolder {
         /*	THSpellInfoMap.put("狱符「星与条纹」","未填坑");
          THSpellInfoMap.put("狱炎「擦弹地狱火」","未填坑");
          THSpellInfoMap.put("狱炎「擦弹的狱意」","未填坑");
-         THSpellInfoMap.put("地狱「条纹状的深渊」","未填坑");*/
+         THSpellInfoMap.put("地狱「条纹状的深渊」","未填坑");
 		THSpellInfoMap.put("「伪阿波罗」", "简单(?)的固定弹");
 		THSpellInfoMap.put("「阿波罗捏造说」", "简单(?)的固定弹");
 		THSpellInfoMap.put("「掌上的纯光」", "简单(真)的角随固");
@@ -1224,7 +733,7 @@ public class THDataHolder {
 		THSpellInfoMap.put("纯符「纯粹的弹幕地狱」", "简单(bu)的随机加固定\np1:这tm是终符?你在逗我\np2:这tm是终符?\np3:这tm...\np4:这...");
         /*	THSpellInfoMap.put("蝴蝶「取而代之的蝴蝶」","未填坑");
          THSpellInfoMap.put("超特急「梦幻快车」","未填坑");
-         THSpellInfoMap.put("爬梦「爬行的子弹」","未填坑");*/
+         THSpellInfoMap.put("爬梦「爬行的子弹」","未填坑");
 		THSpellInfoMap.put("异界「逢魔之刻」", "瞎了");
         /*	THSpellInfoMap.put("地球「邪秽在身」","未填坑");
          THSpellInfoMap.put("月「阿波罗反射镜」","未填坑");
@@ -1233,7 +742,7 @@ public class THDataHolder {
          THSpellInfoMap.put("地球「落向地狱的雨」","未填坑");
          THSpellInfoMap.put("「用于逼死瓮中鼠的单纯弹幕」","未填坑");
          THSpellInfoMap.put("月「月狂冲击」","未填坑");
-         THSpellInfoMap.put("「三位一体论狂想曲」","未填坑");*/
+         THSpellInfoMap.put("「三位一体论狂想曲」","未填坑");
 		THSpellInfoMap.put("「最初与最后的无名弹幕」", "野蛮的二打一");
         /*	THSpellInfoMap.put("蝶符「细碎鳞粉」","未填坑");
          THSpellInfoMap.put("蝶符「凤蝶的鳞粉」","未填坑");
@@ -1300,7 +809,7 @@ public class THDataHolder {
          THSpellInfoMap.put("石符「沉重的石之头婴儿」","未填坑");
          THSpellInfoMap.put("溺符「三途的沦溺」","未填坑");
          THSpellInfoMap.put("鬼符「魔鬼围城」","未填坑");
-         THSpellInfoMap.put("鬼符「饿鬼围城」","未填坑");*/
+         THSpellInfoMap.put("鬼符「饿鬼围城」","未填坑");
 		THSpellInfoMap.put("水符「分水的试练」", "鸡你太美");
 		THSpellInfoMap.put("水符「分水的上级试炼」", "鸡你太美");
 		THSpellInfoMap.put("水符「分水的顶级试炼」", "鸡你太美");
@@ -1333,7 +842,7 @@ public class THDataHolder {
          THSpellInfoMap.put("埴轮「偶像造物」","未填坑");
          THSpellInfoMap.put("「鬼形造形术」","未填坑");
          THSpellInfoMap.put("「几何造物」","未填坑");
-         THSpellInfoMap.put("「Idola Diabolus」","未填坑");*/
+         THSpellInfoMap.put("「Idola Diabolus」","未填坑");
 		THSpellInfoMap.put("血战「血之分水岭」", "鸡你太美");
 		THSpellInfoMap.put("血战「狱界视线」", "鸡你太美");
 		THSpellInfoMap.put("血战「全灵鬼渡」", "鸡你太美");
@@ -1347,5 +856,4 @@ public class THDataHolder {
          THSpellInfoMap.put("「跟我来，不要怕」","未填坑");
          THSpellInfoMap.put("「鬼形的乌合之众」","未填坑");
          THSpellInfoMap.put("「鬼畜生的所业」","未填坑");*/
-	}
 }

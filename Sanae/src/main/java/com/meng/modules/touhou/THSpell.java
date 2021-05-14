@@ -27,6 +27,43 @@ public class THSpell {
         this.difficult = diffcult;
         this.nick = nick;
     }
+    
+    public String getPs() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cnName).append("(").append(jpName).append(")").append("是").append(master);
+        if (difficult != THSpell.LastSpell && difficult != THSpell.LastWord) {
+            sb.append("在");
+            if ((difficult & THSpell.Easy) == THSpell.Easy) {
+                sb.append(" easy");
+            }
+            if ((difficult & THSpell.Normal) == THSpell.Normal) {
+                sb.append(" normal");
+            }
+            if ((difficult & THSpell.Hard) == THSpell.Hard) {
+                sb.append(" hard");
+            }
+            if ((difficult & THSpell.Lunatic) == THSpell.Lunatic) {
+                sb.append(" lunatic");
+            }
+            if (difficult == THSpell.Extra) {
+                sb.append(" extra");
+            }
+            if (difficult == THSpell.Phantasm) {
+                sb.append(" phantasm");
+            }
+            if (difficult == THSpell.Overdrive) {
+                sb.append(" overdrive");
+            }
+            sb.append("难度下的符卡");
+        } else {
+            if (difficult == THSpell.LastSpell) {
+                sb.append("的lastspell");
+            } else if (difficult == THSpell.LastWord) {
+                sb.append("的lastword");
+            }
+        }
+        return sb.toString();
+    }
 
     @Override
     public int hashCode() {

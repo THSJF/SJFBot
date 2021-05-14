@@ -32,6 +32,8 @@ import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Voice;
 import com.meng.modules.Lkaa;
+import com.meng.modules.touhou.THGameDataManager;
+import com.meng.modules.Baidu;
 
 /**
  * @Description: 管理员命令
@@ -70,8 +72,10 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         sendGroupMessage(Long.parseLong(iter.next()), entity.toVoice(Lkaa.generalVoice(iter.next()), gme.getGroup()));
                     }  
                     return true;
-                case "translate":
-                    sendGroupMessage(groupId, Lkaa.generalTranslate(iter.next()));
+                case "tr":
+                    String next = iter.next();
+                    String translate = THGameDataManager.generalTranslate(next);
+                    sendGroupMessage(groupId, translate == null ? Baidu.generalTranslate(next) : translate);
                     return true;
             }
             if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() < 1) {

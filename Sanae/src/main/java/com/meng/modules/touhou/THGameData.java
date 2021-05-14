@@ -1,46 +1,19 @@
 package com.meng.modules.touhou;
-import com.meng.modules.touhou.gameData.TH06Data;
-import com.meng.modules.touhou.gameData.TH07Data;
-import com.meng.modules.touhou.gameData.TH08Data;
-import com.meng.modules.touhou.gameData.TH10Data;
-import com.meng.modules.touhou.gameData.TH11Data;
-import com.meng.modules.touhou.gameData.TH12Data;
-import com.meng.modules.touhou.gameData.TH13Data;
-import com.meng.modules.touhou.gameData.TH14Data;
-import com.meng.modules.touhou.gameData.TH15Data;
-import com.meng.modules.touhou.gameData.TH16Data;
-import com.meng.modules.touhou.gameData.TH17Data;
-import com.meng.modules.touhou.gameData.TH18Data;
+import com.meng.tools.Hash;
+import com.meng.tools.SJFRandom;
+import com.meng.tools.Tools;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.function.Consumer;
 
 public abstract class THGameData {
+
 
     protected THCharacter[] charas;
     protected THMusic[] music;
     protected THSpell[] spells;
     protected THPlayer[] players;
 
-    private static THGameData[] thGameData = null;
-    
-    public static THGameData[] getThGameData(){
-        if(thGameData == null){
-            thGameData = new THGameData[]{
-                TH06Data.getInstance(),
-                TH07Data.getInstance(),
-                TH08Data.getInstance(),
-                TH10Data.getInstance(),
-                TH11Data.getInstance(),
-                TH12Data.getInstance(),
-                TH13Data.getInstance(),
-                TH14Data.getInstance(),
-                TH15Data.getInstance(),
-                TH16Data.getInstance(),
-                TH17Data.getInstance(),
-                TH18Data.getInstance()
-            };
-        }
-        return thGameData;
-    }
-    
     public THCharacter[] getCharacters() {
         return charas;
     }
@@ -95,6 +68,122 @@ public abstract class THGameData {
 
     public String getNameFull() {
         return getNameCN() + " ~ " + getNameEng();
+    }
+
+    public THSpell getSpellFromDiff(int diffFlag) {
+        THSpell splc = null;
+        while (true) {
+            splc = SJFRandom.randomSelect(spells);
+            if ((splc.difficult & diffFlag) != 0) {
+                return splc;
+            }
+        }
+    }
+
+    public THSpell[] getSpellFromNotDiff(int count, int diffFlag) {
+        THSpell[] spshs = new THSpell[count];
+        for (int i = 0;i < count;++i) {
+            THSpell splc;
+            while (true) {
+                splc = SJFRandom.randomSelect(spells);
+                if ((splc.difficult & diffFlag) == 0) {
+                    spshs[i] = splc;
+                    splc = null;
+                    break;
+                }
+            }
+        }
+        return spshs;
+    }
+
+    public THSpell getTHSpell(String spellName) {
+        for (THSpell sc : spells) {
+            if (sc.cnName.contains(spellName)) {
+                return sc;
+            }
+        }
+        return null;
+    }
+
+    public THSpell getTHSpell(String spellName, int diff) {
+        for (THSpell sc : spells) {
+            if (sc.cnName.contains(spellName) && sc.difficult == diff) {
+                return sc;
+            }
+        }
+        return null;
+    }
+
+    public HashSet<THSpell> getCharaTHSpell(String name) {
+        HashSet<THSpell> hscs = new HashSet<>();
+        for (THSpell sc : spells) {
+            if (sc.master.equals(name)) {
+                hscs.add(sc);
+            }
+        }
+        return hscs;
+    }
+
+    public HashSet<THSpell> getCharaTHSpell(String name, int diff) {
+        HashSet<THSpell> hscs = new HashSet<>();
+        for (THSpell sc : spells) {
+            if (sc.master.equals(name) && sc.difficult == diff) {
+                hscs.add(sc);
+            }
+        }
+        return hscs;
+    }
+
+    public HashSet<THSpell> getCharaTHSpell(String name, String... spellExcept) {
+        HashSet<THSpell> hscs = new HashSet<>();
+        for (THSpell sc : spells) {
+            if (sc.master.equals(name)) {
+                for (String necx:spellExcept) {
+                    if (!sc.cnName.equals(necx)) {
+                        hscs.add(sc);
+                    }
+                }
+            }
+        }
+        return hscs;
+    }
+
+    public THSpell randomSpell() {
+        return SJFRandom.randomSelect(spells);
+    }
+
+    public THMusic randomMusic(){
+        return SJFRandom.randomSelect(music);
+    }
+    
+    public THSpell hashRandomSpell(long fromQQ) {
+        return SJFRandom.hashSelect(fromQQ, spells);
+    }
+
+    public THCharacter hashRandomCharacter(long fromQQ) {
+        return SJFRandom.hashSelect(fromQQ, charas);
+    }
+
+    public THMusic hashRandomMusic(long fromQQ) {
+        return SJFRandom.hashSelect(fromQQ, music);
+    }
+
+    public void forEachCharacter(Consumer<THCharacter> consumer) {
+        for (THCharacter chara : charas) {
+            consumer.accept(chara);
+        }
+    }
+
+    public void forEachSpell(Consumer<THSpell> consumer) {
+        for (THSpell spell : spells) {
+            consumer.accept(spell);
+        }
+    }
+
+    public void forEachMusic(Consumer<THMusic> consumer) {
+        for (THMusic music : music) {
+            consumer.accept(music);
+        }
     }
 
     public abstract String getNameCN();

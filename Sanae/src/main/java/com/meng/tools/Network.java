@@ -23,7 +23,7 @@ import com.meng.modules.bilibili.BilibiliBotMain;
 
 public class Network {
 
-    private static String bilibiliPost(String url, String cookie, Map<String,String> headers, Object... params) {
+    public static String httpPost(String url, String cookie, Map<String,String> headers, Object... params) {
         Connection connection = Jsoup.connect(url);
         connection.userAgent(SBot.userAgent);
         if (headers != null) {
@@ -51,15 +51,15 @@ public class Network {
     }
 
     public static String bilibiliPost(String url, String cookie, Object... params) {
-        return bilibiliPost(url, cookie, null, params);
+        return httpPost(url, cookie, null, params);
     }
 
     public static String bilibiliMainPost(String url, String cookie, Object... params) {
-        return bilibiliPost(url, cookie, BilibiliBotMain.mainHead, params);
+        return httpPost(url, cookie, BilibiliBotMain.mainHead, params);
     }
 
     public static String bilibiliLivePost(String url, String cookie, Object... params) {
-        return bilibiliPost(url, cookie, BilibiliBotMain.liveHead, params);
+        return httpPost(url, cookie, BilibiliBotMain.liveHead, params);
     }
 
 	public static Map<String, String> cookieToMap(String value) {

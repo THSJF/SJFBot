@@ -2,15 +2,17 @@ package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
-import com.meng.gameData.TouHou.SpellCard;
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.qq.richMessage.QqCard;
+import com.meng.modules.touhou.THGameDataManager;
+import com.meng.modules.touhou.THSpell;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Hash;
+import com.meng.tools.SJFRandom;
 import com.meng.tools.TextLexer;
 import java.io.File;
 import java.util.ArrayList;
@@ -48,10 +50,10 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
         String msg = gme.getMessage().contentToString();
         if (msg.equals("。jrrp")) {
             if (configManager.getPersonConfig(qqId).isJrrpNewStyle()) {
-                QqCard card = new QqCard(configManager.getNickName(groupId, qqId) + "今天的疮痍符卡", qqId , "符卡", THDataHolder.hashRandomSpell(qqId).name);
+                QqCard card = new QqCard(configManager.getNickName(groupId, qqId) + "今天的疮痍符卡", qqId , "符卡", THGameDataManager.hashRandomSpell(qqId).cnName);
                 sendMessage(gme.getGroup(), card.toMiraiMessage());
             } else {
-                sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", configManager.getNickName(groupId, qqId), THDataHolder.hashRandomSpell(qqId).name));
+                sendMessage(gme.getGroup(), String.format("%s今天会在%s疮痍", configManager.getNickName(groupId, qqId), THGameDataManager.hashRandomSpell(qqId).cnName));
             }
             return true;
         }
@@ -120,7 +122,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     } else if (c == '2') {
                         fpro = 100.00f;
                     } else {
-                        fpro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
+                        fpro = ((float)(SJFRandom.hashSelectInt(qqId, 10001))) / 100;
                     }
                     if (configManager.getPersonConfig(qqId).isJrrpNewStyle()) {
                         QqCard card = new QqCard(pname + "今天的疮痍位置", qqId , "游戏进度", String.format("%.2f%%", fpro));
@@ -134,7 +136,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                         case "plane":
                         case "pl":
                         case "player":
-                            sendMessage(gme.getGroup(), thData.randomPlane(iter.next()));
+                            sendMessage(gme.getGroup(), THGameDataManager.randomPlane(iter.next()));
                             return true;
                     }
                     return true;
@@ -143,35 +145,35 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     switch (drawcmd) {
                         case "spell":
                             if (list.size() == 3) {
-                                sendMessage(gme.getGroup(), thData.randomSpell().name);
+                                sendMessage(gme.getGroup(), THGameDataManager.randomSpell().cnName);
                             } else if (list.size() == 4) {
                                 String spellName = iter.next();
-                                SpellCard sc = thData.getSpellCard(spellName);
+                                THSpell sc = THGameDataManager.getTHSpell(spellName);
                                 if (sc == null) {
                                     sendMessage(gme.getGroup(), "没有找到这张符卡");
                                     return true;
                                 }
-                                float allPro = ((float)(THDataHolder.hashRandom(qqId, sc.name) % 10001)) / 100;
-                                sendMessage(gme.getGroup(), "你今天" + sc.name + "的收率是" + allPro + "%");
+                                float allPro = ((float)(SJFRandom.hashSelectInt(qqId) % 10001)) / 100;
+                                sendMessage(gme.getGroup(), "你今天" + sc.cnName + "的收率是" + allPro + "%");
                             }
                             return true;
                         case "neta":
-                            sendMessage(gme.getGroup(), String.format("%s今天宜打%s", pname, THDataHolder.hashRandomString(qqId, thData.neta)));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜打%s", pname, THGameDataManager.hashSelectNeta(qqId)));
                             return true;
                         case "music":
-                            sendMessage(gme.getGroup(), String.format("%s今天宜听%s", pname, THDataHolder.hashRandomMusic(qqId)));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜听%s", pname, THGameDataManager.hashSelectMusic(qqId)));
                             return true;
                         case "grandma":
                             if (Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
                                 sendMessage(gme.getGroup(), String.format("%s今天宜认八云紫当奶奶", pname));
                                 return true;
                             }
-                            sendMessage(gme.getGroup(), String.format("%s今天宜认%s当奶奶", pname, THDataHolder.hashRandomCharacter(qqId).charaName));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜认%s当奶奶", pname, THGameDataManager.hashRandomCharacter(qqId).name));
                             return true;
                         case "game":
-                            String s = thData.randomGame(pname, qqId, true);
+                            String s = THGameDataManager.randomGame(pname, qqId, true);
                             s += ",";
-                            s += thData.randomGame(pname, qqId + 1, false);
+                            s += THGameDataManager.randomGame(pname, qqId + 1, false);
                             sendMessage(gme.getGroup(), s);
                             return true;
                         case "ufo":
@@ -191,19 +193,19 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                             }
                             return true;
                         case "all":
-                            String allStr = String.format("%s今天宜打%s", pname, THDataHolder.hashRandomString(qqId, thData.neta));
+                            String allStr = String.format("%s今天宜打%s", pname, THGameDataManager.hashSelectNeta(qqId));
                             allStr += "\n";
-                            allStr += String.format("%s今天宜听%s", pname, THDataHolder.hashRandomMusic(qqId));
+                            allStr += String.format("%s今天宜听%s", pname, THGameDataManager.hashSelectMusic(qqId));
                             allStr += "\n";
                             if (Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
                                 allStr += String.format("%s今天宜认八云紫当奶奶", pname);
                             } else {
-                                allStr += String.format("%s今天宜认%s当奶奶", pname, THDataHolder.hashRandomCharacter(qqId).charaName);
+                                allStr += String.format("%s今天宜认%s当奶奶", pname, THGameDataManager.hashRandomCharacter(qqId));
                             }
                             allStr += "\n";
-                            allStr += thData.randomGame(pname, qqId, true);
+                            allStr += THGameDataManager.randomGame(pname, qqId, true);
                             allStr += ",";
-                            allStr += thData.randomGame(pname, qqId + 1, false);
+                            allStr += THGameDataManager.randomGame(pname, qqId + 1, false);
                             allStr += "\n";
                             float allPro=0f;
                             if (c == '0') {
@@ -213,7 +215,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                             } else if (c == '2') {
                                 allPro = 100.00f;
                             } else {
-                                allPro = ((float)(THDataHolder.hashRandomInt(qqId) % 10001)) / 100;
+                                allPro = ((float)(SJFRandom.hashSelectInt(qqId) % 10001)) / 100;
                             }
                             allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
                             sendMessage(gme.getGroup(), allStr);
@@ -223,15 +225,15 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     }
                     return true;
                 case "spellInfo":
-                    SpellCard sc = thData.getSpellCard(iter.next());
+                    THSpell sc = THGameDataManager.getTHSpell(iter.next());
                     if (sc == null) {
                         sendQuote(gme, "没有找到这张符卡");
                         return true;
                     }
-                    sendQuote(gme, thData.getSpellCardPs(sc));
+                    sendQuote(gme, sc.getPs());
                     return true;
                 case "charaInfo":
-                    sendQuote(gme, thData.getCharaNick(iter.next()));
+                    sendQuote(gme, THGameDataManager.getCharacter(iter.next()).getCharaNick());
                     return true;
             }
         } catch (Exception e) {

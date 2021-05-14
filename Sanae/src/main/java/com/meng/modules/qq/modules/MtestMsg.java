@@ -1,9 +1,9 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.modules.touhou.THGameDataManager;
 import com.meng.tools.ExceptionCatcher;
 import java.io.File;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
@@ -29,10 +29,11 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
     public boolean onGroupMessage(GroupMessageEvent gme) {
         if (gme.getMessage().contentToString().equals("mcode")) {
             //  processText(gme);
+            long id = gme.getSender().getId();
             sendMessage(gme.getGroup(),
-                               MiraiCode.deserializeMiraiCode(String.format(
-                                                                  "[mirai:app:{\"app\"\\:\"com.tencent.miniapp\"\\,\"desc\"\\:\"\"\\,\"view\"\\:\"notification\"\\,\"ver\"\\:\"0.0.0.1\"\\,\"prompt\"\\:\"%s的今日人品\"\\,\"meta\"\\:{\"notification\"\\:{\"appInfo\"\\:{\"appName\"\\:\"%s的今日人品\"\\,\"appType\"\\:4\\,\"appid\"\\:1109659848\\,\"iconUrl\"\\:\"http\\:\\\\/\\\\/q1.qlogo.cn\\\\/g?b=qq&nk=%s&s=640\"}\\,\"data\"\\:\\[{\"title\"\\:\"今日人品\"\\,\"value\"\\:\"%s\"}\\,{\"title\"\\:\"今日适宜\"\\,\"value\"\\:\"%s\"}\\]\\,\"title\"\\:\"\"\\,\"emphasis_keyword\"\\:\"今日人品\"}}}]",
-                                                                  gme.getSender().getNick(), gme.getSender().getNick(), gme.getSender().getId(), "99.61%", THDataHolder.hashRandomSpell(gme.getSender().getId()).name)));
+                        MiraiCode.deserializeMiraiCode(String.format(
+                                                           "[mirai:app:{\"app\"\\:\"com.tencent.miniapp\"\\,\"desc\"\\:\"\"\\,\"view\"\\:\"notification\"\\,\"ver\"\\:\"0.0.0.1\"\\,\"prompt\"\\:\"%s的今日人品\"\\,\"meta\"\\:{\"notification\"\\:{\"appInfo\"\\:{\"appName\"\\:\"%s的今日人品\"\\,\"appType\"\\:4\\,\"appid\"\\:1109659848\\,\"iconUrl\"\\:\"http\\:\\\\/\\\\/q1.qlogo.cn\\\\/g?b=qq&nk=%s&s=640\"}\\,\"data\"\\:\\[{\"title\"\\:\"今日人品\"\\,\"value\"\\:\"%s\"}\\,{\"title\"\\:\"今日适宜\"\\,\"value\"\\:\"%s\"}\\]\\,\"title\"\\:\"\"\\,\"emphasis_keyword\"\\:\"今日人品\"}}}]",
+                                                           gme.getSender().getNick(), gme.getSender().getNick(), gme.getSender().getId(), "99.61%", THGameDataManager.hashRandomSpell(id))));
         }
         return false;
     }
