@@ -67,7 +67,7 @@ public abstract class THGameData {
     }
 
     public String getNameFull() {
-        return getNameCN() + " ~ " + getNameEng();
+        return getNameCN() + " ~ " + getNameEng() + ".";
     }
 
     public THSpell getSpellFromDiff(int diffFlag) {

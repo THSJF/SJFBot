@@ -34,7 +34,7 @@ public class Network {
         }
         connection.ignoreContentType(true).method(Connection.Method.POST);
         for (int i = 0;i < params.length;i += 2) {
-            connection.data((String)params[i], (String)params[i + 1]);
+            connection.data(String.valueOf(params[i]), String.valueOf(params[i + 1]));
         }
         Connection.Response response = null;
         try {

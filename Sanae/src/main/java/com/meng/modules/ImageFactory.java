@@ -80,34 +80,7 @@ public class ImageFactory {
         }
     }
 
-    public BufferedImage generalMirrorImage(Image src, int angel) {
-        int srcWidth = src.getWidth(null);
-        int srcHeight = src.getHeight(null);
-        if (angel >= 90) {
-            if (angel / 90 % 2 == 1) {
-                srcHeight = srcHeight ^ srcWidth;
-                srcWidth = srcHeight ^ srcWidth;
-                srcHeight = srcHeight ^ srcWidth;
-            }
-        }
-        double r = Math.sqrt(srcHeight * srcHeight + srcWidth * srcWidth) / 2;
-        double len = 2 * Math.sin(Math.toRadians(angel % 90) / 2) * r;
-        double angelAlpha = (Math.PI - Math.toRadians(angel % 90)) / 2;
-        double angelDaltaWidth = Math.atan((double) srcHeight / srcWidth);
-        double angelDaltaHeight = Math.atan((double) srcWidth / srcHeight);
-        int lenDaltaWidth = (int) (len * Math.cos(Math.PI - angelAlpha - angelDaltaWidth));
-        int lenDaltaHeight = (int) (len * Math.cos(Math.PI - angelAlpha - angelDaltaHeight));
-        int desWidth = srcWidth + lenDaltaWidth * 2;
-        int desHeight = srcHeight + lenDaltaHeight * 2;
-        BufferedImage res = new BufferedImage(desWidth, desHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = res.createGraphics();
-        g2.translate((desWidth - srcWidth) / 2, (desHeight - srcHeight) / 2);
-        g2.rotate(Math.toRadians(angel), srcWidth / 2, srcHeight / 2);
-        g2.drawImage(src, null, null);
-        return res;
-    }
-
-    public BufferedImage generataMirror(BufferedImage srcImage, int flag) throws IOException {
+    public BufferedImage generateMirror(BufferedImage srcImage, int flag) {
         Image im = srcImage;
         int w = im.getWidth(null);
         int h = im.getHeight(null);
