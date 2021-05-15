@@ -2,18 +2,25 @@ package com.meng.modules;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.meng.tools.FileTool;
+import com.meng.tools.Hash;
+import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 import com.meng.tools.SJFRandom;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import com.meng.tools.Hash;
 
 public class Baidu {
-    public static String generalTranslate(String cmd) {
+    private static AppId appid = JsonHelper.fromJson(FileTool.readString(new File("C://Program Files/sjf2.json")), AppId.class);
+
+    public static String generalTranslate(String cmd) {  
         long salt = SJFRandom.nextInRange(1000000000, 9999999999L);
-        String sign = "20200513000452672" + cmd + salt + encode("45Khk0SiGZNUIwJMj6wn");
-        System.out.println("45Khk0SiGZNUIwJMj6wn md5:" + encode("45Khk0SiGZNUIwJMj6wn").equals(Hash.toHexString("45Khk0SiGZNUIwJMj6wn".getBytes(StandardCharsets.UTF_8))));
+        String sign = encode(appid.id + cmd + salt + appid.sign);
+        System.out.println("appid md5:" + encode(sign));
+        System.out.println(Hash.toHexString(sign.getBytes(StandardCharsets.UTF_8)));
+        System.out.println(Hash.getMd5Instance().calculate(sign));
         String result = Network.httpPost(
             "https://fanyi-api.baidu.com/api/trans/vip/translate",
             null,
@@ -21,7 +28,7 @@ public class Baidu {
             "q", cmd,
             "from", "auto",
             "to", "zh",
-            "appid", "20200513000452672",
+            "appid", appid.id,
             "salt", salt,
             "sign", sign);
         JsonObject jobj = new JsonParser().parse(result).getAsJsonObject(); 
@@ -31,7 +38,6 @@ public class Baidu {
     private static String encode(String s) {
         try {
             MessageDigest instance = MessageDigest.getInstance("MD5");
-            //对字符串加密，返回字节数组
             instance.update(s.getBytes(StandardCharsets.UTF_8));
             byte[] digest = instance.digest();
             StringBuilder sb = new StringBuilder();
@@ -48,5 +54,10 @@ public class Baidu {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static class AppId {
+        public String id;
+        public String sign;
     }
 }

@@ -16,6 +16,14 @@ public class FileFormat {
         }
     }
 
+    public static boolean isGif(File file) {
+        try {
+            return "gif".equals(getFileType(file).extendName);
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     public static Content getFileType(byte[] file) {
         for (Content content : hashset) {
             if (file.length < content.magic.length) {

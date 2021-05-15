@@ -1,7 +1,6 @@
 package com.meng.modules;
 
 import com.meng.modules.qq.SBot;
-import com.meng.tools.FileTool;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -53,41 +52,35 @@ public class ImageFactory {
         };
     }
 
-    public File generateJingShenZhiZhu(File file) {
+    public BufferedImage generateJingShenZhiZhu(BufferedImage src) {
         try {
-            File retFile = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/jingshenzhizhu/" + System.currentTimeMillis() + ".png"));
-            BufferedImage src = ImageIO.read(file);
-            BufferedImage des1 = scaleImage(rotateImage(src, 346), 190);
+            BufferedImage des1 = scaleImage(generateRotateImage(src, 346), 190);
             Image im = ImageIO.read(new File(SBot.appDirectory + "/baseImage/精神支柱.png"));
             BufferedImage b = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             b.getGraphics().drawImage(im, 0, 0, null);
             b.getGraphics().drawImage(des1, -29, 30, null);
-            ImageIO.write(b, "png", retFile);
-            return retFile;
+            return b;
         } catch (IOException e) {
             return null;
         }
     }
 
-    public File generateShenChu(File file) {
+    public BufferedImage generateShenChu(BufferedImage src) {
         try {
-            File retFile = FileTool.createFile(new File(SBot.appDirectory + "imageFactory/shenchu/" + System.currentTimeMillis() + ".png"));
-            BufferedImage src = ImageIO.read(file);
             BufferedImage des1 = new BufferedImage(228, 228, BufferedImage.TYPE_INT_ARGB);
             des1.getGraphics().drawImage(src, 0, 0, 228, 228, null);
             Image im = ImageIO.read(new File(SBot.appDirectory + "/baseImage/神触.png"));
             BufferedImage b = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             b.getGraphics().drawImage(im, 0, 0, null);
             b.getGraphics().drawImage(des1, 216, -20, null);
-            ImageIO.write(b, "png", retFile); 
-            return retFile;
+            return b;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private BufferedImage rotateImage(Image src, int angel) {
+    public BufferedImage generalMirrorImage(Image src, int angel) {
         int srcWidth = src.getWidth(null);
         int srcHeight = src.getHeight(null);
         if (angel >= 90) {
@@ -114,7 +107,74 @@ public class ImageFactory {
         return res;
     }
 
-    private BufferedImage scaleImage(BufferedImage img, int newSize) {
+    public BufferedImage generataMirror(BufferedImage srcImage, int flag) throws IOException {
+        Image im = srcImage;
+        int w = im.getWidth(null);
+        int h = im.getHeight(null);
+        int size = w * h;
+        BufferedImage b = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        b.getGraphics().drawImage(im.getScaledInstance(w, h, Image.SCALE_SMOOTH), 0, 0, null);
+        int[] rgb1 = b.getRGB(0, 0, w, h, new int[size], 0, w);
+        int[] rgb2 = new int[size];
+        switch (flag % 3) {
+            case 0:
+                for (int y = 0; y < h; ++y) {
+                    int yw = y * w;
+                    for (int x = 0; x < w; ++x) {
+                        rgb2[(w - 1 - x) + yw] = rgb1[x + yw]; // 镜之国
+                    }
+                }
+                break;
+            case 1:
+                for (int y = 0; y < h; y++) {
+                    // 天地
+                    if (w >= 0) {
+                        System.arraycopy(rgb1, y * w, rgb2, (h - 1 - y) * w, w);
+                    }
+                }
+                break;
+            case 2:
+                int halfH = h / 2;
+                for (int y = 0; y < h; y++) {
+                    // 天壤梦弓
+                    if (w >= 0) {
+                        System.arraycopy(rgb1, y * w, rgb2, (y < halfH ? y + halfH : y - halfH) * w, w);
+                    }
+                }
+                break;
+        }
+        b.setRGB(0, 0, w, h, rgb2, 0, w);
+        return b;
+    } 
+
+    public BufferedImage generateRotateImage(Image src, int angel) {
+        int srcWidth = src.getWidth(null);
+        int srcHeight = src.getHeight(null);
+        if (angel >= 90) {
+            if (angel / 90 % 2 == 1) {
+                srcHeight = srcHeight ^ srcWidth;
+                srcWidth = srcHeight ^ srcWidth;
+                srcHeight = srcHeight ^ srcWidth;
+            }
+        }
+        double r = Math.sqrt(srcHeight * srcHeight + srcWidth * srcWidth) / 2;
+        double len = 2 * Math.sin(Math.toRadians(angel % 90) / 2) * r;
+        double angelAlpha = (Math.PI - Math.toRadians(angel % 90)) / 2;
+        double angelDaltaWidth = Math.atan((double) srcHeight / srcWidth);
+        double angelDaltaHeight = Math.atan((double) srcWidth / srcHeight);
+        int lenDaltaWidth = (int) (len * Math.cos(Math.PI - angelAlpha - angelDaltaWidth));
+        int lenDaltaHeight = (int) (len * Math.cos(Math.PI - angelAlpha - angelDaltaHeight));
+        int desWidth = srcWidth + lenDaltaWidth * 2;
+        int desHeight = srcHeight + lenDaltaHeight * 2;
+        BufferedImage res = new BufferedImage(desWidth, desHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = res.createGraphics();
+        g2.translate((desWidth - srcWidth) / 2, (desHeight - srcHeight) / 2);
+        g2.rotate(Math.toRadians(angel), srcWidth / 2, srcHeight / 2);
+        g2.drawImage(src, null, null);
+        return res;
+    }
+
+    public BufferedImage scaleImage(BufferedImage img, int newSize) {
         BufferedImage img2 = new BufferedImage(newSize, newSize, BufferedImage.TYPE_INT_ARGB);
         img2.getGraphics().drawImage(img, 0, 0, newSize, newSize, null);
         return img2;
