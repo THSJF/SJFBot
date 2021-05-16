@@ -34,6 +34,10 @@ import javax.imageio.ImageIO;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import net.mamoe.mirai.message.data.QuoteReply;
+import net.mamoe.mirai.message.data.MessageSource;
+import com.meng.modules.qq.handler.MessageManager;
+import net.mamoe.mirai.event.events.MessageEvent;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
@@ -60,6 +64,17 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         }
         if (network.onGroupMessage(event)) {
             return true;
+        }
+        QuoteReply qr = event.getMessage().get(QuoteReply.Key);
+        if(qr != null){
+            MessageSource ms = qr.getSource();
+            GroupMessageEvent me = (GroupMessageEvent) MessageManager.get(ms.getIds());
+            if (local.onGroupMessage(me)) {
+                return true;
+            }
+            if (network.onGroupMessage(me)) {
+                return true;
+            }
         }
         return false;
     }
