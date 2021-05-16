@@ -69,10 +69,10 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         if (qr != null) {
             MessageSource ms = qr.getSource();
             GroupMessageEvent me = (GroupMessageEvent) MessageManager.get(ms.getIds());
-            if (local.onGroupMessage(me, event.getSender().getId())) {
+            if (local.onGroupMessage(me, event.getSender().getId(), event.getMessage().get(2).contentToString())) {
                 return true;
             }
-            if (network.onGroupMessage(me, event.getSender().getId())) {
+            if (network.onGroupMessage(me, event.getSender().getId(), event.getMessage().get(2).contentToString())) {
                 return true;
             }
         }
@@ -254,11 +254,10 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
         @Override
         public boolean onGroupMessage(GroupMessageEvent event) {
-            return onGroupMessage(event, event.getSender().getId());
+            return onGroupMessage(event, event.getSender().getId(), event.getMessage().get(1).contentToString());
         }
 
-        public boolean onGroupMessage(GroupMessageEvent event, long qqId) {
-            String cmd = event.getMessage().get(1).contentToString();
+        public boolean onGroupMessage(GroupMessageEvent event, long qqId, String cmd) {
             Image miraiImg = event.getMessage().get(Image.Key);
             if (miraiImg != null && functionMap.containsKey(cmd)) {
                 sendQuote(event, "正在识别……");
@@ -344,11 +343,10 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
         @Override
         public boolean onGroupMessage(GroupMessageEvent event) {
-            return onGroupMessage(event, event.getSender().getId());
+            return onGroupMessage(event, event.getSender().getId(), event.getMessage().get(1).contentToString());
         }
 
-        public boolean onGroupMessage(GroupMessageEvent event, long qqId) {
-            String cmd = event.getMessage().get(1).contentToString();
+        public boolean onGroupMessage(GroupMessageEvent event, long qqId, String cmd) {
             Image miraiImg = event.getMessage().get(Image.Key);
             try {    
                 if (miraiImg != null && functionMap.containsKey(cmd)) {
