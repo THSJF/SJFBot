@@ -172,7 +172,7 @@ public class TH07Data extends THGameData {
             new THSpell(this, chara_八云蓝, "式弹「Ultimate Buddhist」（最后的佛徒）", "式弾「アルティメットブディスト」", THSpell.Extra),
             new THSpell(this, chara_八云蓝, "式弹「Unilateral Contact」（片面接触）", "式弾「ユーニラタルコンタクト」", THSpell.Extra),
             new THSpell(this, chara_八云蓝, "式神「橙」", "式神「橙」", THSpell.Extra),
-            new THSpell(this, chara_八云蓝, "「狐狗狸先生的契约」", "「狐狗狸さんの契約」", THSpell.Extra, "「狐狗狸先生的契约」"),
+            new THSpell(this, chara_八云蓝, "「狐狗狸先生的契约」", "「狐狗狸さんの契約」", THSpell.Extra, "「狐狗狸的契约」"),
             new THSpell(this, chara_八云蓝, "幻神「饭纲权现降临」", "幻神「飯綱権現降臨」", THSpell.Extra),
             new THSpell(this, chara_八云蓝, "式神「前鬼后鬼的守护」", "式神「前鬼後鬼の守護」", THSpell.Phantasm),
             new THSpell(this, chara_八云蓝, "式神「凭依荼吉尼天」", "式神「憑依荼吉尼天」", THSpell.Phantasm),

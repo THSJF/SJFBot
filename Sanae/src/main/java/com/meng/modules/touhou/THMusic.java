@@ -22,9 +22,10 @@ public class THMusic {
         char c = parts[0].charAt(0);
         if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
             return parts[1];
-        } else {
+        } else if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')) {
             return parts[0];
         }
+        return null;
     }
 
     public String getNameEng() {
@@ -40,8 +41,9 @@ public class THMusic {
         char c = parts[0].charAt(0);
         if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
             return parts[0];
-        } else {
+        } else if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')) {
             return parts[1];
         }
+        return null;
     }
 }

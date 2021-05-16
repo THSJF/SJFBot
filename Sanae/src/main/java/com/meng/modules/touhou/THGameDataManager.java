@@ -12,11 +12,10 @@ import com.meng.modules.touhou.gameData.TH15Data;
 import com.meng.modules.touhou.gameData.TH16Data;
 import com.meng.modules.touhou.gameData.TH17Data;
 import com.meng.modules.touhou.gameData.TH18Data;
-import com.meng.tools.Hash;
+import com.meng.modules.touhou.gameData.THSSSData;
 import com.meng.tools.SJFRandom;
 import com.meng.tools.Tools;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.function.Consumer;
 
 public class THGameDataManager {
@@ -47,7 +46,8 @@ public class THGameDataManager {
                 TH15Data.getInstance(),
                 TH16Data.getInstance(),
                 TH17Data.getInstance(),
-                TH18Data.getInstance()
+                TH18Data.getInstance(),
+                THSSSData.getInstance()
             };
         }
         return thGameData;
@@ -366,13 +366,13 @@ public class THGameDataManager {
                 }
             }
             for (THSpell spell : game.getSpellCards()) {
+                if (text.equals(spell.getNameEng()) || text.equals(spell.getNameAbbr())) {
+                    return spell.cnName;
+                }
                 if (spell.cnName.contains(text)) {
                     return spell.jpName;
                 }
                 if (text.equals(spell.jpName)) {
-                    return spell.cnName;
-                }
-                if (text.equals(spell.getNameEng()) || text.equals(spell.getNameAbbr())) {
                     return spell.cnName;
                 }
                 for (String nick : spell.nick) {

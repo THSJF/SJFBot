@@ -10,6 +10,7 @@ public class THSpell {
     public static final int LastSpell = 1 << 6;
     public static final int LastWord = 1 << 7;
     public static final int Overdrive = 1 << 8;
+    public static final int FinalSpellCard = 1 << 9;
     public static final int StoryAll = Easy | Normal | Hard | Lunatic;
 
     public int difficult = 0;

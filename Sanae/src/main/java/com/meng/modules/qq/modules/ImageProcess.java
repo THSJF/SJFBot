@@ -188,7 +188,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                                     }    
                                 }
                             });
-                        put("ocr", new BiConsumer<Image,GroupMessageEvent>(){
+                        put("porn", new BiConsumer<Image,GroupMessageEvent>(){
 
                                 @Override
                                 public void accept(Image img, GroupMessageEvent event) {
@@ -207,7 +207,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                                     }
                                 }
                             });
-                        put("porn", new BiConsumer<Image,GroupMessageEvent>(){
+                        put("ocr", new BiConsumer<Image,GroupMessageEvent>(){
 
                                 @Override
                                 public void accept(Image img, GroupMessageEvent event) {
