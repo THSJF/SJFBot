@@ -339,7 +339,7 @@ public class THGameDataManager {
             return String.format("忌用%s打%s", charaName, gameName);
         }
     }
-    
+
     public static String generalTranslate(String text) {
         THGameData[] thGameData = THGameDataManager.getThGameData();
         for (THGameData game : thGameData) {
@@ -366,10 +366,13 @@ public class THGameDataManager {
                 }
             }
             for (THSpell spell : game.getSpellCards()) {
-                if (text.equals(spell.cnName)) {
+                if (spell.cnName.contains(text)) {
                     return spell.jpName;
                 }
                 if (text.equals(spell.jpName)) {
+                    return spell.cnName;
+                }
+                if (text.equals(spell.getNameEng()) || text.equals(spell.getNameAbbr())) {
                     return spell.cnName;
                 }
                 for (String nick : spell.nick) {

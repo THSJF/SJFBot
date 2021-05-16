@@ -10,30 +10,38 @@ public class THMusic {
     }
 
     public String getNameCN() {
-        int index = name.indexOf("~");
-        if (index == -1) {
-            char c = name.charAt(0);
+        String[] parts = name.split(" ~ ");
+        if (parts.length < 2) {
+            char c = parts[0].charAt(0);
             if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
                 return null;
             } else {
                 return name;
             }
+        }
+        char c = parts[0].charAt(0);
+        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+            return parts[1];
         } else {
-            return name.substring(index - 1); 
+            return parts[0];
         }
     }
 
     public String getNameEng() {
-        int index = name.indexOf("~");
-        if (index == -1) {
-            char c = name.charAt(0);
+        String[] parts = name.split(" ~ ");
+        if (parts.length < 2) {
+            char c = parts[0].charAt(0);
             if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
                 return name;
             } else {
                 return null;
             }
+        }
+        char c = parts[0].charAt(0);
+        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+            return parts[0];
         } else {
-            return name.substring(index - 1, name.length()); 
+            return parts[1];
         }
     }
 }

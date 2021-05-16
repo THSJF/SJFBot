@@ -27,7 +27,7 @@ public class THSpell {
         this.difficult = diffcult;
         this.nick = nick;
     }
-    
+
     public String getPs() {
         StringBuilder sb = new StringBuilder();
         sb.append(cnName).append("(").append(jpName).append(")").append("是").append(master);
@@ -63,6 +63,31 @@ public class THSpell {
             }
         }
         return sb.toString();
+    }
+
+    public String getNameEng() {
+        String s = cnName.substring(cnName.indexOf("「"), cnName.indexOf("」"));
+        char c = s.charAt(0);
+        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+            return s;
+        } else {
+            return null;
+        }
+    }
+
+    public String getNameAbbr() {
+        String s = getNameEng();
+        if (s == null) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0;i < s.length();++i) {
+            char c = s.charAt(i);
+            if (c >= 'A' && c <= 'Z') {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
     }
 
     @Override
