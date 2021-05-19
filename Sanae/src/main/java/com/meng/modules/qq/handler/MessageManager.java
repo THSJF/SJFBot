@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.data.MessageSource;
+import net.mamoe.mirai.message.data.OnlineMessageSource;
 
 public class MessageManager {
     private static MessageManager instance = null;
-
     private LinkedList<MessageEvent> msgList = new LinkedList<>();
 
     private MessageManager() {
@@ -19,9 +19,10 @@ public class MessageManager {
 
                 @Override
                 public void run() {
+
                     Iterator<MessageEvent> iterator = msgList.iterator();
                     while (iterator.hasNext()) {
-                        if ((int)(System.currentTimeMillis() / 1000) - iterator.next().getTime() > 120) {
+                        if ((int)(System.currentTimeMillis() / 1000) - iterator.next().getTime() > 1800) {
                             iterator.remove();
                         }
                     }
@@ -31,14 +32,27 @@ public class MessageManager {
 
     public static void put(MessageEvent msg) {
         instance.msgList.add(msg);
+        if (instance.msgList.size() > 1000) {
+            instance.msgList.removeLast();
+        }
     }
 
     public static MessageEvent get(MessageRecallEvent event) {
         return get(event.getMessageIds());
     }
+
     public static MessageEvent get(int[] ids) {
         for (MessageEvent msg :instance.msgList) {
             if (arrayEquals(msg.getSource().getIds(), ids)) {
+                return msg;  
+            }
+        }
+        return null;
+    }
+
+    public static MessageEvent get(MessageSource source) {
+        for (MessageEvent msg :instance.msgList) {
+            if (arrayEquals(msg.getSource().getIds(), source.getIds())) {
                 return msg;  
             }
         }
@@ -49,7 +63,7 @@ public class MessageManager {
         MessageSource.recallIn(get(msgIds).getSource(), second);
     }
 
-    public static void autoRecall(SBot sb,int[] msgIds) {
+    public static void autoRecall(SBot sb, int[] msgIds) {
         MessageSource.recallIn(get(msgIds).getSource(), 60);
 	}
 

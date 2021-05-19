@@ -32,6 +32,9 @@ public class BotMessageHandler extends SimpleListenerHost {
     @NotNull
     @EventHandler()
     public ListeningStatus onReceive(final GroupMessageEvent event) {
+        if (event.getSender().getId() == 3045126546L) {//过于吵闹的刷屏机器
+            return ListeningStatus.LISTENING;
+        }
         MessageManager.put(event);
         moduleManager.onGroupMessage(event);
         return ListeningStatus.LISTENING;

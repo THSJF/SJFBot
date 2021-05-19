@@ -38,6 +38,8 @@ import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.message.data.MessageSource;
 import com.meng.modules.qq.handler.MessageManager;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.data.FlashImage;
+import net.mamoe.mirai.message.data.MessageChain;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
@@ -68,7 +70,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         QuoteReply qr = event.getMessage().get(QuoteReply.Key);
         if (qr != null) {
             MessageSource ms = qr.getSource();
-            GroupMessageEvent me = (GroupMessageEvent) MessageManager.get(ms.getIds());
+            GroupMessageEvent me = (GroupMessageEvent) MessageManager.get(ms);
             if (local.onGroupMessage(me, event.getSender().getId(), event.getMessage().get(2).contentToString())) {
                 return true;
             }
@@ -258,7 +260,14 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         }
 
         public boolean onGroupMessage(GroupMessageEvent event, long qqId, String cmd) {
-            Image miraiImg = event.getMessage().get(Image.Key);
+            MessageChain message = event.getMessage();
+            Image miraiImg = message.get(Image.Key);
+            if (miraiImg == null) {
+                FlashImage fi = message.get(FlashImage.Key);
+                if (fi != null) {
+                    miraiImg = fi.getImage();
+                }
+            }
             if (miraiImg != null && functionMap.containsKey(cmd)) {
                 sendQuote(event, "正在识别……");
                 functionMap.get(cmd).accept(miraiImg, event);
@@ -347,7 +356,14 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         }
 
         public boolean onGroupMessage(GroupMessageEvent event, long qqId, String cmd) {
-            Image miraiImg = event.getMessage().get(Image.Key);
+            MessageChain message = event.getMessage();
+            Image miraiImg = message.get(Image.Key);
+            if (miraiImg == null) {
+                FlashImage fi = message.get(FlashImage.Key);
+                if (fi != null) {
+                    miraiImg = fi.getImage();
+                }
+            }
             try {    
                 if (miraiImg != null && functionMap.containsKey(cmd)) {
                     File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
