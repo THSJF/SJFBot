@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.UserInfo;
@@ -40,6 +41,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
 	}
 
 	@Override
+    @CommandDescribe(cmd = "dice", note = "模仿Dice的行为")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();

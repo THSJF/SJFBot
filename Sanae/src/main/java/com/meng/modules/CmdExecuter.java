@@ -16,7 +16,11 @@ public class CmdExecuter implements AutoCloseable {
     private StreamGobbler sg0;
     private StreamGobbler sg1;
 
-    private CmdExecuter(Process process) {
+    private CmdExecuter(){
+        
+    }
+    
+    public void setProcess(Process process) {
         this.process = process;
     }
 
@@ -87,11 +91,13 @@ public class CmdExecuter implements AutoCloseable {
 
     public static CmdExecuter execute(String command, OnOutputListener listener) {
         try {
+            CmdExecuter cmdExecuter = new CmdExecuter();
+            cmdExecuter.setOnOutputListener(listener);
+            
             String[] cmd = { "cmd.exe", "/C", command };
             System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
             Process proc = Runtime.getRuntime().exec(cmd);
-            CmdExecuter cmdExecuter = new CmdExecuter(proc);
-            cmdExecuter.setOnOutputListener(listener);
+            cmdExecuter.setProcess(proc);
             SJFExecutors.execute(cmdExecuter.createStreamGobbler(proc.getErrorStream(), 0));
             SJFExecutors.execute(cmdExecuter.createStreamGobbler(proc.getInputStream(), 1));
             return cmdExecuter;

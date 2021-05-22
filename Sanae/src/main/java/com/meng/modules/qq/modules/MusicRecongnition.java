@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Random;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import com.meng.config.CommandDescribe;
 
 public class MusicRecongnition extends BaseModule implements IGroupMessageEvent {
 
@@ -31,6 +32,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
     }
 
     @Override
+    @CommandDescribe(cmd = "原曲认知", note = "可通过添加后缀E N H L来调节难度")
     public boolean onGroupMessage(GroupMessageEvent event) {
         String msg = event.getMessage().contentToString();
         long group = event.getGroup().getId();
@@ -165,10 +167,12 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         Ffmpeg.AudioCommandBuilder builder = new Ffmpeg.AudioCommandBuilder(input);
         //    builder.coverExistFile().author("SJF").comment("from 2un");
         builder.bitrate(64).freq(22050).channels(1);
-        if (CmdExecuter.execute(builder.build(output), null).getProcess().exitValue() == 0) {
-            return output;
-        } else {
-            return null;
+        try(CmdExecuter execute = CmdExecuter.execute(builder.build(output), null)){
+            if (execute.getProcess().exitValue() == 0) {
+                return output;
+            } else {
+                return null;
+            }
         }
     }
 }

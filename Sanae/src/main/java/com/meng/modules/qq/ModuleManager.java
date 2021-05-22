@@ -2,6 +2,7 @@ package com.meng.modules.qq;
 
 import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
+import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.friend.IFriendChangeEvent;
@@ -36,8 +37,13 @@ import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
 import com.meng.modules.qq.modules.Report;
 import com.meng.modules.qq.modules.TimeTask;
+import com.meng.tools.JsonHelper;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import net.mamoe.mirai.event.events.BotGroupPermissionChangeEvent;
@@ -68,6 +74,7 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import com.meng.config.CommandDescribe;
 
 /**
  * @Description: 模块管理器
@@ -183,14 +190,37 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         }
     }
 
+    public String getHelp() {
+        StringBuilder builder = new StringBuilder();
+        for (IGroupMessageEvent event : groupMsgHandlers) {
+            Method method;
+            try {
+                method = event.getClass().getMethod("onGroupMessage", GroupMessageEvent.class);
+            } catch (Exception e) {
+                continue;
+            }
+            if (method.isAnnotationPresent(CommandDescribe.class)) {
+                CommandDescribe cd = method.getAnnotation(CommandDescribe.class);
+                builder.append(cd.cmd()).append(":").append(cd.note());
+            }
+        }  
+        return builder.toString();   
+	}
+
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
+        //    if(qqId == 1418780411L){
+        //        throw new FishPoolGroupMasterAndProgrammerAndRbqLjyysEveryDayGenshinImpactAndMineSraftNotWriteThpthWeNeedFuckHerException("ljyys");
+        //    }
 //        if (groupId != BotWrapperEntity.yysGroup) {
 //            return true;
 //        }
         String msg = gme.getMessage().contentToString();
+        if(msg.equals(".help")){
+            System.out.println(getHelp());
+        }
         if (msg.startsWith(".bot")) {
             ConfigManager cm = ConfigManager.getInstance();
             if (cm.isAdminPermission(qqId) || entity.getGroup(groupId).get(qqId).getPermission().getLevel() > 0) {

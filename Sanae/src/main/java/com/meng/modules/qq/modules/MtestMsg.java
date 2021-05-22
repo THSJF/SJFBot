@@ -30,24 +30,25 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
-        if(gme.getMessage().contentToString().equals("threp")){
-            ce = CmdExecuter.execute("from threp import THReplay", new CmdExecuter.OnOutputListener(){
-
-                    @Override
-                    public void onOutput(String output) {
-                        System.out.println(output);
-                        step++;
-                        switch(step){
-                            case 1:
-                                ce.write("tr=THReplay('th7_03.rpy')");
-                                break;
-                                case 2:
-                               ce.write("print(tr.getBaseInfo())");
-                               break;
-                        }
-                    }
-            });
-         }
+//        if(gme.getMessage().contentToString().equals("threp")){
+//            ce = CmdExecuter.execute("python", new CmdExecuter.OnOutputListener(){
+//
+//                    @Override
+//                    public void onOutput(String output) {
+//                        System.out.println(output);
+//                        step++;
+//                        switch(step){
+//                            case 1:
+//                                ce.write("from threp import THReplay");
+//                                ce.write("tr=THReplay('th7_03.rpy')");
+//                                break;
+//                                case 2:
+//                               ce.write("print(tr.getBaseInfo())");
+//                               break;
+//                        }
+//                    }
+//            });
+//         }
         return false;
     }
 
