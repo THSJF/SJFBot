@@ -33,7 +33,7 @@ public class MessageManager {
     public static void put(MessageEvent msg) {
         instance.msgList.add(msg);
         if (instance.msgList.size() > 1000) {
-            instance.msgList.removeLast();
+            instance.msgList.removeFirst();
         }
     }
 

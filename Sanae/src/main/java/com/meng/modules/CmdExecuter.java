@@ -7,70 +7,98 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import com.meng.tools.SJFExecutors;
 
-public class CmdExecuter {
+public class CmdExecuter implements AutoCloseable {
 
-    public static boolean execute(String command) {
-        try { 
-            String[] cmd = { "cmd.exe", "/C", command };
-            System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
-            Process proc = Runtime.getRuntime().exec(cmd);
-            StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "error");
-            StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), "output");
-            errorGobbler.start();
-            outputGobbler.start();
-            int exitVal = proc.waitFor();
-            System.out.println("ExitValue: " + exitVal);
-            if (exitVal != 0) {
-                return false;
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), t);
-            return false;
-        }
-        return true;
+    private OnOutputListener listener;
+    private Process process;
+    private StreamGobbler sg0;
+    private StreamGobbler sg1;
+
+    private CmdExecuter(Process process) {
+        this.process = process;
     }
 
-    public static class StreamGobbler extends Thread {
-        private InputStream is;
-        private String type;
-        private OutputStream os;
-
-        public StreamGobbler(InputStream is, String type) {
-            this(is, type, null);
+    private StreamGobbler createStreamGobbler(InputStream is, int i) {
+        if (i == 0) {
+            return sg0 = new StreamGobbler(is);
         }
+        return sg1 = new StreamGobbler(is);
+    }
 
-        public StreamGobbler(InputStream is, String type, OutputStream redirect) {
+    @Override
+    public void close() throws Exception {
+        process.destroy();
+    }
+
+    public Process getProcess() {
+        return process;
+    }
+
+    public void setOnOutputListener(OnOutputListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnOutputListener {
+        public void onOutput(String output);
+    }
+
+    public void write(String s){
+        try {
+            process.getOutputStream().write(s.getBytes());
+        } catch (IOException e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+        }
+    }
+    
+    public static Process run(String[] commandString) {
+        Process process = null;
+        try {
+            process = Runtime.getRuntime().exec(commandString);
+        } catch (IOException e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            process.destroy();
+        }
+        return process;
+    }
+
+    private class StreamGobbler implements Runnable {
+        private InputStream is;
+
+        private StreamGobbler(InputStream is) {
             this.is = is;
-            this.type = type;
-            this.os = redirect;
         }
 
         public void run() {
             try {
-                //   try(PrintWriter pw = new PrintWriter(os)){
-
-                //     }
-                PrintWriter pw = null;
-                if (os != null) {
-                    pw = new PrintWriter(os);
-                }
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    if (pw != null) {
-                        pw.println(line);
+                    if (listener != null) {
+                        listener.onOutput(line);
                     }
-                    System.out.println(type + ">" + line); 
-                }
-                if (pw != null) {
-                    pw.flush();
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace(); 
             }
+        }
+    }
+
+    public static CmdExecuter execute(String command, OnOutputListener listener) {
+        try {
+            String[] cmd = { "cmd.exe", "/C", command };
+            System.out.println("Execing " + cmd[0] + " " + cmd[1]  + " " + cmd[2]);
+            Process proc = Runtime.getRuntime().exec(cmd);
+            CmdExecuter cmdExecuter = new CmdExecuter(proc);
+            cmdExecuter.setOnOutputListener(listener);
+            SJFExecutors.execute(cmdExecuter.createStreamGobbler(proc.getErrorStream(), 0));
+            SJFExecutors.execute(cmdExecuter.createStreamGobbler(proc.getInputStream(), 1));
+            return cmdExecuter;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), t);
+            return null;
         }
     }
 }
