@@ -13,18 +13,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import com.meng.tools.Network;
 import com.meng.tools.FileTool;
+import com.meng.modules.qq.SBot;
 
 public class DeepDanbooruApi {
 
     public static Map<String,Float> search(String url) {
-        try {
-            File file = File.createTempFile("a", "png");
-            FileTool.saveFile(file, Network.httpGetRaw(url));
-            return search(file);
-        } catch (IOException e) {
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-            return null;
-        }
+        File file = new File(SBot.appDirectory + "image/deepdanbooru/" + System.currentTimeMillis() + ".png");
+        FileTool.saveFile(file, Network.httpGetRaw(url));
+        return search(file);
     }
 
     public static Map<String,Float> search(File file) {

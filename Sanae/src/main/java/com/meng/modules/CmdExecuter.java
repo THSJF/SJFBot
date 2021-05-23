@@ -32,7 +32,7 @@ public class CmdExecuter implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         process.destroy();
     }
 
