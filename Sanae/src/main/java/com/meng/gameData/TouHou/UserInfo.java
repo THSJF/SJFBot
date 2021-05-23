@@ -25,11 +25,6 @@ public class UserInfo extends BaseModule {
         return this;
     }
 
-    @Override
-    public String getModuleName() {
-        return "userdata";
-    }
-
     public boolean addFaith(long qq, int v) {
         UserData ud = values.get(qq);
         if (ud == null) {

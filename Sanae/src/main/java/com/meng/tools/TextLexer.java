@@ -502,12 +502,10 @@ public class TextLexer {
     }
 
     private void addResult(String rs_value, String rs_name) {
-        System.out.println(rs_value + " " + rs_name);
         result.add(rs_value);
     }
 
     private void addError(int row_num, String rs_value, String rs_name) {
-        System.out.println(row_num + " " + rs_value + " " + rs_name);
         result.add(rs_value);
     }
 

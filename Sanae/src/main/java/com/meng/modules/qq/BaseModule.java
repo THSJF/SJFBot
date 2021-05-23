@@ -74,5 +74,8 @@ public abstract class BaseModule {
     }
 
     public abstract BaseModule load();
-    public abstract String getModuleName();
+    
+    public String getModuleName(){
+        return getClass().getSimpleName();
+    }
 }

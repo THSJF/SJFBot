@@ -16,9 +16,9 @@ public class FileFormat {
         }
     }
 
-    public static boolean isGif(File file) {
+    public static boolean isFormat(File file,String fmt) {
         try {
-            return "gif".equals(getFileType(file).extendName);
+            return fmt.equalsIgnoreCase(getFileType(file).extendName);
         } catch (IOException e) {
             return false;
         }

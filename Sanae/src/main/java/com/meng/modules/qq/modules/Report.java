@@ -1,5 +1,6 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
@@ -31,6 +32,7 @@ public class Report extends BaseModule implements IGroupMessageEvent {
 	}
 
 	@Override
+    @CommandDescribe(cmd = "-留言 内容", note = "开发者可以查看留言内容")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
@@ -111,11 +113,6 @@ public class Report extends BaseModule implements IGroupMessageEvent {
 		}
 		return reportList.get(0);
 	}
-
-    @Override
-    public String getModuleName() {
-        return "report";
-    }
 
 	public static class ReportBean {
 		public long time;

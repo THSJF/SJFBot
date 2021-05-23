@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -28,6 +29,7 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 	}
 
 	@Override
+    @CommandDescribe(cmd = "-", note = "复读机")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         SubRepeater rp = repeaters.get(groupId);
@@ -81,10 +83,5 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 			return true;
 		}
 	}
-
-    @Override
-    public String getModuleName() {
-        return "repeater";
-    }
 }
 

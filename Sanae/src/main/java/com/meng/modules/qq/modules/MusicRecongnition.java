@@ -70,11 +70,6 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
     }
 
     @Override
-    public String getModuleName() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
     public MusicRecongnition load() {
         return this;
     }

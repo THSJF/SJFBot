@@ -3,11 +3,13 @@ package com.meng.modules.qq.modules;
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import com.madgag.gif.fmsware.GifDecoder;
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.modules.ImageFactory;
 import com.meng.modules.Youtu;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
+import com.meng.modules.qq.handler.MessageManager;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.sauceNao.SauceNaoApi;
 import com.meng.modules.sauceNao.javabean.SauceNaoResult;
@@ -32,14 +34,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import javax.imageio.ImageIO;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.message.data.QuoteReply;
-import net.mamoe.mirai.message.data.MessageSource;
-import com.meng.modules.qq.handler.MessageManager;
-import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.FlashImage;
+import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
+import net.mamoe.mirai.message.data.MessageSource;
+import net.mamoe.mirai.message.data.QuoteReply;
+import com.meng.modules.DeepDanbooruApi;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
@@ -53,6 +54,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
     private ImageProcessNetwok network = new ImageProcessNetwok();
 
     @Override
+    @CommandDescribe(cmd = "-", note = "图片处理")
     public boolean onGroupMessage(GroupMessageEvent event) {
         ConfigManager configManager = ConfigManager.getInstance();
         if (!configManager.isFunctionEnabled(event.getGroup(), Functions.ImageProcess)) {
@@ -84,11 +86,6 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
     @Override
     public ImageProcess load() {
         return this;
-    }
-
-    @Override
-    public String getModuleName() {
-        return "imageProcess";
     }
 
     private class ImageProcessQqAvatar implements IGroupMessageEvent {
@@ -125,7 +122,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 if (qqId != -1 && functionMap.containsKey(cmd)) {
                     File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(event.getGroup().get(qqId).getAvatarUrl()));
-                    if (FileFormat.isGif(imageFile)) {
+                    if (FileFormat.isFormat(imageFile, "gif")) {
                         runGenerateDynamic(imageFile, event, functionMap.get(cmd));
                     } else {
                         runGenerateStatic(imageFile, event, functionMap.get(cmd));          
@@ -250,6 +247,23 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                                     sendMessage(event, entity.getUrl(img));
                                 }
                             });
+                        put("dtag", new BiConsumer<Image,GroupMessageEvent>(){
+
+                                @Override
+                                public void accept(Image img, GroupMessageEvent event) {
+                                    Map<String,Float> map = DeepDanbooruApi.search(entity.getUrl(img));
+                                    if (map == null) {
+                                        sendQuote(event, "连接失败");
+                                        return;
+                                    }
+                                    StringBuilder builder = new StringBuilder();
+                                    for (Map.Entry<String,Float> entry : map.entrySet()) {
+                                        builder.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
+                                    }
+                                    builder.setLength(builder.length() - 1);
+                                    sendQuote(event, builder.toString());
+                                }
+                            });
                     }
                 });
         }
@@ -368,7 +382,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 if (miraiImg != null && functionMap.containsKey(cmd)) {
                     File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
-                    if (FileFormat.isGif(imageFile)) {
+                    if (FileFormat.isFormat(imageFile, "gif")) {
                         runGenerateDynamic(imageFile, event, functionMap.get(cmd));
                         ready.remove(event.getSender().getId());
                     } else {
@@ -384,7 +398,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                 } else if (miraiImg != null && ready.containsKey(qqId)) {
                     File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
-                    if (FileFormat.isGif(imageFile)) {
+                    if (FileFormat.isFormat(imageFile, "gif")) {
                         runGenerateDynamic(imageFile, event, ready.get(qqId));
                         ready.remove(event.getSender().getId());
                     } else {

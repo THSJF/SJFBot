@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -20,6 +21,7 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
+    @CommandDescribe(cmd = ".int 表达式", note = "int数字计算")
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();
         if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.NumberProcess)) {
@@ -90,10 +92,5 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
     @Override
     public NumberProcess load() {
         return this;
-    }
-
-    @Override
-    public String getModuleName() {
-        return Functions.NumberProcess.toString();
     }
 }

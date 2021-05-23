@@ -1,5 +1,6 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -37,6 +38,7 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 	}
 
 	@Override
+    @CommandDescribe(cmd = "-", note = "消息防护")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
 		long qqId = gme.getSender().getId();
         long groupId = gme.getGroup().getId();
@@ -93,11 +95,6 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 		mtmb.tiped = false;
 		return false;
 	}
-    
-    @Override
-    public String getModuleName() {
-        return "msgrefuse";
-    }
 
 	private class FireWallBean {
 		public long qq;//qq
@@ -108,6 +105,5 @@ public class MessageRefuse extends BaseModule implements IGroupMessageEvent {
 		public MessageChain lastMsg = EmptyMessageChain.INSTANCE;//最后一句话
 		public boolean tiped = false;//刷屏提示
 	}
-
 }
 

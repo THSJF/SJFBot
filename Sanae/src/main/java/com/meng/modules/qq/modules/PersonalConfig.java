@@ -1,10 +1,11 @@
 package com.meng.modules.qq.modules;
+import com.meng.config.CommandDescribe;
+import com.meng.config.ConfigManager;
 import com.meng.config.Person;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import com.meng.config.ConfigManager;
 
 public class PersonalConfig extends BaseModule implements IGroupMessageEvent {
 
@@ -18,11 +19,7 @@ public class PersonalConfig extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public String getModuleName() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
+    @CommandDescribe(cmd = "-", note = "个人设置")
     public boolean onGroupMessage(GroupMessageEvent event) {
         long qq = event.getSender().getId();
         String msg = event.getMessage().contentToString();

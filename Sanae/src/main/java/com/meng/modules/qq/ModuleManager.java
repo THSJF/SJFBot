@@ -1,8 +1,8 @@
 package com.meng.modules.qq;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
-import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.friend.IFriendChangeEvent;
@@ -37,13 +37,8 @@ import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
 import com.meng.modules.qq.modules.Report;
 import com.meng.modules.qq.modules.TimeTask;
-import com.meng.tools.JsonHelper;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import net.mamoe.mirai.event.events.BotGroupPermissionChangeEvent;
@@ -74,7 +69,6 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import com.meng.config.CommandDescribe;
 
 /**
  * @Description: 模块管理器
@@ -96,11 +90,6 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
 
     public ModuleManager(SBot bwe) {
         super(bwe);
-    }
-
-    @Override
-    public String getModuleName() {
-        return "moudlemanager";
     }
 
     public ModuleManager load() {
@@ -201,7 +190,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
             }
             if (method.isAnnotationPresent(CommandDescribe.class)) {
                 CommandDescribe cd = method.getAnnotation(CommandDescribe.class);
-                builder.append(cd.cmd()).append(":").append(cd.note());
+                builder.append(cd.cmd()).append(":").append(cd.note()).append("\n");
             }
         }  
         return builder.toString();   
@@ -218,8 +207,9 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
 //            return true;
 //        }
         String msg = gme.getMessage().contentToString();
-        if(msg.equals(".help")){
+        if (msg.equals(".help")) {
             System.out.println(getHelp());
+            return true;
         }
         if (msg.startsWith(".bot")) {
             ConfigManager cm = ConfigManager.getInstance();

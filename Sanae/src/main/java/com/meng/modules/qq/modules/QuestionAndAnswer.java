@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
@@ -8,6 +9,7 @@ import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.modules.touhou.THGameDataManager;
 import com.meng.modules.touhou.THSpell;
 import com.meng.tools.SJFRandom;
 import java.io.File;
@@ -20,7 +22,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import com.meng.modules.touhou.THGameDataManager;
 
 /**
  * @author: 司徒灵羽
@@ -57,6 +58,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     }
 
     @Override
+    @CommandDescribe(cmd = "-qa/-qar", note = "问答")
     public boolean onGroupMessage(GroupMessageEvent gme) {
         if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.QuestionAndAnswer)) {
             return false;
@@ -254,11 +256,6 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
 
     public List<QABean> getQas() {
         return Collections.unmodifiableList(qaList);
-    }
-
-    @Override
-    public String getModuleName() {
-        return "qa";
     }
 
     public static class QABean {

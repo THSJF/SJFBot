@@ -74,11 +74,6 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
         return this;
     }
 
-    @Override
-    public String getModuleName() {
-        return "memmberevent";
-    }
-
     public MemberChange(SBot bwe) {
         super(bwe);
     }

@@ -24,11 +24,6 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public String getModuleName() {
-        return "AimMessage";
-    }
-
-    @Override
     public AimMessage load() {
         DataPersistenter.read(this);
         return this;

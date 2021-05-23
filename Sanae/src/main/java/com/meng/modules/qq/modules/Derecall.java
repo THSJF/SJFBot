@@ -30,11 +30,6 @@ public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRec
     }
 
     @Override
-    public String getModuleName() {
-        return getClass().toString();
-    }
-
-    @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
         return false;
     }

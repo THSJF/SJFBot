@@ -24,11 +24,6 @@ public class MessageSaver extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public String getModuleName() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
         FlashImage fi = event.getMessage().get(FlashImage.Key);
         if (fi != null) {

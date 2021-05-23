@@ -2,6 +2,7 @@ package com.meng.modules.qq.modules;
 
 import com.google.gson.annotations.SerializedName;
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
@@ -39,6 +40,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
+    @CommandDescribe(cmd = "-", note = "词库")
     public boolean onGroupMessage(GroupMessageEvent gme) {
         if (!ConfigManager.getInstance().isFunctionEnabled(gme.getGroup(), Functions.DynamicWordStock)) {
             return false;
@@ -163,11 +165,6 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
             regexMap.put(key, Pattern.compile(key));
         }
         return this;
-    }
-
-    @Override
-    public String getModuleName() {
-        return Functions.DynamicWordStock.toString();
     }
 
     public enum NodeType {

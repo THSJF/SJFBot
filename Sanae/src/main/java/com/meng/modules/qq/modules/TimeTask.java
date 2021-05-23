@@ -122,11 +122,6 @@ public class TimeTask extends BaseModule {
         return (c.get(Calendar.HOUR_OF_DAY) == 12 || c.get(Calendar.HOUR_OF_DAY) == 16 || c.get(Calendar.HOUR_OF_DAY) == 22);
     }
 
-    @Override
-    public String getModuleName() {
-        return "timetask";
-    }
-
     private static class TaskBean {
         public int h;
         public int min;

@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.modules.FantasyZoneApi;
 import com.meng.modules.qq.BaseModule;
@@ -29,11 +30,7 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public String getModuleName() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
+    @CommandDescribe(cmd = "copper/fantasy", note = "二刺螈图片")
     public boolean onGroupMessage(final GroupMessageEvent event) {
         if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup(), Functions.FantasyZone)) {
             return false;

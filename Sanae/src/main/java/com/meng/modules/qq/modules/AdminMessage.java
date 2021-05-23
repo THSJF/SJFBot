@@ -1,24 +1,23 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.config.Person;
+import com.meng.modules.Baidu;
+import com.meng.modules.Lkaa;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.qq.handler.group.INudgeEvent;
-import com.meng.tools.CRC32A;
+import com.meng.modules.touhou.THGameDataManager;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.FileTool;
-import com.meng.tools.Hash;
 import com.meng.tools.JsonHelper;
-import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,9 +30,6 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Voice;
-import com.meng.modules.Lkaa;
-import com.meng.modules.touhou.THGameDataManager;
-import com.meng.modules.Baidu;
 
 /**
  * @Description: 管理员命令
@@ -51,6 +47,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
 	}
 
     @Override
+    @CommandDescribe(cmd = "-", note = "主要给管理员用的指令")
     public boolean onGroupMessage(GroupMessageEvent gme) {
         ConfigManager configManager = ConfigManager.getInstance();
         long qqId = gme.getSender().getId();
@@ -235,12 +232,9 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
             switch (first) {
                 case "kick":
                     {
-                        At at = (At) gme.getMessage().get(At.Key);
-                        long target;
-                        if (at == null) {
+                        long target = entity.getAt(gme.getMessage());
+                        if (target == -1) {
                             target = Long.parseLong(iter.next());
-                        } else {
-                            target = at.getTarget();
                         }
                         NormalMember targetMember = entity.getGroupMemberInfo(groupId, target);
                         if (targetMember != null) {
@@ -256,12 +250,9 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     return true;
                 case "mute":
                     {
-                        At at = (At) gme.getMessage().get(At.Key);
-                        long target;
-                        if (at == null) {
+                        long target = entity.getAt(gme.getMessage());
+                        if (target == -1) {
                             target = Long.parseLong(iter.next());
-                        } else {
-                            target = at.getTarget();
                         }
                         Member targetMember = entity.getGroupMemberInfo(groupId, target);
                         if (targetMember != null) {
@@ -298,10 +289,5 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
             sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
         }
         return false;
-    }
-
-    @Override
-    public String getModuleName() {
-        return "AdminMessage";
     }
 }

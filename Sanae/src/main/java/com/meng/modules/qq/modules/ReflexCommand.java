@@ -12,11 +12,6 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
  **/
 public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 
-    @Override
-    public String getModuleName() {
-        return "reflex";
-    }
-
     public ReflexCommand(SBot bw) {
         super(bw);
     }

@@ -243,10 +243,5 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
             sendMessage(gme.getGroup(), "参数错误:" + e.toString());
         }
         return false;
-	}
-
-    @Override
-    public String getModuleName() {
-        return "dice";
-    } 
+	} 
 }

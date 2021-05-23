@@ -1,9 +1,10 @@
 package com.meng.modules.qq.modules;
+import com.meng.config.CommandDescribe;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import net.mamoe.mirai.event.events.GroupMessageEvent;
 import java.util.HashSet;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 
 public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent {
@@ -13,7 +14,9 @@ public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent
     public MiraiCodeSerialize(SBot s) {
         super(s);
     }
+    
     @Override
+    @CommandDescribe(cmd = "rcode/tcode mirai码", note = "收发mirai码")
     public boolean onGroupMessage(GroupMessageEvent event) {
         String msg = event.getMessage().contentToString();
         long qq = event.getSender().getId();
@@ -36,10 +39,4 @@ public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent
     public MiraiCodeSerialize load() {
         return this;
     }
-
-    @Override
-    public String getModuleName() {
-        return "MiraiCodeSerialize";
-    }
-
 }

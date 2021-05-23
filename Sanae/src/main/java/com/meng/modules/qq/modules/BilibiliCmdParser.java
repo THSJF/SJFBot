@@ -1,6 +1,7 @@
 package com.meng.modules.qq.modules;
 
 import com.meng.bot.Functions;
+import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.modules.bilibili.BilibiliPair;
 import com.meng.modules.bilibili.LinkAnalyzer;
@@ -27,11 +28,7 @@ public class BilibiliCmdParser extends BaseModule implements IGroupMessageEvent 
     }
 
     @Override
-    public String getModuleName() {
-        return getClass().getName();
-    }
-
-    @Override
+    @CommandDescribe(cmd = "-", note = "检测哔哩哔哩链接")
     public boolean onGroupMessage(GroupMessageEvent event) {
         if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.BilibiliVideo)) {
             return false; 
