@@ -31,10 +31,8 @@ public class ThsssReplay {
             e.printStackTrace();
         }
         String[] strArray1 = listNum.toArray(new String[0]);
-        //int num = 0;
-        //do { } while(!strArray1[++num].equals("ReplayInformation") && num < strArray1.length - 1);
-        //其实就是跳过第一行 直接num=1即可
-        int num = 1;
+        int num = 0;
+        while (!strArray1[++num].equals("ReplayInformation") && num < strArray1.length - 1) {}
         PlayerInfo playerInfo = new PlayerInfo();
         playerInfo.version = strArray1[num + 1];
         playerInfo.playerName = strArray1[num + 2];
@@ -77,8 +75,8 @@ public class ThsssReplay {
     public String toString() {
         return info.toString();
     }
-    
-    public String getKeys(){
+
+    public String getKeys() {
         return keyData.toString();
     }
 

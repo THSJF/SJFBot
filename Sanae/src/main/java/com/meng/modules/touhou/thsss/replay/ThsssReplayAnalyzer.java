@@ -24,22 +24,20 @@ public class ThsssReplayAnalyzer {
      机体信息,时间信息
 
      */
-     
-    public static String analyze(ThsssReplay replay){
+
+    public static String analyze(ThsssReplay replay) {
         StringBuilder builder = new StringBuilder();
         builder.append(replay.info.toString());
         builder.append("s:shoot f:focus b:bomb c:ctrl\n");
-        KeyDataItem keyclass = new KeyDataItem();
         for (int i = 0;i < replay.info.myPlaneData.size();++i) {
-            builder.append("stage ").append((i + 1)).append("\n");
+            builder.append("stage ").append(i + 1).append("\n");
             replay.keyData.position = (int) replay.info.myPlaneData.get(i).dataPosition;
             int keyValue = replay.readKey();
             if (keyValue == 57358) {
                 int flag = 0;
                 keyValue = replay.readKey();
                 while (keyValue != 4080 && keyValue != 57358) {
-                    keyclass.hex2Key(keyValue);
-                    builder.append(keyclass.toString()).append("|");
+                    hex2key(keyValue, builder);
                     if (++flag % 60 == 0) {
                         builder.append("\n");
                     }
@@ -49,5 +47,58 @@ public class ThsssReplayAnalyzer {
             builder.append("\n\n\n");
         }
         return builder.toString();  
+    }
+
+    private static void hex2key(int keyValue, StringBuilder builder) {
+        boolean arrowUp = false;
+        boolean arrowDown = false;
+        boolean arrowLeft = false;
+        boolean arrowRight = false;
+        boolean key_Shift = false;
+        boolean key_Z = false;
+        boolean key_X = false;
+        boolean key_C = false;
+        boolean key_Ctrl = false;
+        key_Ctrl = (keyValue & 0b1000_0000) != 0;
+        key_C = (keyValue & 0b1000_0000_0) != 0;
+        key_X = (keyValue & 0b1000_0000_00) != 0;
+        key_Z = (keyValue & 0b1000_0000_000) != 0;
+        key_Shift = (keyValue & 0b1000_0000_0000) != 0;
+        arrowRight = (keyValue & 0b1000_0000_0000_0) != 0;
+        arrowLeft = (keyValue & 0b1000_0000_0000_00) != 0;
+        arrowDown = (keyValue & 0b1000_0000_0000_000) != 0;
+        arrowUp = (keyValue & 0b1000_0000_0000_0000) != 0;
+        if (arrowUp && arrowLeft) {
+            builder.append("↖");
+        } else if (arrowUp && arrowRight) {
+            builder.append("↗");
+        } else if (arrowDown && arrowLeft) {
+            builder.append("↙");
+        } else if (arrowDown && arrowRight) {
+            builder.append("↘");
+        } else if (arrowUp) {
+            builder.append("↑");
+        } else if (arrowDown) {
+            builder.append("↓");
+        } else if (arrowLeft) {
+            builder.append("←");
+        } else if (arrowRight) {
+            builder.append("→");
+        } else {
+            builder.append("○");
+        }
+        if (key_Shift) {
+            builder.append("f");
+        }
+        if (key_Z) {
+            builder.append("s");
+        }
+        if (key_X) {
+            builder.append("b");
+        }
+        if (key_Ctrl) {
+            builder.append("c");
+        }
+        builder.append("|");
     }
 }
