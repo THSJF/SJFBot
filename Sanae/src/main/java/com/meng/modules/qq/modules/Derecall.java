@@ -25,11 +25,6 @@ public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRec
     }
 
     @Override
-    public Derecall load() {
-        return this;
-    }
-
-    @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
         return false;
     }

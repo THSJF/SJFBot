@@ -65,9 +65,4 @@ public class MtestMsg extends BaseModule implements IGroupMessageEvent {
             sendQuote(event, e.toString());
         }
     }
-
-    @Override
-    public BaseModule load() {
-        return this;
-    }
 }

@@ -24,10 +24,6 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
     public FantasyZone(SBot sbot) {
         super(sbot);
     }
-    @Override
-    public FantasyZone load() {
-        return this;
-    }
 
     @Override
     @CommandDescribe(cmd = "copper/fantasy", note = "二刺螈图片")

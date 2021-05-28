@@ -24,11 +24,6 @@ public class FileAnalyzer extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public FileAnalyzer load() {
-        return this;
-    }
-
-    @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
         FileMessage msg = event.getMessage().get(FileMessage.Key);
         if (msg == null) {

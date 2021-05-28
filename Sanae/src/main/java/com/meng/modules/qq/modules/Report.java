@@ -26,12 +26,6 @@ public class Report extends BaseModule implements IGroupMessageEvent {
     }
 
 	@Override
-	public Report load() {
-		DataPersistenter.read(this);
-		return this;
-	}
-
-	@Override
     @CommandDescribe(cmd = "-留言 内容", note = "开发者可以查看留言内容")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();

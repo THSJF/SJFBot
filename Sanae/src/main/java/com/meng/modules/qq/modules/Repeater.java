@@ -24,11 +24,6 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
     }
 
 	@Override
-	public Repeater load() {
-		return this;
-	}
-
-	@Override
     @CommandDescribe(cmd = "-", note = "复读机")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long groupId = gme.getGroup().getId();

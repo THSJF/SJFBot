@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.io.FileWriter;
+import com.meng.tools.FileWatcher;
 
 /**
  * @author: 司徒灵羽
@@ -26,7 +28,9 @@ public class DataPersistenter {
             if (field.isAnnotationPresent(SanaeData.class)) {
                 SanaeData annotationField = field.getAnnotation(SanaeData.class);
                 try {
-                    FileOutputStream fos = new FileOutputStream(new File("C://Program Files/sanae_data/persistent/" + annotationField.value()));
+                    File file = new File("C://Program Files/sanae_data/persistent/" + annotationField.value());
+                    FileWatcher.getInstance().registerSelf(file);
+                    FileOutputStream fos = new FileOutputStream(file);
                     fos.write(JsonHelper.toJson(field.get(module)).getBytes(StandardCharsets.UTF_8));
                     fos.close();
                 } catch (Exception e) {

@@ -69,14 +69,7 @@ public class MemberChange extends BaseModule implements IGroupMemberEvent {
         return false;
     }
 
-    @Override
-    public BaseModule load() {
-        return this;
-    }
-
     public MemberChange(SBot bwe) {
         super(bwe);
     }
-
-
 }

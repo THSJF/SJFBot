@@ -83,11 +83,6 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         return false;
     }
 
-    @Override
-    public ImageProcess load() {
-        return this;
-    }
-
     private class ImageProcessQqAvatar implements IGroupMessageEvent {
 
         private Map<String,Function<BufferedImage,BufferedImage>> functionMap;
@@ -148,7 +143,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                                 @Override
                                 public void accept(Image simg, GroupMessageEvent event) {
                                     try {
-                                        SauceNaoResult mResults = SauceNaoApi.getSauce(entity.getUrl(simg));
+                                        SauceNaoResult mResults = SauceNaoApi.getSauce(new URL(entity.getUrl(simg)).openStream());
                                         if (mResults.getResults().size() < 1) {
                                             sendQuote(event, "没有相似度较高的图片");
                                             return;

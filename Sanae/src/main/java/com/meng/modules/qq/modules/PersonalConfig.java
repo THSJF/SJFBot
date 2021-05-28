@@ -14,11 +14,6 @@ public class PersonalConfig extends BaseModule implements IGroupMessageEvent {
     }
 
     @Override
-    public PersonalConfig load() {
-        return this;
-    }
-
-    @Override
     @CommandDescribe(cmd = "-", note = "个人设置")
     public boolean onGroupMessage(GroupMessageEvent event) {
         long qq = event.getSender().getId();

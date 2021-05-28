@@ -34,9 +34,4 @@ public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent
         }
         return false;
     }
-
-    @Override
-    public MiraiCodeSerialize load() {
-        return this;
-    }
 }

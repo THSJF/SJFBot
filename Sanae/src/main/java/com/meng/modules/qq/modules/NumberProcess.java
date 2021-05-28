@@ -88,9 +88,4 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
         }
         return false;
     }
-    
-    @Override
-    public NumberProcess load() {
-        return this;
-    }
 }

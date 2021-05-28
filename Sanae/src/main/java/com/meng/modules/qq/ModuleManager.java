@@ -92,6 +92,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         super(bwe);
     }
 
+    @Override
     public ModuleManager load() {
         load(ReflexCommand.class);
         load(MessageSaver.class);
@@ -209,6 +210,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         String msg = gme.getMessage().contentToString();
         if (msg.equals(".help")) {
             System.out.println(getHelp());
+            sendQuote(gme, getHelp());
             return true;
         }
         if (msg.startsWith(".bot")) {

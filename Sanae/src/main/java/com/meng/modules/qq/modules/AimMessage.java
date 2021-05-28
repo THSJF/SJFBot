@@ -1,10 +1,13 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.tools.FileTool;
+import com.meng.tools.FileWatcher;
+import com.meng.tools.JsonHelper;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,14 +21,25 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
 
     @SanaeData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
-
+    private final File cfg;
     public AimMessage(SBot bw) {
         super(bw);
+        cfg = new File("C://Program Files/sanae_data/persistent/" + getSanaeValue("holder"));
+        FileWatcher.getInstance().addOnFileChangeListener(cfg, new Runnable(){
+
+                @Override
+                public void run() {
+                    reload();
+                }
+            });
     }
 
     @Override
-    public AimMessage load() {
-        DataPersistenter.read(this);
+    public AimMessage reload() {
+        String json = FileTool.readString(cfg);
+        if (json != null && !json.equals("null")) {  
+            holder = JsonHelper.fromJson(json, AimMessageHolder.class);
+        }
         return this;
     }
 
@@ -87,9 +101,9 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
     }
 
     private class MessageWait {
-        public long group = 0;
-        public long qq = 0;
-        public String content = "";
+        public final long group;
+        public final long qq ;
+        public final String content;
         public MessageWait(long inGroup, long toQQ, String msg) {
             group = inGroup;
             qq = toQQ;

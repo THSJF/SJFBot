@@ -2,18 +2,21 @@ package com.meng.modules.qq;
 
 import com.meng.config.DataPersistenter;
 import com.meng.modules.qq.SBot;
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Tools;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
+import com.meng.config.SanaeData;
 
 /**
  * @author: 司徒灵羽
  **/
-public abstract class BaseModule {
+public abstract class BaseModule implements ILoad {
 
     public SBot entity;
 
@@ -25,6 +28,16 @@ public abstract class BaseModule {
         DataPersistenter.save(this);  
     }
 
+    protected final String getSanaeValue(String fieldName) {
+        try {
+            Field field = this.getClass().getDeclaredField(fieldName);
+            return field.getAnnotation(SanaeData.class).value();
+        } catch (Exception e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            return "";
+        }
+    }
+
     public int[] sendMessage(GroupMessageEvent event, Message msg) {
         return sendMessage(event.getGroup(), msg);
     }
@@ -32,7 +45,7 @@ public abstract class BaseModule {
     public int[] sendMessage(GroupMessageEvent event, String msg) {
         return sendMessage(event.getGroup(), msg);
     }
-    
+
     public int[] sendGroupMessage(long fromGroup, Message msg) {
         return entity.sendGroupMessage(fromGroup, msg);
     }
@@ -73,9 +86,17 @@ public abstract class BaseModule {
         return entity.sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
 
-    public abstract BaseModule load();
-    
-    public String getModuleName(){
+    public BaseModule load() {
+        DataPersistenter.read(this);
+        return this;
+    }
+
+    public String getModuleName() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public BaseModule reload() throws Exception {
+        return this;
     }
 }

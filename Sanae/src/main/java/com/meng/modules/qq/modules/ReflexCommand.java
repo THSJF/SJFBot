@@ -16,10 +16,6 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
         super(bw);
     }
 
-    @Override
-    public ReflexCommand load() {
-        return this;
-    }
     // not done
     //-invoke ClassName MethodName Signature args
     //    0       1         2           3     4

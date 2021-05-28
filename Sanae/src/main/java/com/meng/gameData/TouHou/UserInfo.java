@@ -19,12 +19,6 @@ public class UserInfo extends BaseModule {
         super(sb);
     }
 
-    @Override
-    public UserInfo load() {
-        DataPersistenter.read(this);
-        return this;
-    }
-
     public boolean addFaith(long qq, int v) {
         UserData ud = values.get(qq);
         if (ud == null) {

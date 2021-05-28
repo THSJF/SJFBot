@@ -69,11 +69,6 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
         return false;
     }
 
-    @Override
-    public MusicRecongnition load() {
-        return this;
-    }
-
     private File createMusicCut(int musicNum, int needSeconeds, long group,  long qq) {
         File[] games = new File(musicFolder).listFiles();
         Random random = new Random();

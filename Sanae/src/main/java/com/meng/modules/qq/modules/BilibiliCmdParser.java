@@ -23,11 +23,6 @@ public class BilibiliCmdParser extends BaseModule implements IGroupMessageEvent 
     }
 
     @Override
-    public BilibiliCmdParser load() {
-        return this;
-    }
-
-    @Override
     @CommandDescribe(cmd = "-", note = "检测哔哩哔哩链接")
     public boolean onGroupMessage(GroupMessageEvent event) {
         if (!ConfigManager.getInstance().isFunctionEnabled(event.getGroup().getId(), Functions.BilibiliVideo)) {

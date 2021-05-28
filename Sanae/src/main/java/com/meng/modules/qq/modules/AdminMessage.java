@@ -41,11 +41,6 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         super(bw);
     }
 
-	@Override
-    public AdminMessage load() {
-		return this;
-	}
-
     @Override
     @CommandDescribe(cmd = "-", note = "主要给管理员用的指令")
     public boolean onGroupMessage(GroupMessageEvent gme) {
@@ -72,7 +67,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                 case "tr":
                     String next = iter.next();
                     String translate = THGameDataManager.generalTranslate(next);
-                    sendGroupMessage(groupId, translate == null ? Baidu.generalTranslate(next) : translate);
+                    sendGroupMessage(groupId, translate == null ? Baidu.getInstance().generalTranslate(next) : translate);
                     return true;
             }
             if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() < 1) {

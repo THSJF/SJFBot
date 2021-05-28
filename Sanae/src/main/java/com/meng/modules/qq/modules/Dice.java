@@ -36,11 +36,6 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
     }
 
 	@Override
-	public Dice load() {
-		return this;
-	}
-
-	@Override
     @CommandDescribe(cmd = "dice", note = "模仿Dice的行为")
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
