@@ -40,7 +40,9 @@ import com.meng.modules.qq.modules.TimeTask;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.mamoe.mirai.event.events.BotGroupPermissionChangeEvent;
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
 import net.mamoe.mirai.event.events.BotJoinGroupEvent;
@@ -88,6 +90,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
 
     private List<BaseModule> all = new ArrayList<>();
 
+    private Map<String, Object> hotFix = new HashMap<>();
     public ModuleManager(SBot bwe) {
         super(bwe);
     }
@@ -120,6 +123,10 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(UserInfo.class);
         load(Derecall.class, false);
         return this;
+    }
+    
+    public void hotfix(String className,Object module){
+        hotFix.put(className,module);
     }
 
     public void load(Class<? extends BaseModule> cls) {
@@ -233,9 +240,18 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
             return false; 
         }
         for (IGroupMessageEvent m : groupMsgHandlers) {
+            String name = m.getClass().getName();
+            if (hotFix.containsKey(name)) {
+                Object module = hotFix.get(name);
+                if (module instanceof IGroupMessageEvent) {
+                    if (((IGroupMessageEvent)module).onGroupMessage(gme)) {
+                        return true;
+                    }
+                }
+            } 
             if (m.onGroupMessage(gme)) {
                 return true;
-            }
+            }              
         }
         return false;
     }
@@ -523,12 +539,16 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
 
     @SuppressWarnings("unchecked")
     public <T> T getModule(Class<T> t) {
-        if (t == SBot.class) {
+        if (t.getName().equals(SBot.class.getName())) {
             return (T)entity;
         }
-        for (Object m : all) {
-            if (m.getClass() == t) {
-                return (T)m;
+        Object module = hotFix.get(t.getClass().getName());
+        if (module != null) {
+            return (T)module;
+        }
+        for (Object modules : all) {
+            if (modules.getClass().getName().equals(t.getClass().getName())) {
+                return (T)modules;
             }
         }
         return null;

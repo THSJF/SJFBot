@@ -30,6 +30,9 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Voice;
+import com.meng.modules.qq.hotfix.HotfixClassLoader;
+import java.util.HashMap;
+import com.meng.modules.qq.hotfix.SJFCompiler;
 
 /**
  * @Description: 管理员命令
@@ -225,6 +228,15 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                 return false;
             }
             switch (first) {
+                case "hotfix":
+                    {
+                        String nane = iter.next();
+                        String code = msg.substring(msg.indexOf(" ", 8));
+                        HotfixClassLoader clsLd = new HotfixClassLoader(new HashMap<String,byte[]>());
+                        SJFCompiler.generate(clsLd, nane, code);
+                        entity.moduleManager.hotfix(nane, clsLd.loadClass(nane).newInstance());
+                    }
+                    return true;
                 case "kick":
                     {
                         long target = entity.getAt(gme.getMessage());
