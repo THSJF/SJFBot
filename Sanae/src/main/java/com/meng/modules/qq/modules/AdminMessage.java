@@ -33,6 +33,8 @@ import net.mamoe.mirai.message.data.Voice;
 import com.meng.modules.qq.hotfix.HotfixClassLoader;
 import java.util.HashMap;
 import com.meng.modules.qq.hotfix.SJFCompiler;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * @Description: 管理员命令
@@ -234,7 +236,21 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         String code = msg.substring(msg.indexOf(" ", 8));
                         HotfixClassLoader clsLd = new HotfixClassLoader(new HashMap<String,byte[]>());
                         SJFCompiler.generate(clsLd, nane, code);
-                        entity.moduleManager.hotfix(nane, clsLd.loadClass(nane).newInstance());
+                        Class<? extends Object> nClass = clsLd.loadClass(nane);
+                        Constructor constructor = nClass.getDeclaredConstructor(entity.getClass());
+                        Object module = constructor.newInstance(entity);
+                        Method methodLoad = nClass.getMethod("load");
+                        if (methodLoad != null) {
+                            methodLoad.invoke(module);
+                        }
+                        entity.moduleManager.hotfix(module);
+                        sendMessage(gme.getGroup(), nane + " loaded");
+                    }
+                    return true;
+                case "hotfixcancel":
+                    {
+                        entity.moduleManager.hotfixCancel(iter.next());
+                        sendQuote(gme, "canceled");
                     }
                     return true;
                 case "kick":

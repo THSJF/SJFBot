@@ -124,9 +124,13 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(Derecall.class, false);
         return this;
     }
-    
-    public void hotfix(String className,Object module){
-        hotFix.put(className,module);
+
+    public void hotfix(Object module) {
+        hotFix.put(module.getClass().getName(), module);
+    }
+
+    public void hotfixCancel(String className) {
+        hotFix.remove(className);
     }
 
     public void load(Class<? extends BaseModule> cls) {
@@ -542,12 +546,12 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         if (t.getName().equals(SBot.class.getName())) {
             return (T)entity;
         }
-        Object module = hotFix.get(t.getClass().getName());
+        Object module = hotFix.get(t.getName());
         if (module != null) {
             return (T)module;
         }
         for (Object modules : all) {
-            if (modules.getClass().getName().equals(t.getClass().getName())) {
+            if (modules.getClass().getName().equals(t.getName())) {
                 return (T)modules;
             }
         }
