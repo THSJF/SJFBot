@@ -249,8 +249,8 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     return true;
                 case "hotfixcancel":
                     {
-                        entity.moduleManager.hotfixCancel(iter.next());
-                        sendQuote(gme, "canceled");
+                        Object obj = entity.moduleManager.hotfixCancel(iter.next());
+                        sendQuote(gme, obj != null ? "canceled" : "cancel failed");
                     }
                     return true;
                 case "kick":

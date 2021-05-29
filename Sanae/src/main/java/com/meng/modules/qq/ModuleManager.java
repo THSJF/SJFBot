@@ -129,8 +129,8 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         hotFix.put(module.getClass().getName(), module);
     }
 
-    public void hotfixCancel(String className) {
-        hotFix.remove(className);
+    public Object hotfixCancel(String className) {
+        return hotFix.remove(className);
     }
 
     public void load(Class<? extends BaseModule> cls) {

@@ -7,154 +7,21 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class ReplayDecoder {
-    private BinaryFile file;
+    private final ReplayBinaryFile file;
 
-    public boolean readFile(ReplayEntry replay) {
-        boolean status = false;
-        if (replay.replay != null) {
-            return true;
-        } else {
-            replay.replay = replay.new ReplayInfo();
-        }
-        file = new BinaryFile(FileTool.readBytes(replay.fullPath));
-        //read first 4 bytes
-        int hexIn;
-        String hex = "";
-        for (int i = 0; i < 4; i++) {
-            if ((hexIn = file.readByte()) != -1) {
-                hex +=  String.format("%2x", hexIn);
-            } else {
-                return false;
-            }
-        }
-        switch (hex) {
-            case "54365250":
-                //T6RP
-                replay.replay.game = 0;
-                status = read_T6RP(replay.replay);
-                break;
-            case "54375250":
-                //T7RP
-                replay.replay.game = 1;
-                status = read_T7RP(replay.replay);
-                break;
-            case "54385250":
-                //T8RP
-                replay.replay.game = 2;
-                status = read_T8RP(replay.replay);
-                break;
-            case "54395250":
-                //T9RP
-                replay.replay.game = 3;
-                status = read_T9RP(replay.replay);
-                break;
-            case "74393572":
-                //t95r
-                replay.replay.game = 4;
-                status = read_T95r(replay.replay);
-                break;
-            case "74313072":
-                //t10r
-                replay.replay.game = 5;
-                status = read_T10r(replay.replay);
-                break;
-            case "74313172":
-                //t11r
-                replay.replay.game = 6;
-                status = read_T11r(replay.replay);
-                break;
-            case "74313272":
-                //t12r
-                replay.replay.game = 7;
-                status = read_T12r(replay.replay);
-                break;
-            case "74313235":
-                //t125
-                replay.replay.game = 8;
-                status = read_T125(replay.replay);
-                break;
-            case "31323872":
-                //128r
-                replay.replay.game = 9;
-                status = Read_128r(replay.replay);
-                break;
-            case "74313372":
-                //t13r
-                //has both td and ddc for some fucking reason
-                //since im reading the user data at the end though it doesnt matter
-                status = read_T13r(replay.replay);
-                break;
-            case "74313433":
-                //t143
-                replay.replay.game = 12;
-                status = read_T143(replay.replay);
-                break;
-            case "74313572":
-                //t15r
-                replay.replay.game = 13;
-                status = read_T15r(replay.replay);
-                break;
-            case "74313672":
-                //t16r
-                replay.replay.game = 14;
-                status = read_T16r(replay.replay);
-                break;
-            case "74313536":
-                //t156
-                //shouldn't this be 165? gg zun
-                replay.replay.game = 15;
-                status = read_T156(replay.replay);
-                break;
-            case "74313772":
-                //im guessing the full release will be t17r
-                //judging by the trial's replay format, nothing has changed which is good
-                replay.replay.game = 16;
-                status = read_T17r(replay.replay);
-                break;
-            case "74313874":
-                //  change this to actual one on full game release
-                replay.replay.game = 17;
-                status = read_T18t(replay.replay);
-                break;
-            default:
-                break;
-        }
-        return status;
+    public ReplayDecoder(File replay) {
+        file = new ReplayBinaryFile(FileTool.readBytes(replay));
     }
 
-    private long readUInt32() {
-        return file.readUInt();
-    }
-
-    private String readStringANSI() {
-        StringBuilder builder = new StringBuilder();
-        int[] buf = new int[3];
-        buf[0] = file.readByte();
-        buf[1] = file.readByte();
-        if (buf[0] != 13 && buf[1] != 10) {
-            buf[2] = file.readByte();
-            do {
-                builder.append((char)buf[0]);
-                buf[0] = buf[1];
-                buf[1] = buf[2];
-                buf[2] = file.readByte();
-            } while (buf[0] != 13 && buf[1] != 10);
-        }
-        file.seek(-1, BinaryFile.SeekOrigin.Current);
-        return builder.toString();
-    }
-
-    private boolean jumpToUser(int loc) {
-        file.seek(loc, BinaryFile.SeekOrigin.Begin);
-        long offset = readUInt32();
-        file.seek(offset, BinaryFile.SeekOrigin.Begin); 
+    private boolean jumpToUser() {
+        file.seek(12, ReplayBinaryFile.SeekOrigin.Begin);
+        long offset = file.readUInt();
+        file.seek(offset, ReplayBinaryFile.SeekOrigin.Begin); 
         StringBuilder val = new StringBuilder();
-        byte buf;
         for (int i = 0; i < 4; i++) {
-            buf = file.readByte();
-            val.append(String.format("%2x", buf));
+            val.append(String.format("%2x", file.readByte()));
         }
-        return val.toString().equals("55534552") ? true : false;
+        return val.toString().equals("55534552");
     }
 
     /*
@@ -175,19 +42,19 @@ public class ReplayDecoder {
      * 
      * */
 
-    private boolean read_T6RP(ReplayEntry.ReplayInfo replay) {
+    public boolean readTh06(ZunReplay replay) {
         //lookup table
         String[] chars = new String[] { "ReimuA", "ReimuB", "MarisaA", "MarisaB" };
         String[] difficulties = new String[] { "Easy", "Normal", "Hard", "Lunatic", "Extra" };
 
 
         int[] buf = new int[2];
-        file.seek(2, BinaryFile.SeekOrigin.Current);   //skip version number
+        file.seek(2, ReplayBinaryFile.SeekOrigin.Current);   //skip version number
         buf[0] = file.readByte();   //shot type
         replay.character = chars[buf[0]];
         buf[1] = file.readByte();   //difficulty
         replay.difficulty = difficulties[buf[1]];
-        file.seek(6, BinaryFile.SeekOrigin.Current);   //skip checksum to encryption key
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);   //skip checksum to encryption key
         byte key = file.readByte();
 
         byte[] buffer = new byte[65];
@@ -221,15 +88,15 @@ public class ReplayDecoder {
         return true;
     }
 
-    private boolean read_T7RP(ReplayEntry.ReplayInfo replay) {
+    public boolean readTh07(ZunReplay replay) {
         String[] chars = new String[] { "ReimuA", "ReimuB", "MarisaA", "MarisaB", "SakuyaA", "SakuyaB" };
         String[] difficulties = new String[] { "Easy", "Normal", "Hard", "Lunatic", "Extra", "Phantasm" };
         //raw data starts at 84
         byte[] buffer = new byte[file.Length];
 
-        file.seek(13, BinaryFile.SeekOrigin.Begin);
+        file.seek(13, ReplayBinaryFile.SeekOrigin.Begin);
         byte key = file.readByte();
-        file.seek(0, BinaryFile.SeekOrigin.Begin);
+        file.seek(0, ReplayBinaryFile.SeekOrigin.Begin);
         for (int i = 0; i < 16; i++) {
             buffer[i] = file.readByte();
         }
@@ -264,7 +131,7 @@ public class ReplayDecoder {
         score = BitConverter.getInstanceLittleEndian().toUInt(decodeData, 24);
         score *= 10;
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(score);
-        file.seek(0xcc - 0x54, BinaryFile.SeekOrigin.Begin);
+        file.seek(0xcc - 0x54, ReplayBinaryFile.SeekOrigin.Begin);
 
         replay.slow = BitConverter.getInstanceLittleEndian().toFloat(decodeData, 0x74) + "";
         return true;
@@ -322,228 +189,283 @@ public class ReplayDecoder {
         return dest;
     }
 
-    private boolean read_T8RP(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(17, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(11, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(9, BinaryFile.SeekOrigin.Current);
-        replay.character = readStringANSI();
-        file.seek(8, BinaryFile.SeekOrigin.Current);
-        long scoreConv = Long.parseLong(readStringANSI());
+    public boolean readTh08(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(17, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(11, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(9, ReplayBinaryFile.SeekOrigin.Current);
+        replay.character = file.readString();
+        file.seek(8, ReplayBinaryFile.SeekOrigin.Current);
+        long scoreConv = Long.parseLong(file.readString());
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
-        file.seek(8, BinaryFile.SeekOrigin.Current);
-        replay.difficulty = readStringANSI();
-        replay.stage = readStringANSI();
+        file.seek(8, ReplayBinaryFile.SeekOrigin.Current);
+        replay.difficulty = file.readString();
+        replay.stage = file.readString();
         //check if spell practice or game replay actually do this later
         return true;
     }
 
-    private boolean read_T9RP(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(17, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(11, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(8, BinaryFile.SeekOrigin.Current);
-        replay.difficulty = readStringANSI();
-        file.seek(8, BinaryFile.SeekOrigin.Current);
-        replay.stage = readStringANSI();
+    public boolean readTh09(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(17, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(11, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(8, ReplayBinaryFile.SeekOrigin.Current);
+        replay.difficulty = file.readString();
+        file.seek(8, ReplayBinaryFile.SeekOrigin.Current);
+        replay.stage = file.readString();
         return true;
     }
 
-    private boolean read_T95r(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(4, BinaryFile.SeekOrigin.Current);
-        readStringANSI();
-        readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        replay.stage = readStringANSI() + " " + readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        long scoreConv = Long.parseLong(readStringANSI());
+    public boolean readTh095(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
+        file.readString();
+        file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        replay.stage = file.readString() + " " + file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        long scoreConv = Long.parseLong(file.readString());
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
 
         return true;
     }
 
     //  the replay user data format for touhou 10 through to 16 (and presumably from here on in) is identical
-    private boolean read_T10r(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(4, BinaryFile.SeekOrigin.Current);
-        readStringANSI();   //SJIS, 東方XYZ リプレイファイル情報, Touhou XYZ replay file info
-        readStringANSI();   //Skip over game version info
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        replay.character = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.difficulty = readStringANSI();
+    public boolean readTh10(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
+        file.readString();   //SJIS, 東方XYZ リプレイファイル情報, Touhou XYZ replay file info
+        file.readString();   //Skip over game version info
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        replay.character = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.difficulty = file.readString();
         // file.Seek(6, BinaryFile.SeekOrigin.Current);
-        replay.stage = readStringANSI();   //stage
-        file.seek(6, BinaryFile.SeekOrigin.Current);
+        replay.stage = file.readString();   //stage
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
 
-        long scoreConv = Long.parseLong(readStringANSI()) * 10;  //replay stores the value without the 0
+        long scoreConv = Long.parseLong(file.readString()) * 10;  //replay stores the value without the 0
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
         return true;
     }
 
-    private boolean read_T11r(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean readTh11(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    private boolean read_T12r(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean readTh12(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    private boolean read_T125(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(4, BinaryFile.SeekOrigin.Current);
-        readStringANSI();
-        readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        replay.character = readStringANSI();
-        replay.stage = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        long scoreConv = Long.parseLong(readStringANSI());
+    public boolean readTh125(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
+        file.readString();
+        file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        replay.character = file.readString();
+        replay.stage = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        long scoreConv = Long.parseLong(file.readString());
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
         return true;
     }
 
-    private boolean Read_128r(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(4, BinaryFile.SeekOrigin.Current);
-        readStringANSI();
-        readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        replay.stage = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.difficulty = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        readStringANSI();   //stage
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        long scoreConv = Long.parseLong(readStringANSI()) * 10;  //replay stores the value without the 0
+    public boolean readTh128(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
+        file.readString();
+        file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        replay.stage = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.difficulty = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        file.readString();   //stage
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        long scoreConv = Long.parseLong(file.readString()) * 10;  //replay stores the value without the 0
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
         return true;
     }
 
-    private boolean read_T13r(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(4, BinaryFile.SeekOrigin.Current);
-        file.seek(4, BinaryFile.SeekOrigin.Current);   //which game
+    public boolean readTh13(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);   //which game
         byte ver = (byte)file.readByte();
         if (ver == 144) {
             replay.game = 10;
         } else {
             replay.game = 11;
         }
-        readStringANSI();   //SJIS, 東方XYZ リプレイファイル情報, Touhou XYZ replay file info
-        readStringANSI();   //Skip over game version info
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        replay.character = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.difficulty = readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        replay.stage = readStringANSI();   //stage
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        long scoreConv = Long.parseLong(readStringANSI()) * 10;  //replay stores the value without the 0
+        file.readString();   //SJIS, 東方XYZ リプレイファイル情報, Touhou XYZ replay file info
+        file.readString();   //Skip over game version info
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        replay.character = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.difficulty = file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        replay.stage = file.readString();   //stage
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        long scoreConv = Long.parseLong(file.readString()) * 10;  //replay stores the value without the 0
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
-        file.seek(10, BinaryFile.SeekOrigin.Current);
-        replay.slow = readStringANSI();    
+        file.seek(10, ReplayBinaryFile.SeekOrigin.Current);
+        replay.slow = file.readString();    
         return true;
     }
 
-    private boolean read_T14r(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean read_T14r(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    private boolean read_T143(ReplayEntry.ReplayInfo replay) {
-        if (!jumpToUser(12)) return false;
-        long length = readUInt32();
-        file.seek(4, BinaryFile.SeekOrigin.Current);
-        readStringANSI();
-        readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.name = readStringANSI();
-        file.seek(5, BinaryFile.SeekOrigin.Current);
-        replay.date = readStringANSI();
-        replay.stage = readStringANSI() + " " + readStringANSI();
-        file.seek(6, BinaryFile.SeekOrigin.Current);
-        long scoreConv = Long.parseLong(readStringANSI()) * 10;  //replay stores the value without the 0
+    public boolean readTh143(ZunReplay replay) {
+        if (!jumpToUser()) return false;
+        long length = file.readUInt();
+        file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
+        file.readString();
+        file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.name = file.readString();
+        file.seek(5, ReplayBinaryFile.SeekOrigin.Current);
+        replay.date = file.readString();
+        replay.stage = file.readString() + " " + file.readString();
+        file.seek(6, ReplayBinaryFile.SeekOrigin.Current);
+        long scoreConv = Long.parseLong(file.readString()) * 10;  //replay stores the value without the 0
         replay.score = NumberFormat.getInstance(Locale.CHINA).format(scoreConv);
         return true;
     }
 
-    private boolean read_T15r(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean readTh15(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    private boolean read_T156(ReplayEntry.ReplayInfo replay) {
-        return read_T143(replay);
+    public boolean readTh165(ZunReplay replay) {
+        return readTh143(replay);
     }
 
-    private boolean read_T16r(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean readTh16(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    private boolean read_T17r(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean readTh17(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    private boolean read_T18t(ReplayEntry.ReplayInfo replay) {
-        return read_T10r(replay);
+    public boolean readTh18(ZunReplay replay) {
+        return readTh10(replay);
     }
 
-    public static class ReplayEntry {
-        public String fullPath;
-        public ReplayInfo replay;
+    public class ReplayBinaryFile {
 
-        public class ReplayInfo {
-            public int game;
-            public String name;
-            public String date;
-            public String character;
-            public String difficulty;
-            public String stage;
-            public String score;
-            public String slow;
+        private BitConverter converter;
+        public byte[] file;
+        public int Length;
+        public int position = 0;
 
-            @Override
-            public String toString() {
-                StringBuilder sb = new StringBuilder();
-                sb.append(name).append(" ")
-                    .append(date).append(" ")
-                    .append(character).append(" ")
-                    .append(difficulty).append(" ")
-                    .append(stage).append(" ")
-                    .append(score).append(" ")
-                    .append(slow);
-                return sb.toString();
+        public ReplayBinaryFile(byte[] bs) {
+            file = bs;
+            Length = bs.length;
+            converter = BitConverter.getInstanceLittleEndian();
+        }
+
+        public enum SeekOrigin {
+            Current,
+            Begin
             }
+
+        public void seek(long l, SeekOrigin origin) {
+            if (origin == SeekOrigin.Current) {
+                position += l;
+            } else if (origin == SeekOrigin.Begin) {
+                position = (int)l;
+            }
+        }
+
+        public String readString() {
+            StringBuilder builder = new StringBuilder();
+            int[] buf = new int[3];
+            buf[0] = readByte();
+            buf[1] = readByte();
+            if (buf[0] != 13 && buf[1] != 10) {
+                buf[2] = readByte();
+                do {
+                    builder.append((char)buf[0]);
+                    buf[0] = buf[1];
+                    buf[1] = buf[2];
+                    buf[2] = readByte();
+                } while (buf[0] != 13 && buf[1] != 10);
+            }
+            seek(-1, ReplayBinaryFile.SeekOrigin.Current);
+            return builder.toString();
+        }
+
+        public int readUShort() {
+            if (position == file.length) {
+                return -1;
+            }
+            return 0xFFFF & readShort();
+        }
+
+        public short readShort() {
+            if (position == file.length) {
+                return -1;
+            }
+            short s = converter.toShort(file, position);
+            position += 2;
+            return s;
+        }
+
+        public int readInt() {
+            if (position == file.length) {
+                return -1;
+            }
+            int i = converter.toInt(file, position);
+            position += 4;
+            return i;
+        }
+
+        public long readUInt() {
+            if (position == file.length) {
+                return -1;
+            }
+            return 0xFFFFFFFFL & readInt();
+        }
+
+        public byte readByte() {
+            if (position == file.length) {
+                return -1;
+            }
+            return file[position++];
         }
     }
 }
