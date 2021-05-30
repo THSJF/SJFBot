@@ -1,4 +1,5 @@
 package com.meng.modules.touhou;
+import com.meng.tools.TextLexer;
 
 public class THSpell {
     public static final int Easy = 1 << 0;
@@ -68,12 +69,7 @@ public class THSpell {
 
     public String getNameEng() {
         String s = cnName.substring(cnName.indexOf("「"), cnName.indexOf("」"));
-        char c = s.charAt(0);
-        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-            return s;
-        } else {
-            return null;
-        }
+        return TextLexer.isAlpha(s.charAt(0)) ? s : null;
     }
 
     public String getNameAbbr() {

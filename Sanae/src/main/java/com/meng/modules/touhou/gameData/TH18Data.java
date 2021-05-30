@@ -34,14 +34,14 @@ public class TH18Data extends THGameData {
 
     private TH18Data() {
         charas = new THCharacter[]{
-            new THCharacter("豪德寺三花", this,"生意兴隆的吉祥物"),
-            new THCharacter("山城高岭", this,"深山的经商妖怪"),
-            new THCharacter("驹草山如", this,"栖息于高地的山女郎"),
-            new THCharacter("玉造魅须丸", this,"真正的勾玉匠人"),
-            new THCharacter("饭纲丸龙", this,"鸦天狗的首领"),
-            new THCharacter("菅牧典", this,"耳边低语的邪恶白狐"),
-            new THCharacter("天弓千亦", this,"无主物之神"),
-            new THCharacter("姬虫百百世", this,"漆黑的噬龙者")
+            new THCharacter("豪德寺三花", this, "生意兴隆的吉祥物"),
+            new THCharacter("山城高岭", this, "深山的经商妖怪"),
+            new THCharacter("驹草山如", this, "栖息于高地的山女郎"),
+            new THCharacter("玉造魅须丸", this, "真正的勾玉匠人"),
+            new THCharacter("饭纲丸龙", this, "鸦天狗的首领"),
+            new THCharacter("菅牧典", this, "耳边低语的邪恶白狐"),
+            new THCharacter("天弓千亦", this, "无主物之神"),
+            new THCharacter("姬虫百百世", this, "漆黑的噬龙者")
         };
 
         THCharacter chara_豪德寺三花 = getCharacter("豪德寺三花");
@@ -136,7 +136,10 @@ public class TH18Data extends THGameData {
             new THMusic("Player's Score", this)
         };
         players = new THPlayer[]{
-
+            new THPlayer("博丽灵梦"),
+            new THPlayer("雾雨魔理沙"),
+            new THPlayer("东风谷早苗"),
+            new THPlayer("十六夜咲夜")
         };
     }
 }

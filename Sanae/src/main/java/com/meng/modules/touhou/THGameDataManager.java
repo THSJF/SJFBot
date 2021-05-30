@@ -165,23 +165,23 @@ public class THGameDataManager {
             case "东方灵异传":
             case "th1":
             case "th01":
-                return Tools.ArrayTool.rfa(pl01);
+                return SJFRandom.randomSelect(pl01);
             case "东方封魔录":
             case "th2":
             case "th02":
-                return Tools.ArrayTool.rfa(pl02);
+                return SJFRandom.randomSelect(pl02);
             case "东方梦时空":
             case "th3":
             case "th03":
-                return Tools.ArrayTool.rfa(pl03);
+                return SJFRandom.randomSelect(pl03);
             case "东方幻想乡":
             case "th4":
             case "th04":
-                return Tools.ArrayTool.rfa(pl04);
+                return SJFRandom.randomSelect(pl04);
             case "东方怪绮谈":
             case "th5":
             case "th05":
-                return Tools.ArrayTool.rfa(pl05);
+                return SJFRandom.randomSelect(pl05);
             case "东方红魔乡":
             case "th6":
             case "th06":
@@ -201,7 +201,7 @@ public class THGameDataManager {
             case "th9":
             case "th09":
             case "PoFV":
-                return Tools.ArrayTool.rfa(pl09);
+                return SJFRandom.randomSelect(pl09);
             case "东方风神录":
             case "th10":
             case "MoF":

@@ -14,6 +14,10 @@ public class HotfixClassLoader extends ClassLoader {
         classes.put(className, code);
     }
 
+    public byte[] getCode(String name) {
+        return classes.get(name);
+    }
+    
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         byte[] classBytes = classes.get(name);

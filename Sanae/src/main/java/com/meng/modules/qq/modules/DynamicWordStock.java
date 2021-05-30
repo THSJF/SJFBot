@@ -122,7 +122,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 mcb.add(String.valueOf(SJFRandom.hashSelectFloat(gme.getSender().getId(), rscale)));
                                 break;
                             case IMG_FOLDER:
-                                mcb.add(entity.toImage(Tools.ArrayTool.rfa(new File(SBot.appDirectory + node.content).listFiles()), gme.getGroup()));
+                                mcb.add(entity.toImage(SJFRandom.randomSelect(new File(SBot.appDirectory + node.content).listFiles()), gme.getGroup()));
                                 break;
                         }    
                     } catch (Exception e) {

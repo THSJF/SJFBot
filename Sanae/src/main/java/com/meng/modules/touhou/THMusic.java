@@ -1,4 +1,5 @@
 package com.meng.modules.touhou;
+import com.meng.tools.TextLexer;
 
 public class THMusic {
     public String name;
@@ -12,38 +13,16 @@ public class THMusic {
     public String getNameCN() {
         String[] parts = name.split(" ~ ");
         if (parts.length < 2) {
-            char c = parts[0].charAt(0);
-            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-                return null;
-            } else {
-                return name;
-            }
+            return TextLexer.isAlpha(parts[0].charAt(0)) ? null : name;
         }
-        char c = parts[0].charAt(0);
-        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-            return parts[1];
-        } else if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')) {
-            return parts[0];
-        }
-        return null;
+        return parts[TextLexer.isAlpha(parts[0].charAt(0)) ? 1 : 0];
     }
 
     public String getNameEng() {
         String[] parts = name.split(" ~ ");
         if (parts.length < 2) {
-            char c = parts[0].charAt(0);
-            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-                return name;
-            } else {
-                return null;
-            }
+            return TextLexer.isAlpha(parts[0].charAt(0)) ? name: null;
         }
-        char c = parts[0].charAt(0);
-        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-            return parts[0];
-        } else if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')) {
-            return parts[1];
-        }
-        return null;
+        return parts[TextLexer.isAlpha(parts[0].charAt(0)) ? 0 : 1];
     }
 }

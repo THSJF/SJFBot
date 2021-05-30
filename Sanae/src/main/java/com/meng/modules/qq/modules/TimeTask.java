@@ -7,7 +7,7 @@ import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.modules.AimMessage;
 import com.meng.tools.SJFExecutors;
-import com.meng.tools.Tools;
+import com.meng.tools.SJFRandom;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
@@ -45,7 +45,7 @@ public class TimeTask extends BaseModule {
 
                 @Override
                 public void run() {
-                    entity.moduleManager.getModule(AimMessage.class).addTipSingleton(groupYuTang, YYS, Tools.ArrayTool.rfa(new String[]{"想吃YYS", "想食YYS", "想上YYS", new At(YYS).serializeToMiraiCode() + "老婆"}));
+                    entity.moduleManager.getModule(AimMessage.class).addTipSingleton(groupYuTang, YYS, SJFRandom.randomSelect(new String[]{"想吃YYS", "想食YYS", "想上YYS", new At(YYS).serializeToMiraiCode() + "老婆"}));
                     entity.moduleManager.getModule(AimMessage.class).addTipSingleton(alice, "老婆");
                     Calendar c = Calendar.getInstance();
                     if (getTipHour(c)) {
@@ -80,7 +80,7 @@ public class TimeTask extends BaseModule {
                     for (Group group : entity.getGroups()) {
                         if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {
-                                sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(evening));
+                                sendGroupMessage(group.getId(), SJFRandom.randomSelect(evening));
                                 Thread.sleep(1000);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -98,7 +98,7 @@ public class TimeTask extends BaseModule {
                     for (Group group : entity.getGroups()) {
                         if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {
-                                sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(morning));
+                                sendGroupMessage(group.getId(), SJFRandom.randomSelect(morning));
                                 Thread.sleep(1000);
                             } catch (Exception e) {
                                 e.printStackTrace();

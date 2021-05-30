@@ -6,7 +6,7 @@ import com.google.gson.LongSerializationPolicy;
 import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.Tools;
+import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,7 +166,7 @@ public class SBot implements Bot {
     }
 
     public int[] sendGroupMessage(long fromGroup, String[] msg) {
-        return sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
+        return sendGroupMessage(fromGroup, SJFRandom.randomSelect(msg));
     }
 
     public int[] sendGroupMessage(long fromGroup, ArrayList<String> msg) {
@@ -182,7 +182,7 @@ public class SBot implements Bot {
     }
 
     public int[] sendMessage(Group group, String[] msg) {
-        return sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(msg));
+        return sendGroupMessage(group.getId(), SJFRandom.randomSelect(msg));
     }
 
     public int[] sendMessage(Group group, ArrayList<String> msg) {

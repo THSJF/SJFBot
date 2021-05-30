@@ -1,9 +1,10 @@
 package com.meng.modules.qq;
 
 import com.meng.config.DataPersistenter;
+import com.meng.config.SanaeData;
 import com.meng.modules.qq.SBot;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.Tools;
+import com.meng.tools.SJFRandom;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import net.mamoe.mirai.contact.Group;
@@ -11,7 +12,6 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
-import com.meng.config.SanaeData;
 
 /**
  * @author: 司徒灵羽
@@ -55,7 +55,7 @@ public abstract class BaseModule implements ILoad {
     }
 
     public int[] sendGroupMessage(long fromGroup, String[] msg) {
-        return entity.sendGroupMessage(fromGroup, Tools.ArrayTool.rfa(msg));
+        return entity.sendGroupMessage(fromGroup, SJFRandom.randomSelect(msg));
     }
 
     public int[] sendGroupMessage(long fromGroup, ArrayList<String> msg) {
@@ -71,7 +71,7 @@ public abstract class BaseModule implements ILoad {
     }
 
     public int[] sendMessage(Group group, String[] msg) {
-        return entity.sendGroupMessage(group.getId(), Tools.ArrayTool.rfa(msg));
+        return entity.sendGroupMessage(group.getId(), SJFRandom.randomSelect(msg));
     }
 
     public int[] sendMessage(Group group, ArrayList<String> msg) {

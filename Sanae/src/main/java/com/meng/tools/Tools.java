@@ -75,21 +75,6 @@ public class Tools {
 	}
 
 	public static class ArrayTool {
-
-        public static <T> T[] mergeArray(T[]... arrays) {
-            int leng = 0;
-            for (T[] ta : arrays) {
-                leng += ta.length;
-            }
-            T[] newArray = (T[]) Array.newInstance(arrays[0][0].getClass(), leng);
-            int flag = 0;
-            for (T[] ta:arrays) {
-                for (int i = 0;i < ta.length;++flag,++i) {
-                    newArray[flag] = ta[i];
-                }
-            }
-            return newArray;
-        }
         
 		public static byte[] mergeArray(byte[]... arrays) {
 			int allLen = 0;
@@ -104,10 +89,6 @@ public class Tools {
 				}
 			}
 			return finalArray;
-		}
-        
-		public static <T> T rfa(T[] array) {
-			return array[ThreadLocalRandom.current().nextInt(array.length)];
 		}
 	}
 }

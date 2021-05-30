@@ -11,7 +11,7 @@ import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.FileTool;
 import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
-import com.meng.tools.Tools;
+import com.meng.tools.SJFRandom;
 import java.io.File;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
@@ -32,7 +32,7 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
             return false;
         }
         if (event.getMessage().contentToString().equals("copper")) {
-            Image uploadImage = entity.toImage(Tools.ArrayTool.rfa(imageFolder), event.getGroup());
+            Image uploadImage = entity.toImage(SJFRandom.randomSelect(imageFolder), event.getGroup());
             int[] id = sendMessage(event.getGroup(), uploadImage);
             MessageManager.autoRecall(entity, id);
         } else if (event.getMessage().contentToString().equals("fantasy")) {
