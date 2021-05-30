@@ -385,7 +385,7 @@ public class ReplayDecoder {
         return readTh10(replay);
     }
 
-    public class ReplayBinaryFile {
+    public static class ReplayBinaryFile {
 
         private BitConverter converter;
         public byte[] file;

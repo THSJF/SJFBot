@@ -231,17 +231,6 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                 return false;
             }
             switch (first) {
-                case "inst":
-                    {
-                        String nane = iter.next();
-                        String code = msg.substring(msg.indexOf(" ", 8));
-                        HotfixClassLoader clsLd = new HotfixClassLoader(new HashMap<String,byte[]>());
-                        SJFCompiler.generate(clsLd, nane, code);
-                        Class<? extends Object> cls = Class.forName(nane);
-                        Throwable t = Main.reload(cls, clsLd.getCode(nane));
-                        sendMessage(gme.getGroup(), t == null ? nane + " loaded" : t.toString());
-                    }
-                    return true;
                 case "hotfix":
                     {
                         String nane = iter.next();
