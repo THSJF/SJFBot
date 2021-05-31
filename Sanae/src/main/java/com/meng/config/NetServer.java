@@ -1,13 +1,14 @@
 package com.meng.config;
 
+import com.meng.modules.qq.SBot;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
-import com.meng.modules.qq.SBot;
 
 public class NetServer {
 
@@ -35,15 +36,16 @@ public class NetServer {
         private Socket socket;
         private DataInputStream in;
         private DataOutputStream out;
-        private String identification;
+        private String id;
         public ConnectionThread(Socket s) {
             try {
                 socket = s;
                 in = new DataInputStream(s.getInputStream());
                 out = new DataOutputStream(s.getOutputStream());
-                identification = in.readLine();
-                if (identification.startsWith("ljyys")) {
-                    connections.put(identification, this);
+                id = in.readUTF();
+                id = id.substring(0, id.length() - 1);
+                if (id.startsWith("ljyys")) {
+                    connections.put(id, this);
                 } else {
                     s.close();
                 }
@@ -58,7 +60,8 @@ public class NetServer {
                     socket.close();
                     return;
                 }
-                out.writeChars(s);
+                out.writeUTF(s + "\n");
+                out.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -70,12 +73,15 @@ public class NetServer {
             try {
                 while (!socket.isClosed()) {
                     System.out.println("read line:");
-                    onReceive(in.readLine());
+                    String line = in.readUTF();
+                    onReceive(line.substring(0, line.length() - 1));
                 }
-            } catch (Exception e) {
+            } catch (SocketException e) {
+                System.out.println(String.format("socket %s closed", id));
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            connections.remove(identification);
+            connections.remove(id);
         }
 
         private void onReceive(String content) {
