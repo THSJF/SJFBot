@@ -1,18 +1,18 @@
 package com.meng.config;
 
-import com.meng.modules.qq.SBot;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import com.meng.modules.qq.SBot;
 
 public class NetServer {
 
     private static NetServer instance = null;
-    private ReceiveThread receiver;
-    private PrintWriter writer;
+    private Map<String, ConnectionThread> connections = new HashMap<>();
 
     public static NetServer getInstance() {
         if (instance == null) {
@@ -23,30 +23,59 @@ public class NetServer {
 
     public void init() throws Exception {
         ServerSocket serverSocket = new ServerSocket(9961);
-        Socket socket = serverSocket.accept();
-        receiver = new ReceiveThread(socket.getInputStream());
-        receiver.start();
-        writer = new PrintWriter(socket.getOutputStream());
+        while (true) {
+            Socket socket = serverSocket.accept();
+            ConnectionThread ct = new ConnectionThread(socket);
+            ct.start();
+        }
     }
 
-    private class ReceiveThread extends Thread {
+    private class ConnectionThread extends Thread {
 
-        private BufferedReader reader; 
+        private Socket socket;
+        private DataInputStream in;
+        private DataOutputStream out;
+        private String identification;
+        public ConnectionThread(Socket s) {
+            try {
+                socket = s;
+                in = new DataInputStream(s.getInputStream());
+                out = new DataOutputStream(s.getOutputStream());
+                identification = in.readLine();
+                if (identification.startsWith("ljyys")) {
+                    connections.put(identification, this);
+                } else {
+                    s.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-        public ReceiveThread(InputStream is) {
-            reader = new BufferedReader(new InputStreamReader(is));
+        public void send(String s) {
+            try {
+                if (s.equals("down")) {
+                    socket.close();
+                    return;
+                }
+                out.writeChars(s);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void run() {
+            System.out.println("rec start");
             try {
-                while (true) {
-                    onReceive(reader.readLine());
-                    sleep(100);
+                while (!socket.isClosed()) {
+                    System.out.println("read line:");
+                    onReceive(in.readLine());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            connections.remove(identification);
         }
 
         private void onReceive(String content) {
@@ -54,13 +83,11 @@ public class NetServer {
                 System.out.println("content null");
                 return;
             }
-            if (content.equals("ljyys")) {
-                SBot.instance.sendGroupMessage(SBot.yysGroup, content);
+            System.out.println(content);
+            send("received:" + content);
+            if (content.startsWith("to yys")) {
+                SBot.instance.sendGroupMessage(SBot.yysGroup, content.substring(6));
             }
         }
-    }
-
-    public void send(String s) {
-        writer.write(s);
     }
 }
