@@ -64,7 +64,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
 
                     @Override
                     public boolean accept(File p1) {
-                        return p1.getName().startsWith("th");
+                        return p1.isDirectory() && p1.getName().startsWith("th");
                     }
                 });
             if (musicNames == null) {
@@ -73,7 +73,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
 
                     @Override
                     public boolean accept(File p1, String p2) {
-                        return p2.equals(".mp3");
+                        return p2.endsWith(".mp3");
                     }
                 };
                 for (File gameFolder : gameFolders) {
