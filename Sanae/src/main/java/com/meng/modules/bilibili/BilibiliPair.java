@@ -12,4 +12,10 @@ public class BilibiliPair {
         this.text = text;
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return "text:" + text + " url:" + url;
+    }
+
 }

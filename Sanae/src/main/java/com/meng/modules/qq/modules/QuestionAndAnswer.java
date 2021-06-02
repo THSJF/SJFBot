@@ -1,5 +1,6 @@
 package com.meng.modules.qq.modules;
 
+import com.google.gson.annotations.SerializedName;
 import com.meng.bot.Functions;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
@@ -20,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
@@ -133,17 +133,17 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 sb.append(String.format("正确率:%.2f%%", ((float)qaNow.getTrueTimes()) / qaNow.getShowTimes() * 100));
                 sb.append("\n");
             }
-            if (qaNow.q.contains("(image)")) {
-                sb.append(qaNow.q.replace("(image)", entity.toImage(new File(imagePath + qaNow.getId() + ".jpg"), gme.getGroup()).serializeToMiraiCode()));
+            if (qaNow.question.contains("(image)")) {
+                sb.append(qaNow.question.replace("(image)", entity.toImage(new File(imagePath + qaNow.getId() + ".jpg"), gme.getGroup()).serializeToMiraiCode()));
             } else {
-                sb.append(qaNow.q);
+                sb.append(qaNow.question);
             }
             sb.append("\n");
             qaNow.shuffleAnswer();
             save();
             onGoingQA.put(qqId, qaNow);
             int i = 0;
-            for (String s:qaNow.a) {
+            for (String s:qaNow.answersToSelect) {
                 if (s.equals("")) {
                     continue;
                 }
@@ -189,9 +189,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             QABean qar = createQA();
             qar.shuffleAnswer();
             StringBuilder sb=new StringBuilder("\n");
-            sb.append(qar.q);
+            sb.append(qar.question);
             int i=0;
-            for (String s:qar.a) {
+            for (String s:qar.answersToSelect) {
                 if (s.equals("")) {
                     continue;
                 }
@@ -214,9 +214,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         THSpell[] sps = THGameDataManager.getSpellFromNotDiff(3, diff);
         QABean qa = new QABean();
         qa.fromQar = true;
-        qa.a.add(tHSpell.cnName);
+        qa.answersToSelect.add(tHSpell.cnName);
         for (THSpell spc:sps) {
-            qa.a.add(spc.cnName);
+            qa.answersToSelect.add(spc.cnName);
         }
         qa.setTrueAns(0);
         qa.shuffleAnswer();
@@ -255,7 +255,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 System.out.println(diff);
         }
         sb.append("中出现的是:\n");
-        qa.q = sb.toString();
+        qa.question = sb.toString();
         return qa;
     }
 
@@ -273,15 +273,23 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     }
 
     public static class QABean {
+        @SerializedName("flag")
         private int flag = 0;
         //flag: id(16bit)                      
         //  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        public int l = 0;//file length
-        public String q;
-        public ArrayList<String> a = new ArrayList<>();
-        private int t;//trueAns
-        public String r;
+        @SerializedName("l")
+        public int fileLength = 0;
+        @SerializedName("q")
+        public String question;
+        @SerializedName("a")
+        public ArrayList<String> answersToSelect = new ArrayList<>();
+        @SerializedName("t")
+        private int trueAnswerFlag;
+        @SerializedName("r")
+        public String reason;
+        @SerializedName("showTimes")
         public int showTimes;
+        @SerializedName("trueTimes")
         public int trueTimes;
         public transient boolean fromQar;
 
@@ -302,46 +310,45 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         }
 
         public void shuffleAnswer() {
-            Random r = ThreadLocalRandom.current();
-            int index1 = r.nextInt(a.size() - 1);
-            int index2 = r.nextInt(a.size() - 1);
+            int index1 = SJFRandom.randomInt(answersToSelect.size() - 1);
+            int index2 = SJFRandom.randomInt(answersToSelect.size() - 1);
             boolean is1F = getBit(index1);
             setBit(index1, getBit(index2));
             setBit(index2, is1F);
-            Collections.swap(a, index1, index2);
+            Collections.swap(answersToSelect, index1, index2);
         }
 
         private boolean getBit(int shift) {
-            return (t & (1 << shift)) != 0;
+            return (trueAnswerFlag & (1 << shift)) != 0;
         }
 
         private void setBit(int shift, boolean v) {
             if (v) {
-                t |= (1 << shift);
+                trueAnswerFlag |= (1 << shift);
             } else {
-                t &= ~(1 << shift);
+                trueAnswerFlag &= ~(1 << shift);
             }
         }
 
         public void setTrueFlag(int flag) {
-            t = flag;
+            trueAnswerFlag = flag;
         }
 
         public int getTrueAnsFlag() {
-            return t;
+            return trueAnswerFlag;
         }
 
         public void setTrueAns(int... ts) {
-            t = 0;
+            trueAnswerFlag = 0;
             for (int i:ts) {
-                t |= (1 << i);
+                trueAnswerFlag |= (1 << i);
             }
         }
 
         public HashSet<Integer> getTrueAns() {
             HashSet<Integer> intList = new HashSet<>(32);
             for (int i = 0;i < 32;++i) {
-                if ((t & (1 << i)) != 0) {
+                if ((trueAnswerFlag & (1 << i)) != 0) {
                     intList.add(i);
                 }
             }

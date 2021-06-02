@@ -1,6 +1,10 @@
 package com.meng.tools;
 
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public class SJFRandom extends Random {
     private static Random instance = new SJFRandom();
@@ -49,6 +53,14 @@ public class SJFRandom extends Random {
         return array[instance.nextInt(array.length)];
     }
 
+    public static <T> T randomSelect(List<T> list) {
+        return list.get(instance.nextInt(list.size()));
+    }
+    
+    public static <T> T randomSelect(Set<T> set) {
+        return randomSelect(new ArrayList<T>(set));
+    }
+    
 //    public static <T> T randomSelect(T[][] arrays) {
 //        T[] array = arrays[instance.nextInt(arrays.length)];
 //        return randomSelect(array);

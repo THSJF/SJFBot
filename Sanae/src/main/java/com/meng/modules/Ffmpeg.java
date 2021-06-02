@@ -73,7 +73,12 @@ public class Ffmpeg {
             builder.append(" -title \"").append(title).append("\"");
             return this;
         }
-
+        
+        //   -ss 00:00:00 -to 00:00:05
+        public CommandBuilder select(String start, String to) {
+            builder.append(" -ss \"").append(start).append("\"").append(" -to \"").append(to).append("\"");
+            return this;
+        }
         public CommandBuilder author(String author) {
             builder.append(" -author \"").append(author).append("\"");
             return this;
@@ -104,7 +109,7 @@ public class Ffmpeg {
             return this;
         }
 
-        public String build(File output){
+        public String build(File output) {
             builder.append(" \"").append(output).append("\"");
             return builder.toString();
         }

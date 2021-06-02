@@ -54,6 +54,6 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
                     }
                 }); 
         }
-        return false;
+        return true;
     }
 }
