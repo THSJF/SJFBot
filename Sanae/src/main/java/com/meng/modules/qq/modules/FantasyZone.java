@@ -35,7 +35,9 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
             Image uploadImage = entity.toImage(SJFRandom.randomSelect(imageFolder), event.getGroup());
             int[] id = sendMessage(event.getGroup(), uploadImage);
             MessageManager.autoRecall(entity, id);
-        } else if (event.getMessage().contentToString().equals("fantasy")) {
+            return true;
+        } 
+        if (event.getMessage().contentToString().equals("fantasy")) {
             SJFExecutors.execute(new Runnable(){
 
                     @Override
@@ -52,8 +54,9 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
                         builder.add(img);
                         sendMessage(event, builder.asMessageChain()); 
                     }
-                }); 
+                });
+            return true;
         }
-        return true;
+        return false;
     }
 }

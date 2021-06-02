@@ -100,6 +100,7 @@ public class CmdExecuter implements AutoCloseable {
             cmdExecuter.setProcess(proc);
             SJFExecutors.execute(cmdExecuter.createStreamGobbler(proc.getErrorStream(), 0));
             SJFExecutors.execute(cmdExecuter.createStreamGobbler(proc.getInputStream(), 1));
+            proc.waitFor();
             return cmdExecuter;
         } catch (Throwable t) {
             t.printStackTrace();

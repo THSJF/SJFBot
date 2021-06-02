@@ -109,7 +109,10 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
             }
             int trueAnswer = SJFRandom.randomInt(4);
             bean.setTrueAns(trueAnswer);
-            bean.answersToSelect.add(trueAnswer, input.getName().replace("上海アリス幻樂団 - ", "").replace(".mp3", ""));
+            String name = input.getName();
+            name = name.replace("上海アリス幻樂団 - ", "");
+            name = name.replace(".mp3", "");
+            bean.answersToSelect.add(trueAnswer, name);
             entity.moduleManager.getModule(QuestionAndAnswer.class).addQuestion(qq, bean);
             StringBuilder builder = new StringBuilder();
             builder.append("名字是:\n");
@@ -124,14 +127,14 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
     }
 
     private File generalCut(File input, File output, int needSeconds) throws Exception {
-        int audioStart = (int)SJFRandom.nextInRange(0, AudioFileIO.read(input).getAudioHeader().getTrackLength() - needSeconds);
+        int audioStart = SJFRandom.nextInRange(0, AudioFileIO.read(input).getAudioHeader().getTrackLength() - needSeconds);
         Date start = new Date(audioStart * 1000 - 8 * 60 * 60 * 1000);
         Date end = new Date((audioStart + needSeconds) * 1000 - 8 * 60 * 60 * 1000);
-        DateFormat df = new SimpleDateFormat("hh:mm:ss");
+        DateFormat fmt = new SimpleDateFormat("mm:ss");
 
         Ffmpeg.AudioCommandBuilder builder = new Ffmpeg.AudioCommandBuilder(input);
         //    builder.coverExistFile().author("SJF").comment("from 2un");
-        builder.bitrate(64).freq(22050).channels(1).select(df.format(start), df.format(end));
+        builder.bitrate(64).freq(22050).channels(1).select("00:" + fmt.format(start), "00:" + fmt.format(end));
         String cmd = builder.build(output);
         try(CmdExecuter execute = CmdExecuter.execute(cmd, null)){
             if (execute.getProcess().exitValue() == 0) {

@@ -13,6 +13,10 @@ public class SJFRandom extends Random {
         return randomLong(max - min) + min;
     }
 
+    public static int nextInRange(int min, int max) {
+        return randomInt(max - min) + min;
+    }
+    
     public static long randomLong(long bound) {
         return instance.nextLong() % bound;
     }
