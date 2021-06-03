@@ -100,7 +100,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
             bean.fromQar = true;
             for (int i = 0;i < 3 ;++i) {
                 while (true) {
-                    String musicName = SJFRandom.randomSelect(musicNames);
+                    String musicName = SJFRandom.randomSelect(musicNames).replace("上海アリス幻樂団 - ", "").replace(".mp3", "");
                     if (!bean.answersToSelect.contains(musicName)) {
                         bean.answersToSelect.add(musicName);
                         break;
@@ -109,10 +109,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
             }
             int trueAnswer = SJFRandom.randomInt(4);
             bean.setTrueAns(trueAnswer);
-            String name = input.getName();
-            name = name.replace("上海アリス幻樂団 - ", "");
-            name = name.replace(".mp3", "");
-            bean.answersToSelect.add(trueAnswer, name);
+            bean.answersToSelect.add(trueAnswer, input.getName().replace("上海アリス幻樂団 - ", "").replace(".mp3", ""));
             entity.moduleManager.getModule(QuestionAndAnswer.class).addQuestion(qq, bean);
             StringBuilder builder = new StringBuilder();
             builder.append("名字是:\n");

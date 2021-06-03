@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 
@@ -24,8 +25,8 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
     }
 
     // not done
-    //-invoke ClassName MethodName Signature args
-    //    0       1         2           3     4
+    //-invoke ClassName Signature args...
+    //    0       1         2       3...  
 	@Override
 	public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
@@ -34,23 +35,29 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 		if (qqId == 2856986197L && msg.startsWith("-invoke")) {
             try {
                 List<String> cmds = TextLexer.analyze(msg);
+                if (cmds.size() != 5) {
+                    sendQuote(gme, "参数错误");
+                }
+                cmds.remove(0);
                 Class<?> targetClass = Class.forName(cmds.get(1));
-                Class<?>[] argType = SignatureAnalyzer.analyze(cmds.get(3));
-                Object[] args = new Object[argType.length];
+                SignatureAnalyzer.JVMMethodSignature signature =  SignatureAnalyzer.analyze(cmds.get(2));
+                Object[] args = new Object[signature.argTypes.length];
                 Map<Class<?>,Function<String,Object>> parser = new HashMap<Class<?>,Function<String,Object>>(){
                     {
                         put(byte.class, new Function<String,Object>(){
 
                                 @Override
                                 public Object apply(String p1) {
-                                    return Byte.parseByte(p1, getRadix(p1));
+                                    int radix = getRadix(p1);
+                                    return Byte.parseByte(prepareNumber(p1, radix), radix);
                                 }  
                             });
                         put(short.class, new Function<String,Object>(){
 
                                 @Override
                                 public Object apply(String p1) {
-                                    return Short.parseShort(p1, getRadix(p1));
+                                    int radix = getRadix(p1);
+                                    return Short.parseShort(prepareNumber(p1, radix), radix);
                                 }  
                             });
                         put(char.class, new Function<String,Object>(){
@@ -67,7 +74,8 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 
                                 @Override
                                 public Object apply(String p1) {
-                                    return Integer.parseInt(p1, getRadix(p1));
+                                    int radix = getRadix(p1);
+                                    return Integer.parseInt(prepareNumber(p1, radix), radix);
                                 }  
                             });
                         put(float.class, new Function<String,Object>(){
@@ -81,7 +89,8 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 
                                 @Override
                                 public Object apply(String p1) {
-                                    return Long.parseLong(p1, getRadix(p1));
+                                    int radix = getRadix(p1);
+                                    return Long.parseLong(prepareNumber(p1, radix), radix);
                                 }  
                             });
                         put(double.class, new Function<String,Object>(){
@@ -101,30 +110,24 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
                     }
                 };
                 for (int i = 0; i < args.length; ++i) {
-                    final Class<?> t = argType[i];
-                    Function<String, Object> function = parser.get(argType);
+                    final Class<?> type = signature.argTypes[i];
+                    Function<String, Object> function = parser.get(type);
                     if (function == null) {
                         function = new Function<String,Object>(){
 
                             @Override
                             public Object apply(String p1) {
-                                return JsonHelper.fromJson(p1, t);
+                                return JsonHelper.fromJson(p1, type);
                             }
                         };
                     }
-                    args[i] = function.apply(cmds.get(i + 4));
+                    args[i] = function.apply(cmds.get(i + 3));
                 }
                 Object module = entity.moduleManager.getModule(targetClass);
-                Method targetMethod = targetClass.getDeclaredMethod(cmds.get(2), argType);
-                if (module == null) {
-                    Object result = targetMethod.invoke(null, args);
-                    String json = JsonHelper.toJson(result);
-                    sendGroupMessage(groupId, "运行结果:\ntoString()=" + result.toString() + "\ntoJson()=" + json);
-				} else {
-                    Object result = targetMethod.invoke(module, args);
-                    String json = JsonHelper.toJson(result);
-                    sendGroupMessage(groupId, "运行结果:\ntoString()=" + result.toString() + "\ntoJson()=" + json);
-				}
+                Method targetMethod = targetClass.getDeclaredMethod(signature.name, signature.argTypes);
+                Object result = targetMethod.invoke(module, args);
+                String to1 = result.toString();
+                sendGroupMessage(groupId, "运行结果:\n" + (to1.equals(Objects.toString(result)) ? JsonHelper.toJson(result) : to1));
                 return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -146,5 +149,15 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
             radix = 8;
         }
         return radix;
+    }
+
+    private String prepareNumber(String number, int radix) {
+        if (radix == 2 || radix == 16) {
+            return number.substring(2);
+        }
+        if (radix == 8) {
+            return number.substring(1);
+        }
+        return number;
     }
 }
