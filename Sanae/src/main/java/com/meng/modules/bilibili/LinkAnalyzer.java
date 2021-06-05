@@ -22,7 +22,7 @@ public class LinkAnalyzer {
 
     public static final Pattern patternUid = Pattern.compile(".{0,}space\\D{0,}(\\d{1,})");
 
-    public BilibiliPair parse(String text) {
+    public static BilibiliPair parse(String text) {
         BilibiliPair bp = getInfo(text);
         if (bp != null) {
             return bp;
@@ -42,7 +42,7 @@ public class LinkAnalyzer {
         return null;
     }
 
-    private BilibiliPair getInfo(String text) {
+    private static BilibiliPair getInfo(String text) {
         long id;
         id = getLiveId(text);
         if (id != -1) {
@@ -59,22 +59,22 @@ public class LinkAnalyzer {
         return null;
     }
 
-    private BilibiliPair getLiveInfo(long id) {
+    public static BilibiliPair getLiveInfo(long id) {
         RoomInfo roomInfo = LiveApi.getRoomInfo(id);
         return new BilibiliPair(roomInfo.toString(), roomInfo.data.room_info.keyframe);
     }
 
-    private BilibiliPair getVideoInfo(long aid) {
+    public static BilibiliPair getVideoInfo(long aid) {
         VideoInfo info = VideoApi.getVideoInfo(aid);
         return new BilibiliPair(info.toString(), info.data.pic);
     }
 
-    private BilibiliPair getArticleInfo(long aid) {
+    public static BilibiliPair getArticleInfo(long aid) {
         ArticleInfo info = ArticleApi.getArticleInfo(aid);
         return new BilibiliPair(info.toString(), info.data.origin_image_urls.get(0));
     }
 
-    private long getLiveId(String link) {
+    public static long getLiveId(String link) {
         Matcher matcher = patternLive.matcher(link);
         if (matcher.find()) {
             return Long.parseLong(matcher.group(1));
@@ -82,19 +82,19 @@ public class LinkAnalyzer {
         return -1;
     }
 
-    private long getAvId(String link) {
+    public static long getAvId(String link) {
         Matcher mav = patternAv.matcher(link);
         if (mav.find()) {
             return Long.parseLong(mav.group(1));
         }
         Matcher mbv = patternBv.matcher(link);  
         if (mbv.find()) {
-            return AvBvConverter.getInstance().decode(mbv.group(1));
+            return AvBvConverter.decode(mbv.group(1));
         }
         return -1;
     }
 
-    private long getCvId(String link) {
+    public static long getCvId(String link) {
         Matcher matcher = patternCv.matcher(link);
         if (matcher.find()) {
             return Long.parseLong(matcher.group(1));

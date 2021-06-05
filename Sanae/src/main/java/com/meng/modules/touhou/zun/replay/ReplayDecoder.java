@@ -17,11 +17,7 @@ public class ReplayDecoder {
         file.seek(12, ReplayBinaryFile.SeekOrigin.Begin);
         long offset = file.readUInt();
         file.seek(offset, ReplayBinaryFile.SeekOrigin.Begin); 
-        StringBuilder val = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            val.append(String.format("%2x", file.readByte()));
-        }
-        return val.toString().equals("55534552");
+        return file.readInt() == 0x52455355;
     }
 
     /*
@@ -318,7 +314,7 @@ public class ReplayDecoder {
         long length = file.readUInt();
         file.seek(4, ReplayBinaryFile.SeekOrigin.Current);
         file.seek(4, ReplayBinaryFile.SeekOrigin.Current);   //which game
-        byte ver = (byte)file.readByte();
+        byte ver = file.readByte();
         if (ver == 144) {
             replay.game = 10;
         } else {

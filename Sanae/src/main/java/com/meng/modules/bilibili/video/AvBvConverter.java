@@ -6,30 +6,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AvBvConverter {
-    private static AvBvConverter instance = null;
-
-    public static AvBvConverter getInstance() {
-        if (instance == null) {
-            instance = new AvBvConverter();
-        }
-        return instance;
-    }
-
+    
     private AvBvConverter() {
 
     }
 
-    private final int xor = 177451812;//异或用的数，可变
-    private final long add = 100618342136696320L;//加减用的数，可变
-    private final int[] changeArray = {11,10,3,8,4,6,2,9,5,7};//核心变换数组，BV号的重排顺序，注意到该数组中没有元素0 元素1，意味着BV号的第一、第二位（前缀）不会参与到整个加密、解密的过程中。
-    private final String dictionary = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";//核心变换字典，BV号是58进制，所以字典58位，代表从0-57。
-    private final String preFix = "BV";//加密过程中用到的前缀符，长度要求与changeArray最小元素值一致。
+    private static final int xor = 177451812;//异或用的数，可变
+    private static final long add = 100618342136696320L;//加减用的数，可变
+    private static final int[] changeArray = {11,10,3,8,4,6,2,9,5,7};//核心变换数组，BV号的重排顺序，注意到该数组中没有元素0 元素1，意味着BV号的第一、第二位（前缀）不会参与到整个加密、解密的过程中。
+    private static final String dictionary = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";//核心变换字典，BV号是58进制，所以字典58位，代表从0-57。
+    private static final String preFix = "BV";//加密过程中用到的前缀符，长度要求与changeArray最小元素值一致。
 
     /**
      * 建立字典中字符与字典值之间的对应关系。
      * @return
      */
-    private Map<Character, Integer> getWorkingMap() {
+    private static Map<Character, Integer> getWorkingMap() {
         char[] cArray = dictionary.toCharArray();
         Map<Character, Integer> map = new HashMap<>(dictionary.length());
         for (int i = 0 ; i < dictionary.length() ; ++i) {
@@ -45,14 +37,15 @@ public class AvBvConverter {
      * @return 最大、最小值
      */
 
-    private int getMin(int[] array) {
+    private static int getMin(int[] array) {
         int k = Integer.MAX_VALUE;
         for (int l : array) {
             k = Math.min(k, l);
         }
         return k;
     }
-    private int getMax(int[] array) {
+    
+    private static int getMax(int[] array) {
         int k =Integer.MIN_VALUE;
         for (int l : array) {
             k = Math.max(k, l);
@@ -65,7 +58,7 @@ public class AvBvConverter {
      * @param BV号
      * @return av号
      */
-    public long decode(String bv) {
+    public static long decode(String bv) {
         //参数校验，前缀一致，且长度符合changeArray最大元素+1
         if (bv.startsWith(preFix) && bv.length() == (getMax(changeArray) + 1)) {
             BigDecimal b = new BigDecimal(0);
@@ -83,7 +76,7 @@ public class AvBvConverter {
         }
     }
 
-    public String encode(long av) {
+    public static String encode(long av) {
         BigDecimal b = new BigDecimal(av ^ xor).add(new BigDecimal(add));
         char[] resultArray = new char[changeArray.length];
         char[] dictionaryArray = dictionary.toCharArray();

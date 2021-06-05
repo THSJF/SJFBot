@@ -42,8 +42,8 @@ public class SJFCompiler {
         StringBuilder builder = new StringBuilder();
         for (Diagnostic<? extends JavaFileObject> d : diagnostics.getDiagnostics()) {
             builder.append(d.getKind()).append(":").append(d.getMessage(null)).append("\n");  
-            SBot.instance.sendGroupMessage(SBot.yysGroup, builder.toString());
         }
+        SBot.instance.sendGroupMessage(SBot.yysGroup, builder.toString());
         fileManager.close();
         if (!result) {
             System.out.println("compile failed");

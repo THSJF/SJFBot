@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.meng.bot.Functions;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
+import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
@@ -11,9 +12,7 @@ import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.touhou.THGameDataManager;
 import com.meng.modules.touhou.THSpell;
-import com.meng.tools.FileTool;
 import com.meng.tools.FileWatcher;
-import com.meng.tools.JsonHelper;
 import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.util.ArrayList;
@@ -60,15 +59,6 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                     reload();
                 }
             });
-    }
-
-    @Override
-    public BaseModule reload() {
-        String json = FileTool.readString(cfg);
-        if (json != null && !json.equals("null")) {  
-            qaList = JsonHelper.fromJson(json, qaList.getClass());
-        }
-        return this;
     }
 
     @Override

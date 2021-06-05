@@ -17,7 +17,7 @@ public class SignatureAnalyzer {
         }
     }
 
-    private static int handleSignaturePart(String signature, int i, Class<? extends Object>[] classHolder) {
+    private static int handleSignaturePart(String signature, int i, Class<?>[] classHolder) {
         char c = signature.charAt(i);
         if (c == 'L') {
             StringBuilder builder = new StringBuilder();
@@ -45,14 +45,14 @@ public class SignatureAnalyzer {
     private static JVMMethodSignature analyzeJvmSignature(String[] info) {
         JVMMethodSignature jvmSignature = new JVMMethodSignature();
         jvmSignature.name = info[0];
-        List<Class<? extends Object>> types = new ArrayList<>();
-        Class<? extends Object>[] typeHolder = new Class<? extends Object>[1];
+        List<Class<?>> types = new ArrayList<>();
+        Class<?>[] typeHolder = new Class<?>[1];
         String argTypes = info[1];
         for (int i = 0; i < argTypes.length(); ++i) {
             i = handleSignaturePart(argTypes, i, typeHolder);
             types.add(typeHolder[0]);
         }
-        jvmSignature.argTypes = types.toArray(new Class<? extends Object>[0]); 
+        jvmSignature.argTypes = types.toArray(new Class<?>[0]); 
         String returnType = info[2];
         handleSignaturePart(returnType, 0, typeHolder);
         jvmSignature.returnType = typeHolder[0];
@@ -61,7 +61,7 @@ public class SignatureAnalyzer {
 
     private static JVMMethodSignature analyzeJavaType(String signature) {
         JVMMethodSignature result = new JVMMethodSignature();
-        Class<? extends Object>[] typeHolder = new Class<? extends Object>[1];
+        Class<?>[] typeHolder = new Class<?>[1];
         handleSignaturePart(signature, 0, typeHolder);
         result.returnType = typeHolder[0];
         return result;

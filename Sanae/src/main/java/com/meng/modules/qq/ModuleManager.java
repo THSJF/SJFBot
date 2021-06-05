@@ -71,6 +71,7 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import com.meng.modules.qq.modules.Sentence;
 
 /**
  * @Description: 模块管理器
@@ -105,7 +106,6 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(MusicRecongnition.class);
 
         load(MessageRefuse.class);
-        load(Repeater.class);
         load(Report.class);
 
         load(MiraiCodeSerialize.class);
@@ -122,6 +122,8 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(DynamicWordStock.class);
         load(UserInfo.class);
         load(Derecall.class, false);
+        load(Sentence.class);
+        load(Repeater.class);
         return this;
     }
 

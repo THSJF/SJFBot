@@ -1,12 +1,14 @@
 package com.meng.config;
 
 import com.meng.modules.qq.SBot;
+import com.meng.tools.ExceptionCatcher;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,15 +44,20 @@ public class NetServer {
                 socket = s;
                 in = new DataInputStream(s.getInputStream());
                 out = new DataOutputStream(s.getOutputStream());
-                id = in.readUTF();
-                id = id.substring(0, id.length() - 1);
+                int available = 0;
+                while ((available = in.available()) == 0) {
+                    sleep(1);
+                }
+                byte[] bs = new byte[available];
+                in.read(bs);
+                id = new String(bs, StandardCharsets.UTF_8);
                 if (id.startsWith("ljyys")) {
                     connections.put(id, this);
                 } else {
                     s.close();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
         }
 
@@ -60,35 +67,47 @@ public class NetServer {
                     socket.close();
                     return;
                 }
-                out.writeUTF(s + "\n");
-                out.flush();
+                send(s.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
-                e.printStackTrace();
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            }
+        }
+
+        public void send(byte[] array) {
+            try {
+                out.write(array);
+            } catch (IOException e) {
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
         }
 
         @Override
         public void run() {
-            System.out.println("rec start");
+            System.out.println("receive thread start");
             try {
+                int available = 0;
                 while (!socket.isClosed()) {
-                    System.out.println("read line:");
-                    String line = in.readUTF();
-                    onReceive(line.substring(0, line.length() - 1));
+                    while ((available = in.available()) == 0) {
+                        sleep(1);  
+                    }
+                    byte[] bs = new byte[available];
+                    in.read(bs);
+                    System.out.println("bs len:" + bs.length);
+                    onReceive(bs);
                 }
+                connections.remove(this);
+                System.out.println(this.toString() + " closed and removed");
             } catch (SocketException e) {
-                System.out.println(String.format("socket %s closed", id));
-            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            connections.remove(id);
+        }
+        private void onReceive(byte[] array) {
+            onReceive(new String(array, StandardCharsets.UTF_8));
         }
 
         private void onReceive(String content) {
-            if (content == null) {
-                System.out.println("content null");
-                return;
-            }
             System.out.println(content);
             send("received:" + content);
             if (content.startsWith("to yys")) {

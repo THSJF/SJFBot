@@ -84,7 +84,7 @@ public class Youtu {
                 byte data[] = new byte[(int) imageFile.length()];
                 in.read(data);
                 in.close();
-                base64.append(new String(Base64Converter.getInstance().encode(data)));
+                base64.append(new String(Base64Converter.encode(data)));
             } else {
                 throw new FileNotFoundException(filePath + " not exist");
             }
@@ -197,7 +197,7 @@ public class Youtu {
             byte[] all = new byte[bin.length + plain_text.getBytes(StandardCharsets.UTF_8).length];
             System.arraycopy(bin, 0, all, 0, bin.length);
             System.arraycopy(plain_text.getBytes(StandardCharsets.UTF_8), 0, all, bin.length, plain_text.getBytes(StandardCharsets.UTF_8).length);
-            mySign.append(new String(Base64Converter.getInstance().encode(all), StandardCharsets.UTF_8));
+            mySign.append(new String(Base64Converter.encode(all), StandardCharsets.UTF_8));
             return 0;
         }
 

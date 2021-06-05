@@ -16,8 +16,6 @@ import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 public class BilibiliCmdParser extends BaseModule implements IGroupMessageEvent {
 
-    private LinkAnalyzer parser = new LinkAnalyzer();
-
     public BilibiliCmdParser(SBot bot) {
         super(bot);
     }
@@ -33,7 +31,7 @@ public class BilibiliCmdParser extends BaseModule implements IGroupMessageEvent 
 //            LiveListener listener = LiveListener.getInstance();
 //            sendMessage(event, listener.getLiving());
 //        }
-        BilibiliPair pair = parser.parse(string);
+        BilibiliPair pair = LinkAnalyzer.parse(string);
         if (pair != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
             try {

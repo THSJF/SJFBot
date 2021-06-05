@@ -1,12 +1,11 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.config.DataPersistenter;
 import com.meng.config.SanaeData;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import com.meng.tools.FileTool;
 import com.meng.tools.FileWatcher;
-import com.meng.tools.JsonHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,15 +31,6 @@ public class AimMessage extends BaseModule implements IGroupMessageEvent {
                     reload();
                 }
             });
-    }
-
-    @Override
-    public AimMessage reload() {
-        String json = FileTool.readString(cfg);
-        if (json != null && !json.equals("null")) {  
-            holder = JsonHelper.fromJson(json, AimMessageHolder.class);
-        }
-        return this;
     }
 
     @Override

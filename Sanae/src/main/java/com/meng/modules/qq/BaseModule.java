@@ -96,7 +96,7 @@ public abstract class BaseModule implements ILoad {
     }
 
     @Override
-    public BaseModule reload() throws Exception {
-        return this;
+    public BaseModule reload() {
+        return load();
     }
 }

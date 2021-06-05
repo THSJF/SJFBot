@@ -3,24 +3,16 @@ package com.meng.tools;
 import java.nio.charset.StandardCharsets;
 
 public class Base64Converter {
-	private static Base64Converter instance = null;
-
-	public static Base64Converter getInstance() {
-		if (instance == null) {
-			instance = new Base64Converter();
-		}
-		return instance;
-	}
 
 	private Base64Converter() {
 
 	}
 
-	public byte[] encode(String str) {
+	public static byte[] encode(String str) {
 		return encode(str.getBytes(StandardCharsets.UTF_8));
 	}
 
-	public byte[] encode(byte[] byteData) {
+	public static byte[] encode(byte[] byteData) {
 		int iSrcIdx; 
 		int iDestIdx; 
 		byte[] byteDest = new byte[((byteData.length + 2) / 3) * 4];
@@ -58,7 +50,11 @@ public class Base64Converter {
 		return byteDest;
 	}
 
-	public final static byte[] decode(String str) throws IllegalArgumentException {
+    public static String decodeToString(String s) {
+        return new String(decode(s), StandardCharsets.UTF_8);
+    }
+    
+	public static byte[] decode(String str) throws IllegalArgumentException {
 		byte[] byteData = str.getBytes(StandardCharsets.UTF_8);
 		int iSrcIdx; 
 		int reviSrcIdx; 

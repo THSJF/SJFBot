@@ -28,7 +28,7 @@ public class FileWatcher implements Runnable {
         if (running) {
             return;
         }
-        SJFExecutors.executeWithFixedDelay(this, 10, TimeUnit.SECONDS);
+        SJFExecutors.executeWithFixedDelay(this, 2, TimeUnit.SECONDS);
     }
 
     private FileWatcher() {
