@@ -11,6 +11,8 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import com.meng.modules.qq.modules.Sentence;
+import com.meng.tools.JsonHelper;
 
 public class NetServer {
 
@@ -103,8 +105,19 @@ public class NetServer {
                 e.printStackTrace();
             }
         }
+        
         private void onReceive(byte[] array) {
             onReceive(new String(array, StandardCharsets.UTF_8));
+            DataPackage dp = DataPackage.decode(array);
+            switch (dp.getOpCode()) {
+                case DataPackage.typeString:
+                    Sentence.Sentences sses = JsonHelper.fromJson(dp.readString(), Sentence.Sentences.class);
+                    Sentence module = SBot.instance.moduleManager.getModule(Sentence.class);
+                    module.sens.sentences.addAll(sses.sentences);
+                    module.save();
+                    module.reload();
+                    break;
+            }
         }
 
         private void onReceive(String content) {

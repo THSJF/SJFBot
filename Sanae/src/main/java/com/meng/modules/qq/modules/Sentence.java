@@ -12,8 +12,10 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class Sentence extends BaseModule implements IGroupMessageEvent {
     @SanaeData("sentence.json")
-    private Sentences sens = new Sentences();
+    
+    public Sentences sens = new Sentences();
     private File content;
+    
     public Sentence(SBot b) {
         super(b);
         content = new File("C://Program Files/sanae_data/persistent/" + getSanaeValue("sens"));
@@ -24,11 +26,6 @@ public class Sentence extends BaseModule implements IGroupMessageEvent {
                     reload();
                 }
             });
-    }
-
-    @Override
-    public BaseModule reload() {
-        return load();
     }
 
     @Override

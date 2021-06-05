@@ -97,6 +97,7 @@ public abstract class BaseModule implements ILoad {
 
     @Override
     public BaseModule reload() {
+        System.out.println(getModuleName() + " reload...");
         return load();
     }
 }
