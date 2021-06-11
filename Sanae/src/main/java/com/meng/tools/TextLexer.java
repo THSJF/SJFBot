@@ -9,9 +9,9 @@ public class TextLexer {
     private static TextLexer lexer = new TextLexer();
 
     public static ArrayList<String> analyze(String s) {
-        
+
         ArrayList<String> arrayList = lexer.scannerAll(s);
-        synchronized(lexer){
+        synchronized (lexer) {
             lexer.init();
             int size = arrayList.size();
             for (int i = 0;i < size;++i) {
@@ -41,9 +41,28 @@ public class TextLexer {
         return ((c <= 'z') && (c >= 'a')) || ((c <= 'Z') && (c >= 'A')) || (c == '_');
     }
 
+    public static boolean isAlpha(char[] cs) {
+        for (char c : cs) {
+            if (!isAlpha(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean isNumber(char c) {
         return (c >= '0') && (c <= '9');
     }
+
+    public static boolean isNumber(char[] cs) {
+        for (char c : cs) {
+            if (!isNumber(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     private TextLexer() {
         init();

@@ -14,6 +14,9 @@ public class Sentence extends BaseModule implements IGroupMessageEvent {
     @SanaeData("sentence.json")
     
     public Sentences sens = new Sentences();
+    /*
+    {l:[{s:"春宵一刻值千金",t:""},{s:"千金散尽还复来",t:""}]}
+    */
     private File content;
     
     public Sentence(SBot b) {

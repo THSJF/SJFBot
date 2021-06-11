@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.data.MessageSource;
-import net.mamoe.mirai.message.data.OnlineMessageSource;
 
 public class MessageManager {
     private static MessageManager instance = null;

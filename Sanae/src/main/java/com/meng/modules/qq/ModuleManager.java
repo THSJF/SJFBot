@@ -23,6 +23,7 @@ import com.meng.modules.qq.modules.Dice;
 import com.meng.modules.qq.modules.DynamicWordStock;
 import com.meng.modules.qq.modules.FantasyZone;
 import com.meng.modules.qq.modules.FileAnalyzer;
+import com.meng.modules.qq.modules.IDCalculate;
 import com.meng.modules.qq.modules.ImageProcess;
 import com.meng.modules.qq.modules.MemberChange;
 import com.meng.modules.qq.modules.MessageRefuse;
@@ -36,6 +37,7 @@ import com.meng.modules.qq.modules.QuestionAndAnswer;
 import com.meng.modules.qq.modules.ReflexCommand;
 import com.meng.modules.qq.modules.Repeater;
 import com.meng.modules.qq.modules.Report;
+import com.meng.modules.qq.modules.Sentence;
 import com.meng.modules.qq.modules.TimeTask;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -71,7 +73,6 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import com.meng.modules.qq.modules.Sentence;
 
 /**
  * @Description: 模块管理器
@@ -108,6 +109,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(MessageRefuse.class);
         load(Report.class);
 
+        load(IDCalculate.class);
         load(MiraiCodeSerialize.class);
         load(ImageProcess.class);
         load(FantasyZone.class);
