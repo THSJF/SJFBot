@@ -20,22 +20,31 @@ public class IDCalculate extends BaseModule implements IFriendMessageEvent,IGrou
 
     @Override
     public boolean onFriendMessage(FriendMessageEvent event) {
-        return calculate(event);
+        String result = calculate(event.getMessage().contentToString());
+        if (result == null) {
+            return false;
+        }
+        event.getSender().sendMessage(result);
+        return true;
     }
 
     @Override
     public boolean onGroupMessage(GroupMessageEvent event) {
-        return calculate(event);
+        String result = calculate(event.getMessage().contentToString());
+        if (result == null) {
+            return false;
+        }
+        sendQuote(event, result);
+        return true;
     }
 
-    private boolean calculate(MessageEvent event) {
-        String msg = event.getMessage().contentToString();
+    private String calculate(String msg) {
         if (msg.length() != 17) {
-            return false;
+            return null;
         }
         char[] chars = msg.toCharArray();
         if (!TextLexer.isNumber(chars)) {
-            return false; 
+            return null; 
         }
         StringBuilder builder = new StringBuilder(msg);
         int sum = 0;
@@ -45,7 +54,6 @@ public class IDCalculate extends BaseModule implements IFriendMessageEvent,IGrou
         int tmp = sum % 11;
         int finalResult = (12 - tmp) % 11;
         builder.append(tmp == 10 ? "X": finalResult);
-        event.getSender().sendMessage(builder.toString());
-        return true;
+        return builder.toString();
     }
 }
