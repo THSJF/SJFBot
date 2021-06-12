@@ -12,5 +12,7 @@ public class GroupConfig {
     {
         enabled.remove(Functions.BilibiliTip);
         enabled.remove(Functions.EuropeDogs);
+        enabled.remove(Functions.DynamicWordStock);
+        enabled.remove(Functions.MessageRecallEvent_GroupRecall);
     }
 }
