@@ -77,8 +77,8 @@ public class BotMessageHandler extends SimpleListenerHost {
         }
         long id = event.getGroup().getId();
         long id2 = event.getOperator().getId();
-        ConfigManager.getInstance().addBlack(id, id2);
-        event.getGroup().quit();
+//        ConfigManager.getInstance().addBlack(id, id2);
+//        event.getGroup().quit();
         sb.sendGroupMessage(SBot.yysGroup, String.format("在群%d中被%d禁言", id, id2));
         return ListeningStatus.LISTENING;
     }

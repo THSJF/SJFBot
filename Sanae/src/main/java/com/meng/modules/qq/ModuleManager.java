@@ -550,6 +550,9 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         if (t.getName().equals(SBot.class.getName())) {
             return (T)entity;
         }
+        if (t.getName().equals(ConfigManager.class.getName())) {
+            return (T)ConfigManager.getInstance();
+        }
         Object module = hotFix.get(t.getName());
         if (module != null) {
             return (T)module;
