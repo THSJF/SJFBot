@@ -299,6 +299,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     } else {
                         sendQuote(gme, "无此开关");
                     }
+                    return true;
             }
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

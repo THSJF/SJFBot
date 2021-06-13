@@ -93,7 +93,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             String[] usAnsStrs = msg.split(" ");
             for (String s : usAnsStrs) {
                 try {
-                    userAnss.add(Integer.parseInt(s));
+                    userAnss.add(Integer.parseInt(s) + 1);
                 } catch (NumberFormatException ignore) {
                     //if not number,answer will never true 
                 }
@@ -132,7 +132,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             qaNow.shuffleAnswer();
             save();
             onGoingQA.put(qqId, qaNow);
-            int i = 0;
+            int i = 1;
             for (String s:qaNow.answersToSelect) {
                 if (s.equals("")) {
                     continue;
@@ -141,7 +141,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             }
             sb.append("回答序号即可");
             if (qaNow.getTrueAns().size() > 1) {
-                sb.append(",本题有多个选项");
+                sb.append(",本题有多个选项(选项用空格隔开)");
             }
             sendQuote(gme, MiraiCode.deserializeMiraiCode(sb.toString()));
             return true;
@@ -160,7 +160,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         if (onGoing != null) {
             int userAnser = -1;
             try {
-                userAnser = Integer.parseInt(msg);
+                userAnser = Integer.parseInt(msg) + 1;
             } catch (NumberFormatException ignore) {
                 //if not number,answer will never true
             }
@@ -178,9 +178,9 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         if (msg.equalsIgnoreCase("-qar")) {
             QABean qar = createQA();
             qar.shuffleAnswer();
-            StringBuilder sb=new StringBuilder("\n");
+            StringBuilder sb = new StringBuilder();
             sb.append(qar.question);
-            int i=0;
+            int i = 1;
             for (String s:qar.answersToSelect) {
                 if (s.equals("")) {
                     continue;
