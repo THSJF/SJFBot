@@ -10,6 +10,7 @@ import java.util.HashMap;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.MessageChain;
+import com.meng.tools.SJFExecutors;
 
 /**
  * @Description: 复读机
@@ -73,8 +74,14 @@ public class Repeater extends BaseModule implements IGroupMessageEvent {
 			return false;
 		}
 
-		private boolean repeatStart(long groupId,  long qqId,  MessageChain msg) {
-			sendGroupMessage(groupId, msg);
+		private boolean repeatStart(final long groupId,  long qqId,  final MessageChain msg) {
+            SJFExecutors.execute(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        sendGroupMessage(groupId, msg);
+                    }
+                });
 			return true;
 		}
 	}
