@@ -1,14 +1,13 @@
 package com.meng.modules.qq.modules;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
+import com.meng.modules.qq.BaseModule;
+import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.friend.IFriendMessageEvent;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
-import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.event.events.FriendMessageEvent;
-import com.meng.modules.qq.SBot;
-import com.meng.modules.qq.BaseModule;
 import com.meng.tools.TextLexer;
-import net.mamoe.mirai.event.events.MessageEvent;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.event.events.FriendMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class IDCalculate extends BaseModule implements IFriendMessageEvent,IGroupMessageEvent {
 
@@ -16,6 +15,18 @@ public class IDCalculate extends BaseModule implements IFriendMessageEvent,IGrou
 
     public IDCalculate(SBot b) {
         super(b);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "检验计算";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg("身份证前17位").arg("计算检验位");
+        return super.load();
     }
 
     @Override
@@ -53,7 +64,7 @@ public class IDCalculate extends BaseModule implements IFriendMessageEvent,IGrou
         }
         int tmp = sum % 11;
         int finalResult = (12 - tmp) % 11;
-        builder.append(tmp == 10 ? "X": finalResult);
+        builder.append(finalResult == 10 ? "X": finalResult);
         return builder.toString();
     }
 }

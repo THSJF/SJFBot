@@ -1,7 +1,7 @@
 package com.meng.modules.qq;
 
+import com.meng.annotation.BotData;
 import com.meng.config.DataPersistenter;
-import com.meng.config.SanaeData;
 import com.meng.modules.qq.SBot;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.SJFRandom;
@@ -32,7 +32,7 @@ public abstract class BaseModule implements ILoad {
     protected final String getSanaeValue(String fieldName) {
         try {
             Field field = this.getClass().getDeclaredField(fieldName);
-            return field.getAnnotation(SanaeData.class).value();
+            return field.getAnnotation(BotData.class).value();
         } catch (Exception e) {
             ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             return "";

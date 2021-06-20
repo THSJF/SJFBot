@@ -1,14 +1,14 @@
 package com.meng.config;
 
+import com.meng.annotation.BotData;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
+import com.meng.tools.FileWatcher;
 import com.meng.tools.JsonHelper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.io.FileWriter;
-import com.meng.tools.FileWatcher;
 
 /**
  * @author: 司徒灵羽
@@ -25,8 +25,8 @@ public class DataPersistenter {
         Field[] fields = moduleClass.getDeclaredFields();  //public和private
         for (Field field : fields) {
             field.setAccessible(true);
-            if (field.isAnnotationPresent(SanaeData.class)) {
-                SanaeData annotationField = field.getAnnotation(SanaeData.class);
+            if (field.isAnnotationPresent(BotData.class)) {
+                BotData annotationField = field.getAnnotation(BotData.class);
                 try {
                     File file = new File("C://Program Files/sanae_data/persistent/" + annotationField.value());
                     FileWatcher.getInstance().registerSelf(file);
@@ -47,8 +47,8 @@ public class DataPersistenter {
         Field[] fields = moduleClass.getDeclaredFields();  //public和private
         for (Field field : fields) {
             field.setAccessible(true);
-            if (field.isAnnotationPresent(SanaeData.class)) {
-                SanaeData annotationField = field.getAnnotation(SanaeData.class);
+            if (field.isAnnotationPresent(BotData.class)) {
+                BotData annotationField = field.getAnnotation(BotData.class);
                 try {
                     File file = new File("C://Program Files/sanae_data/persistent/" + annotationField.value());
                     if (!file.exists()) {

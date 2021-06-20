@@ -32,7 +32,7 @@ public class THSpell {
 
     public String getPs() {
         StringBuilder sb = new StringBuilder();
-        sb.append(cnName).append("(").append(jpName).append(")").append("是").append(master);
+        sb.append(cnName).append("(").append(jpName).append(")").append("是").append(master.name);
         if (difficult != THSpell.LastSpell && difficult != THSpell.LastWord) {
             sb.append("在");
             if ((difficult & THSpell.Easy) == THSpell.Easy) {

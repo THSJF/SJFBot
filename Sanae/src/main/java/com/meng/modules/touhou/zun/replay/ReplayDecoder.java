@@ -340,7 +340,7 @@ public class ReplayDecoder {
         return true;
     }
 
-    public boolean read_T14r(ZunReplay replay) {
+    public boolean readTh14(ZunReplay replay) {
         return readTh10(replay);
     }
 

@@ -1,11 +1,10 @@
 package com.meng.modules.qq.modules;
 
 import com.google.gson.annotations.SerializedName;
+import com.meng.annotation.BotData;
 import com.meng.bot.Functions;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
-import com.meng.config.DataPersistenter;
-import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -29,7 +28,7 @@ import net.mamoe.mirai.message.code.MiraiCode;
  **/
 public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent {
 
-    @SanaeData("qa.json")
+    @BotData("qa.json")
     private ArrayList<QABean> qaList = new ArrayList<>();
 
     public HashMap<Long,QABean> onGoingQA = new HashMap<>();
@@ -93,7 +92,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
             String[] usAnsStrs = msg.split(" ");
             for (String s : usAnsStrs) {
                 try {
-                    userAnss.add(Integer.parseInt(s) + 1);
+                    userAnss.add(Integer.parseInt(s) - 1);
                 } catch (NumberFormatException ignore) {
                     //if not number,answer will never true 
                 }
@@ -160,7 +159,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
         if (onGoing != null) {
             int userAnser = -1;
             try {
-                userAnser = Integer.parseInt(msg) + 1;
+                userAnser = Integer.parseInt(msg) - 1;
             } catch (NumberFormatException ignore) {
                 //if not number,answer will never true
             }

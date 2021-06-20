@@ -1,5 +1,7 @@
 package com.meng.modules.qq.modules;
 import com.meng.config.CommandDescribe;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -13,6 +15,19 @@ public class MiraiCodeSerialize extends BaseModule implements IGroupMessageEvent
 
     public MiraiCodeSerialize(SBot s) {
         super(s);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "mirai码";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg("rcode").arg("QQ卡片").arg("获得mirai码");
+        mainMenu.arg("tcode").arg("mirai码").arg("获得卡片");      
+        return super.load();
     }
     
     @Override

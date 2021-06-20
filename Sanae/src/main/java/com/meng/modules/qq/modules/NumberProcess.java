@@ -3,6 +3,8 @@ package com.meng.modules.qq.modules;
 import com.meng.bot.Functions;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -18,6 +20,18 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
 
     public NumberProcess(SBot bwe) {
         super(bwe);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "数字计算";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg(".int").arg("int数字").arg("+/-/*///>>/>>>/<</^/%/|/&").arg("int数字").arg("计算结果");
+        return super.load();
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.meng.modules.qq.modules;
 
 import com.meng.config.CommandDescribe;
 import com.meng.gameData.TouHou.UserInfo;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
 import com.meng.modules.CmdExecuter;
 import com.meng.modules.Ffmpeg;
 import com.meng.modules.qq.BaseModule;
@@ -20,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jaudiotagger.audio.AudioFileIO;
+import com.meng.help.HelpGenerator.Item;
 
 public class MusicRecongnition extends BaseModule implements IGroupMessageEvent {
 
@@ -28,6 +31,23 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
 
     public MusicRecongnition(SBot bot) {
         super(bot);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "原曲认知";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        HelpGenerator.Item item = mainMenu.arg("原曲认知");
+        item.arg("原曲检测");
+        item.arg("e/easy").arg("原曲检测");
+        item.arg("n/normal").arg("原曲检测");
+        item.arg("h/hard").arg("原曲检测");
+        item.arg("l/lunatic").arg("原曲检测");
+        return super.load();
     }
 
     @Override
@@ -114,7 +134,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
             StringBuilder builder = new StringBuilder();
             builder.append("名字是:\n");
             for (int i = 0;i < bean.answersToSelect.size();++i) {
-                builder.append(i).append(": ").append(bean.answersToSelect.get(i)).append("\n");
+                builder.append(i + 1).append(": ").append(bean.answersToSelect.get(i)).append("\n");
             }
             builder.append("回答序号即可");
             sendMessage(event, builder.toString());

@@ -1,6 +1,6 @@
 package com.meng.modules.qq.modules;
 import com.google.gson.annotations.SerializedName;
-import com.meng.config.SanaeData;
+import com.meng.annotation.BotData;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class Sentence extends BaseModule implements IGroupMessageEvent {
-    @SanaeData("sentence.json")
+    @BotData("sentence.json")
     
     public Sentences sens = new Sentences();
     /*

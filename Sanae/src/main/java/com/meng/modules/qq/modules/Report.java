@@ -1,10 +1,11 @@
 package com.meng.modules.qq.modules;
 
+import com.meng.annotation.BotData;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
-import com.meng.config.DataPersistenter;
-import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -18,11 +19,23 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
  */
 public class Report extends BaseModule implements IGroupMessageEvent {
 
-    @SanaeData("report.json")
+    @BotData("report.json")
 	private ArrayList<ReportBean> reportList = new ArrayList<>();
 
     public Report(SBot bw) {
         super(bw);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "内容留言";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg("-留言").arg("文本").arg("给开发者留言");
+        return super.load();
     }
 
 	@Override

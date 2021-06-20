@@ -1,17 +1,9 @@
 package com.meng.tools;
 
 import com.meng.modules.qq.SBot;
-import com.meng.modules.touhou.THCharacter;
-import com.meng.modules.touhou.THSpell;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 
@@ -75,7 +67,7 @@ public class Tools {
 	}
 
 	public static class ArrayTool {
-        
+
 		public static byte[] mergeArray(byte[]... arrays) {
 			int allLen = 0;
 			for (byte[] bs:arrays) {

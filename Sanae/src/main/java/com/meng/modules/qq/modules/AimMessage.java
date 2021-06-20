@@ -1,7 +1,6 @@
 package com.meng.modules.qq.modules;
 
-import com.meng.config.DataPersistenter;
-import com.meng.config.SanaeData;
+import com.meng.annotation.BotData;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -18,7 +17,7 @@ import net.mamoe.mirai.message.code.MiraiCode;
  **/
 public class AimMessage extends BaseModule implements IGroupMessageEvent {
 
-    @SanaeData("AimMessage.json")
+    @BotData("AimMessage.json")
     private AimMessageHolder holder = new AimMessageHolder();
     private final File cfg;
     public AimMessage(SBot bw) {

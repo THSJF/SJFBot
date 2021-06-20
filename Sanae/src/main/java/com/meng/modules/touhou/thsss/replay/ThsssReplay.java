@@ -1,6 +1,5 @@
 package com.meng.modules.touhou.thsss.replay;
 
-import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import java.io.BufferedReader;
 import java.io.File;

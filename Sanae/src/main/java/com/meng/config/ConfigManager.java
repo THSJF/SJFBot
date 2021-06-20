@@ -4,6 +4,7 @@ package com.meng.config;
  * @Description: 配置管理器
  * @author: 司徒灵羽
  **/
+import com.meng.annotation.BotData;
 import com.meng.bot.Functions;
 import com.meng.config.qq.GroupConfig;
 import com.meng.modules.qq.SBot;
@@ -12,11 +13,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import net.mamoe.mirai.contact.Group;
-import com.meng.config.Person.Config;
 
 public class ConfigManager {
 
-    @SanaeData("ncfg.json")
+    @BotData("ncfg.json")
     private ConfigHolder configHolder = new ConfigHolder();
 
     private static ConfigManager instance;

@@ -5,6 +5,8 @@ import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.UserInfo;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -33,6 +35,35 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
 
     public Dice(SBot bw) {
         super(bw);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "Dice";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg("。jrrp").arg("人品检测(疮痍符卡)");
+        mainMenu.arg(".签到").arg("签到");
+        mainMenu.arg(".info").arg("个人信息");
+        mainMenu.arg(".roll").arg("pl/plane/player").arg("游戏名/英文缩写/序号").arg("在指定游戏中随机机体");
+        HelpGenerator.Item draw = new HelpGenerator.Item(mainMenu, ".draw", Permission.Normal){{
+                arg("neta").arg("随机neta");
+                arg("music").arg("随机音乐(每日更新)");
+                arg("grandma").arg("随机grandma(每日更新)");
+                arg("game").arg("随机游戏");
+                arg("ufo").arg("随机UFO");
+                arg("all").arg("一次性得到以上每日更新的结果");
+            }};
+        new HelpGenerator.Item(draw, "spell"){{
+                arg("随机符卡");
+                arg("符卡名").arg("符卡收率(随机)");
+            }};
+            mainMenu.arg(".spellInfo").arg("符卡名").arg("符卡信息");
+            mainMenu.arg(".charaInfo").arg("角色名").arg("角色信息");
+        return super.load();
     }
 
 	@Override

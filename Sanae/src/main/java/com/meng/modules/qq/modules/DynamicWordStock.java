@@ -1,11 +1,11 @@
 package com.meng.modules.qq.modules;
 
 import com.google.gson.annotations.SerializedName;
+import com.meng.annotation.BotData;
 import com.meng.bot.Functions;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.config.DataPersistenter;
-import com.meng.config.SanaeData;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
@@ -13,7 +13,6 @@ import com.meng.modules.qq.handler.MessageManager;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.SJFRandom;
-import com.meng.tools.Tools;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +30,7 @@ import net.mamoe.mirai.message.data.QuoteReply;
  **/
 public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
 
-    @SanaeData("dynamic_word_stock.json")
+    @BotData("dynamic_word_stock.json")
     private WordStock dictionary;
 
     private HashMap<String,Pattern> regexMap = new HashMap<>();

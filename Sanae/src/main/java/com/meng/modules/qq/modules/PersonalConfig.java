@@ -2,6 +2,8 @@ package com.meng.modules.qq.modules;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
 import com.meng.config.Person;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -11,6 +13,18 @@ public class PersonalConfig extends BaseModule implements IGroupMessageEvent {
 
     public PersonalConfig(SBot bot) {
         super(bot);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "个人设置";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg(".version").arg("jrrp").arg("jrrp版本");
+        return super.load();
     }
 
     @Override

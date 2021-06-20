@@ -73,6 +73,9 @@ import net.mamoe.mirai.event.events.MemberUnmuteEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import java.util.Set;
+import com.meng.help.HelpGenerator;
+import com.meng.help.HelpGenerator.Item;
 
 /**
  * @Description: 模块管理器
@@ -195,7 +198,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         }
     }
 
-    public String getHelp() {
+    public String getFunction() {
         StringBuilder builder = new StringBuilder();
         for (IGroupMessageEvent event : groupMsgHandlers) {
             Method method;
@@ -212,6 +215,26 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         return builder.toString();   
 	}
 
+    public String getHelp(String s) {
+        if (s.equals(".help")) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("功能项:\n");
+            Set<String> set = HelpGenerator.getInstance().getItems().keySet();
+            for (String k : set) {
+                builder.append(k).append("\n");
+            }
+            builder.setLength(builder.length() - 1);
+            return builder.toString();
+        }
+        String[] cmds = s.split(" ");
+        if (cmds.length != 2) {
+            return "";
+        }
+        System.out.println(cmds[1]);
+        HelpGenerator.Item item = HelpGenerator.getInstance().getItems().get(cmds[1]);
+        return item == null ? "无此内容" : item.toString();
+    }
+
     @Override
     public boolean onGroupMessage(GroupMessageEvent gme) {
         long qqId = gme.getSender().getId();
@@ -223,9 +246,14 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
 //            return true;
 //        }
         String msg = gme.getMessage().contentToString();
-        if (msg.equals(".help")) {
-            System.out.println(getHelp());
-            sendQuote(gme, getHelp());
+        if (msg.equals(".function")) {
+            System.out.println(getFunction());
+            sendQuote(gme, getFunction());
+            return true;
+        }
+        if (msg.startsWith(".help")) {
+            System.out.println(getHelp(msg));
+            sendQuote(gme, getHelp(msg));
             return true;
         }
         if (msg.startsWith(".bot")) {

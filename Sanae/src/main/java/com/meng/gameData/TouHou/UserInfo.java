@@ -1,8 +1,7 @@
 package com.meng.gameData.TouHou;
 
 import com.google.gson.annotations.SerializedName;
-import com.meng.config.DataPersistenter;
-import com.meng.config.SanaeData;
+import com.meng.annotation.BotData;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class UserInfo extends BaseModule {
 
-    @SanaeData("userinfo.json")
+    @BotData("userinfo.json")
     private HashMap<Long,UserData> values = new HashMap<>();
 
     public UserInfo(SBot sb) {

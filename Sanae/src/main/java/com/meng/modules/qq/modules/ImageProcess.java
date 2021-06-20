@@ -5,6 +5,9 @@ import com.madgag.gif.fmsware.GifDecoder;
 import com.meng.bot.Functions;
 import com.meng.config.CommandDescribe;
 import com.meng.config.ConfigManager;
+import com.meng.help.HelpGenerator;
+import com.meng.help.Permission;
+import com.meng.modules.DeepDanbooruApi;
 import com.meng.modules.ImageFactory;
 import com.meng.modules.Youtu;
 import com.meng.modules.qq.BaseModule;
@@ -40,10 +43,8 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
-import com.meng.modules.DeepDanbooruApi;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
-
 
     public ImageProcess(SBot entity) {
         super(entity);
@@ -52,6 +53,29 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
     private ImageProcessQqAvatar qqAvatar = new ImageProcessQqAvatar();
     private ImageProcessLocal local = new ImageProcessLocal();
     private ImageProcessNetwok network = new ImageProcessNetwok();
+
+    @Override
+    public String getModuleName() {
+        return "图片处理";
+    }
+
+    @Override
+    public BaseModule load() {
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Normal, getModuleName());
+        mainMenu.arg("精神支柱").arg("at用户").arg("生成表情包");
+        mainMenu.arg("神触").arg("at用户").arg("生成表情包");
+        mainMenu.arg("sp").arg("图片").arg("搜图");
+        mainMenu.arg("tag").arg("图片").arg("图片内容识别");
+        mainMenu.arg("porn").arg("图片").arg("色情度识别");
+        mainMenu.arg("ocr").arg("图片").arg("光学字符识别");
+        mainMenu.arg("url").arg("图片").arg("获取图片链接");
+        mainMenu.arg("dtag").arg("图片").arg("danbooru标签");
+        mainMenu.arg("灰度图").arg("图片").arg("生成灰度图");
+        mainMenu.arg("图片旋转").arg("图片").arg("图片旋转");
+        mainMenu.arg("上下翻转").arg("图片").arg("翻转图片");
+        mainMenu.arg("左右翻转").arg("图片").arg("翻转图片");
+        return super.load();
+    }
 
     @Override
     @CommandDescribe(cmd = "-", note = "图片处理")
