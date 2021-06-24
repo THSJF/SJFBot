@@ -78,7 +78,7 @@ public class HelpGenerator {
         @Override
         public String toString() {
             if (args == null || args.size() == 0) {
-                return cmd + "(" + pms + ")\n";
+                return cmd + "\n";
             }
             StringBuilder builder = new StringBuilder();
             builder.append("[").append(cmd).append("]-");

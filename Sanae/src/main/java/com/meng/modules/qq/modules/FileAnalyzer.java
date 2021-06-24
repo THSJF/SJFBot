@@ -44,7 +44,7 @@ public class FileAnalyzer extends BaseModule implements IGroupMessageEvent {
         try {
             FileFormat.Content fc = FileFormat.getFileType(touhouReplay);
             if (fc.describe == FileFormat.FileType.rpy_thsss_replay) {
-                ThsssReplay rpy = new ThsssReplay(touhouReplay);
+                ThsssReplay rpy = new ThsssReplay().load(touhouReplay);
                 sendMessage(group, rpy.toString());
                 sendMessage(group, entity.toGroupFile(group, ThsssReplayAnalyzer.analyze(rpy).toString().getBytes(StandardCharsets.UTF_8), "/thsss_replay_keys.txt"));
             } else {

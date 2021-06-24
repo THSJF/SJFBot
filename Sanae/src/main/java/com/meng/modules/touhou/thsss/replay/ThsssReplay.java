@@ -1,35 +1,38 @@
 package com.meng.modules.touhou.thsss.replay;
 
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ThsssReplay {
 
     public KeyData keyData;
-    public PlayerInfo info;
+    public PlayerInfo playerInfo;
 
-    public ThsssReplay(File file) {
-        this(file.getAbsolutePath());
+    public ThsssReplay load(File file) {
+        try {
+            return load(file.getAbsolutePath());
+        } catch (IOException e) {
+            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+            return null;
+        }
     }
 
-    public ThsssReplay(String path) {
+    public ThsssReplay load(String path) throws IOException {
         keyData = new KeyData(FileTool.readBytes(new File(path)));
-        List<String> listNum = new ArrayList<>() ;
-        try {
-            BufferedReader bf = new BufferedReader(new FileReader(new File(path)));
+        List<String> info = new ArrayList<>() ;
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(path)))){
             String line;
-            while (!"".equals(line = bf.readLine()) && line != null) {
-                listNum.add(line);  
+            while (!"".equals(line = reader.readLine()) && line != null) {
+                info.add(line);  
             }
-            bf.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String[] strArray1 = listNum.toArray(new String[0]);
+        } 
+        String[] strArray1 = info.toArray(new String[0]);
         int num = 0;
         while (!strArray1[++num].equals("ReplayInformation") && num < strArray1.length - 1) {}
         PlayerInfo playerInfo = new PlayerInfo();
@@ -63,7 +66,8 @@ public class ThsssReplay {
             myPlaneInfo.dataPosition = Long.parseLong(strArray2[14]);
             playerInfo.myPlaneData.add(myPlaneInfo);
         }
-        info = playerInfo;
+        this.playerInfo = playerInfo;
+        return this;
     }
 
     public int readKey() {
@@ -72,14 +76,14 @@ public class ThsssReplay {
 
     @Override
     public String toString() {
-        return info.toString();
+        return playerInfo.toString();
     }
 
     public String getKeys() {
         return keyData.toString();
     }
 
-    public class PlayerInfo {
+    public static class PlayerInfo {
         public ArrayList<MyPlaneInfo> myPlaneData = new ArrayList<MyPlaneInfo>();
         public String version;
         public String playerName;
@@ -110,7 +114,7 @@ public class ThsssReplay {
         }
     }
 
-    public class KeyData {
+    public static class KeyData {
         public byte[] fileByte;
         public int position = 0;
 
@@ -120,6 +124,91 @@ public class ThsssReplay {
 
         public int readUShort() {
             return 0xffff & (fileByte[position++] & 0xff | (fileByte[position++] & 0xff) << 8);
+        }
+    }
+
+    public static class MyPlaneInfo {
+        public int life;
+        public int spell;
+        public int power;
+        public long score;
+        public int graze;
+        public float posX;
+        public float posY;
+        public int lifeChip;
+        public int spellChip;
+        public int lifeUpCount;
+        public int starPoint;
+        public int highItemScore;
+        public float rate;
+        public EnchantmentType lastColor;
+        public long dataPosition;
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("残:").append(life).append(" ")
+                .append("雷:").append(spell).append(" ")
+                .append("P:").append(power).append(" ")
+                .append("分数:").append(score).append(" ")
+                .append("擦弹:").append(graze).append(" ")
+                .append("残碎:").append(lifeChip).append(" ")
+                .append("雷碎:").append(spellChip).append(" ")
+                .append("已得残机:").append(lifeUpCount).append(" ")
+                .append("最大得点:").append(highItemScore).append(" ")
+                .append("星星槽:").append(starPoint).append(" ")
+                .append("星色:").append(lastColor).append("\n");
+            return builder.toString();
+        }
+    }
+
+    public static enum DifficultLevel {
+        Easy(0),
+        Normal(1),
+        Hard(2),
+        Lunatic(3),
+        Ultra(4),
+        Extra(5);
+
+        private int value = -1;
+
+        private DifficultLevel(int v){
+            value = v;
+        }
+
+        public static DifficultLevel valueOf(int i){
+            switch(i){
+                case 0: return Easy;
+                case 1: return Normal;
+                case 2: return Hard;
+                case 3: return Lunatic;
+                case 4: return Ultra;
+                case 5: return Extra;
+                default:return null;
+            }
+        }
+    }
+
+    public static enum EnchantmentType {
+        None(0),
+        Red(1),
+        Blue(2),
+        Green(3);
+
+        private int value = -1;
+
+        private EnchantmentType(int v){
+            value = v;
+        }
+
+        public static EnchantmentType valueOf(int i){
+            switch(i){
+                case 0: return None;
+                case 1: return Red;
+                case 2: return Blue;
+                case 3: return Green;
+                default:return null;
+            }
         }
     }
 }

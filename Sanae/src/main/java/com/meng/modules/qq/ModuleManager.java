@@ -35,7 +35,7 @@ import com.meng.modules.qq.modules.NumberProcess;
 import com.meng.modules.qq.modules.PersonalConfig;
 import com.meng.modules.qq.modules.QuestionAndAnswer;
 import com.meng.modules.qq.modules.ReflexCommand;
-import com.meng.modules.qq.modules.Repeater;
+import com.meng.modules.qq.modules.RepeaterManager;
 import com.meng.modules.qq.modules.Report;
 import com.meng.modules.qq.modules.Sentence;
 import com.meng.modules.qq.modules.TimeTask;
@@ -128,7 +128,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(UserInfo.class);
         load(Derecall.class, false);
         load(Sentence.class);
-        load(Repeater.class);
+        load(RepeaterManager.class);
         return this;
     }
 

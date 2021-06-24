@@ -27,11 +27,11 @@ public class ThsssReplayAnalyzer {
 
     public static String analyze(ThsssReplay replay) {
         StringBuilder builder = new StringBuilder();
-        builder.append(replay.info.toString());
+        builder.append(replay.playerInfo.toString());
         builder.append("s:shoot f:focus b:bomb c:ctrl\n");
-        for (int i = 0;i < replay.info.myPlaneData.size();++i) {
+        for (int i = 0;i < replay.playerInfo.myPlaneData.size();++i) {
             builder.append("stage ").append(i + 1).append("\n");
-            replay.keyData.position = (int) replay.info.myPlaneData.get(i).dataPosition;
+            replay.keyData.position = (int) replay.playerInfo.myPlaneData.get(i).dataPosition;
             int keyValue = replay.readKey();
             if (keyValue == 57358) {
                 int flag = 0;

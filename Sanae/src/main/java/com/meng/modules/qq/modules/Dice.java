@@ -55,14 +55,15 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                 arg("grandma").arg("随机grandma(每日更新)");
                 arg("game").arg("随机游戏");
                 arg("ufo").arg("随机UFO");
-                arg("all").arg("一次性得到以上每日更新的结果");
+                arg("story").arg("good end(每日更新)");
+                arg("all").arg("all");
             }};
         new HelpGenerator.Item(draw, "spell"){{
                 arg("随机符卡");
                 arg("符卡名").arg("符卡收率(随机)");
             }};
-            mainMenu.arg(".spellInfo").arg("符卡名").arg("符卡信息");
-            mainMenu.arg(".charaInfo").arg("角色名").arg("角色信息");
+        mainMenu.arg(".spellInfo").arg("符卡名").arg("符卡信息");
+        mainMenu.arg(".charaInfo").arg("角色名").arg("角色信息");
         return super.load();
     }
 
@@ -181,7 +182,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                     sendMessage(gme.getGroup(), "没有找到这张符卡");
                                     return true;
                                 }
-                                float allPro = ((float)(SJFRandom.hashSelectInt(qqId) % 10001)) / 100;
+                                float allPro = ((float)(SJFRandom.hashSelectInt(qqId + spellName.hashCode()) % 10001)) / 100;
                                 sendMessage(gme.getGroup(), "你今天" + sc.cnName + "的收率是" + allPro + "%");
                             }
                             return true;
@@ -189,7 +190,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                             sendMessage(gme.getGroup(), String.format("%s今天宜打%s", pname, THGameDataManager.hashSelectNeta(qqId)));
                             return true;
                         case "music":
-                            sendMessage(gme.getGroup(), String.format("%s今天宜听%s", pname, THGameDataManager.hashSelectMusic(qqId)));
+                            sendMessage(gme.getGroup(), String.format("%s今天宜听%s", pname, THGameDataManager.hashSelectMusic(qqId).name));
                             return true;
                         case "grandma":
                             if (Hash.getMd5Instance().calculate(String.valueOf(qqId + System.currentTimeMillis() / (24 * 60 * 60 * 1000))).charAt(0) == '0') {
@@ -204,6 +205,9 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                             s += THGameDataManager.randomGame(pname, qqId + 1, false);
                             sendMessage(gme.getGroup(), s);
                             return true;
+                        case "story":
+                            sendMessage(gme.getGroup(), THGameDataManager.hashSelectGE(qqId));
+                            break;
                         case "ufo":
                             int ufor = random.nextInt(10);
                             if (ufor < 8) {

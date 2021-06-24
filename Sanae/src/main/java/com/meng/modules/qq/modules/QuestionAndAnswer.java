@@ -50,7 +50,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     public QuestionAndAnswer(SBot bwe) {
         super(bwe);
         cfg = new File("C://Program Files/sanae_data/persistent/" + getSanaeValue("qaList"));
-        imagePath = bwe.appDirectory + "/qaImages";
+        imagePath = bwe.appDirectory + "/qaImages/";
         FileWatcher.getInstance().addOnFileChangeListener(cfg, new Runnable(){
 
                 @Override

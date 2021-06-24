@@ -53,7 +53,7 @@ public class TH06Data extends THGameData {
         
         spells = new THSpell[]{
 
-            new THSpell(this, chara_露米娅, "月符「Moonlight Ray」（月亮光）", "月符「ムーンライトレイ」", THSpell.Hard | THSpell.Lunatic),
+            new THSpell(this, chara_露米娅, "月符「Moonlight Ray」（月光）", "月符「ムーンライトレイ」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_露米娅, "夜符「Night Bird」（夜雀）", "夜符「ナイトバード」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_露米娅, "暗符「Demarcation」（境界线）", "闇符「ディマーケイション」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
 
@@ -89,16 +89,16 @@ public class TH06Data extends THGameData {
             new THSpell(this, chara_帕秋莉_诺蕾姬, "金&水符「Mercury Poison」（水银之毒）", "金＆水符「マーキュリポイズン」", THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_帕秋莉_诺蕾姬, "土&金符「Emerald Megalith」（翡翠巨石）", "土＆金符「エメラルドメガリス」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_帕秋莉_诺蕾姬, "月符「Silent Selene」（沉静的月神）", "月符「サイレントセレナ」", THSpell.Extra),
-            new THSpell(this, chara_帕秋莉_诺蕾姬, "日符「Royal Flare」（皇家圣焰）", "日符「ロイヤルフレア」", THSpell.Extra),
+            new THSpell(this, chara_帕秋莉_诺蕾姬, "日符「Royal Flare」（皇家烈焰）", "日符「ロイヤルフレア」", THSpell.Extra),
             new THSpell(this, chara_帕秋莉_诺蕾姬, "火水木金土符「贤者之石」", "火水木金土符「賢者の石」", THSpell.Extra),
             new THSpell(this, chara_十六夜咲夜, "奇术「Misdirection」（误导）", "奇術「ミスディレクション」", THSpell.Easy | THSpell.Normal),
             new THSpell(this, chara_十六夜咲夜, "奇术「幻惑Misdirection」（幻惑误导）", "奇術「幻惑ミスディレクション」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_十六夜咲夜, "幻在「Clock Corpse」（钟表的残骸）", "幻在「クロックコープス」", THSpell.Easy | THSpell.Normal),
-            new THSpell(this, chara_十六夜咲夜, "幻幽「Jack the Ludo Bile」（迷幻的杰克）", "幻幽「ジャック・ザ・ルドビレ」", THSpell.Hard | THSpell.Lunatic),
+            new THSpell(this, chara_十六夜咲夜, "幻幽「Jack the Ludo Bile」（迷幻杰克）", "幻幽「ジャック・ザ・ルドビレ」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_十六夜咲夜, "幻象「Luna Clock」（月神之钟）", "幻象「ルナクロック」", THSpell.Easy | THSpell.Normal),
             new THSpell(this, chara_十六夜咲夜, "幻世「The World」（世界）", "幻世「ザ・ワールド」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_十六夜咲夜, "女仆秘技「操弄玩偶」", "メイド秘技「操りドール」", THSpell.Easy | THSpell.Normal),
-            new THSpell(this, chara_十六夜咲夜, "女仆秘技「杀人玩偶」", "メイド秘技「殺人ドール」", THSpell.Hard | THSpell.Lunatic),
+            new THSpell(this, chara_十六夜咲夜, "女仆秘技「杀人木偶」", "メイド秘技「殺人ドール」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_十六夜咲夜, "奇术「Eternal Meek」（永恒的温柔）", "奇術「エターナルミーク」", THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
 
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "天罚「Star of David」（大卫之星）", "天罰「スターオブダビデ」", THSpell.Normal),
@@ -107,7 +107,7 @@ public class TH06Data extends THGameData {
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "狱符「千根针的针山」", "獄符「千本の針の山」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "诅咒「弗拉德·特佩斯的诅咒」", "呪詛「ブラド・ツェペシュの呪い」", THSpell.Normal),
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "神术「吸血鬼幻想」", "神術「吸血鬼幻想」", THSpell.Hard | THSpell.Lunatic),
-            new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "红符「Scarlet Shoot」（绯红之击）", "紅符「スカーレットシュート」", THSpell.Normal),
+            new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "红符「Scarlet Shoot」（绯红射击）", "紅符「スカーレットシュート」", THSpell.Normal),
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "红符「Scarlet Meister」（绯红之主）", "紅符「スカーレットマイスタ」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "「Red Magic」（红魔法）", "「レッドマジック」", THSpell.Normal),
             new THSpell(this, chara_蕾米莉亚_斯卡蕾特, "「红色的幻想乡」", "「紅色の幻想郷」", THSpell.Hard | THSpell.Lunatic),
