@@ -24,6 +24,8 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import com.meng.modules.mhy.Honkai3GameData;
+import com.meng.modules.mhy.honkai.third.HK3Equipment;
 
 /**
  * @Description: 模拟骰子
@@ -57,6 +59,8 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                 arg("ufo").arg("随机UFO");
                 arg("story").arg("good end(每日更新)");
                 arg("all").arg("all");
+                arg("honkai").arg("崩坏三随机");
+                arg("honkai").arg("equipment").arg("装甲信息");
             }};
         new HelpGenerator.Item(draw, "spell"){{
                 arg("随机符卡");
@@ -251,7 +255,33 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                             }
                             allStr += String.format("%s今天会在%.2f%%处疮痍", pname, allPro);
                             sendMessage(gme.getGroup(), allStr);
-                            return true;            
+                            return true;
+                        case "honkai":
+                            if (list.size() == 3) {
+                                HK3Equipment hKEquip = SJFRandom.hashSelect(qqId, Honkai3GameData.equipments);
+                                sendMessage(gme.getGroup(), String.format("%s今天宜用%s的%s打%s", pname, hKEquip.getCharaName(), hKEquip.getEquipmentName(), SJFRandom.hashSelect(qqId, Honkai3GameData.stage)));
+                            } else {
+                                String cmd = iter.next();
+                                switch (cmd) {
+                                    case "equipment":
+                                        HK3Equipment eq = Honkai3GameData.getEquipmentByName(iter.next());
+                                        if (eq == null) {
+                                            sendMessage(gme.getGroup(), "不存在");
+                                        } else {
+                                            String describe = "";
+                                            if (eq.isAwaken()) {
+                                                describe = "(灵魂觉醒)";
+                                            } else if (eq.isShift()) {
+                                                describe = "(核心增幅)";
+                                            } else if (eq.isSp()) {
+                                                describe = "(sp角色)";
+                                            }
+                                            sendMessage(gme.getGroup(), String.format("%s是%s的%s属性装甲,可造成%s伤害%s", eq.getEquipmentName(), eq.getCharaName().value(), eq.getArmType(), eq.getAttackType(), describe));
+                                        }
+                                        return true;
+                                }
+                            }
+                            return true;
                         default:
                             sendMessage(gme.getGroup(), "可用.draw help查看帮助");
                     }
