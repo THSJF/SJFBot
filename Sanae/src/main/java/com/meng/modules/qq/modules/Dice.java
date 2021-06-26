@@ -259,26 +259,22 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                         case "honkai":
                             if (list.size() == 3) {
                                 HK3Equipment hKEquip = SJFRandom.hashSelect(qqId, Honkai3GameData.equipments);
-                                sendMessage(gme.getGroup(), String.format("%s今天宜用%s的%s打%s", pname, hKEquip.getCharaName(), hKEquip.getEquipmentName(), SJFRandom.hashSelect(qqId, Honkai3GameData.stage)));
+                                sendMessage(gme.getGroup(), String.format("%s今天宜用%s的%s打%s", pname, hKEquip.getCharaName().value(), hKEquip.getEquipmentName(), SJFRandom.hashSelect(qqId, Honkai3GameData.stage)));
                             } else {
                                 String cmd = iter.next();
-                                switch (cmd) {
-                                    case "equipment":
-                                        HK3Equipment eq = Honkai3GameData.getEquipmentByName(iter.next());
-                                        if (eq == null) {
-                                            sendMessage(gme.getGroup(), "不存在");
-                                        } else {
-                                            String describe = "";
-                                            if (eq.isAwaken()) {
-                                                describe = "(灵魂觉醒)";
-                                            } else if (eq.isShift()) {
-                                                describe = "(核心增幅)";
-                                            } else if (eq.isSp()) {
-                                                describe = "(sp角色)";
-                                            }
-                                            sendMessage(gme.getGroup(), String.format("%s是%s的%s属性装甲,可造成%s伤害%s", eq.getEquipmentName(), eq.getCharaName().value(), eq.getArmType(), eq.getAttackType(), describe));
-                                        }
-                                        return true;
+                                HK3Equipment eq = Honkai3GameData.getEquipmentByName(iter.next());
+                                if (eq == null) {
+                                    sendMessage(gme.getGroup(), "不存在");
+                                } else {
+                                    String describe = "";
+                                    if (eq.isAwaken()) {
+                                        describe = "(灵魂觉醒)";
+                                    } else if (eq.isShift()) {
+                                        describe = "(核心增幅)";
+                                    } else if (eq.isSp()) {
+                                        describe = "(sp角色)";
+                                    }
+                                    sendMessage(gme.getGroup(), String.format("%s是%s的%s属性装甲,可造成%s伤害%s", eq.getEquipmentName(), eq.getCharaName().value(), eq.getArmType().value(), eq.getAttackType().value(), describe));
                                 }
                             }
                             return true;
