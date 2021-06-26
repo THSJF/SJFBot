@@ -109,7 +109,7 @@ public class RepeaterManager extends BaseModule implements IGroupMessageEvent {
     private class ReverseRepeater extends BaseRepeater {
 
         private int times = 0;
-        
+
         @Override
         protected boolean repeatEnd(long groupId, long qqId, MessageChain msg) {
             return false;

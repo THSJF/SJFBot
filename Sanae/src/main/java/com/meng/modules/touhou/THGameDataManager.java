@@ -94,7 +94,7 @@ public class THGameDataManager {
     public static THSpell getTHSpell(String spellName) {
         for (THGameData scs:thGameData) {
             for (THSpell sc :scs.getSpellCards()) {
-                if (sc.cnName.contains(spellName)) {
+                if (sc.cnName.contains(spellName) || sc.jpName.contains(spellName)) {
                     return sc;
                 }
             }

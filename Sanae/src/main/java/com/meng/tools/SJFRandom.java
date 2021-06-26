@@ -96,4 +96,8 @@ public class SJFRandom extends Random {
     public static <T> T hashSelect(long seed, T[] array) {
         return array[hashSelectInt(seed) % array.length];
     }  
+    
+    public static <T> T hashSelect(long seed, List<T> list) {
+        return list.get(hashSelectInt(seed) % list.size());
+    }
 }
