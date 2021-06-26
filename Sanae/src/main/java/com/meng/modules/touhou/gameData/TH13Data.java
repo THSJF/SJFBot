@@ -74,7 +74,7 @@ public class TH13Data extends THGameData {
             new THSpell(this, chara_幽谷响子, "山彦「Amplify Echo」（扩大回声）", "山彦「アンプリファイエコー」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_幽谷响子, "大声「Charged Cry」（激动的呼喊）", "大声「チャージドクライ」", THSpell.Easy | THSpell.Normal),
             new THSpell(this, chara_幽谷响子, "大声「Charged Yahoo」（激动Yahoo）", "大声「チャージドヤッホー」", THSpell.Hard | THSpell.Lunatic),
-            new THSpell(this, chara_幽谷响子, "山彦「山彦的本领发挥回音」", "山彦「ヤマビコの本領発揮エコー」", THSpell.Overdrive),
+            new THSpell(this, chara_幽谷响子, "山彦「山彦的发挥本领之回音」", "山彦「ヤマビコの本領発揮エコー」", THSpell.Overdrive),
 
             new THSpell(this, chara_多多良小伞, "虹符「Umbrella Cyclone」（雨伞风暴）", "虹符「アンブレラサイクロン」", THSpell.Hard | THSpell.Lunatic),
 
@@ -134,7 +134,7 @@ public class TH13Data extends THGameData {
             new THSpell(this, chara_二岩猯藏, "变化「魔奴化巫女的伪退治」", "変化「まぬけ巫女の偽調伏」", THSpell.Extra),
             new THSpell(this, chara_二岩猯藏, "「猯藏化弹幕十变化」", "「マミゾウ化弾幕十変化」", THSpell.Extra),
             new THSpell(this, chara_二岩猯藏, "貉符「满月下的腹鼓舞」", "狢符「満月のポンポコリン」", THSpell.Extra),
-            new THSpell(this, chara_二岩猯藏, "「Wild Carpet」（野生地毯）", "「ワイルドカーペット」", THSpell.Overdrive),
+            new THSpell(this, chara_二岩猯藏, "「Wild Carpet」（野生的地毯）", "「ワイルドカーペット」", THSpell.Overdrive),
         };
         music = new THMusic[]{
             new THMusic("欲望深重的灵魂", this),

@@ -104,7 +104,7 @@ public class TH16Data extends THGameData {
             new THSpell(this, chara_摩多罗隐岐奈, "里冬「异常降雪之雪人」", "裏冬「異常降雪の雪だるま」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_摩多罗隐岐奈, "里春「April Wizard」（四月巫师）", "裏春「エイプリルウィザード」", THSpell.Easy | THSpell.Normal),
             new THSpell(this, chara_摩多罗隐岐奈, "里春「异常落花之魔术使」", "裏春「異常落花の魔術使い」", THSpell.Hard | THSpell.Lunatic),
-            new THSpell(this, chara_摩多罗隐岐奈, "「里·Breezy Cherry Blossom」（里·风吹樱花）", "「裏・ブリージーチェリーブロッサム」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
+            new THSpell(this, chara_摩多罗隐岐奈, "「里·Breezy Cherry Blossom」（里·吹拂樱花）", "「裏・ブリージーチェリーブロッサム」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_摩多罗隐岐奈, "「里·Perfect Summer Ice」（里·完美夏冰）", "「裏・パーフェクトサマーアイス」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_摩多罗隐岐奈, "「里·Crazy Fall Wind」（里·疯狂秋风）", "「裏・クレイジーフォールウィンド」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_摩多罗隐岐奈, "「里·Extreme Winter」（里·极端寒冬）", "「裏・エクストリームウィンター」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
