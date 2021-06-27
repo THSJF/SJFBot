@@ -16,6 +16,16 @@ public class Person {
     public transient boolean needTip = false;
 
     private transient int hash = 0;
+    
+    public Person() {
+        
+    }
+    
+    public Person(String name, long qq, int bid) {
+        this.name = name;
+        this.qq = qq;
+        this.bid = bid;
+    }
 
     @Override
     public int hashCode() {

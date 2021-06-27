@@ -261,7 +261,6 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                 HK3Equipment hKEquip = SJFRandom.hashSelect(qqId, Honkai3GameData.equipments);
                                 sendMessage(gme.getGroup(), String.format("%s今天宜用%s的%s打%s", pname, hKEquip.getCharaName().value(), hKEquip.getEquipmentName(), SJFRandom.hashSelect(qqId, Honkai3GameData.stage)));
                             } else {
-                                String cmd = iter.next();
                                 HK3Equipment eq = Honkai3GameData.getEquipmentByName(iter.next());
                                 if (eq == null) {
                                     sendMessage(gme.getGroup(), "不存在");
