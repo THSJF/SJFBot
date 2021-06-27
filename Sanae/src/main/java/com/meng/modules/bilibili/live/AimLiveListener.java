@@ -24,7 +24,8 @@ public class AimLiveListener implements Runnable {
     private AimLiveListener() {
         List<Person> toAdd = new ArrayList<>(16);
         toAdd.add(new Person("FJS", 1526596255, 392470565));
-        Set<Person> ps = ConfigManager.getInstance().getConfigHolder().person;
+        ConfigManager cManager = ConfigManager.getInstance();
+        Set<Person> ps = cManager.getConfigHolder().person;
         for (Person p : toAdd) {
             if (!ps.contains(p)) {
                 ps.add(p);
@@ -38,6 +39,8 @@ public class AimLiveListener implements Runnable {
                 }
             }
         }
+        persons.add(cManager.getPersonFromBid(21895119));
+        persons.add(cManager.getPersonFromBid(64483321));
     }
 
     @Override
