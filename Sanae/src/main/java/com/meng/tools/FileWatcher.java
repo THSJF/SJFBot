@@ -61,9 +61,9 @@ public class FileWatcher implements Runnable {
             long thisModify = entry.getKey().lastModified();
             FileWatcher.FileInfo value = entry.getValue();
             if (thisModify != value.lastModify) {
-                System.out.println("发现文件变化:" + entry.getKey());
+//                System.out.println("发现文件变化:" + entry.getKey());
                 if (value.bySelf) {
-                    System.out.println("自身修改");
+//                    System.out.println("自身修改");
                     value.bySelf = false;
                     value.lastModify = thisModify;
                     continue;

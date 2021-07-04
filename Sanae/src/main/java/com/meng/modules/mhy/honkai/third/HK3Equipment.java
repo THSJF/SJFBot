@@ -19,15 +19,9 @@ public class HK3Equipment {
         this.attackType = attackType;
     }
 
-    public HK3Equipment(CharaName name, String equipmentName, String baseEquipment, ArmType equipmentType, Attack attackType, boolean isAwaken, boolean isShift, boolean isSp) {
-        this.name = name;
-        this.equipmentName = equipmentName;
+    public HK3Equipment(CharaName name, String equipmentName, String baseEquipment, ArmType equipmentType, Attack attackType) {
+        this(name, equipmentName, equipmentType, attackType);
         this.baseEquipment = baseEquipment;
-        this.armType = equipmentType;
-        this.attackType = attackType;
-        this.isAwaken = isAwaken;
-        this.isShift = isShift;
-        this.isSp = isSp;
     }
 
     public CharaName getCharaName() {
@@ -62,4 +56,18 @@ public class HK3Equipment {
         return isSp;
     }
 
+    public HK3Equipment setAwaken() {
+        isAwaken = true;
+        return this;
+    }
+
+    public HK3Equipment setShift() {
+        isShift = true;
+        return this;
+    }
+
+    public HK3Equipment setSp() {
+        isSp = true;
+        return this;
+    }
 }

@@ -21,11 +21,17 @@ public class Main {
         FileFormat.init();
         QqBotMain.getInstance().init();
         BilibiliBotMain.getInstance().init();
-        try {
-            NetServer.getInstance().init();
-        } catch (Exception e) {
-            ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
-        }
+        SJFExecutors.execute(new Runnable(){
+
+                @Override
+                public void run() {
+                    try {
+                        NetServer.getInstance().init();
+                    } catch (Exception e) {
+                        ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                    }   
+                }
+            });
         SJFExecutors.executeWithFixedDelay(AimLiveListener.getInstance(), 4, TimeUnit.SECONDS);
     }
 }

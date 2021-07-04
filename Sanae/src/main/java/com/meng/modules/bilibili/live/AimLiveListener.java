@@ -13,12 +13,12 @@ import java.util.ArrayList;
 public class AimLiveListener implements Runnable {
 
     private Set<Person> persons = new HashSet<>();
-    private static LiveListener instance;
-    public static LiveListener getInstance() {
+    private static AimLiveListener instance;
+    public static AimLiveListener getInstance() {
         if (instance != null) {
             return instance;
         }
-        return instance = new LiveListener();
+        return instance = new AimLiveListener();
     }
 
     private AimLiveListener() {

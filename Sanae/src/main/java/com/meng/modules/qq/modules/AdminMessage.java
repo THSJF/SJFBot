@@ -36,6 +36,10 @@ import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.Voice;
+import com.meng.tools.Network;
+import com.meng.tools.FileTool;
+import com.meng.tools.Hash;
+import com.meng.tools.FileFormat;
 
 /**
  * @Description: 管理员命令
@@ -340,6 +344,19 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         sendQuote(gme, function + "已启用");
                     } else {
                         sendQuote(gme, "无此开关");
+                    }
+                    return true;
+                case "save":
+                    String arg = iter.next();
+                    if (arg.equals("pixiv")) {
+                        byte[] img = Network.httpGetRaw("https://www.pixiv.cat/" + iter.next() + ".png");
+                        if (img.length < 1024) {
+                            sendQuote(gme, "发生错误:" + new String(img));
+                        } else {
+                            File file = new File(SBot.appDirectory + "/image/r15/" + Hash.getMd5Instance().calculate(img) + "." + FileFormat.getFileType(img));
+                            FileTool.saveFile(file, img);
+                            sendQuote(gme, "已保存" + file.getName());
+                        }
                     }
                     return true;
             }
