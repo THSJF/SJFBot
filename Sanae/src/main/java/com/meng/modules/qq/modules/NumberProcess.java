@@ -9,8 +9,12 @@ import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.TextLexer;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 /**
@@ -48,7 +52,8 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
         ArrayList<String> list = TextLexer.analyze(msg);
         Iterator<String> iter = list.iterator();
         iter.next();//.
-        if (iter.next().equals("int")) {
+        String next = iter.next();
+        if (next.equals("int")) {
             try {
                 String firstArg = iter.next();
                 if (firstArg.equals("~")) {
@@ -99,6 +104,19 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
                 sendGroupMessage(groupId, e.toString());
             }
             return true;
+        } else if (next.equals("homo")) {
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName("javascript");
+            try {
+                FileReader fr = new FileReader(SBot.appDirectory + "/js/homo.js");
+                engine.eval(fr);
+                if (engine instanceof Invocable) {
+                    Invocable in = (Invocable) engine;
+                    System.out.println(in.invokeFunction("homo", Long.parseLong(iter.next())));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }

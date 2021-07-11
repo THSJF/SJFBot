@@ -123,7 +123,7 @@ public class ImageFactory {
     public BufferedImage generateRotateImage(Image src, int angel) {
         int srcWidth = src.getWidth(null);
         int srcHeight = src.getHeight(null);
-        if (angel >= 90) {
+        if (angel > 90) {
             if (angel / 90 % 2 == 1) {
                 srcHeight = srcHeight ^ srcWidth;
                 srcWidth = srcHeight ^ srcWidth;

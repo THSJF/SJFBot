@@ -1,7 +1,9 @@
 package com.meng.config;
 
 import com.meng.modules.qq.SBot;
+import com.meng.modules.qq.modules.Sentence;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.JsonHelper;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,8 +13,6 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import com.meng.modules.qq.modules.Sentence;
-import com.meng.tools.JsonHelper;
 
 public class NetServer {
 

@@ -372,13 +372,13 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                                     return ImageFactory.getInstance().generateMirror(p1, 0);
                                 }
                             });
-//                    put("天壤梦弓", new Function<BufferedImage,BufferedImage>(){
-//
-//                            @Override
-//                            public BufferedImage apply(BufferedImage p1) {
-//                                return ImageFactory.getInstance().generalMirrorImage(p1, 2);
-//                            }
-//                        });
+                    put("天壤梦弓", new Function<BufferedImage,BufferedImage>(){
+
+                            @Override
+                            public BufferedImage apply(BufferedImage p1) {
+                                return ImageFactory.getInstance().generateMirror(p1, 2);
+                            }
+                        });
                     }
                 });  
         }
