@@ -12,6 +12,7 @@ import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.touhou.THGameDataManager;
 import com.meng.modules.touhou.THSpell;
 import com.meng.tools.FileWatcher;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     private ArrayList<QABean> qaList = new ArrayList<>();
 
     public HashMap<Long,QABean> onGoingQA = new HashMap<>();
-    public String imagePath;
     public static final int easy = 0;
     public static final int normal = 1;
     public static final int hard = 2;
@@ -50,7 +50,6 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
     public QuestionAndAnswer(SBot bwe) {
         super(bwe);
         cfg = new File("C://Program Files/sanae_data/persistent/" + getSanaeValue("qaList"));
-        imagePath = bwe.appDirectory + "/qaImages/";
         FileWatcher.getInstance().addOnFileChangeListener(cfg, new Runnable(){
 
                 @Override
@@ -123,7 +122,7 @@ public class QuestionAndAnswer extends BaseModule implements IGroupMessageEvent 
                 sb.append("\n");
             }
             if (qaNow.question.contains("(image)")) {
-                sb.append(qaNow.question.replace("(image)", entity.toImage(new File(imagePath + qaNow.getId() + ".jpg"), gme.getGroup()).serializeToMiraiCode()));
+                sb.append(qaNow.question.replace("(image)", entity.toImage(SJFPathTool.getQaImagePath(qaNow.getId() + ".jpg"), gme.getGroup()).serializeToMiraiCode()));
             } else {
                 sb.append(qaNow.question);
             }

@@ -7,6 +7,8 @@ import com.meng.gameData.TouHou.THDataHolder;
 import com.meng.gameData.TouHou.UserInfo;
 import com.meng.help.HelpGenerator;
 import com.meng.help.Permission;
+import com.meng.modules.mhy.Honkai3GameData;
+import com.meng.modules.mhy.honkai.third.HK3Equipment;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
@@ -15,17 +17,15 @@ import com.meng.modules.touhou.THGameDataManager;
 import com.meng.modules.touhou.THSpell;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.Hash;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
 import com.meng.tools.TextLexer;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import com.meng.modules.mhy.Honkai3GameData;
-import com.meng.modules.mhy.honkai.third.HK3Equipment;
 
 /**
  * @Description: 模拟骰子
@@ -218,14 +218,14 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                                 String[] fileName = { "blue.gif", "green.gif", "red.gif" };
                                 MessageChainBuilder ufoMsgB=new MessageChainBuilder();
                                 ThreadLocalRandom current = ThreadLocalRandom.current();
-                                ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
-                                ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
-                                ufoMsgB.add(entity.toImage(new File(SBot.appDirectory + "ufo/" + fileName[current.nextInt(3)]), gme.getGroup()));
+                                ufoMsgB.add(entity.toImage(SJFPathTool.getUFOPath(fileName[current.nextInt(3)]), gme.getGroup()));
+                                ufoMsgB.add(entity.toImage(SJFPathTool.getUFOPath(fileName[current.nextInt(3)]), gme.getGroup()));
+                                ufoMsgB.add(entity.toImage(SJFPathTool.getUFOPath(fileName[current.nextInt(3)]), gme.getGroup()));
                                 sendMessage(gme.getGroup(), ufoMsgB.asMessageChain());        
                             } else if (ufor == 8) {
-                                sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/yellow.gif"), gme.getGroup()));
+                                sendMessage(gme.getGroup(), entity.toImage(SJFPathTool.getUFOPath("/yellow.gif"), gme.getGroup()));
                             } else {
-                                sendMessage(gme.getGroup(), entity.toImage(new File(SBot.appDirectory + "ufo/colorful.gif"), gme.getGroup()));
+                                sendMessage(gme.getGroup(), entity.toImage(SJFPathTool.getUFOPath("colorful.gif"), gme.getGroup()));
                             }
                             return true;
                         case "all":

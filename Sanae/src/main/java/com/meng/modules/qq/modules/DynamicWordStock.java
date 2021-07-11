@@ -12,6 +12,7 @@ import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.MessageManager;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 break;
                             case IMG:
                                 try { 
-                                    mcb.add(entity.toImage(new File(SBot.appDirectory + node.content), gme.getGroup()));
+                                    mcb.add(entity.toImage(new File(SJFPathTool.getAppDirectory() + node.content), gme.getGroup()));
                                 } catch (Exception e) {
                                     ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
                                 }
@@ -121,7 +122,7 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 mcb.add(String.valueOf(SJFRandom.hashSelectFloat(gme.getSender().getId(), rscale)));
                                 break;
                             case IMG_FOLDER:
-                                mcb.add(entity.toImage(SJFRandom.randomSelect(new File(SBot.appDirectory + node.content).listFiles()), gme.getGroup()));
+                                mcb.add(entity.toImage(SJFRandom.randomSelect(new File(SJFPathTool.getAppDirectory() + node.content).listFiles()), gme.getGroup()));
                                 break;
                         }    
                     } catch (Exception e) {

@@ -10,6 +10,7 @@ import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.io.FileFilter;
@@ -22,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jaudiotagger.audio.AudioFileIO;
-import com.meng.help.HelpGenerator.Item;
 
 public class MusicRecongnition extends BaseModule implements IGroupMessageEvent {
 
@@ -110,7 +110,7 @@ public class MusicRecongnition extends BaseModule implements IGroupMessageEvent 
                 });
             File input = SJFRandom.randomSelect(musics);
             try {
-                sendMessage(event, entity.toVoice(generalCut(input, new File(SBot.appDirectory + "/touhou/musicCut/" + System.currentTimeMillis() + "1.wav"), needSeconds), event.getGroup()));
+                sendMessage(event, entity.toVoice(generalCut(input, SJFPathTool.getMusicCutPath(System.currentTimeMillis() + "1.wav"), needSeconds), event.getGroup()));
             } catch (Exception e) {
                 sendGroupMessage(group, e.toString());
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

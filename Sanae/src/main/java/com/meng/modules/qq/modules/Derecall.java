@@ -10,13 +10,14 @@ import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
 import com.meng.tools.Hash;
 import com.meng.tools.Network;
+import com.meng.tools.SJFPathTool;
 import java.io.File;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.data.FlashImage;
-import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
 
 public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRecallEvent {
 
@@ -39,7 +40,7 @@ public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRec
             String url = entity.getUrl(img);
             try {
                 byte[] fileBytes = Network.httpGetRaw(url);
-                File file = new File(SBot.appDirectory + "/image/recalled/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
+                File file = SJFPathTool.getRecallPath(Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
                 FileTool.saveFile(file, fileBytes);
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
@@ -50,7 +51,7 @@ public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRec
             String url = entity.getUrl(fi.getImage());
             try {
                 byte[] fileBytes = Network.httpGetRaw(url);
-                File file = new File(SBot.appDirectory + "/image/flashImage/" + Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
+                File file =SJFPathTool.getFlashImagePath(Hash.getMd5Instance().calculate(fileBytes) + "." + FileFormat.getFileType(fileBytes));
                 FileTool.saveFile(file, fileBytes);
             } catch (Exception e) {
                 ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);

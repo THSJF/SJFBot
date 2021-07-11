@@ -1,17 +1,13 @@
 package com.meng.tools;
 
-import com.meng.modules.qq.SBot;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     private static ExceptionCatcher mInstance;
 
     private ExceptionCatcher() {
@@ -48,9 +44,9 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
         String result = writer.toString();
         sb.append(result);
         try {
-			String fileName =SBot.appDirectory + "/crash/crash-" + format.format(new Date()) + "-" + System.currentTimeMillis() + ".log";
-            FileTool.saveFile(new File(fileName), sb.toString().replace("java", "jvav").getBytes(StandardCharsets.UTF_8));
-            return fileName;
+            File file = SJFPathTool.getCrashLog();
+            FileTool.saveFile(file, sb.toString().replace("java", "jvav").getBytes(StandardCharsets.UTF_8));
+            return file.getAbsolutePath();
 		} catch (Exception e) {
             e.printStackTrace();
 		}

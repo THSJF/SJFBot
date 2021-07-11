@@ -20,6 +20,7 @@ import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
 import com.meng.tools.Network;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -139,7 +140,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             long qqId = entity.getAt(event.getMessage());
             try {    
                 if (qqId != -1 && functionMap.containsKey(cmd)) {
-                    File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
+                    File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(event.getGroup().get(qqId).getAvatarUrl()));
                     if (FileFormat.isFormat(imageFile, "gif")) {
                         runGenerateDynamic(imageFile, event, functionMap.get(cmd));
@@ -372,13 +373,13 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                                     return ImageFactory.getInstance().generateMirror(p1, 0);
                                 }
                             });
-                    put("天壤梦弓", new Function<BufferedImage,BufferedImage>(){
+                        put("天壤梦弓", new Function<BufferedImage,BufferedImage>(){
 
-                            @Override
-                            public BufferedImage apply(BufferedImage p1) {
-                                return ImageFactory.getInstance().generateMirror(p1, 2);
-                            }
-                        });
+                                @Override
+                                public BufferedImage apply(BufferedImage p1) {
+                                    return ImageFactory.getInstance().generateMirror(p1, 2);
+                                }
+                            });
                     }
                 });  
         }
@@ -399,7 +400,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             }
             try {    
                 if (miraiImg != null && functionMap.containsKey(cmd)) {
-                    File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
+                    File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
                     if (FileFormat.isFormat(imageFile, "gif")) {
                         runGenerateDynamic(imageFile, event, functionMap.get(cmd));
@@ -415,7 +416,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                     sendQuote(event, "发送一张图片吧");
                     return true;
                 } else if (miraiImg != null && ready.containsKey(qqId)) {
-                    File imageFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
+                    File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
                     if (FileFormat.isFormat(imageFile, "gif")) {
                         runGenerateDynamic(imageFile, event, ready.get(qqId));
@@ -436,7 +437,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
 
     private void runGenerateStatic(File imageFile, GroupMessageEvent event, Function<BufferedImage,BufferedImage> function) throws IOException {
         BufferedImage grayImage = function.apply(ImageIO.read(imageFile));
-        File tmp = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".png");
+        File tmp = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
         FileTool.createFile(tmp);
         ImageIO.write(grayImage, "png", tmp);
         Image im = entity.toImage(tmp, event.getGroup());
@@ -460,7 +461,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             localAnimatedGifEncoder.addFrame(function.apply(gifDecoder.getFrame(i)));
         }
         localAnimatedGifEncoder.finish();
-        File gifFile = new File(SBot.appDirectory + "image/gen/" + SJFRandom.randomInt() + ".gif");
+        File gifFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".gif");
         FileTool.saveFile(gifFile, baos.toByteArray());
         Image resultImage = entity.toImage(gifFile, event.getGroup());
         sendMessage(event, resultImage);

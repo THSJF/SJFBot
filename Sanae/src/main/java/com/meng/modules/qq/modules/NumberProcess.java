@@ -8,6 +8,7 @@ import com.meng.help.Permission;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.TextLexer;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import com.meng.tools.SJFPathTool;
 
 /**
  * @author: 司徒灵羽
@@ -108,14 +110,12 @@ public class NumberProcess extends BaseModule implements IGroupMessageEvent {
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("javascript");
             try {
-                FileReader fr = new FileReader(SBot.appDirectory + "/js/homo.js");
-                engine.eval(fr);
+                engine.eval(new FileReader(SJFPathTool.getJsPath("homo.js")));
                 if (engine instanceof Invocable) {
-                    Invocable in = (Invocable) engine;
-                    System.out.println(in.invokeFunction("homo", Long.parseLong(iter.next())));
+                    sendGroupMessage(groupId, ((Invocable) engine).invokeFunction("homo", Long.parseLong(iter.next())).toString());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
             }
         }
         return false;

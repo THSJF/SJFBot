@@ -13,6 +13,7 @@ import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.tools.FileTool;
 import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
 import java.io.File;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
@@ -20,8 +21,6 @@ import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 public class FantasyZone extends BaseModule implements IGroupMessageEvent {
-
-    private File[] imageFolder = new File(SBot.appDirectory + "/image/r15").listFiles();
 
     public FantasyZone(SBot sbot) {
         super(sbot);
@@ -47,7 +46,7 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
             return false;
         }
         if (event.getMessage().contentToString().equals("copper")) {
-            Image uploadImage = entity.toImage(SJFRandom.randomSelect(imageFolder), event.getGroup());
+            Image uploadImage = entity.toImage(SJFRandom.randomSelect(new File(SJFPathTool.getR15Path()).listFiles()), event.getGroup());
             int[] id = sendMessage(event.getGroup(), uploadImage);
             MessageManager.autoRecall(entity, id);
             return true;
@@ -58,10 +57,9 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
                     @Override
                     public void run() {
                         FantasyZoneApi.Fantasy fts = FantasyZoneApi.getPicture();
-                        File imageFile = new File(SBot.appDirectory + "/fantasy/" + fts.id + ".jpg");
+                        File imageFile = SJFPathTool.getFantasyPath(fts.id + ".jpg");
                         FileTool.saveFile(imageFile, Network.httpGetRaw(fts.url));
                         Image img = entity.toImage(imageFile, event.getGroup());
-
                         MessageChainBuilder builder = new MessageChainBuilder();
                         builder.add("pixiv id:");
                         builder.add(String.valueOf(fts.id));

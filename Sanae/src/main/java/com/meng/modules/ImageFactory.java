@@ -1,10 +1,9 @@
 package com.meng.modules;
 
-import com.meng.modules.qq.SBot;
+import com.meng.tools.SJFPathTool;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
@@ -55,7 +54,7 @@ public class ImageFactory {
     public BufferedImage generateJingShenZhiZhu(BufferedImage src) {
         try {
             BufferedImage des1 = scaleImage(generateRotateImage(src, 346), 190);
-            Image im = ImageIO.read(new File(SBot.appDirectory + "/baseImage/精神支柱.png"));
+            Image im = ImageIO.read(SJFPathTool.getBaseImagePath("精神支柱.png"));
             BufferedImage b = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             b.getGraphics().drawImage(im, 0, 0, null);
             b.getGraphics().drawImage(des1, -29, 30, null);
@@ -69,7 +68,7 @@ public class ImageFactory {
         try {
             BufferedImage des1 = new BufferedImage(228, 228, BufferedImage.TYPE_INT_ARGB);
             des1.getGraphics().drawImage(src, 0, 0, 228, 228, null);
-            Image im = ImageIO.read(new File(SBot.appDirectory + "/baseImage/神触.png"));
+            Image im = ImageIO.read(SJFPathTool.getBaseImagePath("神触.png"));
             BufferedImage b = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             b.getGraphics().drawImage(im, 0, 0, null);
             b.getGraphics().drawImage(des1, 216, -20, null);

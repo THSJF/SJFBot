@@ -16,8 +16,13 @@ import com.meng.modules.qq.hotfix.HotfixClassLoader;
 import com.meng.modules.qq.hotfix.SJFCompiler;
 import com.meng.modules.touhou.THGameDataManager;
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileFormat;
+import com.meng.tools.FileTool;
+import com.meng.tools.Hash;
 import com.meng.tools.JsonHelper;
+import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
+import com.meng.tools.SJFPathTool;
 import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
 import java.io.File;
@@ -36,10 +41,6 @@ import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.Voice;
-import com.meng.tools.Network;
-import com.meng.tools.FileTool;
-import com.meng.tools.Hash;
-import com.meng.tools.FileFormat;
 
 /**
  * @Description: 管理员命令
@@ -237,8 +238,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     } else if (list.size() == 4) {
                         String next = iter.next();
                         if (next.equals("晚上好啊老婆们")) {
-                            File fileMp3 = new File(SBot.appDirectory + "/tts/晚上好啊老婆们.wav");
-                            Voice ptt = entity.toVoice(new FileInputStream(fileMp3), gme.getGroup());
+                            Voice ptt = entity.toVoice(new FileInputStream(SJFPathTool.getTTSPath("晚上好啊老婆们.wav")), gme.getGroup());
                             sendQuote(gme, ptt);
                         } else {
                             sendGroupMessage(Long.parseLong(next), iter.next());
@@ -353,7 +353,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (img.length < 1024) {
                             sendQuote(gme, "发生错误:" + new String(img));
                         } else {
-                            File file = new File(SBot.appDirectory + "/image/r15/" + Hash.getMd5Instance().calculate(img) + "." + FileFormat.getFileType(img));
+                            File file = SJFPathTool.getR15Path(Hash.getMd5Instance().calculate(img) + "." + FileFormat.getFileType(img));
                             FileTool.saveFile(file, img);
                             sendQuote(gme, "已保存" + file.getName());
                         }

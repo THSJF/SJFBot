@@ -1,6 +1,9 @@
 package com.meng.modules;
 
 import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileTool;
+import com.meng.tools.Network;
+import com.meng.tools.SJFPathTool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,17 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import com.meng.tools.Network;
-import com.meng.tools.FileTool;
-import com.meng.modules.qq.SBot;
 
 public class DeepDanbooruApi {
 
     public static Map<String,Float> search(String url) {
-        File file = new File(SBot.appDirectory + "image/deepdanbooru/" + System.currentTimeMillis() + ".png");
+        File file = SJFPathTool.getDeepDanbooruPath(System.currentTimeMillis() + ".png");
         FileTool.saveFile(file, Network.httpGetRaw(url));
         return search(file);
     }

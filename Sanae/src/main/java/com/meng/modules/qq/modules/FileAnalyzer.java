@@ -11,6 +11,7 @@ import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
 import com.meng.tools.Network;
+import com.meng.tools.SJFPathTool;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +33,7 @@ public class FileAnalyzer extends BaseModule implements IGroupMessageEvent {
         }
         RemoteFile rfile = msg.toRemoteFile(event.getGroup());
         if (rfile.getName().endsWith(".rpy")) {
-            File touhouReplay = new File(SBot.appDirectory + "/touhou/replay/" + System.currentTimeMillis() + rfile.getDownloadInfo().getFilename());
+            File touhouReplay = SJFPathTool.getReplayPath(System.currentTimeMillis() + rfile.getDownloadInfo().getFilename());
             byte[] fileBytes = Network.httpGetRaw(rfile.getDownloadInfo().getUrl());
             FileTool.saveFile(touhouReplay, fileBytes);
             onRpyFile(event.getGroup(), touhouReplay);
