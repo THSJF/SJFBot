@@ -22,6 +22,7 @@ import com.meng.tools.FileTool;
 import com.meng.tools.Network;
 import com.meng.tools.SJFPathTool;
 import com.meng.tools.SJFRandom;
+import com.meng.tools.SeijaImageFactory;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -403,7 +404,11 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                     File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
                     if (FileFormat.isFormat(imageFile, "gif")) {
-                        runGenerateDynamic(imageFile, event, functionMap.get(cmd));
+                        if (cmd.equals("天壤梦弓")) {
+                            sendMessage(event, entity.toImage(SeijaImageFactory.reverseGIF(imageFile, 2), event.getGroup()));
+                        } else {
+                            runGenerateDynamic(imageFile, event, functionMap.get(cmd));
+                        }
                         ready.remove(event.getSender().getId());
                     } else {
                         runGenerateStatic(imageFile, event, functionMap.get(cmd));          
@@ -419,7 +424,11 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
                     File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
                     FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
                     if (FileFormat.isFormat(imageFile, "gif")) {
-                        runGenerateDynamic(imageFile, event, ready.get(qqId));
+                        if (cmd.equals("天壤梦弓")) {
+                            sendMessage(event, entity.toImage(SeijaImageFactory.reverseGIF(imageFile, 2), event.getGroup()));
+                        } else {
+                            runGenerateDynamic(imageFile, event, functionMap.get(cmd));
+                        }
                         ready.remove(event.getSender().getId());
                     } else {
                         runGenerateStatic(imageFile, event, ready.get(qqId));          

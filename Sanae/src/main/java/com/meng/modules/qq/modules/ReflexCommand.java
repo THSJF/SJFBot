@@ -127,6 +127,9 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
                 Method targetMethod = targetClass.getDeclaredMethod(signature.name, signature.argTypes);
                 targetMethod.setAccessible(true);
                 Object result = targetMethod.invoke(module, args);
+                if (result == null) {
+                    result = "null";
+                }
                 sendGroupMessage(groupId, "运行结果:\n" + (signature.returnType == long.class ? JsonHelper.toJson(result) : result.toString()));
                 return true;
 			} catch (Exception e) {

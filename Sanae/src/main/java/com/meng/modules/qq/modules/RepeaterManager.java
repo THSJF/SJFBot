@@ -6,10 +6,19 @@ import com.meng.config.ConfigManager;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
+import com.meng.tools.ExceptionCatcher;
+import com.meng.tools.FileTool;
+import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
+import com.meng.tools.SJFPathTool;
+import com.meng.tools.SJFRandom;
+import com.meng.tools.SeijaImageFactory;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
+import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
@@ -35,7 +44,7 @@ public class RepeaterManager extends BaseModule implements IGroupMessageEvent {
             return false;
         }
 		if (rp == null) {
-			repeaters.put(groupId, rp = new SimpleRepeater());
+			repeaters.put(groupId, rp = new ReverseRepeater());
 		}
         long qqId = gme.getSender().getId();
         return rp.check(groupId, qqId, gme.getMessage());
@@ -126,13 +135,24 @@ public class RepeaterManager extends BaseModule implements IGroupMessageEvent {
 
                     @Override
                     public void run() {
-                        String text;
-                        if (times % 4 == 0 && isText(msg)) {
-                            text = new StringBuilder(msg.contentToString()).reverse().toString();
+                        if (times++ % 4 == 0 && isText(msg)) {
+                            String text = new StringBuilder(msg.contentToString()).reverse().toString();
                             if (text.equals(msg.contentToString())) {
                                 text += " ";
                             }
                             sendGroupMessage(groupId, text);
+                            return;
+                        } else if (msg.get(Image.Key) != null) {
+                            if (SJFRandom.randomInt(5) == 1) {
+                                Image miraiImg = msg.get(Image.Key);
+                                File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
+                                FileTool.saveFile(imageFile, Network.httpGetRaw(entity.getUrl(miraiImg)));
+                                try {
+                                    sendGroupMessage(groupId, entity.toImage(SeijaImageFactory.reverseGIF(imageFile, 2), SBot.instance.getGroup(groupId)));
+                                } catch (FileNotFoundException e) {
+                                    ExceptionCatcher.getInstance().uncaughtException(Thread.currentThread(), e);
+                                }
+                            }
                             return;
                         }
                         sendGroupMessage(groupId, msg);

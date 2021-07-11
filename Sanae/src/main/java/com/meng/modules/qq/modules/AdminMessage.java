@@ -353,7 +353,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (img.length < 1024) {
                             sendQuote(gme, "发生错误:" + new String(img));
                         } else {
-                            File file = SJFPathTool.getR15Path(Hash.getMd5Instance().calculate(img) + "." + FileFormat.getFileType(img));
+                            File file = SJFPathTool.getR15Path(Hash.getMd5Instance().calculate(img).toUpperCase() + "." + FileFormat.getFileType(img));
                             FileTool.saveFile(file, img);
                             sendQuote(gme, "已保存" + file.getName());
                         }
