@@ -17,6 +17,8 @@ import com.meng.tools.SJFRandom;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -67,7 +69,9 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                 } else if (entry.isFlag(Entry.AT)) {
                     mcb.add(new At(gme.getSender().getId()));
                 }
-                for (Node node:entry.entryList) {
+                Iterator<Node> iterator = entry.entryList.iterator();
+                while (iterator.hasNext()) {
+                    Node node = iterator.next();
                     try {
                         switch (NodeType.valueOf(node.type)) {
                             case TXT:
@@ -107,14 +111,14 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 } catch (NumberFormatException ignore) {}
                                 mcb.add(String.valueOf(ThreadLocalRandom.current().nextFloat() * scale));
                                 break;
-                            case HASH_RAN_INT:
+                            case HASH_TO_INT:
                                 int hi = -1;
                                 try {
                                     hi = Integer.parseInt(node.content);  
                                 } catch (NumberFormatException ignore) {} 
                                 mcb.add(String.valueOf(SJFRandom.hashSelectInt(gme.getSender().getId(), hi)));
                                 break;
-                            case HASH_RAN_FLOAT:
+                            case HASH_TO_FLOAT:
                                 float rscale = 1f;
                                 try {
                                     rscale = Float.parseFloat(node.content);
@@ -123,6 +127,14 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                                 break;
                             case IMG_FOLDER:
                                 mcb.add(entity.toImage(SJFRandom.randomSelect(new File(SJFPathTool.getAppDirectory() + node.content).listFiles()), gme.getGroup()));
+                                break;
+                            case REFLECT_INVOKE:
+                                int args = Integer.parseInt(node.content);
+                                List<String> cmds = new ArrayList<>();
+                                for (int i = 0;i < args;++i) {
+                                    cmds.add(iterator.next().content);
+                                }  
+                                mcb.add(entity.moduleManager.getModule(ReflexCommand.class).invoke(cmds));
                                 break;
                         }    
                     } catch (Exception e) {
@@ -176,9 +188,10 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
         GNAME(6),
         RAN_INT(9),
         RAN_FLOAT(10),
-        HASH_RAN_INT(11),
-        HASH_RAN_FLOAT(12),
-        IMG_FOLDER(13);
+        @SerializedName("HASH_RAN_INT") HASH_TO_INT(11),
+        @SerializedName("HASH_RAN_FLOAT") HASH_TO_FLOAT(12),
+        IMG_FOLDER(13),
+        REFLECT_INVOKE(14);
 
         public static NodeType valueOf(int v){
             for(NodeType it : values()){
@@ -306,12 +319,14 @@ public class DynamicWordStock extends BaseModule implements IGroupMessageEvent {
                     return "[random int,max = " + content + "]";
                 case RAN_FLOAT:
                     return "[random float,max = " + content + "]";
-                case HASH_RAN_INT:
+                case HASH_TO_INT:
                     return "[int by hash,max = " + content + "]";
-                case HASH_RAN_FLOAT:
+                case HASH_TO_FLOAT:
                     return "[float by hash,max = " + content + "]";
                 case IMG_FOLDER:
                     return "[image folder:" + content + "]";
+                case REFLECT_INVOKE:
+                    return "[reflact]";
             }
             throw new IllegalArgumentException();
         }

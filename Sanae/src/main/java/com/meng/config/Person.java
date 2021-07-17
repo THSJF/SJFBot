@@ -1,8 +1,8 @@
 package com.meng.config;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import com.meng.help.Permission;
 import com.meng.tools.JsonHelper;
+import java.util.Objects;
 
 public class Person {
 
@@ -10,23 +10,24 @@ public class Person {
     public long qq;
     public int bid = 0;
     public int bLiveRoom = 0;
-
+    public Permission permission = Permission.Normal;
+    
     public transient String liveUrl = "";
     public transient boolean lastStatus = false;
     public transient boolean needTip = false;
 
     private transient int hash = 0;
-    
+
     public Person() {
-        
+
     }
-    
+
     public Person(String name, long qq, int bid) {
         this.name = name;
         this.qq = qq;
         this.bid = bid;
     }
-
+    
     @Override
     public int hashCode() {
         if (hash == 0) {
@@ -63,7 +64,7 @@ public class Person {
         {
             setJrrpNewStyle(false);
         }
-        
+
         public boolean isQaAllowOther() {
             return (flag & qa) != 0;
         }

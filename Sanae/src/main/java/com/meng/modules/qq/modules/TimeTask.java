@@ -8,6 +8,7 @@ import com.meng.modules.qq.SBot;
 import com.meng.modules.qq.modules.AimMessage;
 import com.meng.tools.SJFExecutors;
 import com.meng.tools.SJFRandom;
+import com.meng.tools.TimeFormater;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
@@ -95,6 +96,7 @@ public class TimeTask extends BaseModule {
                 @Override
                 public void run() {
                     entity.sleeping = false;
+                    SBot.instance.personality = SJFRandom.hashSelect(TimeFormater.getTomorrow(), SBot.Personality.values());
                     for (Group group : entity.getGroups()) {
                         if (ConfigManager.getInstance().isFunctionEnabled(group.getId(), Functions.GroupMessageEvent)) {
                             try {

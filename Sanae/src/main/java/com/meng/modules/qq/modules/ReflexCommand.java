@@ -20,6 +20,74 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
  **/
 public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 
+    private Map<Class<?>,Function<String,Object>> parser = new HashMap<Class<?>,Function<String,Object>>(){
+        {
+            put(byte.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        int radix = getRadix(p1);
+                        return Byte.parseByte(prepareNumber(p1, radix), radix);
+                    }  
+                });
+            put(short.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        int radix = getRadix(p1);
+                        return Short.parseShort(prepareNumber(p1, radix), radix);
+                    }  
+                });
+            put(char.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        if (p1.length() > 1) {
+                            throw new IllegalArgumentException("length > 1");
+                        }
+                        return p1.charAt(0);
+                    }  
+                });
+            put(int.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        int radix = getRadix(p1);
+                        return Integer.parseInt(prepareNumber(p1, radix), radix);
+                    }  
+                });
+            put(float.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        return Float.parseFloat(p1);
+                    }  
+                });
+            put(long.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        int radix = getRadix(p1);
+                        return Long.parseLong(prepareNumber(p1, radix), radix);
+                    }  
+                });
+            put(double.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        return Double.parseDouble(p1);
+                    }  
+                });
+            put(String.class, new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        return p1;
+                    }  
+                });
+        }
+    };
+
     public ReflexCommand(SBot bw) {
         super(bw);
     }
@@ -39,98 +107,7 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
                     sendQuote(gme, "参数错误");
                 }
                 cmds.remove(0);
-                Class<?> targetClass = Class.forName(cmds.get(1));
-                SignatureAnalyzer.JVMMethodSignature signature =  SignatureAnalyzer.analyze(cmds.get(2));
-                Object[] args = new Object[signature.argTypes.length];
-                Map<Class<?>,Function<String,Object>> parser = new HashMap<Class<?>,Function<String,Object>>(){
-                    {
-                        put(byte.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    int radix = getRadix(p1);
-                                    return Byte.parseByte(prepareNumber(p1, radix), radix);
-                                }  
-                            });
-                        put(short.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    int radix = getRadix(p1);
-                                    return Short.parseShort(prepareNumber(p1, radix), radix);
-                                }  
-                            });
-                        put(char.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    if (p1.length() > 1) {
-                                        throw new IllegalArgumentException("length > 1");
-                                    }
-                                    return p1.charAt(0);
-                                }  
-                            });
-                        put(int.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    int radix = getRadix(p1);
-                                    return Integer.parseInt(prepareNumber(p1, radix), radix);
-                                }  
-                            });
-                        put(float.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    return Float.parseFloat(p1);
-                                }  
-                            });
-                        put(long.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    int radix = getRadix(p1);
-                                    return Long.parseLong(prepareNumber(p1, radix), radix);
-                                }  
-                            });
-                        put(double.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    return Double.parseDouble(p1);
-                                }  
-                            });
-                        put(String.class, new Function<String,Object>(){
-
-                                @Override
-                                public Object apply(String p1) {
-                                    return p1;
-                                }  
-                            });
-                    }
-                };
-                for (int i = 0; i < args.length; ++i) {
-                    final Class<?> type = signature.argTypes[i];
-                    Function<String, Object> function = parser.get(type);
-                    if (function == null) {
-                        function = new Function<String,Object>(){
-
-                            @Override
-                            public Object apply(String p1) {
-                                return JsonHelper.fromJson(p1, type);
-                            }
-                        };
-                    }
-                    args[i] = function.apply(cmds.get(i + 3));
-                }
-                Object module = entity.moduleManager.getModule(targetClass);
-                Method targetMethod = targetClass.getDeclaredMethod(signature.name, signature.argTypes);
-                targetMethod.setAccessible(true);
-                Object result = targetMethod.invoke(module, args);
-                if (result == null) {
-                    result = "null";
-                }
-                sendGroupMessage(groupId, "运行结果:\n" + (signature.returnType == long.class ? JsonHelper.toJson(result) : result.toString()));
+                sendGroupMessage(groupId, "运行结果:\n" + invoke(cmds));
                 return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -140,6 +117,34 @@ public class ReflexCommand extends BaseModule implements IGroupMessageEvent {
 		}
 		return false;
 	}
+
+    public String invoke(List<String> cmds) throws Exception {
+        Class<?> targetClass = Class.forName(cmds.get(1));
+        SignatureAnalyzer.JVMMethodSignature signature =  SignatureAnalyzer.analyze(cmds.get(2));
+        Object[] args = new Object[signature.argTypes.length];
+        for (int i = 0; i < args.length; ++i) {
+            final Class<?> type = signature.argTypes[i];
+            Function<String, Object> function = parser.get(type);
+            if (function == null) {
+                function = new Function<String,Object>(){
+
+                    @Override
+                    public Object apply(String p1) {
+                        return JsonHelper.fromJson(p1, type);
+                    }
+                };
+            }
+            args[i] = function.apply(cmds.get(i + 3));
+        }
+        Object module = entity.moduleManager.getModule(targetClass);
+        Method targetMethod = targetClass.getDeclaredMethod(signature.name, signature.argTypes);
+        targetMethod.setAccessible(true);
+        Object result = targetMethod.invoke(module, args);
+        if (result == null) {
+            return "null";
+        }
+        return (signature.returnType == long.class ? JsonHelper.toJson(result) : result.toString());
+    }
 
     private int getRadix(String p1) {
         p1 = p1.toLowerCase();

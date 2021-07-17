@@ -60,7 +60,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
     @Override
     public BaseModule load() {
         super.load();
-        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.BotMaster, getModuleName());
+        HelpGenerator.Item mainMenu = HelpGenerator.getInstance().newItem(Permission.Owner, getModuleName());
         mainMenu.arg(".tr").arg("文本").arg("翻译").permission(Permission.Normal);
         new HelpGenerator.Item(mainMenu, ".tts", Permission.Normal){{
                 arg("文本").arg("文字转语音");
@@ -372,15 +372,27 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         if (ThreadLocalRandom.current().nextBoolean()) {
             return true;
         }
-        if (ThreadLocalRandom.current().nextBoolean()) {
-            sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
-        }
         if (event.getFrom().getId() == entity.getId()) {
             return false;
         }
-        if (ThreadLocalRandom.current().nextBoolean()) {
-            event.getFrom().nudge().sendTo(event.getSubject());
-            return true;
+        switch (entity.personality) {
+            case White:
+                if (ThreadLocalRandom.current().nextBoolean()) {
+                    sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
+                }
+                break;
+            case Mix:
+                if (ThreadLocalRandom.current().nextBoolean()) {
+                    event.getFrom().nudge().sendTo(event.getSubject());
+                    return true;
+                }
+                break;
+            case Black:
+                if (ThreadLocalRandom.current().nextBoolean()) {
+                    event.getFrom().nudge().sendTo(event.getSubject());
+                    return true;
+                }
+                break;
         }
         return false;
     }

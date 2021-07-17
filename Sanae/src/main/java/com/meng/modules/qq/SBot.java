@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
+import com.meng.modules.mhy.Honkai3GameData;
+import com.meng.modules.mhy.honkai.third.HK3Equipment;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.SJFRandom;
 import java.io.File;
@@ -65,10 +67,23 @@ public class SBot implements Bot {
 
     public boolean sleeping = false;
 
+    public Personality personality = Personality.White;
     static{
         GsonBuilder gb = new GsonBuilder();
         gb.setLongSerializationPolicy(LongSerializationPolicy.STRING);
         gson = gb.create();
+    }
+    
+    public static enum Personality {
+        White(Honkai3GameData.getEquipmentByName("幻海梦蝶")),
+        Mix(Honkai3GameData.getEquipmentByName("彼岸双生")),
+        Black(Honkai3GameData.getEquipmentByName("魇夜星渊"));
+
+        private HK3Equipment eq = null;
+
+        private Personality(HK3Equipment equ){
+            eq = equ; 
+        }
     }
 
     public SBot(Bot b) {

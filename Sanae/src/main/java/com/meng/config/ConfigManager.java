@@ -7,6 +7,7 @@ package com.meng.config;
 import com.meng.annotation.BotData;
 import com.meng.bot.Functions;
 import com.meng.config.qq.GroupConfig;
+import com.meng.help.Permission;
 import com.meng.modules.qq.SBot;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +35,18 @@ public class ConfigManager {
 
     public void init() {
         DataPersistenter.read(instance);
+        for(Person p : configHolder.person){
+            if(configHolder.admins.contains(p.qq)){
+                p.permission = Permission.Admin;
+            }
+            if(configHolder.masters.contains(p.qq)){
+                p.permission = Permission.Master;
+            }
+            if(configHolder.owner.contains(p.qq)){
+                p.permission = Permission.Owner;
+            }
+        }
+        save();
     }
 
     public boolean setFunctionEnabled(long gid, Functions m, boolean enable) {
@@ -203,60 +216,72 @@ public class ConfigManager {
         return configHolder.welcomeMap.get(fromGroup);
     }
 
-    public boolean isOwner(long fromQQ) {
-        return configHolder.owner.contains(fromQQ);
+    public boolean isOwner(long qq) {
+        return getPersonFromQQ(qq).permission == Permission.Owner;
     }
 
     public void addOwner(long qq) {
-        configHolder.owner.add(qq);
+        getPersonFromQQ(qq).permission = Permission.Owner;
         save();
     }
 
-    public void removeOwner(long m) {
-        configHolder.owner.remove(m);
-        save();
+    public void removeOwner(long qq) {
+        setNormalPermission(qq);
     }
 
-    public Set<Long> getOwners() {
-        return Collections.unmodifiableSet(configHolder.owner);
+    public Set<Person> getPersonByPermission(Permission pms){
+        Set<Person> persons = new HashSet<Person>();
+        for (Person p : configHolder.person) {
+            if (p.permission == pms) {
+                persons.add(p);
+            }
+        }
+        return persons;
+    }
+    
+    public Set<Person> getOwners() {
+        return getPersonByPermission(Permission.Owner);
     }
 
-    public boolean isMaster(long fromQQ) {
-        return configHolder.masters.contains(fromQQ);
+    public boolean isMaster(long qq) {
+        return getPersonFromQQ(qq).permission == Permission.Master;
     }
 
     public void addMaster(long qq) {
-        configHolder.masters.add(qq);
+        getPersonFromQQ(qq).permission = Permission.Master;
         save();
     }
 
-    public void removeMaster(long m) {
-        configHolder.masters.remove(m);
-        save();
+    public void removeMaster(long qq) {
+        setNormalPermission(qq);
     }
 
-    public Set<Long> getMasters() {
-        return Collections.unmodifiableSet(configHolder.masters);
+    public Set<Person> getMasters() {
+        return getPersonByPermission(Permission.Master);
     }
 
-    public boolean isAdminPermission(long fromQQ) {
-        return configHolder.admins.contains(fromQQ) || configHolder.masters.contains(fromQQ);
+    public boolean isAdminPermission(long qq) {
+        return getPersonFromQQ(qq).permission == Permission.Admin || isMaster(qq);
     }
-
+    
     public void addAdmin(long qq) {
-        configHolder.admins.add(qq);
+        getPersonFromQQ(qq).permission = Permission.Admin;
         save();
     }
 
-    public void removeAdmin(long a) {
-        configHolder.admins.remove(a);
+    public void removeAdmin(long qq) {
+        setNormalPermission(qq);
+    }
+
+    public Set<Person> getAdmins() {
+        return getPersonByPermission(Permission.Admin);
+    }
+
+    public void setNormalPermission(long qq){
+        getPersonFromQQ(qq).permission = Permission.Normal;
         save();
     }
-
-    public Set<Long> getAdmins() {
-        return Collections.unmodifiableSet(configHolder.admins);
-    }
-
+    
     public void setNickName(long qq, String nickname) {
         if (nickname != null) {
             configHolder.nicknameMap.put(qq, nickname);
@@ -308,5 +333,6 @@ public class ConfigManager {
 
         public HashMap<Long,String> welcomeMap = new HashMap<>();
         public HashSet<Long> zanSet = new HashSet<>();
+
     }
 }

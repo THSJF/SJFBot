@@ -6,10 +6,10 @@ import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.FileTool;
 import com.meng.tools.JsonHelper;
 import com.meng.tools.SJFExecutors;
+import com.meng.tools.SJFRandom;
+import com.meng.tools.TimeFormater;
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 import net.mamoe.mirai.BotFactory;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.utils.BotConfiguration;
 
 public class QqBotMain {
@@ -42,21 +42,22 @@ public class QqBotMain {
                     sbot.join();
                 }
             });
-        SJFExecutors.executeAfterTime(new Runnable(){
-
-                @Override
-                public void run() {
-                    for (Group group:sbot.getGroups()) {
-                        if (group.getBotAsMember().getMuteTimeRemaining() > 0) {
-                            if (group.getId() == SBot.yysGroup) {
-                                continue;
-                            }
-                            group.quit();
-                            sbot.sendGroupMessage(SBot.yysGroup, "退出群" + group.getId());
-                        }
-                    }
-                }
-            }, 1, TimeUnit.MINUTES);  
+        SBot.instance.personality = SJFRandom.hashSelect(TimeFormater.getTomorrow(),SBot.Personality.values());
+//        SJFExecutors.executeAfterTime(new Runnable(){
+//
+//                @Override
+//                public void run() {
+//                    for (Group group:sbot.getGroups()) {
+//                        if (group.getBotAsMember().getMuteTimeRemaining() > 0) {
+//                            if (group.getId() == SBot.yysGroup) {
+//                                continue;
+//                            }
+//                            group.quit();
+//                            sbot.sendGroupMessage(SBot.yysGroup, "退出群" + group.getId());
+//                        }
+//                    }
+//                }
+//            }, 1, TimeUnit.MINUTES);  
     }
 
     public static class AccountInfo {
