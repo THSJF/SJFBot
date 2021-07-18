@@ -95,10 +95,9 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
         if (network.onGroupMessage(event)) {
             return true;
         }
-        QuoteReply qr = event.getMessage().get(QuoteReply.Key);
-        if (qr != null) {
-            MessageSource ms = qr.getSource();
-            GroupMessageEvent me = (GroupMessageEvent) MessageManager.get(ms);
+        QuoteReply quoteReply = event.getMessage().get(QuoteReply.Key);
+        if (quoteReply != null) {
+            GroupMessageEvent me = (GroupMessageEvent) MessageManager.getEvent(quoteReply.getSource());
             if (local.onGroupMessage(me, event.getSender().getId(), event.getMessage().get(2).contentToString())) {
                 return true;
             }

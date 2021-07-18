@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class FileTool {
+
+    public static String getAutoFileName(byte[] fileBytes) {
+        return Hash.getMd5Instance().calculate(fileBytes).toUpperCase() + "." + FileFormat.getFileType(fileBytes);
+    }
+
 	public static void deleteFiles(File folder) {
 		File[] fs = folder.listFiles();
 		if (fs != null && fs.length > 0) {
@@ -29,7 +34,7 @@ public class FileTool {
 			bis = new BufferedInputStream(new FileInputStream(src));
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(des));
 			int i = -1;
-			byte[] bt = new byte[2014];
+			byte[] bt = new byte[1024];
 			while ((i = bis.read(bt)) != -1) {
 				bos.write(bt, 0, i);
 			}
@@ -59,7 +64,7 @@ public class FileTool {
 	}
 
 	public static byte[] readBytes(File f) {
-		byte[] filecontent=null;
+		byte[] filecontent = null;
 		try {
 			long filelength = f.length();
 			filecontent = new byte[(int) filelength];

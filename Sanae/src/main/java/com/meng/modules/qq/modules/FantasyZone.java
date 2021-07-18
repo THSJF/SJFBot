@@ -47,7 +47,7 @@ public class FantasyZone extends BaseModule implements IGroupMessageEvent {
         }
         if (event.getMessage().contentToString().equals("copper")) {
             Image uploadImage = entity.toImage(SJFRandom.randomSelect(new File(SJFPathTool.getR15Path()).listFiles()), event.getGroup());
-            int[] id = sendMessage(event.getGroup(), uploadImage);
+            int[] id = sendMessage(event.getGroup(), uploadImage).getIds();
             MessageManager.autoRecall(entity, id);
             return true;
         } 

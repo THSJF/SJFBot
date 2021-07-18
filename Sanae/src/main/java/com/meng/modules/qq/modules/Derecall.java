@@ -33,8 +33,8 @@ public class Derecall extends BaseModule implements IGroupMessageEvent,IGroupRec
     @Override
     public boolean onGroupRecall(MessageRecallEvent.GroupRecall event) {
         sendGroupMessage(event.getGroup().getId(), new PlainText(String.valueOf(event.getOperator().getId())).plus("撤回了:"));
-        sendGroupMessage(event.getGroup().getId(), MessageManager.get(event).getMessage());
-        MessageChain chain = MessageManager.get(event.getMessageIds()).getMessage();
+        sendGroupMessage(event.getGroup().getId(), MessageManager.get(event).getOriginalMessage());
+        MessageChain chain = MessageManager.get(event.getMessageIds()).getOriginalMessage();
         Image img = chain.get(Image.Key);
         if (img != null) {
             String url = entity.getUrl(img);

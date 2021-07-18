@@ -11,6 +11,7 @@ import java.util.List;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
 
@@ -39,51 +40,51 @@ public abstract class BaseModule implements ILoad {
         }
     }
 
-    public int[] sendMessage(GroupMessageEvent event, Message msg) {
+    public MessageSource sendMessage(GroupMessageEvent event, Message msg) {
         return sendMessage(event.getGroup(), msg);
     }
 
-    public int[] sendMessage(GroupMessageEvent event, String msg) {
+    public MessageSource sendMessage(GroupMessageEvent event, String msg) {
         return sendMessage(event.getGroup(), msg);
     }
 
-    public int[] sendGroupMessage(long fromGroup, Message msg) {
+    public MessageSource sendGroupMessage(long fromGroup, Message msg) {
         return entity.sendGroupMessage(fromGroup, msg);
     }
 
-    public int[] sendGroupMessage(long fromGroup, String msg) {
+    public MessageSource sendGroupMessage(long fromGroup, String msg) {
         return entity.sendGroupMessage(fromGroup, new PlainText(msg));
     }
 
-    public int[] sendGroupMessage(long fromGroup, String[] msg) {
+    public MessageSource sendGroupMessage(long fromGroup, String[] msg) {
         return entity.sendGroupMessage(fromGroup, SJFRandom.randomSelect(msg));
     }
 
-    public int[] sendGroupMessage(long fromGroup, ArrayList<String> msg) {
+    public MessageSource sendGroupMessage(long fromGroup, ArrayList<String> msg) {
         return entity.sendGroupMessage(fromGroup, msg.toArray(new String[0]));
     }
 
-    public int[] sendMessage(Group group, String msg) {
+    public MessageSource sendMessage(Group group, String msg) {
         return entity.sendGroupMessage(group.getId(), msg);
     }
 
-    public int[] sendMessage(Group group, Message msg) {
+    public MessageSource sendMessage(Group group, Message msg) {
         return entity.sendGroupMessage(group.getId(), msg);
     }
 
-    public int[] sendMessage(Group group, String[] msg) {
+    public MessageSource sendMessage(Group group, String[] msg) {
         return entity.sendGroupMessage(group.getId(), SJFRandom.randomSelect(msg));
     }
 
-    public int[] sendMessage(Group group, List<String> msg) {
+    public MessageSource sendMessage(Group group, List<String> msg) {
         return entity.sendGroupMessage(group.getId(), msg.toArray(new String[0]));
     } 
 
-    public int[] sendQuote(GroupMessageEvent gme, String msg) {
+    public MessageSource sendQuote(GroupMessageEvent gme, String msg) {
         return entity.sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
 
-    public int[] sendQuote(GroupMessageEvent gme, Message msg) {
+    public MessageSource sendQuote(GroupMessageEvent gme, Message msg) {
         return entity.sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
 

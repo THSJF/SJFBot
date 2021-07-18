@@ -1,4 +1,5 @@
 package com.meng.modules.qq;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;

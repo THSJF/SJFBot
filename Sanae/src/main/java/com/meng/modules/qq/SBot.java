@@ -47,6 +47,9 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.MiraiLogger;
+import net.mamoe.mirai.message.MessageReceipt;
+import com.meng.modules.qq.handler.MessageManager;
+import net.mamoe.mirai.message.data.MessageSource;
 
 /**
  * @author: 司徒灵羽
@@ -73,7 +76,7 @@ public class SBot implements Bot {
         gb.setLongSerializationPolicy(LongSerializationPolicy.STRING);
         gson = gb.create();
     }
-    
+
     public static enum Personality {
         White(Honkai3GameData.getEquipmentByName("幻海梦蝶")),
         Mix(Honkai3GameData.getEquipmentByName("彼岸双生")),
@@ -168,46 +171,48 @@ public class SBot implements Bot {
         return bot.getGroup(gid).getOrFail(qq);
     }
 
-    public int[] sendGroupMessage(long fromGroup, Message msg) {
+    public MessageSource sendGroupMessage(long fromGroup, Message msg) {
         if (sleeping || !ConfigManager.getInstance().isFunctionEnabled(fromGroup, Functions.GroupMessageEvent)) {
-            return new int[]{-1};
+            return null;
         }
-        return bot.getGroup(fromGroup).sendMessage(msg).getSource().getIds();
+        MessageReceipt mr = bot.getGroup(fromGroup).sendMessage(msg);
+        MessageManager.put(mr);
+        return mr.getSource();
     }
 
-    public int[] sendGroupMessage(long fromGroup, String msg) {
+    public MessageSource sendGroupMessage(long fromGroup, String msg) {
         return sendGroupMessage(fromGroup, new PlainText(msg));
     }
 
-    public int[] sendGroupMessage(long fromGroup, String[] msg) {
+    public MessageSource sendGroupMessage(long fromGroup, String[] msg) {
         return sendGroupMessage(fromGroup, SJFRandom.randomSelect(msg));
     }
 
-    public int[] sendGroupMessage(long fromGroup, ArrayList<String> msg) {
+    public MessageSource sendGroupMessage(long fromGroup, ArrayList<String> msg) {
         return sendGroupMessage(fromGroup, msg.toArray(new String[0]));
     }
 
-    public int[] sendMessage(Group group, String msg) {
+    public MessageSource sendMessage(Group group, String msg) {
         return sendGroupMessage(group.getId(), msg);
     }
 
-    public int[] sendMessage(Group group, Message msg) {
+    public MessageSource sendMessage(Group group, Message msg) {
         return sendGroupMessage(group.getId(), msg);
     }
 
-    public int[] sendMessage(Group group, String[] msg) {
+    public MessageSource sendMessage(Group group, String[] msg) {
         return sendGroupMessage(group.getId(), SJFRandom.randomSelect(msg));
     }
 
-    public int[] sendMessage(Group group, ArrayList<String> msg) {
+    public MessageSource sendMessage(Group group, ArrayList<String> msg) {
         return sendGroupMessage(group.getId(), msg.toArray(new String[0]));
     } 
 
-    public int[] sendQuote(GroupMessageEvent gme, String msg) {
+    public MessageSource sendQuote(GroupMessageEvent gme, String msg) {
         return sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
 
-    public int[] sendQuote(GroupMessageEvent gme, Message msg) {
+    public MessageSource sendQuote(GroupMessageEvent gme, Message msg) {
         return sendGroupMessage(gme.getGroup().getId(), new QuoteReply(gme.getSource()).plus(msg));
     }
 

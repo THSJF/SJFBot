@@ -17,6 +17,14 @@ public class SJFPathTool {
         return new File(getImagePath() + fileName);
     }
 
+    public static String getPlaneSentencePath() {
+        return getAppDirectory() + "/image/plane_sentence/";
+    }
+
+    public static File getPlaneSentencePath(String fileName) {
+        return new File(getPlaneSentencePath() + fileName);
+    }
+    
     public static String getR15Path() {
         return getAppDirectory() + "/image/r15/";
     }

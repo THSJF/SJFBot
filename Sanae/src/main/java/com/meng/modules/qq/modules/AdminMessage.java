@@ -41,6 +41,9 @@ import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.Voice;
+import net.mamoe.mirai.message.data.QuoteReply;
+import net.mamoe.mirai.message.data.MessageSource;
+import com.meng.modules.qq.handler.MessageManager;
 
 /**
  * @Description: 管理员命令
@@ -308,6 +311,14 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
             if (qqId != 2856986197L) {
                 return false;
             }
+            QuoteReply quoteReply = gme.getMessage().get(QuoteReply.Key);
+            if (quoteReply != null) {
+                if (msg.equals("撤回")) {
+                    MessageSource ms = quoteReply.getSource();
+                    MessageManager.autoRecall(entity, ms, 1);
+                }
+                return true;
+            }
             switch (first) {
                 case "hotfix":
                     {
@@ -353,7 +364,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         if (img.length < 1024) {
                             sendQuote(gme, "发生错误:" + new String(img));
                         } else {
-                            File file = SJFPathTool.getR15Path(Hash.getMd5Instance().calculate(img).toUpperCase() + "." + FileFormat.getFileType(img));
+                            File file = SJFPathTool.getR15Path(FileTool.getAutoFileName(img));
                             FileTool.saveFile(file, img);
                             sendQuote(gme, "已保存" + file.getName());
                         }
@@ -375,25 +386,25 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         if (event.getFrom().getId() == entity.getId()) {
             return false;
         }
-        switch (entity.personality) {
-            case White:
+    //    switch (entity.personality) {
+     //       case White:
                 if (ThreadLocalRandom.current().nextBoolean()) {
                     sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
                 }
-                break;
-            case Mix:
+      //          break;
+      //      case Mix:
                 if (ThreadLocalRandom.current().nextBoolean()) {
                     event.getFrom().nudge().sendTo(event.getSubject());
                     return true;
                 }
-                break;
-            case Black:
-                if (ThreadLocalRandom.current().nextBoolean()) {
-                    event.getFrom().nudge().sendTo(event.getSubject());
-                    return true;
-                }
-                break;
-        }
+      //          break;
+      //      case Black:
+          //      if (ThreadLocalRandom.current().nextBoolean()) {
+           //         event.getFrom().nudge().sendTo(event.getSubject());
+           //         return true;
+           //     }
+       //         break;
+     //   }
         return false;
     }
 }

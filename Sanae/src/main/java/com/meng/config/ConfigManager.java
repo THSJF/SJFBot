@@ -35,18 +35,30 @@ public class ConfigManager {
 
     public void init() {
         DataPersistenter.read(instance);
-        for(Person p : configHolder.person){
-            if(configHolder.admins.contains(p.qq)){
+        for (Person p : configHolder.person) {
+            if (configHolder.admins.contains(p.qq)) {
                 p.permission = Permission.Admin;
             }
-            if(configHolder.masters.contains(p.qq)){
+            if (configHolder.masters.contains(p.qq)) {
                 p.permission = Permission.Master;
             }
-            if(configHolder.owner.contains(p.qq)){
+            if (configHolder.owner.contains(p.qq)) {
                 p.permission = Permission.Owner;
             }
         }
+        GroupConfig g1 = getGroupConfig(719324487);
+        if (g1 != null) {
+            g1.planeSentence = true;
+        }
+        GroupConfig g2 = getGroupConfig(451195420);
+        if (g2 != null) {
+            g2.planeSentence = true;
+        }
         save();
+    }
+
+    public GroupConfig getGroupConfig(long group) {
+        return configHolder.groupCfgs.get(group);
     }
 
     public boolean setFunctionEnabled(long gid, Functions m, boolean enable) {
@@ -229,7 +241,7 @@ public class ConfigManager {
         setNormalPermission(qq);
     }
 
-    public Set<Person> getPersonByPermission(Permission pms){
+    public Set<Person> getPersonByPermission(Permission pms) {
         Set<Person> persons = new HashSet<Person>();
         for (Person p : configHolder.person) {
             if (p.permission == pms) {
@@ -238,7 +250,7 @@ public class ConfigManager {
         }
         return persons;
     }
-    
+
     public Set<Person> getOwners() {
         return getPersonByPermission(Permission.Owner);
     }
@@ -263,7 +275,7 @@ public class ConfigManager {
     public boolean isAdminPermission(long qq) {
         return getPersonFromQQ(qq).permission == Permission.Admin || isMaster(qq);
     }
-    
+
     public void addAdmin(long qq) {
         getPersonFromQQ(qq).permission = Permission.Admin;
         save();
@@ -277,11 +289,11 @@ public class ConfigManager {
         return getPersonByPermission(Permission.Admin);
     }
 
-    public void setNormalPermission(long qq){
+    public void setNormalPermission(long qq) {
         getPersonFromQQ(qq).permission = Permission.Normal;
         save();
     }
-    
+
     public void setNickName(long qq, String nickname) {
         if (nickname != null) {
             configHolder.nicknameMap.put(qq, nickname);

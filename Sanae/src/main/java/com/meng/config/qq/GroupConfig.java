@@ -8,7 +8,8 @@ import java.util.EnumSet;
  **/
 public class GroupConfig {
     public EnumSet<Functions> enabled = EnumSet.allOf(Functions.class);
-
+    public boolean planeSentence = false;
+    
     {
         enabled.remove(Functions.BilibiliTip);
         enabled.remove(Functions.EuropeDogs);

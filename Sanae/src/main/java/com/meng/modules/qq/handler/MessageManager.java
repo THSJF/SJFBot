@@ -5,65 +5,103 @@ import com.meng.tools.SJFExecutors;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
-import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.message.data.MessageSource;
+import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.MessageReceipt;
 
 public class MessageManager {
     private static MessageManager instance = null;
-    private LinkedList<MessageEvent> msgList = new LinkedList<>();
+    private LinkedList<MessageSource> sourceList = new LinkedList<>();
+    private LinkedList<MessageEvent> msgEvents = new LinkedList<>();
 
     private MessageManager() {
         SJFExecutors.executeAtFixedRate(new Runnable(){
 
                 @Override
                 public void run() {
-
-                    Iterator<MessageEvent> iterator = msgList.iterator();
+                    Iterator<MessageSource> iterator = sourceList.iterator();
                     while (iterator.hasNext()) {
                         if ((int)(System.currentTimeMillis() / 1000) - iterator.next().getTime() > 1800) {
                             iterator.remove();
+                        }
+                    }
+                    Iterator<MessageEvent> iterator2 = msgEvents.iterator();
+                    while (iterator2.hasNext()) {
+                        if ((int)(System.currentTimeMillis() / 1000) - iterator2.next().getTime() > 1800) {
+                            iterator2.remove();
                         }
                     }
                 }
             }, 2, 2, TimeUnit.MINUTES);
     }
 
-    public static void put(MessageEvent msg) {
-        instance.msgList.add(msg);
-        if (instance.msgList.size() > 1000) {
-            instance.msgList.removeFirst();
+    public static void put(MessageReceipt msgEvent) {
+        instance.sourceList.add(msgEvent.getSource());
+        if (instance.sourceList.size() > 1000) {
+            instance.sourceList.removeFirst();
         }
     }
 
-    public static MessageEvent get(MessageRecallEvent event) {
+    public static void put(MessageEvent msgEvent) {
+        instance.msgEvents.add(msgEvent);
+        if (instance.msgEvents.size() > 1000) {
+            instance.msgEvents.removeFirst();
+        }
+        instance.sourceList.add(msgEvent.getSource());
+        if (instance.sourceList.size() > 1000) {
+            instance.sourceList.removeFirst();
+        }
+    }
+
+    public static MessageSource get(MessageRecallEvent event) {
         return get(event.getMessageIds());
     }
 
-    public static MessageEvent get(int[] ids) {
-        for (MessageEvent msg :instance.msgList) {
-            if (arrayEquals(msg.getSource().getIds(), ids)) {
-                return msg;  
+    public static MessageSource get(int[] ids) {
+        for (MessageSource source :instance.sourceList) {
+            if (arrayEquals(source.getIds(), ids)) {
+                return source;  
             }
         }
         return null;
     }
 
-    public static MessageEvent get(MessageSource source) {
-        for (MessageEvent msg :instance.msgList) {
-            if (arrayEquals(msg.getSource().getIds(), source.getIds())) {
-                return msg;  
+    public static MessageSource get(MessageSource source) {
+        return get(source.getIds());
+    }
+    
+    public static MessageEvent getEvent(MessageRecallEvent event) {
+        return getEvent(event.getMessageIds());
+    }
+
+    public static MessageEvent getEvent(int[] ids) {
+        for (MessageEvent event :instance.msgEvents) {
+            if (arrayEquals(event.getSource().getIds(), ids)) {
+                return event;  
             }
         }
         return null;
     }
+
+    public static MessageEvent getEvent(MessageSource source) {
+        return getEvent(source.getIds());
+    }
+
+    public static void autoRecall(SBot sb, MessageSource source, int second) {
+        MessageSource.recallIn(get(source), second);
+    }
+
+    public static void autoRecall(SBot sb, MessageSource source) {
+        MessageSource.recallIn(get(source), 60);
+	}
 
     public static void autoRecall(SBot sb, int[] msgIds, int second) {
-        MessageSource.recallIn(get(msgIds).getSource(), second);
+        MessageSource.recallIn(get(msgIds), second);
     }
 
     public static void autoRecall(SBot sb, int[] msgIds) {
-        MessageSource.recallIn(get(msgIds).getSource(), 60);
+        MessageSource.recallIn(get(msgIds), 60);
 	}
 
     private static boolean arrayEquals(int[] a1, int[] a2) {
