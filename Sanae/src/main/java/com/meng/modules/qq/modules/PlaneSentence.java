@@ -16,6 +16,7 @@ import net.mamoe.mirai.message.data.Image;
 import com.meng.tools.FileTool;
 import com.meng.tools.Network;
 import com.meng.tools.SJFRandom;
+import net.mamoe.mirai.message.data.Message;
 
 public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
 
@@ -33,22 +34,23 @@ public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
             return false;  
         }
         String msg = event.getMessage().contentToString();
-        if(msg.endsWith("乐子图")){
-            String key = msg.substring(0,msg.length()-3);
+        if (!msg.startsWith("添加") && msg.endsWith("乐子图")) {
+            String key = msg.substring(0, msg.length() - 3);
             File[] fs = SJFPathTool.getPlaneSentencePath(key).listFiles();
-            sendMessage(event,entity.toImage(SJFRandom.randomSelect(fs),event.getGroup()));
+            sendMessage(event, entity.toImage(SJFRandom.randomSelect(fs), event.getGroup()));
+            return true;
         }
         long qq = event.getSender().getId();
         if (!manager.isAdminPermission(qq)) {
             return false; 
         }
-              if (msg.equals("添加乐子图")) {
+        if (msg.equals("添加乐子图")) {
             steps.put(qq, 0);
         } else if (msg.equals("取消添加")) {
             steps.remove(qq);
         }
         if (steps.get(qq) == null) {
-            return true;
+            return false;
         }
         switch (steps.get(qq)) {
             case 0:
@@ -61,27 +63,28 @@ public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
                 }
                 builder.setLength(builder.length() - 1);
                 sendQuote(event, builder.toString());
-                break;
+                return true;
             case 1:
                 String uname = event.getMessage().contentToString();
                 sendQuote(event, "发送图片为" + uname + "添加图片,或发送取消添加以退出");
                 steps.put(qq, 2);
                 name.put(qq, uname);
-                break;
+                return true;
             case 2:
-                Image image = event.getMessage().get(Image.Key);
-                if (image == null) {
-                    sendQuote(event, "请发送图片,或者发送取消添加以退出");
-                } else {
-                    byte[] img = Network.httpGetRaw(entity.getUrl(image));
-                    File imageFile = SJFPathTool.getPlaneSentencePath(name.get(qq) + "/" + FileTool.getAutoFileName(img));
-                    FileTool.saveFile(imageFile, img);
-                    sendQuote(event, "保存成功(" + (img.length / 1024) + "KB)");
-                    name.remove(qq);
-                    steps.remove(qq);
+                int leng = 0;
+                for (Message message : event.getMessage()) {
+                    if (message instanceof Image) {
+                        byte[] img = Network.httpGetRaw(entity.getUrl(((Image)message)));
+                        File imageFile = SJFPathTool.getPlaneSentencePath(name.get(qq) + "/" + FileTool.getAutoFileName(img));
+                        FileTool.saveFile(imageFile, img);
+                        leng += img.length;
+                    }
                 }
-                break;
+                name.remove(qq);
+                steps.remove(qq);
+                sendQuote(event, "保存完成(" + (leng / 1024) + "KB)");
+                return true;
         }
-        return true;
+        return false;
     }
 }

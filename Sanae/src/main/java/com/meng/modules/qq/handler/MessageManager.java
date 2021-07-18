@@ -70,7 +70,7 @@ public class MessageManager {
     public static MessageSource get(MessageSource source) {
         return get(source.getIds());
     }
-    
+
     public static MessageEvent getEvent(MessageRecallEvent event) {
         return getEvent(event.getMessageIds());
     }
@@ -89,19 +89,19 @@ public class MessageManager {
     }
 
     public static void autoRecall(SBot sb, MessageSource source, int second) {
-        MessageSource.recallIn(get(source), second);
+        MessageSource.recallIn(get(source), second * 1000);
     }
 
     public static void autoRecall(SBot sb, MessageSource source) {
-        MessageSource.recallIn(get(source), 60);
+        MessageSource.recallIn(get(source), 60000);
 	}
 
     public static void autoRecall(SBot sb, int[] msgIds, int second) {
-        MessageSource.recallIn(get(msgIds), second);
+        MessageSource.recallIn(get(msgIds), second * 1000);
     }
 
     public static void autoRecall(SBot sb, int[] msgIds) {
-        MessageSource.recallIn(get(msgIds), 60);
+        MessageSource.recallIn(get(msgIds), 60000);
 	}
 
     private static boolean arrayEquals(int[] a1, int[] a2) {

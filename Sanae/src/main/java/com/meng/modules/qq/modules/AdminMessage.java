@@ -313,11 +313,11 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
             }
             QuoteReply quoteReply = gme.getMessage().get(QuoteReply.Key);
             if (quoteReply != null) {
-                if (msg.equals("撤回")) {
+                if (msg.equals(".recall")) {
                     MessageSource ms = quoteReply.getSource();
                     MessageManager.autoRecall(entity, ms, 1);
+                    return true;
                 }
-                return true;
             }
             switch (first) {
                 case "hotfix":
@@ -386,25 +386,25 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
         if (event.getFrom().getId() == entity.getId()) {
             return false;
         }
-    //    switch (entity.personality) {
-     //       case White:
-                if (ThreadLocalRandom.current().nextBoolean()) {
-                    sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
-                }
-      //          break;
-      //      case Mix:
-                if (ThreadLocalRandom.current().nextBoolean()) {
-                    event.getFrom().nudge().sendTo(event.getSubject());
-                    return true;
-                }
-      //          break;
-      //      case Black:
-          //      if (ThreadLocalRandom.current().nextBoolean()) {
-           //         event.getFrom().nudge().sendTo(event.getSubject());
-           //         return true;
-           //     }
-       //         break;
-     //   }
+        //    switch (entity.personality) {
+        //       case White:
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            sendGroupMessage(event.getSubject().getId(), "你群日常乱戳");
+        }
+        //          break;
+        //      case Mix:
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            event.getFrom().nudge().sendTo(event.getSubject());
+            return true;
+        }
+        //          break;
+        //      case Black:
+        //      if (ThreadLocalRandom.current().nextBoolean()) {
+        //         event.getFrom().nudge().sendTo(event.getSubject());
+        //         return true;
+        //     }
+        //         break;
+        //   }
         return false;
     }
 }

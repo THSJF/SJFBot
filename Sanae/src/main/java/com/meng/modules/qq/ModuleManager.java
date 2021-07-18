@@ -76,6 +76,7 @@ import net.mamoe.mirai.event.events.NudgeEvent;
 import java.util.Set;
 import com.meng.help.HelpGenerator;
 import com.meng.help.HelpGenerator.Item;
+import com.meng.modules.qq.modules.PlaneSentence;
 
 /**
  * @Description: 模块管理器
@@ -109,6 +110,7 @@ public class ModuleManager extends BaseModule implements IGroupEvent,INudgeEvent
         load(PersonalConfig.class);
         load(MusicRecongnition.class);
 
+        load(PlaneSentence.class);
         load(MessageRefuse.class);
         load(Report.class);
 
