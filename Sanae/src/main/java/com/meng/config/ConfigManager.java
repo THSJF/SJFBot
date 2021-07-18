@@ -229,7 +229,11 @@ public class ConfigManager {
     }
 
     public boolean isOwner(long qq) {
-        return getPersonFromQQ(qq).permission == Permission.Owner;
+        Person personFromQQ = getPersonFromQQ(qq);
+        if (personFromQQ == null) {
+            return false;
+        }
+        return personFromQQ.permission == Permission.Owner;
     }
 
     public void addOwner(long qq) {
@@ -256,7 +260,11 @@ public class ConfigManager {
     }
 
     public boolean isMaster(long qq) {
-        return getPersonFromQQ(qq).permission == Permission.Master;
+        Person personFromQQ = getPersonFromQQ(qq);
+        if (personFromQQ == null) {
+            return false;
+        }
+        return personFromQQ.permission == Permission.Master;
     }
 
     public void addMaster(long qq) {
@@ -273,7 +281,11 @@ public class ConfigManager {
     }
 
     public boolean isAdminPermission(long qq) {
-        return getPersonFromQQ(qq).permission == Permission.Admin || isMaster(qq);
+        Person personFromQQ = getPersonFromQQ(qq);
+        if (personFromQQ == null) {
+            return false;
+        }
+        return personFromQQ.permission == Permission.Admin || isMaster(qq);
     }
 
     public void addAdmin(long qq) {
