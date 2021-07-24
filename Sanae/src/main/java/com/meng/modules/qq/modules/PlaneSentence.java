@@ -75,8 +75,7 @@ public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
                 for (Message message : event.getMessage()) {
                     if (message instanceof Image) {
                         byte[] img = Network.httpGetRaw(entity.getUrl(((Image)message)));
-                        File imageFile = SJFPathTool.getPlaneSentencePath(name.get(qq) + "/" + FileTool.getAutoFileName(img));
-                        FileTool.saveFile(imageFile, img);
+                        FileTool.saveFile(SJFPathTool.getPlaneSentencePath(name.get(qq) + "/" + FileTool.getAutoFileName(img)), img);
                         leng += img.length;
                     }
                 }

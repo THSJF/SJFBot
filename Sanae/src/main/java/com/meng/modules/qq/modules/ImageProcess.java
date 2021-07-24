@@ -140,12 +140,12 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             long qqId = entity.getAt(event.getMessage());
             try {    
                 if (qqId != -1 && functionMap.containsKey(cmd)) {
-                    File imageFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
-                    FileTool.saveFile(imageFile, Network.httpGetRaw(event.getGroup().get(qqId).getAvatarUrl()));
-                    if (FileFormat.isFormat(imageFile, "gif")) {
-                        runGenerateDynamic(imageFile, event, functionMap.get(cmd));
+                    File avatar = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
+                    FileTool.saveFile(avatar, Network.httpGetRaw(event.getGroup().get(qqId).getAvatarUrl()));
+                    if (FileFormat.isFormat(avatar, "gif")) {
+                        runGenerateDynamic(avatar, event, functionMap.get(cmd));
                     } else {
-                        runGenerateStatic(imageFile, event, functionMap.get(cmd));          
+                        runGenerateStatic(avatar, event, functionMap.get(cmd));          
                     }
                     return true;
                 } 
@@ -444,10 +444,10 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
     }
 
     private void runGenerateStatic(File imageFile, GroupMessageEvent event, Function<BufferedImage,BufferedImage> function) throws IOException {
-        BufferedImage grayImage = function.apply(ImageIO.read(imageFile));
+        BufferedImage result = function.apply(ImageIO.read(imageFile));
         File tmp = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".png");
         FileTool.createFile(tmp);
-        ImageIO.write(grayImage, "png", tmp);
+        ImageIO.write(result, "png", tmp);
         Image im = entity.toImage(tmp, event.getGroup());
         sendMessage(event, im);
         tmp.delete();
