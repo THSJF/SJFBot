@@ -130,7 +130,7 @@ public class Dice extends BaseModule implements IGroupMessageEvent {
                     sendMessage(gme.getGroup(), String.format("%s的疯狂发作-临时症状:\n1D10=%d\n症状: 逃避行为：调查员会用任何的手段试图逃离现在所处的位置，状态持续1D10=%d轮。", configManager.getNickName(groupId, qqId), random.nextInt(11), random.nextInt(11)));
                     return true;
                 case "rd":
-                    sendMessage(gme.getGroup(), String.format("由于%s %s骰出了: D100=%d", iter.next(), configManager.getNickName(groupId, qqId), random.nextInt(101)));
+                    sendMessage(gme.getGroup(), String.format("由于%s,%s骰出了: D100=%d", iter.next(), configManager.getNickName(groupId, qqId), random.nextInt(101)));
                     return true;
                 case "nn":
                     if (!iter.hasNext()) {

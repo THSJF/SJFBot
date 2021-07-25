@@ -145,7 +145,7 @@ public class TH06Data extends THGameData {
         };
         players = new THPlayer[]{
             new THPlayer("博丽灵梦", "灵符", "梦符"),
-            new THPlayer("雾雨魔理沙 魔符", "恋符")
+            new THPlayer("雾雨魔理沙", "魔符", "恋符")
         };
     }
 }
