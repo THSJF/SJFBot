@@ -13,13 +13,15 @@ public class ZunReplay {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(name).append(" ")
-            .append(date).append(" ")
-            .append(character).append(" ")
-            .append(difficulty).append(" ")
-            .append(stage).append(" ")
-            .append(score).append(" ")
-            .append(slow);
+        sb.append("机签:").append(name)
+            .append("\n日期:").append(date)
+            .append("\n自机:").append(character)
+            .append("\n难度:").append(difficulty)
+            .append("\n进度:").append(stage)
+            .append("\n得分:").append(score);
+        if (slow != null) {
+            sb.append("\n处理落率:").append(slow);
+        }
         return sb.toString();
     }
 }
