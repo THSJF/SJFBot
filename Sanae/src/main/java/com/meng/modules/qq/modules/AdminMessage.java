@@ -239,13 +239,7 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     if (list.size() == 3) {
                         sendGroupMessage(groupId, iter.next());
                     } else if (list.size() == 4) {
-                        String next = iter.next();
-                        if (next.equals("晚上好啊老婆们")) {
-                            Voice ptt = entity.toVoice(new FileInputStream(SJFPathTool.getTTSPath("晚上好啊老婆们.wav")), gme.getGroup());
-                            sendQuote(gme, ptt);
-                        } else {
-                            sendGroupMessage(Long.parseLong(next), iter.next());
-                        }
+                        sendGroupMessage(Long.parseLong(iter.next()), iter.next());
                     }
                     return true;
                 case "groupTitle":

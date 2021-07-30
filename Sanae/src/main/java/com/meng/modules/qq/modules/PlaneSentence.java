@@ -17,11 +17,11 @@ import com.meng.tools.FileTool;
 import com.meng.tools.Network;
 import com.meng.tools.SJFRandom;
 import net.mamoe.mirai.message.data.Message;
+import com.meng.modules.qq.BaseStepModule;
+import com.meng.modules.qq.BaseStepModule.StepBean;
 
-public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
+public class PlaneSentence extends BaseStepModule implements IGroupMessageEvent {
 
-    private Map<Long,Integer> steps = new HashMap<>();
-    private Map<Long,String> name = new HashMap<>();
     public PlaneSentence(SBot b) {
         super(b);
     }
@@ -45,17 +45,19 @@ public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
             return false; 
         }
         if (msg.equals("添加乐子图")) {
-            steps.put(qq, 0);
+            steps.put(qq, new StepBean<String>(0));
         } else if (msg.equals("取消添加")) {
             steps.remove(qq);
         }
-        if (steps.get(qq) == null) {
-            return false;
-        }
-        switch (steps.get(qq)) {
+        return super.onGroupMessage(event);
+    }
+
+    @Override
+    protected boolean onStep(GroupMessageEvent event, StepBean bean, long qq) {
+        switch (bean.step) {
             case 0:
                 sendQuote(event, "发送人名或\"其他\"以选择是谁的图");
-                steps.put(qq, 1);
+                bean.step = 1;
                 File[] flist = SJFPathTool.getPlaneSentencePath("").listFiles();
                 StringBuilder builder = new StringBuilder();
                 for (File f : flist) {
@@ -63,27 +65,28 @@ public class PlaneSentence extends BaseModule implements IGroupMessageEvent {
                 }
                 builder.setLength(builder.length() - 1);
                 sendQuote(event, builder.toString());
-                return true;
+                break;
             case 1:
                 String uname = event.getMessage().contentToString();
                 sendQuote(event, "发送图片为" + uname + "添加图片,或发送取消添加以退出");
-                steps.put(qq, 2);
-                name.put(qq, uname);
-                return true;
+                bean.step = 2;
+                bean.extra = uname;
+                break;
             case 2:
                 int leng = 0;
                 for (Message message : event.getMessage()) {
                     if (message instanceof Image) {
                         byte[] img = Network.httpGetRaw(entity.getUrl(((Image)message)));
-                        FileTool.saveFile(SJFPathTool.getPlaneSentencePath(name.get(qq) + "/" + FileTool.getAutoFileName(img)), img);
+                        FileTool.saveFile(SJFPathTool.getPlaneSentencePath(bean.extra + "/" + FileTool.getAutoFileName(img)), img);
                         leng += img.length;
                     }
                 }
-                name.remove(qq);
                 steps.remove(qq);
                 sendQuote(event, "保存完成(" + (leng / 1024) + "KB)");
-                return true;
+                break;
+            default:
+                return false;
         }
-        return false;
+        return true;
     }
 }
