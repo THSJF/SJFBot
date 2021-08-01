@@ -50,7 +50,7 @@ public class TH06Data extends THGameData {
         THCharacter chara_十六夜咲夜 = getCharacter("十六夜咲夜");
         THCharacter chara_蕾米莉亚_斯卡蕾特 = getCharacter("蕾米莉亚·斯卡蕾特");
         THCharacter chara_芙兰朵露_斯卡蕾特 = getCharacter("芙兰朵露·斯卡蕾特");
-        
+
         spells = new THSpell[]{
 
             new THSpell(this, chara_露米娅, "月符「Moonlight Ray」（月光）", "月符「ムーンライトレイ」", THSpell.Hard | THSpell.Lunatic),
@@ -61,7 +61,7 @@ public class TH06Data extends THGameData {
             new THSpell(this, chara_琪露诺, "雹符「Hailstorm」（冰雹暴风）", "雹符「ヘイルストーム」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_琪露诺, "冻符「Perfect Freeze」（完美冻结）", "凍符「パーフェクトフリーズ」　", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_琪露诺, "雪符「Diamond Blizzard」（钻石风暴）", "雪符「ダイアモンドブリザード」", THSpell.Normal | THSpell.Hard | THSpell.Lunatic),
-            
+
             new THSpell(this, chara_红美铃, "华符「芳华绚烂」", "華符「芳華絢爛」", THSpell.Easy | THSpell.Normal),
             new THSpell(this, chara_红美铃, "华符「Selaginella 9」", "華符「セラギネラ９」", THSpell.Hard | THSpell.Lunatic),
             new THSpell(this, chara_红美铃, "虹符「彩虹的风铃」", "虹符「彩虹の風鈴」", THSpell.Easy | THSpell.Normal | THSpell.Hard | THSpell.Lunatic),

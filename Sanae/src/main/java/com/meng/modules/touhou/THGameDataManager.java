@@ -197,6 +197,7 @@ public class THGameDataManager {
             case "th08":
             case "IN":
                 return SJFRandom.randomSelect(TH08Data.getInstance().getPlayers()).randomType();
+            case "东方花映塚":
             case "东方花映冢":
             case "th9":
             case "th09":
@@ -291,7 +292,7 @@ public class THGameDataManager {
                 charaName = SJFRandom.hashSelect(fromQQ + 2, TH08Data.getInstance().getPlayers()).randomType();
                 break;
             case 9:
-                gameName = "花映冢";
+                gameName = "花映塚";
                 charaName = SJFRandom.hashSelect(fromQQ + 2, pl09);
                 break;
             case 10:
@@ -342,6 +343,9 @@ public class THGameDataManager {
 
     public static String generalTranslate(String text) {
         THGameData[] thGameData = THGameDataManager.getThGameData();
+        if (text.equalsIgnoreCase("Phantasmagoria of Flower View")) {
+            return "东方花映塚";
+        }
         for (THGameData game : thGameData) {
             if (text.equals(game.getNameCN())) {
                 return game.getNameEng(); 

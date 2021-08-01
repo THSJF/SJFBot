@@ -1,4 +1,5 @@
 package com.meng.modules.touhou;
+
 import com.meng.tools.Hash;
 import com.meng.tools.SJFRandom;
 import com.meng.tools.Tools;
@@ -7,7 +8,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 public abstract class THGameData {
-
 
     protected THCharacter[] charas;
     protected THMusic[] music;
@@ -57,6 +57,12 @@ public abstract class THGameData {
         return players;
     }
 
+    public String getPlayerType(int index) {
+        int pIndex = index / players.length;
+        int tIndex = index % players.length;
+        return players[pIndex].type[tIndex];
+    }
+    
     public THPlayer getPlayer(String name) {
         for (THPlayer p : players) {
             if (p.name.equals(name)) {
