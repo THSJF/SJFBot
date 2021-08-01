@@ -1,10 +1,7 @@
 package com.meng.modules.touhou;
 
-import com.meng.tools.Hash;
 import com.meng.tools.SJFRandom;
-import com.meng.tools.Tools;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.function.Consumer;
 
 public abstract class THGameData {
@@ -60,9 +57,9 @@ public abstract class THGameData {
     public String getPlayerType(int index) {
         int pIndex = index / players.length;
         int tIndex = index % players.length;
-        return players[pIndex].type[tIndex];
+        return players[pIndex].name + " " + players[pIndex].type[tIndex];
     }
-    
+
     public THPlayer getPlayer(String name) {
         for (THPlayer p : players) {
             if (p.name.equals(name)) {
@@ -158,10 +155,10 @@ public abstract class THGameData {
         return SJFRandom.randomSelect(spells);
     }
 
-    public THMusic randomMusic(){
+    public THMusic randomMusic() {
         return SJFRandom.randomSelect(music);
     }
-    
+
     public THSpell hashRandomSpell(long fromQQ) {
         return SJFRandom.hashSelect(fromQQ, spells);
     }

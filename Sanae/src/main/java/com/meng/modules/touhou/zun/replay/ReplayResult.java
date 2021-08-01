@@ -48,7 +48,7 @@ public class ReplayResult {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("游戏:").append(game)
+        sb.append(game)
             .append("\n机签:").append(name)
             .append("\n日期:").append(date)
             .append("\n自机:").append(character)

@@ -923,11 +923,22 @@ public class ReplayDecoder {
     }
 
     private void readThprac(ReplayBinaryFile file, ReplayResult replay) {
-        int length = file.file.length;
-        if (converter.toInt(file.file, length - 4) != 0x43415250) {//thprac
-            return;
+        byte[] buffer = file.file;
+        int length = buffer.length;
+        if (converter.toInt(buffer, length - 4) == 0x43415250) {//thprac in game before th10
+            int jsonLength = converter.toInt(buffer, length - 8);
+            replay.thprac = new String(buffer, length - 8 - jsonLength, jsonLength);
+        } else {
+            int index = converter.toInt(buffer, 12);
+            int leng = converter.toInt(buffer, index + 4);
+            while (index + leng < buffer.length) {
+                index = index + leng;
+                leng = converter.toInt(buffer, index + 4);
+            }
+            if (converter.toInt(buffer, index + 8) != 0x43415250) {
+                return;
+            }
+            replay.thprac = new String(buffer, index + 12, converter.toInt(buffer, index + 4) - 12).trim();
         }
-        int jsonLength = converter.toInt(file.file, length - 8);
-        replay.thprac = new String(file.file, length - 8 - jsonLength, jsonLength);
     }
 }

@@ -24,7 +24,7 @@ public class TH08Data extends THGameData {
 
     @Override
     public String getNameEng() {
-        return "Imperishable Nigh";
+        return "Imperishable Night";
     }
 
     @Override
