@@ -927,7 +927,7 @@ public class ReplayDecoder {
         int length = buffer.length;
         if (converter.toInt(buffer, length - 4) == 0x43415250) {//thprac in game before th10
             int jsonLength = converter.toInt(buffer, length - 8);
-            replay.thprac = new String(buffer, length - 8 - jsonLength, jsonLength);
+            replay.thprac = new String(buffer, length - 8 - jsonLength, jsonLength).trim();
         } else {
             int index = converter.toInt(buffer, 12);
             int leng = converter.toInt(buffer, index + 4);
