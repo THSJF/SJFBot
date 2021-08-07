@@ -25,6 +25,8 @@ public class AimLiveListener implements Runnable {
         List<Person> toAdd = new ArrayList<>(16);
         toAdd.add(new Person("FJS", 1526596255, 392470565));
         toAdd.add(new Person("WZQ", 1275651410, 517185438));
+        toAdd.add(new Person("萤灯流岚", 1790907260, 39736189));
+        //7313772
         ConfigManager cManager = ConfigManager.getInstance();
         Set<Person> ps = cManager.getConfigHolder().person;
         for (Person p : toAdd) {

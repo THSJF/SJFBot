@@ -166,9 +166,6 @@ public class ReplayResult {
                     case "trance_meter": //thprac单词拼错了
                         sb.append("灵界槽");
                         break;
-                    case "extend":
-                        sb.append("已得残机");
-                        break;
                     case "cycle":
                         sb.append("收点循环");
                         break;
