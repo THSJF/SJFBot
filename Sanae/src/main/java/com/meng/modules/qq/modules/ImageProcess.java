@@ -43,7 +43,6 @@ import net.mamoe.mirai.message.data.FlashImage;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 
 public class ImageProcess extends BaseModule implements IGroupMessageEvent {
@@ -469,11 +468,7 @@ public class ImageProcess extends BaseModule implements IGroupMessageEvent {
             localAnimatedGifEncoder.addFrame(function.apply(gifDecoder.getFrame(i)));
         }
         localAnimatedGifEncoder.finish();
-        File gifFile = SJFPathTool.getImagePath("gen/" + SJFRandom.randomInt() + ".gif");
-        FileTool.saveFile(gifFile, baos.toByteArray());
-        Image resultImage = entity.toImage(gifFile, event.getGroup());
-        sendMessage(event, resultImage);
-        imageFile.delete();
+        sendMessage(event, entity.toImage(baos.toByteArray(), event.getGroup()));
     }
 
     private enum TYPE {

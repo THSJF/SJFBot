@@ -10,15 +10,14 @@ import com.meng.modules.Baidu;
 import com.meng.modules.Lkaa;
 import com.meng.modules.qq.BaseModule;
 import com.meng.modules.qq.SBot;
+import com.meng.modules.qq.handler.MessageManager;
 import com.meng.modules.qq.handler.group.IGroupMessageEvent;
 import com.meng.modules.qq.handler.group.INudgeEvent;
 import com.meng.modules.qq.hotfix.HotfixClassLoader;
 import com.meng.modules.qq.hotfix.SJFCompiler;
 import com.meng.modules.touhou.THGameDataManager;
 import com.meng.tools.ExceptionCatcher;
-import com.meng.tools.FileFormat;
 import com.meng.tools.FileTool;
-import com.meng.tools.Hash;
 import com.meng.tools.JsonHelper;
 import com.meng.tools.Network;
 import com.meng.tools.SJFExecutors;
@@ -26,7 +25,6 @@ import com.meng.tools.SJFPathTool;
 import com.meng.tools.TextLexer;
 import com.meng.tools.Tools;
 import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -40,10 +38,8 @@ import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import net.mamoe.mirai.message.data.Voice;
-import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.message.data.MessageSource;
-import com.meng.modules.qq.handler.MessageManager;
+import net.mamoe.mirai.message.data.QuoteReply;
 
 /**
  * @Description: 管理员命令
@@ -169,6 +165,18 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         } else {
                             sendQuote(gme, "无此开关");
                         }
+                    }
+                    return true;
+                case "getPixiv":
+                    byte[] result = Network.httpGetRaw("https://www.pixiv.cat/" + gme.getMessage().contentToString().replace("get pixiv", "") + ".png");
+                    if (result.length < 1024) {
+                        String html = new String(result);
+                        String s1 = "這個作品ID中有 ";
+                        String s2 = " 張圖片";
+                        String count = html.substring(html.indexOf(s1) + s1.length(), html.indexOf(s2));
+                        sendQuote(gme, "图片有" + count + "张");
+                    } else {
+                        sendQuote(gme, SBot.instance.toImage(result, gme.getGroup()));
                     }
                     return true;
             }

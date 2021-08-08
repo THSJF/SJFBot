@@ -7,8 +7,10 @@ import com.meng.bot.Functions;
 import com.meng.config.ConfigManager;
 import com.meng.modules.mhy.Honkai3GameData;
 import com.meng.modules.mhy.honkai.third.HK3Equipment;
+import com.meng.modules.qq.handler.MessageManager;
 import com.meng.tools.ExceptionCatcher;
 import com.meng.tools.SJFRandom;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +34,7 @@ import net.mamoe.mirai.contact.Stranger;
 import net.mamoe.mirai.event.EventChannel;
 import net.mamoe.mirai.event.events.BotEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.action.BotNudge;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.FileMessage;
@@ -39,6 +42,7 @@ import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
+import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.message.data.SingleMessage;
@@ -47,9 +51,6 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.MiraiLogger;
-import net.mamoe.mirai.message.MessageReceipt;
-import com.meng.modules.qq.handler.MessageManager;
-import net.mamoe.mirai.message.data.MessageSource;
 
 /**
  * @author: 司徒灵羽
@@ -133,6 +134,10 @@ public class SBot implements Bot {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Image toImage(byte[] bytes, Contact contact) {
+        return toImage(new ByteArrayInputStream(bytes), contact);
     }
 
     public Image toImage(InputStream inputStream, Contact contact) {

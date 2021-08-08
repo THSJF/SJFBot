@@ -1,5 +1,7 @@
 package com.meng.tools;
 
+import com.meng.modules.SJFPermissionDeniedException;
+import com.meng.modules.qq.SBot;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,6 +28,11 @@ public class ExceptionCatcher implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        if (ex instanceof SJFPermissionDeniedException) {
+            SJFPermissionDeniedException pde = (SJFPermissionDeniedException)ex;
+            SBot.instance.sendQuote(pde.event, "Permission Denied.");
+            return;
+        }
         ex.printStackTrace();
         saveCrashInfo2File(ex);
     }
