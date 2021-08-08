@@ -24,13 +24,21 @@ public class SJFPathTool {
     public static File getPlaneSentencePath(String fileName) {
         return new File(getPlaneSentencePath() + fileName);
     }
-    
+
     public static String getR15Path() {
         return getAppDirectory() + "/image/r15/";
     }
 
     public static File getR15Path(String fileName) {
         return new File(getR15Path() + fileName);
+    }
+
+    public static String getPixivPath() {
+        return getAppDirectory() + "/image/pixiv/";
+    }
+
+    public static File getPixivPath(String fileName) {
+        return new File(getPixivPath() + fileName);
     }
 
     public static String getFantasyPath() {

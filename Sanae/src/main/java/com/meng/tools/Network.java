@@ -107,8 +107,9 @@ public class Network {
             if (response.statusCode() != 200) {
                 System.out.println(String.valueOf(response.statusCode()));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return response.bodyAsBytes();
 	}

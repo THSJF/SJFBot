@@ -121,6 +121,21 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                     String translate = THGameDataManager.generalTranslate(next);
                     sendGroupMessage(groupId, translate == null ? Baidu.getInstance().generalTranslate(next) : translate);
                     return true;
+                case "getPixiv":
+                    String id = iter.next();
+                    File pixivImage = SJFPathTool.getPixivPath(id + ".png");
+                    if (pixivImage.exists()) {
+                        sendQuote(gme, SBot.instance.toImage(pixivImage, gme.getGroup()));
+                        return true;
+                    }
+                    byte[] result = Network.httpGetRaw("https://www.pixiv.cat/" + id + ".png");
+                    if (result == null) {
+                        sendQuote(gme, "id中有多张图片");
+                    } else {
+                        FileTool.saveFile(pixivImage, result);
+                        sendQuote(gme, SBot.instance.toImage(pixivImage, gme.getGroup()));
+                    }
+                    return true;
             }
             if (!configManager.isAdminPermission(qqId) && entity.getGroupMemberInfo(groupId, qqId).getPermission().getLevel() < 1) {
                 return false;
@@ -165,18 +180,6 @@ public class AdminMessage extends BaseModule implements IGroupMessageEvent ,INud
                         } else {
                             sendQuote(gme, "无此开关");
                         }
-                    }
-                    return true;
-                case "getPixiv":
-                    byte[] result = Network.httpGetRaw("https://www.pixiv.cat/" + gme.getMessage().contentToString().replace("get pixiv", "") + ".png");
-                    if (result.length < 1024) {
-                        String html = new String(result);
-                        String s1 = "這個作品ID中有 ";
-                        String s2 = " 張圖片";
-                        String count = html.substring(html.indexOf(s1) + s1.length(), html.indexOf(s2));
-                        sendQuote(gme, "图片有" + count + "张");
-                    } else {
-                        sendQuote(gme, SBot.instance.toImage(result, gme.getGroup()));
                     }
                     return true;
             }
